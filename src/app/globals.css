@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-junior: #22c55e;
+  --color-junior-plus: #84cc16;
+  --color-middle: #3b82f6;
+  --color-strong-middle: #8b5cf6;
+  --color-senior: #f59e0b;
+}
