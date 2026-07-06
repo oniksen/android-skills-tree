@@ -27,6 +27,11 @@ export async function resetLevelProgress(levelId: string) {
       .in("project_id", projects.map(p => p.id));
   }
 
+  await supabase.from("user_progress").upsert(
+    { user_id: user.id, total_score: 0, updated_at: new Date().toISOString() },
+    { onConflict: "user_id" }
+  );
+
   revalidatePath("/tree/[slug]", "page");
   revalidatePath("/dashboard");
   revalidatePath("/roadmap");

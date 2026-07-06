@@ -3,8 +3,8 @@ import LevelTabs from "@/components/tree/LevelTabs";
 import CategoryCard from "@/components/tree/CategoryCard";
 import CategoryCardReadonly from "@/components/tree/CategoryCardReadonly";
 import LevelGate from "@/components/tree/LevelGate";
-import Header from "@/components/shared/Header";
 import LevelUpHandler from "./LevelUpHandler";
+import { getAssessmentMap } from "@/lib/queries";
 import { notFound } from "next/navigation";
 
 export default async function LevelPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -25,28 +25,21 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
   if (!user) {
     return (
       <>
-        <Header />
-        <main className="max-w-6xl mx-auto px-4 py-8 space-y-6">
-          <div><h1 className="text-3xl font-bold text-white mb-1">{currentLevel.name}</h1>
-          <p className="text-slate-400">{currentLevel.description}</p></div>
-          <LevelTabs levels={levels} />
-          <div className="grid gap-4 md:grid-cols-2">
-            {categories.map(cat => (
-              <CategoryCardReadonly key={cat.id} name={cat.name} maxScore={cat.max_score} skills={cat.skills || []} />
-            ))}
-          </div>
-        </main>
+        <div><h1 className="text-3xl font-bold text-white mb-1">{currentLevel.name}</h1>
+        <p className="text-slate-400">{currentLevel.description}</p></div>
+        <LevelTabs levels={levels} />
+        <div className="grid gap-4 md:grid-cols-2">
+          {categories.map(cat => (
+            <CategoryCardReadonly key={cat.id} name={cat.name} maxScore={cat.max_score} skills={cat.skills || []} />
+          ))}
+        </div>
       </>
     );
   }
 
   const { data: userProgress } = await supabase
     .from("user_progress").select("*").eq("user_id", user.id).single();
-  const { data: assessments } = await supabase
-    .from("assessments").select("skill_id, score").eq("user_id", user.id);
-
-  const assessmentMap: Record<string, number> = {};
-  assessments?.forEach(a => { assessmentMap[a.skill_id] = a.score; });
+  const assessmentMap = await getAssessmentMap(user.id);
 
   const currentLevelId = userProgress?.current_level_id || levels[0].id;
   const currentLevelIndex = levels.findIndex(l => l.id === currentLevelId);
@@ -58,40 +51,37 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
 
   return (
     <>
-      <Header />
-      <main className="max-w-6xl mx-auto px-4 py-8 space-y-6">
-        <LevelUpHandler />
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-1">{currentLevel.name}</h1>
-            <p className="text-slate-400">{currentLevel.description}</p>
-          </div>
-          <div className="text-right text-sm text-slate-500">
-            <div>Всего XP: {currentScore}</div>
-            {nextLevel && <div>До {nextLevel.name}: {Math.max(0, nextLevel.min_score - currentScore)} XP</div>}
-          </div>
+      <LevelUpHandler />
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-1">{currentLevel.name}</h1>
+          <p className="text-slate-400">{currentLevel.description}</p>
         </div>
+        <div className="text-right text-sm text-slate-500">
+          <div>Всего XP: {currentScore}</div>
+          {nextLevel && <div>До {nextLevel.name}: {Math.max(0, nextLevel.min_score - currentScore)} XP</div>}
+        </div>
+      </div>
 
-        <LevelTabs levels={levels} />
+      <LevelTabs levels={levels} />
 
-        {!isCurrentOrPast && (
-          <LevelGate isUnlocked={false} isCompleted={false}
-            requiredScore={levels[levelIndex - 1]?.max_score || 9999}
-            currentScore={currentScore} levelName={currentLevel.name} />
-        )}
-        {isCompleted && (
-          <LevelGate isUnlocked={false} isCompleted={true}
-            requiredScore={0} currentScore={currentScore} levelName={currentLevel.name} />
-        )}
-        {isCurrentOrPast && !isCompleted && (
-          <div className="grid gap-4 md:grid-cols-2">
-            {categories.map(cat => (
-              <CategoryCard key={cat.id} name={cat.name} maxScore={cat.max_score}
-                skills={cat.skills || []} assessments={assessmentMap} />
-            ))}
-          </div>
-        )}
-      </main>
+      {!isCurrentOrPast && (
+        <LevelGate isUnlocked={false} isCompleted={false}
+          requiredScore={levels[levelIndex - 1]?.max_score || 9999}
+          currentScore={currentScore} levelName={currentLevel.name} />
+      )}
+      {isCompleted && (
+        <LevelGate isUnlocked={false} isCompleted={true}
+          requiredScore={0} currentScore={currentScore} levelName={currentLevel.name} />
+      )}
+      {isCurrentOrPast && !isCompleted && (
+        <div className="grid gap-4 md:grid-cols-2">
+          {categories.map(cat => (
+            <CategoryCard key={cat.id} name={cat.name} maxScore={cat.max_score}
+              skills={cat.skills || []} assessments={assessmentMap} />
+          ))}
+        </div>
+      )}
     </>
   );
 }

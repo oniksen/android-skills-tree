@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { getAssessmentMap } from "@/lib/queries";
 import { redirect } from "next/navigation";
 import GapList from "@/components/roadmap/GapList";
 
@@ -17,11 +18,7 @@ export default async function RoadmapPage() {
     .from("categories").select("*, skills(*), level:levels(name)")
     .in("level_id", relevantIds).order("sort_order");
 
-  const { data: assessments } = await supabase
-    .from("assessments").select("skill_id, score").eq("user_id", user.id);
-
-  const assessmentMap: Record<string, number> = {};
-  assessments?.forEach(a => { assessmentMap[a.skill_id] = a.score; });
+  const assessmentMap = await getAssessmentMap(user.id);
 
   const gaps: { skillName: string; categoryName: string; levelName: string; currentScore: number; maxScore: number; }[] = [];
   (categories || []).forEach(cat => {

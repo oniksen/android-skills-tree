@@ -41,7 +41,40 @@ export async function checkLevelUp() {
   const currentIndex = levels.findIndex(l => l.id === currentLevelId);
   if (currentIndex >= levels.length - 1) return null;
   const nextLevel = levels[currentIndex + 1];
+
   if (userProgress.total_score < nextLevel.min_score) return null;
+
+  const { data: requiredSkills } = await supabase
+    .from("skills")
+    .select("id, categories!inner(level_id)")
+    .eq("categories.level_id", nextLevel.id)
+    .eq("required_for_level_up", true);
+
+  if (requiredSkills && requiredSkills.length > 0) {
+    const { data: skillAssessments } = await supabase
+      .from("assessments")
+      .select("skill_id, score")
+      .eq("user_id", user.id)
+      .in("skill_id", requiredSkills.map(s => s.id));
+
+    const scoredMap: Record<string, number> = {};
+    skillAssessments?.forEach(a => { scoredMap[a.skill_id] = a.score; });
+
+    const allRequiredScored = requiredSkills.every(s => (scoredMap[s.id] || 0) >= 1);
+    if (!allRequiredScored) return null;
+  }
+
+  if (nextLevel.required_project_count > 0) {
+    const { data: projectProgress, count: projectCount } = await supabase
+      .from("project_progress")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("completed", true);
+
+    const completedCount = projectCount ?? 0;
+    if (completedCount < nextLevel.required_project_count) return null;
+  }
+
   const unlockedIds = [...(userProgress.unlocked_level_ids || []), nextLevel.id, currentLevelId];
   await supabase.from("user_progress").update({
     current_level_id: nextLevel.id,
@@ -54,5 +87,6 @@ export async function checkLevelUp() {
   });
   revalidatePath("/tree/[slug]", "page");
   revalidatePath("/dashboard");
+  revalidatePath("/roadmap");
   return { fromLevel: levels[currentIndex].name, toLevel: nextLevel.name, score: userProgress.total_score };
 }

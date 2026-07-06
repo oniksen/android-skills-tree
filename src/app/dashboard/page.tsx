@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import LevelProgressCard from "@/components/dashboard/LevelProgressCard";
 import QuickStats from "@/components/dashboard/QuickStats";
 import NextMilestone from "@/components/dashboard/NextMilestone";
@@ -21,7 +21,7 @@ export default async function DashboardPage() {
   const { data: projectProgress } = await supabase.from("project_progress").select("project_id, completed").eq("user_id", user.id);
   const { data: allProjects } = await supabase.from("projects").select("id");
 
-  if (!levels) return null;
+  if (!levels) notFound();
 
   const currentLevelId = userProgress?.current_level_id || levels[0].id;
   const currentLevel = levels.find(l => l.id === currentLevelId) || levels[0];
