@@ -1,12 +1,13 @@
-export default function ProgressBar({ value, max, label }: { value: number; max: number; label?: string }) {
-  const pct = max > 0 ? Math.min(Math.round((value / max) * 100), 100) : 0;
+export default function ProgressBar({ current, max, color = "bg-blue-500", showLabel = true }: {
+  current: number; max: number; color?: string; showLabel?: boolean
+}) {
+  const pct = max > 0 ? Math.min(Math.round((current / max) * 100), 100) : 0;
   return (
     <div className="w-full">
-      {label && <p className="text-xs text-slate-400 mb-1">{label}</p>}
       <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-        <div className="h-full bg-blue-500 rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
+        <div className={`h-full rounded-full transition-all duration-500 ${color}`} style={{ width: `${pct}%` }} />
       </div>
-      <p className="text-xs text-slate-500 mt-0.5">{value}/{max}</p>
+      {showLabel && <p className="text-xs text-slate-500 mt-0.5">{current}/{max}</p>}
     </div>
   );
 }
