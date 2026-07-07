@@ -4,6 +4,7 @@ import CategoryCard from "@/components/tree/CategoryCard";
 import CategoryCardReadonly from "@/components/tree/CategoryCardReadonly";
 import LevelGate from "@/components/tree/LevelGate";
 import LevelUpHandler from "./LevelUpHandler";
+import Legend from "@/components/tree/Legend";
 import { getAssessmentMap } from "@/lib/queries";
 import { notFound } from "next/navigation";
 
@@ -28,6 +29,7 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
         <div><h1 className="text-3xl font-bold text-white mb-1">{currentLevel.name}</h1>
         <p className="text-slate-400">{currentLevel.description}</p></div>
         <LevelTabs levels={levels} />
+        <Legend />
         <div className="grid gap-4 md:grid-cols-2">
           {categories.map(cat => (
             <CategoryCardReadonly key={cat.id} name={cat.name} maxScore={cat.max_score} skills={cat.skills || []} />
@@ -64,6 +66,7 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
       </div>
 
       <LevelTabs levels={levels} />
+      <Legend isAuthenticated={true} />
 
       {!isCurrentOrPast && (
         <LevelGate isUnlocked={false} isCompleted={false}
