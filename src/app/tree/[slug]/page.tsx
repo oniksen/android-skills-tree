@@ -8,6 +8,16 @@ import Legend from "@/components/tree/Legend";
 import { getAssessmentMap } from "@/lib/queries";
 import { notFound } from "next/navigation";
 
+const SCORE_MULTIPLIER: Record<number, number> = { 1: 0.1, 2: 0.25, 3: 0.5, 4: 0.8, 5: 1.0 };
+
+function calcCategoryScore(skills: { id: string; max_weight: number }[], assessments: Record<string, number>): number {
+  return skills.reduce((sum, s) => {
+    const score = assessments[s.id] || 0;
+    const multiplier = SCORE_MULTIPLIER[score] ?? 0;
+    return sum + Math.floor(score * s.max_weight * multiplier);
+  }, 0);
+}
+
 export default async function LevelPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createServerSupabaseClient();
@@ -79,10 +89,14 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
       )}
       {isCurrentOrPast && !isCompleted && (
         <div className="grid gap-4 md:grid-cols-2">
-          {categories.map(cat => (
-            <CategoryCard key={cat.id} name={cat.name} maxScore={cat.max_score}
-              skills={cat.skills || []} assessments={assessmentMap} />
-          ))}
+          {categories.map(cat => {
+            const catScore = calcCategoryScore(cat.skills || [], assessmentMap);
+            return (
+              <CategoryCard key={cat.id} name={cat.name} maxScore={cat.max_score}
+                skills={cat.skills || []} assessments={assessmentMap}
+                isLocked={catScore >= cat.max_score} />
+            );
+          })}
         </div>
       )}
     </>
