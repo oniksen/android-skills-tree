@@ -21,7 +21,8 @@ export default function SkillRow({ skillId, name, maxWeight, currentScore, requi
     finally { setSaving(false); }
   }, [skillId, currentScore, disabled]);
 
-  const points = score * maxWeight;
+  const SCORE_MULTIPLIER: Record<number, number> = { 1: 0.1, 2: 0.25, 3: 0.5, 4: 0.8, 5: 1.0 };
+  const points = Math.floor(score * maxWeight * (SCORE_MULTIPLIER[score] ?? 0));
   const btnColor = (n: number) => score >= n
     ? (["bg-red-900/50 text-red-400","bg-orange-900/50 text-orange-400","bg-yellow-900/50 text-yellow-400","bg-green-900/50 text-green-400","bg-emerald-900/50 text-emerald-400"][n-1] || "bg-slate-800 text-slate-600")
     : "bg-slate-800 text-slate-600 hover:bg-slate-700";

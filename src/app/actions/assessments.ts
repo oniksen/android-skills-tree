@@ -16,6 +16,7 @@ export async function saveAssessment(skillId: string, score: number) {
   revalidatePath("/tree/[slug]", "page");
   revalidatePath("/dashboard");
   revalidatePath("/roadmap");
+  revalidatePath("/achievements");
 }
 
 const SCORE_MULTIPLIER: Record<number, number> = { 1: 0.1, 2: 0.25, 3: 0.5, 4: 0.8, 5: 1.0 };
@@ -233,5 +234,6 @@ export async function checkLevelUp() {
   revalidatePath("/tree/[slug]", "page");
   revalidatePath("/dashboard");
   revalidatePath("/roadmap");
+  revalidatePath("/achievements");
   return { fromLevel: levels[currentIndex].name, toLevel: nextLevel.name, score: userProgress.total_score };
 }
