@@ -11,7 +11,7 @@ export async function saveAssessment(skillId: string, score: number) {
     { onConflict: "user_id,skill_id" }
   );
   if (error) throw new Error(error.message);
-  const totalScore = await recalculateScore(supabase, user.id);
+  await recalculateScore(supabase, user.id);
   await checkAchievements(supabase, user.id);
   revalidatePath("/tree/[slug]", "page");
   revalidatePath("/dashboard");
