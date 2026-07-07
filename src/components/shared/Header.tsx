@@ -63,6 +63,12 @@ export default function Header() {
               >
                 Roadmap
               </Link>
+              <Link
+                href="/achievements"
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                Достижения
+              </Link>
               <button
                 onClick={handleLogout}
                 className="text-slate-400 hover:text-white transition-colors"
