@@ -17,12 +17,17 @@ export async function saveAssessment(skillId: string, score: number) {
   revalidatePath("/roadmap");
 }
 
+const SCORE_MULTIPLIER: Record<number, number> = { 1: 0.1, 2: 0.25, 3: 0.5, 4: 0.8, 5: 1.0 };
+
 async function recalculateScore(supabase: any, userId: string) {
   const { data: assessments } = await supabase
     .from("assessments")
     .select("score, skills!inner(max_weight)")
     .eq("user_id", userId);
-  const totalScore = assessments?.reduce((sum: number, a: any) => sum + a.score * a.skills.max_weight, 0) || 0;
+  const totalScore = assessments?.reduce((sum: number, a: any) => {
+    const multiplier = SCORE_MULTIPLIER[a.score] ?? 0;
+    return sum + Math.floor(a.score * a.skills.max_weight * multiplier);
+  }, 0) || 0;
   await supabase.from("user_progress").upsert(
     { user_id: userId, total_score: totalScore, updated_at: new Date().toISOString() },
     { onConflict: "user_id" }
