@@ -47,6 +47,38 @@ export async function checkLevelUp() {
   if (currentIndex >= levels.length - 1) return null;
   const nextLevel = levels[currentIndex + 1];
 
+  const { data: currentCategories } = await supabase
+    .from("categories")
+    .select("id, max_score")
+    .eq("level_id", currentLevelId);
+
+  if (currentCategories && currentCategories.length > 0) {
+    const { data: currentSkills } = await supabase
+      .from("skills")
+      .select("id, category_id, max_weight")
+      .in("category_id", currentCategories.map(c => c.id));
+
+    if (currentSkills && currentSkills.length > 0) {
+      const { data: categoryAssessments } = await supabase
+        .from("assessments")
+        .select("skill_id, score")
+        .eq("user_id", user.id)
+        .in("skill_id", currentSkills.map(s => s.id));
+
+      const assessmentMap: Record<string, number> = {};
+      categoryAssessments?.forEach(a => { assessmentMap[a.skill_id] = a.score; });
+
+      for (const cat of currentCategories) {
+        const catSkills = currentSkills.filter(s => s.category_id === cat.id);
+        const catXp = catSkills.reduce((sum, s) => {
+          const score = assessmentMap[s.id] || 0;
+          return sum + Math.floor(score * s.max_weight * (SCORE_MULTIPLIER[score] ?? 0));
+        }, 0);
+        if (catXp < cat.max_score * 0.8) return null;
+      }
+    }
+  }
+
   if (userProgress.total_score < nextLevel.min_score) return null;
 
   const { data: requiredSkills } = await supabase
