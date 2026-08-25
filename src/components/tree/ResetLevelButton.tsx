@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { resetLevelProgress } from "@/app/actions/reset";
+import { resetLevelProgress } from "@/lib/firestore-actions";
 
 export default function ResetLevelButton({ levelId, levelName }: { levelId: string; levelName: string }) {
   const [confirming, setConfirming] = useState(false);

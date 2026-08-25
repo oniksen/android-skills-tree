@@ -1,8 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { auth } from "@/lib/firebase";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { login } from "@/app/actions/auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -11,28 +16,26 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
-    const { error: authError } = isSignUp
-      ? await supabase.auth.signUp({ email, password })
-      : await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const userCredential = isSignUp
+        ? await createUserWithEmailAndPassword(auth, email, password)
+        : await signInWithEmailAndPassword(auth, email, password);
 
-    if (authError) {
-      setError(authError.message);
-      setLoading(false);
-      return;
-    }
-
-    if (!isSignUp) {
+      await login(userCredential.user.uid);
       router.push("/dashboard");
       router.refresh();
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? getFirebaseErrorMessage((err as { code?: string }).code || "unknown") : "Произошла ошибка";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -73,16 +76,18 @@ export default function LoginPage() {
             />
           </div>
 
-          {error && (
-            <p className="text-red-400 text-sm">{error}</p>
-          )}
+          {error && <p className="text-red-400 text-sm">{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
             className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
           >
-            {loading ? "Загрузка..." : isSignUp ? "Зарегистрироваться" : "Войти"}
+            {loading
+              ? "Загрузка..."
+              : isSignUp
+                ? "Зарегистрироваться"
+                : "Войти"}
           </button>
         </form>
 
@@ -98,4 +103,23 @@ export default function LoginPage() {
       </div>
     </div>
   );
+}
+
+function getFirebaseErrorMessage(code: string): string {
+  switch (code) {
+    case "auth/user-not-found":
+      return "Пользователь не найден";
+    case "auth/wrong-password":
+      return "Неверный пароль";
+    case "auth/email-already-in-use":
+      return "Email уже используется";
+    case "auth/weak-password":
+      return "Пароль должен содержать минимум 6 символов";
+    case "auth/invalid-email":
+      return "Некорректный email";
+    case "auth/too-many-requests":
+      return "Слишком много попыток. Попробуйте позже";
+    default:
+      return "Произошла ошибка. Попробуйте снова";
+  }
 }

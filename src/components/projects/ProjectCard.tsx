@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { toggleProjectCompletion } from "@/app/actions/projects";
+import { toggleProjectCompletion } from "@/lib/firestore-actions";
 
 export default function ProjectCard({ projectId, name, description, requiredTechnologies, levelName, completed }: {
   projectId: string; name: string; description: string; requiredTechnologies: string[]; levelName: string; completed: boolean;

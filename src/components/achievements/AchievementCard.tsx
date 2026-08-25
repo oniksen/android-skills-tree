@@ -13,7 +13,7 @@ export default function AchievementCard({
 }: {
   type: string;
   metadata: Record<string, string> | null;
-  achieved_at: string;
+  achieved_at: string | Date;
 }) {
   const config = achievementConfig[type] ?? { title: type, icon: "🎖️" };
   const subtitle = metadata?.level_name ?? metadata?.category_name ?? null;

@@ -21,26 +21,19 @@ export default function Legend({ isAuthenticated }: { isAuthenticated?: boolean 
             <span className="text-slate-400 leading-snug">Обязательный навык для перехода на следующий уровень</span>
           </div>
           <div className="flex items-start gap-3 pl-1">
-            <span className="flex gap-1 shrink-0 mt-0.5">
-              {[1, 2, 3, 4, 5].map((n) => (
-                <span
-                  key={n}
-                  className="w-6 h-6 rounded text-xs font-medium flex items-center justify-center bg-slate-800 text-slate-600"
-                >
-                  {n}
-                </span>
-              ))}
+            <span className="w-6 h-6 rounded text-xs font-medium flex items-center justify-center bg-slate-800 text-slate-600 shrink-0">
+              ✓
             </span>
-            <span className="text-slate-400 leading-snug">Оценка владения (1 — знаю термин, 5 — могу обучать)</span>
+            <span className="text-slate-400 leading-snug">Отмечайте подтемы — XP считаются по количеству чекбоксов</span>
           </div>
           <div className="flex items-start gap-3 pl-1">
-            <span className="text-xs text-slate-500 font-mono mt-0.5 shrink-0">(12 XP)</span>
-            <span className="text-slate-400 leading-snug">Баллы = оценка × вес навыка</span>
+            <span className="text-xs text-slate-500 font-mono mt-0.5 shrink-0">(3/5)</span>
+            <span className="text-slate-400 leading-snug">Прогресс: выполнено подтем из общего количества</span>
           </div>
           {isAuthenticated && (
             <div className="flex items-start gap-3 pl-1">
               <span className="text-emerald-400 text-xs mt-0.5 shrink-0">✓</span>
-              <span className="text-slate-400 leading-snug">Автосохранение при нажатии</span>
+              <span className="text-slate-400 leading-snug">Автосохранение при нажатии чекбокса</span>
             </div>
           )}
         </div>

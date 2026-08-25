@@ -1,52 +1,157 @@
 "use client";
-import { useState, useCallback } from "react";
-import { saveAssessment } from "@/app/actions/assessments";
 
-export default function SkillRow({ skillId, name, maxWeight, currentScore, required, disabled }: {
-  skillId: string; name: string; maxWeight: number; currentScore: number; required: boolean; disabled?: boolean;
-}) {
-  const [score, setScore] = useState(currentScore);
-  const [saving, setSaving] = useState(false);
-  const [justSaved, setJustSaved] = useState(false);
+import { useState } from "react";
+import { checkLevelUp as checkLevelUpAction } from "@/lib/firestore-actions";
+import CelebrationModal from "@/components/shared/CelebrationModal";
+import { useAssessments } from "@/hooks";
 
-  const handleClick = useCallback(async (n: number) => {
+interface SkillRowProps {
+  skillId: string;
+  name: string;
+  description: string;
+  subtopics: string[];
+  subtopicPercent: number;
+  required: boolean;
+  disabled?: boolean;
+}
+
+export default function SkillRow({
+  skillId,
+  name,
+  description,
+  subtopics,
+  subtopicPercent,
+  required,
+  disabled = false,
+}: SkillRowProps) {
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [levelResult, setLevelResult] = useState<{ fromLevel: string; toLevel: string; score: number } | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const { assessmentMap, toggleSubtopic } = useAssessments();
+
+  const subtopicState = assessmentMap[skillId]?.subtopics || {};
+  const completedCount = (subtopics ?? []).filter((st) => subtopicState[st]).length;
+
+  const handleToggleSubtopic = async (subtopicName: string) => {
     if (disabled) return;
-    setScore(n);
-    setSaving(true);
-    try {
-      await saveAssessment(skillId, n);
-      setJustSaved(true);
-      setTimeout(() => setJustSaved(false), 1500);
-    } catch { setScore(currentScore); }
-    finally { setSaving(false); }
-  }, [skillId, currentScore, disabled]);
+    const wasAllComplete = subtopics.length > 0 && subtopics.every((st) => subtopicState[st]);
+    await toggleSubtopic(skillId, subtopicName);
+    const isNowAllComplete = completedCount + 1 === subtopics.length;
+    if (!wasAllComplete && isNowAllComplete) {
+      try {
+        const result = await checkLevelUpAction();
+        if (result) {
+          setLevelResult(result);
+          setShowCelebration(true);
+        }
+      } catch {
+        // ignore level-up errors
+      }
+    }
+  };
 
-  const SCORE_MULTIPLIER: Record<number, number> = { 1: 0.1, 2: 0.25, 3: 0.5, 4: 0.8, 5: 1.0 };
-  const points = Math.floor(score * maxWeight * (SCORE_MULTIPLIER[score] ?? 0));
-  const btnColor = (n: number) => score >= n
-    ? (["bg-red-900/50 text-red-400","bg-orange-900/50 text-orange-400","bg-yellow-900/50 text-yellow-400","bg-green-900/50 text-green-400","bg-emerald-900/50 text-emerald-400"][n-1] || "bg-slate-800 text-slate-600")
-    : "bg-slate-800 text-slate-600 hover:bg-slate-700";
-  const cursorClass = disabled ? "cursor-not-allowed opacity-60" : "";
+  const hasContent = description || subtopics.length > 0;
 
   return (
-    <div className={`flex items-center justify-between py-1.5 px-3 rounded-lg hover:bg-slate-800/50 transition-colors group ${cursorClass}`}>
-      <div className="flex items-center gap-2 flex-1">
-        <span className="text-sm text-slate-300">{name}</span>
-        {required && <span className="text-xs text-yellow-500" title="Обязательный навык">★</span>}
-        <span className="text-xs text-slate-600">({points} XP)</span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        {saving && <span className="text-xs text-slate-500">...</span>}
-        {justSaved && <span className="text-xs text-emerald-400">✓</span>}
-        <div className="flex gap-1">
-          {[1,2,3,4,5].map(n => (
-            <button key={n} onClick={() => handleClick(n)} disabled={disabled}
-              className={`w-6 h-6 rounded text-xs font-medium transition-all ${btnColor(n)}`}>
-              {n}
+    <>
+      <div className="flex items-center justify-between py-1.5">
+        <div className="flex items-center gap-2 min-w-0">
+          {hasContent && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="text-slate-500 hover:text-slate-300 transition-colors shrink-0"
+              aria-label={expanded ? "Свернуть" : "Развернуть"}
+            >
+              <svg
+                className={`w-3.5 h-3.5 transition-transform ${expanded ? "rotate-90" : ""}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
             </button>
-          ))}
+          )}
+          <span className="text-sm text-slate-300 truncate">{name}</span>
+          {required && (
+            <span className="text-xs bg-blue-600/20 text-blue-400 px-1.5 py-0.5 rounded shrink-0">
+              required
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {subtopics.length > 0 && (
+            <span className={`text-xs px-1.5 py-0.5 rounded ${
+              subtopicPercent === 100
+                ? "bg-green-600/20 text-green-400"
+                : subtopicPercent > 0
+                  ? "bg-blue-600/20 text-blue-400"
+                  : "text-slate-600"
+            }`}>
+              {completedCount}/{subtopics.length}
+            </span>
+          )}
         </div>
       </div>
-    </div>
+
+      {expanded && hasContent && (
+        <div className="ml-5 mb-2 pl-3 border-l border-slate-800 space-y-2">
+          {description && (
+            <p className="text-xs text-slate-400 leading-relaxed">{description}</p>
+          )}
+          {subtopics.length > 0 && (
+            <div className="space-y-1">
+              {subtopics.map((st) => (
+                <label
+                  key={st}
+                  className={`flex items-center gap-2 text-xs cursor-pointer group ${
+                    disabled ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={!!subtopicState[st]}
+                    onChange={() => handleToggleSubtopic(st)}
+                    disabled={disabled}
+                    className="w-3.5 h-3.5 rounded border-slate-600 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 bg-slate-800 cursor-pointer"
+                  />
+                  <span
+                    className={`transition-colors ${
+                      subtopicState[st]
+                        ? "text-slate-600 line-through"
+                        : "text-slate-400 group-hover:text-slate-300"
+                    }`}
+                  >
+                    {st}
+                  </span>
+                </label>
+              ))}
+              <div className="flex items-center gap-2 pt-1">
+                <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-blue-500 rounded-full transition-all duration-300"
+                    style={{ width: `${subtopicPercent}%` }}
+                  />
+                </div>
+                <span className="text-[10px] text-slate-600">{subtopicPercent}%</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {showCelebration && levelResult && (
+        <CelebrationModal
+          open={true}
+          levelName={levelResult.toLevel}
+          onClose={() => {
+            setShowCelebration(false);
+            setLevelResult(null);
+            window.location.reload();
+          }}
+        />
+      )}
+    </>
   );
 }

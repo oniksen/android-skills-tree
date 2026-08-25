@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-interface Level { slug: string; name: string; level_order: number }
+interface Level { slug: string; name: string; levelOrder: number }
 const levelColors: Record<string, string> = {
   junior: "text-green-400 border-green-400",
   middle: "text-blue-400 border-blue-400",
@@ -14,7 +14,7 @@ export default function LevelTabs({ levels }: { levels: Level[] }) {
   const currentSlug = params?.slug as string || levels[0]?.slug;
   return (
     <div className="flex gap-2 flex-wrap border-b border-slate-800 pb-4">
-      {[...levels].sort((a,b) => a.level_order - b.level_order).map((level) => {
+      {[...levels].sort((a,b) => a.levelOrder - b.levelOrder).map((level) => {
         const isActive = currentSlug === level.slug;
         const color = levelColors[level.slug] || "text-slate-400 border-slate-400";
         return (

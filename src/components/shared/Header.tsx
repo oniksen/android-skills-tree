@@ -2,26 +2,28 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter, usePathname } from "next/navigation";
+import { logout } from "@/app/actions/auth";
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
-  const [user, setUser] = useState<{ id: string } | null>(null);
+  const [user, setUser] = useState<{ uid: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser ? { uid: firebaseUser.uid } : null);
       setLoading(false);
     });
+    return () => unsubscribe();
   }, []);
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await signOut(auth);
+    await logout();
     setUser(null);
     router.push("/");
     router.refresh();

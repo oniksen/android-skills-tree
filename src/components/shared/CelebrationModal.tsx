@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function CelebrationModal({
   open,
@@ -11,30 +11,13 @@ export default function CelebrationModal({
   levelName: string;
   onClose: () => void;
 }) {
-  const [confetti, setConfetti] = useState<
-    { id: number; left: number; delay: number; color: string }[]
-  >([]);
-
   useEffect(() => {
     if (!open) return;
-    const colors = [
-      "#22c55e", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444", "#ec4899",
-    ];
-    const particles = Array.from({ length: 40 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      delay: Math.random() * 0.5,
-      color: colors[Math.floor(Math.random() * colors.length)],
-    }));
-    setConfetti(particles);
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handler);
-    return () => {
-      window.removeEventListener("keydown", handler);
-      setConfetti([]);
-    };
+    return () => window.removeEventListener("keydown", handler);
   }, [open, onClose]);
 
   if (!open) return null;
@@ -44,18 +27,6 @@ export default function CelebrationModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
       onClick={onClose}
     >
-      {confetti.map((p) => (
-        <div
-          key={p.id}
-          className="absolute top-0 w-2 h-2 rounded-full animate-bounce"
-          style={{
-            left: `${p.left}%`,
-            backgroundColor: p.color,
-            animationDelay: `${p.delay}s`,
-            animationDuration: `${1 + Math.random()}s`,
-          }}
-        />
-      ))}
       <div
         className="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-sm w-full mx-4 text-center shadow-2xl"
         onClick={(e) => e.stopPropagation()}
