@@ -14,6 +14,7 @@ import {
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
+import { syncStreak } from "@/lib/streak";
 
 function getUid(): string {
   const user = auth.currentUser;
@@ -282,6 +283,10 @@ export async function toggleProjectCompletion(
     completed,
     completedAt: completed ? new Date() : null,
   });
+
+  if (completed) {
+    void syncStreak();
+  }
 }
 
 export async function resetLevelProgress(levelId: string) {

@@ -4,6 +4,10 @@ const achievementConfig: Record<string, { title: string; icon: string }> = {
   level_master: { title: "Мастер уровня", icon: "🏆" },
   path_complete: { title: "Путь пройден", icon: "🌟" },
   category_perfect: { title: "Идеальная тема", icon: "⭐" },
+  streak_7: { title: "Стрик 7 дней", icon: "🔥" },
+  streak_30: { title: "Стрик 30 дней", icon: "🔥" },
+  streak_60: { title: "Стрик 60 дней", icon: "🔥" },
+  streak_100: { title: "Стрик 100 дней", icon: "🌋" },
 };
 
 export default function AchievementCard({

@@ -11,6 +11,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { skills } from "@/data/skills";
+import { syncStreak } from "@/lib/streak";
 
 export interface AssessmentData {
   score: number;
@@ -85,6 +86,10 @@ export function useAssessments() {
       const totalScore = Object.values(updatedMap).reduce((sum, d) => sum + d.score, 0);
       const progressRef = doc(db, "users", uid, "progress", "current");
       await setDoc(progressRef, { totalScore }, { merge: true });
+
+      if (newValue) {
+        void syncStreak();
+      }
     },
     [uid, assessmentMap],
   );

@@ -7,6 +7,7 @@ import { projects } from "@/data/projects";
 import LevelProgressCard from "@/components/dashboard/LevelProgressCard";
 import QuickStats from "@/components/dashboard/QuickStats";
 import NextMilestone from "@/components/dashboard/NextMilestone";
+import StreakCard from "@/components/dashboard/StreakCard";
 
 const levelColors: Record<string, string> = {
   junior: "text-green-400",
@@ -59,6 +60,7 @@ export default function DashboardClient() {
           totalProjects={totalProjects}
         />
       </div>
+      <StreakCard />
       {nextLevel && (
         <NextMilestone
           items={[

@@ -6,6 +6,7 @@ import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter, usePathname } from "next/navigation";
 import { logout } from "@/app/actions/auth";
+import StreakBadge from "@/components/shared/StreakBadge";
 
 export default function Header() {
   const router = useRouter();
@@ -71,6 +72,7 @@ export default function Header() {
               >
                 Достижения
               </Link>
+              <StreakBadge />
               <button
                 onClick={handleLogout}
                 className="text-slate-400 hover:text-white transition-colors"
