@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --breakpoint-nav-md: 600px;
+  --breakpoint-nav-lg: 840px;
+}
+
 @theme inline {
   --color-junior: #22c55e;
   --color-junior-plus: #84cc16;
