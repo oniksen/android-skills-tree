@@ -87,8 +87,8 @@ export const skills: Skill[] = [
   },
   {
     id: "junior-kotlin-ext", categoryId: "junior-kotlin", name: "Extension Functions",
-    description: "Расширение функциональности существующих классов без наследования. Определяются как обычные функции с接收ателем.",
-    subtopics: ["Синтаксис extension функций", "Extension properties", "nullable接收атели", "Конвенции вызова", "Внутренние extension функции"],
+    description: "Расширение функциональности существующих классов без наследования. Определяются как обычные функции с принимающим объектом (receiver).",
+    subtopics: ["Синтаксис extension функций", "Extension properties", "nullable-приёмники", "Конвенции вызова", "Внутренние extension функции"],
     maxWeight: 5, sortOrder: 4, requiredForLevelUp: false,
   },
   {
@@ -465,8 +465,8 @@ export const skills: Skill[] = [
   },
   {
     id: "middle-kotlin-dsl", categoryId: "middle-kotlin", name: "DSL Basics",
-    description: "Построение типобезопасных DSL (Domain Specific Languages) с помощью лямбд с接收ателем и @DslMarker.",
-    subtopics: ["Лямбды с接收ателем", "Типобезопасные конструкторы", "@DslMarker аннотация", "Построение XML/JSON", "Builder-паттерн на Kotlin", "Примеры (Kotlin HTML, DSL)"],
+    description: "Построение типобезопасных DSL (Domain Specific Languages) с помощью лямбд с приёмником (receiver) и @DslMarker.",
+    subtopics: ["Лямбды с приёмником (receiver)", "Типобезопасные конструкторы", "@DslMarker аннотация", "Построение XML/JSON", "Builder-паттерн на Kotlin", "Примеры (Kotlin HTML, DSL)"],
     maxWeight: 5, sortOrder: 6, requiredForLevelUp: false,
   },
   {
@@ -793,13 +793,13 @@ export const skills: Skill[] = [
   },
   {
     id: "middle-di-inject", categoryId: "middle-di", name: "@Inject",
-    description: "Конструкторная инъекция依赖. @Inject constructor для автоматического предоставления зависимостей.",
+    description: "Конструкторная инъекция зависимостей. @Inject constructor для автоматического предоставления зависимостей.",
     subtopics: ["@Inject constructor", "Параметры конструктора", "Автоматическое предоставление", "Требования к типу", "Инъекция в Activity/Fragment", "Lazy инъекция"],
     maxWeight: 5, sortOrder: 5, requiredForLevelUp: false,
   },
   {
     id: "middle-di-provides", categoryId: "middle-di", name: "@Provides",
-    description: "Предоставление依赖 через функции модуля. Для объектов без конструктора или с кастомной инициализацией.",
+    description: "Предоставление зависимостей через функции модуля. Для объектов без конструктора или с кастомной инициализацией.",
     subtopics: ["@Provides в @Module", "Возвращаемое значение", "Параметры @Provides", "Контекст из модуля", "Пользовательские фабрики", "Область видимости @Provides"],
     maxWeight: 5, sortOrder: 6, requiredForLevelUp: false,
   },
@@ -815,7 +815,7 @@ export const skills: Skill[] = [
   // ============================
   {
     id: "middle-test-unit", categoryId: "middle-test", name: "Unit Tests",
-    description: "Модульное тестирование业务逻辑. Мокирование зависимостей, паттерн Arrange-Act-Assert.",
+    description: "Модульное тестирование бизнес-логики. Мокирование зависимостей, паттерн Arrange-Act-Assert.",
     subtopics: ["JUnit 5", "Arrange-Act-Assert", "MockK / Mockito", "Тестирование ViewModel", "Корутин-тесты (runTest)", "Fake vs Mock"],
     maxWeight: 5, sortOrder: 1, requiredForLevelUp: false,
   },
@@ -890,13 +890,13 @@ export const skills: Skill[] = [
   {
     id: "strong-kotlin-inline", categoryId: "strong-kotlin", name: "Inline",
     description: "Продвинутый инлайн: inline class, value class, crossinline, non-local return, оптимизация лямбд.",
-    subtopics: ["inline class / value class", "crossinline детально", "Non-local return", "Байткод инлайн функций", "Сравнение inline vs普通 функции", "Оптимизация производительности"],
+    subtopics: ["inline class / value class", "crossinline детально", "Non-local return", "Байткод инлайн функций", "Сравнение inline и обычных функций", "Оптимизация производительности"],
     maxWeight: 5, sortOrder: 1, requiredForLevelUp: false,
   },
   {
     id: "strong-kotlin-reified", categoryId: "strong-kotlin", name: "Reified",
     description: "Продвинутое использование reified типов: дженерики в рантайме, типобезопасные приведения, рефлексия.",
-    subtopics: ["Reified в泛型 контексте", "Проверка типов в рантайме", "Получение KClass", "Сравнение с Class<T>", "Ограничения (inline only)", "Практические паттерны"],
+    subtopics: ["Reified в контексте дженериков", "Проверка типов в рантайме", "Получение KClass", "Сравнение с Class<T>", "Ограничения (inline only)", "Практические паттерны"],
     maxWeight: 5, sortOrder: 2, requiredForLevelUp: false,
   },
   {
@@ -926,7 +926,7 @@ export const skills: Skill[] = [
   {
     id: "strong-kotlin-kclass", categoryId: "strong-kotlin", name: "KClass",
     description: "Представление класса в рантайме: пространства имён, аннотации, члены класса, дочерние классы.",
-    subtopics: ["qualifiedName vs simpleName", "members / declaredMembers", "annotations", "supertypes (иерархия)", "isSubclassOf", "Получение KClass из泛型"],
+    subtopics: ["qualifiedName vs simpleName", "members / declaredMembers", "annotations", "supertypes (иерархия)", "isSubclassOf", "Получение KClass из дженериков"],
     maxWeight: 5, sortOrder: 7, requiredForLevelUp: false,
   },
   {
@@ -1005,7 +1005,7 @@ export const skills: Skill[] = [
   },
   {
     id: "strong-compose-stability", categoryId: "strong-compose", name: "Stability",
-    description: "Анализ стабильности классов для Compose: @Stable, @Immutable,稳定 types, рекомендации.",
+    description: "Анализ стабильности классов для Compose: @Stable, @Immutable, стабильные типы, рекомендации.",
     subtopics: ["@Stable аннотация", "@Immutable аннотация", "Stable types list", "CompositionLocal", "Рекомендации по стабильности", "Инструменты (compose compiler reports)"],
     maxWeight: 5, sortOrder: 4, requiredForLevelUp: false,
   },
@@ -1062,7 +1062,7 @@ export const skills: Skill[] = [
   {
     id: "strong-data-remote", categoryId: "strong-data", name: "RemoteMediator",
     description: "Загрузка данных из сети с кэшированием в Room. Стратегии: prepend, append, refresh. Offline-first.",
-    subtopics: ["RemoteMediator实现", "LoadResult (Success/Error)", "Prepend / Append / Refresh", "Пагинация из кэша", "Стратегии обновления", "Потери данных при обновлении"],
+    subtopics: ["Реализация RemoteMediator", "LoadResult (Success/Error)", "Prepend / Append / Refresh", "Пагинация из кэша", "Стратегии обновления", "Потери данных при обновлении"],
     maxWeight: 5, sortOrder: 1, requiredForLevelUp: false,
   },
   {
@@ -1108,7 +1108,7 @@ export const skills: Skill[] = [
   {
     id: "strong-security-biometric", categoryId: "strong-security", name: "BiometricPrompt",
     description: "Биометрическая аутентификация: отпечаток, лицо, PIN. Интеграция с AndroidX Biometric.",
-    subtopics: ["BiometricPrompt API", "Показ диалога", "Обработка результата", "Биометрические凭据", "KeyguardManager", "Fallback на PIN/пароль"],
+    subtopics: ["BiometricPrompt API", "Показ диалога", "Обработка результата", "Биометрические учётные данные", "KeyguardManager", "Fallback на PIN/пароль"],
     maxWeight: 5, sortOrder: 4, requiredForLevelUp: false,
   },
 
@@ -1157,7 +1157,7 @@ export const skills: Skill[] = [
   },
   {
     id: "senior-kotlin-memory", categoryId: "senior-kotlin", name: "Memory Model",
-    description: "Модель памяти Kotlin/JVM:对象引用, GC,逃逸分析,inline classes и их влияние на память.",
+    description: "Модель памяти Kotlin/JVM: ссылки на объекты, GC, escape-анализ, inline classes и их влияние на память.",
     subtopics: ["Объектная модель JVM", "Сборка мусора (GC)", "Escape analysis", "Inline classes в памяти", "Compressed oops", "Память в Kotlin/Native"],
     maxWeight: 5, sortOrder: 2, requiredForLevelUp: false,
   },
@@ -1176,13 +1176,13 @@ export const skills: Skill[] = [
   {
     id: "senior-kotlin-reflection", categoryId: "senior-kotlin", name: "Reflection",
     description: "Продвинутая рефлексия: KCallable, KProperty, KFunction,invoke(),доступ к приватным членам, безопасность.",
-    subtopics: ["KCallable / KFunction", "KProperty (get/set)", "Динамический вызов invoke()", "Доступ к приватным成员", "Аннотации в рефлексии", "Безопасность и ограничения"],
+    subtopics: ["KCallable / KFunction", "KProperty (get/set)", "Динамический вызов invoke()", "Доступ к приватным членам", "Аннотации в рефлексии", "Безопасность и ограничения"],
     maxWeight: 5, sortOrder: 5, requiredForLevelUp: false,
   },
   {
     id: "senior-kotlin-annotations", categoryId: "senior-kotlin", name: "Annotations",
     description: "Пользовательские аннотации, мета-аннотации,_RUNTIME retention, влияние на компиляцию и рефлексию.",
-    subtopics: ["Пользовательские аннотации", "@Retention (RUNTIME, SOURCE)", "@Target", "Мета-аннотации", "Аннотационные处理器 (KSP)", "Практические примеры"],
+    subtopics: ["Пользовательские аннотации", "@Retention (RUNTIME, SOURCE)", "@Target", "Мета-аннотации", "Аннотационные процессоры (KSP)", "Практические примеры"],
     maxWeight: 5, sortOrder: 6, requiredForLevelUp: false,
   },
 
@@ -1277,14 +1277,14 @@ export const skills: Skill[] = [
   },
   {
     id: "senior-compose-slot", categoryId: "senior-compose", name: "Slot Table",
-    description: "Slot Table — внутреннее хранилище Compose для отслеживания группы,位置и, содержимого composition.",
+    description: "Slot Table — внутреннее хранилище Compose для отслеживания групп, позиций и содержимого composition.",
     subtopics: ["Slot table structure", "Groups (restartable, movable)", "Positions в slot table", "Чтение/запись slots", "Slot table для lazy lists", "Оптимизации slot table"],
     maxWeight: 5, sortOrder: 2, requiredForLevelUp: false,
   },
   {
     id: "senior-compose-recomposer", categoryId: "senior-compose", name: "Recomposer",
     description: "Recomposer: координатор перекомпозиции, управление ожиданием, обработка ошибок, текущее состояние.",
-    subtopics: ["Recomposer role", "awaitDeferred compositions", "Обработка ошибок recomposition", "CurrentRecomposer", "Принудительная recomposition", "Recomposer и爷爷 scope"],
+    subtopics: ["Recomposer role", "awaitDeferred compositions", "Обработка ошибок recomposition", "CurrentRecomposer", "Принудительная recomposition", "Recomposer и scope вложенных композиций"],
     maxWeight: 5, sortOrder: 3, requiredForLevelUp: false,
   },
   {
@@ -1323,7 +1323,7 @@ export const skills: Skill[] = [
   },
   {
     id: "senior-arch-bounded", categoryId: "senior-arch", name: "Bounded Context",
-    description: "Границы контекстов: как разделить доменную логику,避免 анемную модель, интеграция контекстов.",
+    description: "Границы контекстов: как разделить доменную логику, чтобы избежать анемичной модели, и как интегрировать контексты.",
     subtopics: ["Определение границ", "Совместное языковое пространство", "Интеграция контекстов", "Anti-corruption layer", "Shared kernel", "Причины разделения"],
     maxWeight: 5, sortOrder: 5, requiredForLevelUp: false,
   },
@@ -1464,7 +1464,7 @@ export const skills: Skill[] = [
   {
     id: "senior-test-snapshot", categoryId: "senior-test", name: "Snapshot Tests",
     description: "Снимки UI: проверка визуальной целостности через скриншоты, обновление снимков, CI интеграция.",
-    subtopics: ["Paparazzi (Android)", "Screenshot testing", "Visual regression", "Обновление снимков", "CI интеграция", "Пороги差异"],
+    subtopics: ["Paparazzi (Android)", "Screenshot testing", "Visual regression", "Обновление снимков", "CI интеграция", "Пороги расхождений (diff)"],
     maxWeight: 5, sortOrder: 4, requiredForLevelUp: false,
   },
 

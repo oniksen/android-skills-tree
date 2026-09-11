@@ -24,7 +24,7 @@ export default function SkillRowReadonly({ name, description, subtopics, maxWeig
               aria-label={expanded ? "Свернуть" : "Развернуть"}
             >
               <svg
-                className={`w-3.5 h-3.5 transition-transform ${expanded ? "rotate-90" : ""}`}
+                className={`w-4 h-4 transition-transform ${expanded ? "rotate-90" : ""}`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -34,22 +34,22 @@ export default function SkillRowReadonly({ name, description, subtopics, maxWeig
               </svg>
             </button>
           )}
-          <span className="text-sm text-slate-300 truncate">{name}</span>
+          <span className="text-base text-slate-300 truncate">{name}</span>
         </div>
-        <span className="text-xs text-slate-600 shrink-0">вес: {maxWeight}</span>
+        <span className="text-sm text-slate-600 shrink-0">вес: {maxWeight}</span>
       </div>
 
       {expanded && hasContent && (
         <div className="ml-8 mr-3 mb-1 mt-1 pl-3 border-l border-slate-800 space-y-1.5">
           {description && (
-            <p className="text-xs text-slate-500 leading-relaxed">{description}</p>
+            <p className="text-sm text-slate-500 leading-relaxed">{description}</p>
           )}
           {subtopics.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {subtopics.map((st) => (
                 <span
                   key={st}
-                  className="text-[11px] text-slate-600 bg-slate-800/50 px-2 py-0.5 rounded"
+                  className="text-sm text-slate-600 bg-slate-800/50 px-2 py-0.5 rounded"
                 >
                   {st}
                 </span>

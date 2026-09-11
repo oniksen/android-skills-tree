@@ -1,43 +1,68 @@
 "use client";
 
-const achievementConfig: Record<string, { title: string; icon: string }> = {
-  level_master: { title: "Мастер уровня", icon: "🏆" },
-  path_complete: { title: "Путь пройден", icon: "🌟" },
-  category_perfect: { title: "Идеальная тема", icon: "⭐" },
-  streak_7: { title: "Стрик 7 дней", icon: "🔥" },
-  streak_30: { title: "Стрик 30 дней", icon: "🔥" },
-  streak_60: { title: "Стрик 60 дней", icon: "🔥" },
-  streak_100: { title: "Стрик 100 дней", icon: "🌋" },
-};
+interface AchievementCardProps {
+  title: string;
+  icon: string;
+  condition: string;
+  achievedAt: Date | null;
+  hint?: string;
+}
 
 export default function AchievementCard({
-  type,
-  metadata,
-  achieved_at,
-}: {
-  type: string;
-  metadata: Record<string, string> | null;
-  achieved_at: string | Date;
-}) {
-  const config = achievementConfig[type] ?? { title: type, icon: "🎖️" };
-  const subtitle = metadata?.level_name ?? metadata?.category_name ?? null;
+  title,
+  icon,
+  condition,
+  achievedAt,
+  hint,
+}: AchievementCardProps) {
+  const earned = achievedAt !== null;
 
-  const date = new Date(achieved_at);
-  const formattedDate = date.toLocaleDateString("ru-RU", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const formattedDate = earned
+    ? achievedAt!.toLocaleDateString("ru-RU", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : null;
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center gap-4">
-      <span className="text-4xl">{config.icon}</span>
-      <div>
-        <h3 className="font-semibold text-white">{config.title}</h3>
-        {subtitle && (
-          <p className="text-sm text-slate-400 mt-0.5">{subtitle}</p>
+    <div
+      className={`border rounded-xl p-5 flex items-center gap-4 transition-colors ${
+        earned
+          ? "bg-slate-900 border-slate-800"
+          : "bg-slate-900/40 border-slate-800/60"
+      }`}
+    >
+      <span
+        className={`text-4xl ${
+          earned ? "" : "opacity-30 grayscale"
+        }`}
+      >
+        {icon}
+      </span>
+      <div className="min-w-0">
+        <h3
+          className={`font-semibold ${
+            earned ? "text-white" : "text-slate-500"
+          }`}
+        >
+          {title}
+        </h3>
+        <p
+          className={`text-sm mt-0.5 truncate ${
+            earned ? "text-slate-400" : "text-slate-600"
+          }`}
+          title={condition}
+        >
+          {condition}
+        </p>
+        {earned ? (
+          <p className="text-xs text-slate-500 mt-1">{formattedDate}</p>
+        ) : (
+          <p className="text-xs text-slate-600 mt-1">
+            🔒 Не получено{hint ? ` · ${hint}` : ""}
+          </p>
         )}
-        <p className="text-xs text-slate-500 mt-1">{formattedDate}</p>
       </div>
     </div>
   );

@@ -31,8 +31,8 @@ export default function CategoryCardReadonly({ name, maxScore, skills, assessmen
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-semibold text-white">{name}</h3>
-        <span className="text-xs text-slate-500">{catScore}/{maxScore} XP</span>
+        <h3 className="font-semibold text-lg text-white">{name}</h3>
+        <span className="text-sm text-slate-500">{catScore}/{maxScore} XP</span>
       </div>
       <ProgressBar current={catScore} max={maxScore} color="bg-blue-500" showLabel={false} />
       <div className="mt-3 space-y-0.5">

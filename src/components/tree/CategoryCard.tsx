@@ -36,10 +36,10 @@ export default function CategoryCard({ name, maxScore, skills, assessments, isLo
   return (
     <div className={`bg-slate-900 border rounded-xl p-5 ${isLocked ? "border-yellow-600/40" : "border-slate-800"}`}>
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-semibold text-white">{name}</h3>
+        <h3 className="font-semibold text-lg text-white">{name}</h3>
         <span className="flex items-center gap-2">
           {isLocked && <span className="text-xs bg-yellow-600/20 text-yellow-500 px-2 py-0.5 rounded-full font-medium">макс</span>}
-          <span className="text-xs text-slate-500">{catScore}/{maxScore} XP</span>
+          <span className="text-sm text-slate-500">{catScore}/{maxScore} XP</span>
         </span>
       </div>
       <ProgressBar current={catScore} max={maxScore} color={isLocked ? "bg-yellow-500" : "bg-blue-500"} showLabel={false} />

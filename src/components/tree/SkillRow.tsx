@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { checkLevelUp as checkLevelUpAction } from "@/lib/firestore-actions";
 import CelebrationModal from "@/components/shared/CelebrationModal";
 import { useAssessments } from "@/hooks";
@@ -54,7 +55,7 @@ export default function SkillRow({
 
   return (
     <>
-      <div className="flex items-center justify-between py-1.5">
+      <div className="flex items-center justify-between py-2">
         <div className="flex items-center gap-2 min-w-0">
           {hasContent && (
             <button
@@ -63,7 +64,7 @@ export default function SkillRow({
               aria-label={expanded ? "Свернуть" : "Развернуть"}
             >
               <svg
-                className={`w-3.5 h-3.5 transition-transform ${expanded ? "rotate-90" : ""}`}
+                className={`w-4 h-4 transition-transform ${expanded ? "rotate-90" : ""}`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -73,7 +74,7 @@ export default function SkillRow({
               </svg>
             </button>
           )}
-          <span className="text-sm text-slate-300 truncate">{name}</span>
+          <span className="text-base text-slate-300 truncate">{name}</span>
           {required && (
             <span className="text-xs bg-blue-600/20 text-blue-400 px-1.5 py-0.5 rounded shrink-0">
               required
@@ -82,7 +83,7 @@ export default function SkillRow({
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {subtopics.length > 0 && (
-            <span className={`text-xs px-1.5 py-0.5 rounded ${
+            <span className={`text-sm px-1.5 py-0.5 rounded ${
               subtopicPercent === 100
                 ? "bg-green-600/20 text-green-400"
                 : subtopicPercent > 0
@@ -98,35 +99,50 @@ export default function SkillRow({
       {expanded && hasContent && (
         <div className="ml-5 mb-2 pl-3 border-l border-slate-800 space-y-2">
           {description && (
-            <p className="text-xs text-slate-400 leading-relaxed">{description}</p>
+            <p className="text-sm text-slate-400 leading-relaxed">{description}</p>
           )}
           {subtopics.length > 0 && (
             <div className="space-y-1">
-              {subtopics.map((st) => (
-                <label
-                  key={st}
-                  className={`flex items-center gap-2 text-xs cursor-pointer group ${
-                    disabled ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={!!subtopicState[st]}
-                    onChange={() => handleToggleSubtopic(st)}
-                    disabled={disabled}
-                    className="w-3.5 h-3.5 rounded border-slate-600 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 bg-slate-800 cursor-pointer"
-                  />
-                  <span
-                    className={`transition-colors ${
-                      subtopicState[st]
-                        ? "text-slate-600 line-through"
-                        : "text-slate-400 group-hover:text-slate-300"
+              {subtopics.map((st) => {
+                const checked = !!subtopicState[st];
+                return (
+                  <label
+                    key={st}
+                    className={`flex items-center gap-2 text-sm cursor-pointer group ${
+                      disabled ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   >
-                    {st}
-                  </span>
-                </label>
-              ))}
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={checked}
+                      aria-label={st}
+                      disabled={disabled}
+                      onClick={() => handleToggleSubtopic(st)}
+                      className={`h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all shrink-0 ${
+                        disabled
+                          ? "cursor-not-allowed"
+                          : checked
+                            ? "bg-blue-500 border-blue-500 text-white"
+                            : "border-slate-600 hover:border-slate-400"
+                      }`}
+                    >
+                      {checked && (
+                        <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                      )}
+                    </button>
+                    <span
+                      className={`transition-colors ${
+                        subtopicState[st]
+                          ? "text-slate-600 line-through"
+                          : "text-slate-400 group-hover:text-slate-300"
+                      }`}
+                    >
+                      {st}
+                    </span>
+                  </label>
+                );
+              })}
               <div className="flex items-center gap-2 pt-1">
                 <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
                   <div
@@ -134,7 +150,7 @@ export default function SkillRow({
                     style={{ width: `${subtopicPercent}%` }}
                   />
                 </div>
-                <span className="text-[10px] text-slate-600">{subtopicPercent}%</span>
+                <span className="text-xs text-slate-600">{subtopicPercent}%</span>
               </div>
             </div>
           )}

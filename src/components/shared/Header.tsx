@@ -19,7 +19,7 @@ import {
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Дашборд", icon: LayoutDashboard },
-  { href: "/tree/junior", label: "Дерево навыков", icon: GitBranch },
+  { href: "/tree/junior", label: "Дерево навыков", shortLabel: "Дерево", icon: GitBranch },
   { href: "/projects", label: "Проекты", icon: FolderGit2 },
   { href: "/roadmap", label: "Roadmap", icon: Map },
   { href: "/achievements", label: "Достижения", icon: Trophy },
@@ -115,7 +115,7 @@ export default function Header({
                 }`}
               >
                 <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
+                <span>{item.shortLabel ?? item.label}</span>
               </Link>
             );
           })}
@@ -134,7 +134,7 @@ export default function Header({
           >
             Android Skill Tree
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-2">
             {!loading && user && <StreakBadge />}
             {!loading &&
               (user ? (
@@ -181,7 +181,7 @@ export default function Header({
                     }`}
                   >
                     <item.icon className="h-5 w-5" />
-                    <span>{item.label}</span>
+                    <span>{item.shortLabel ?? item.label}</span>
                   </Link>
                 </li>
               );

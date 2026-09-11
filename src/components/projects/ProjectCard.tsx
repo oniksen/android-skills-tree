@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { toggleProjectCompletion } from "@/lib/firestore-actions";
 
 export default function ProjectCard({ projectId, name, description, requiredTechnologies, levelName, completed }: {
@@ -9,6 +10,7 @@ export default function ProjectCard({ projectId, name, description, requiredTech
   const [saving, setSaving] = useState(false);
 
   const handleToggle = async () => {
+    if (saving) return;
     setSaving(true);
     const newVal = !done;
     setDone(newVal);
@@ -18,8 +20,10 @@ export default function ProjectCard({ projectId, name, description, requiredTech
   };
 
   return (
-    <div className={`border rounded-xl p-5 transition-all ${done ? "bg-emerald-900/20 border-emerald-800" : "bg-slate-900 border-slate-800"}`}>
-      <div className="flex items-start justify-between">
+    <div
+      onClick={handleToggle}
+      className={`border rounded-xl p-5 transition-all cursor-pointer select-none ${done ? "bg-emerald-900/20 border-emerald-800 hover:border-emerald-700" : "bg-slate-900 border-slate-800 hover:border-slate-600"}`}>
+      <div className="flex items-center justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <h3 className="font-semibold text-white">{name}</h3>
@@ -32,11 +36,15 @@ export default function ProjectCard({ projectId, name, description, requiredTech
             ))}
           </div>
         </div>
-        <button onClick={handleToggle} disabled={saving}
-          className={`ml-4 w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 ${
-            done ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-600 hover:border-slate-500"
+        <button
+          onClick={(e) => { e.stopPropagation(); void handleToggle(); }}
+          disabled={saving}
+          aria-label={done ? "Отметить проект как невыполненный" : "Отметить проект как выполненный"}
+          aria-pressed={done}
+          className={`ml-4 w-7 h-7 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0 ${
+            done ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-600 hover:border-slate-400"
           }`}>
-          {saving ? <span className="text-xs text-slate-400">...</span> : done ? <span className="text-lg">✓</span> : null}
+          {saving ? <span className="text-xs text-slate-400">...</span> : done ? <Check className="w-4 h-4" strokeWidth={3} /> : null}
         </button>
       </div>
     </div>

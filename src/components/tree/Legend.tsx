@@ -17,7 +17,7 @@ export default function Legend({ isAuthenticated }: { isAuthenticated?: boolean 
       {open && (
         <div className="px-5 pb-4 pt-3 border-t border-slate-800 space-y-1 text-sm">
           <div className="flex items-start gap-3 pl-1">
-            <span className="text-yellow-500 text-xs mt-0.5">★</span>
+            <span className="text-xs bg-blue-600/20 text-blue-400 px-1.5 py-0.5 rounded font-medium shrink-0 mt-0.5">required</span>
             <span className="text-slate-400 leading-snug">Обязательный навык для перехода на следующий уровень</span>
           </div>
           <div className="flex items-start gap-3 pl-1">

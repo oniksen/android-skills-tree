@@ -19,7 +19,7 @@ export default function LevelTabs({ levels }: { levels: Level[] }) {
         const color = levelColors[level.slug] || "text-slate-400 border-slate-400";
         return (
           <Link key={level.slug} href={`/tree/${level.slug}`}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            className={`px-4 py-2.5 rounded-lg text-base font-medium transition-all ${
               isActive ? `bg-slate-800 border ${color}` : "text-slate-500 hover:text-slate-300 border border-transparent"
             }`}>{level.name}</Link>
         );
