@@ -86,14 +86,14 @@ export default function TreeClient({ slug }: TreeClientProps) {
 
   return (
     <>
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col gap-3 nav-md:flex-row nav-md:justify-between nav-md:items-start nav-md:gap-0">
         <div>
           <h1 className="text-3xl font-bold text-white mb-1">
             {currentLevel.name}
           </h1>
           <p className="text-slate-400">{currentLevel.description}</p>
         </div>
-        <div className="text-right text-sm text-slate-500">
+        <div className="flex items-center gap-x-4 nav-md:items-end nav-md:flex-col nav-md:gap-x-0 nav-md:text-right text-sm text-slate-500">
           <div>Всего XP: {currentScore}</div>
           {nextLevel && (
             <div>
