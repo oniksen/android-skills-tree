@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "motion/react";
 import { useUserProgress, useAssessments } from "@/hooks";
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
@@ -9,6 +10,14 @@ import CategoryCard from "@/components/tree/CategoryCard";
 import CategoryCardReadonly from "@/components/tree/CategoryCardReadonly";
 import LevelGate from "@/components/tree/LevelGate";
 import Legend from "@/components/tree/Legend";
+import AnimatedNumber from "@/components/shared/AnimatedNumber";
+
+const LEVEL_ACCENT: Record<string, string> = {
+  junior: "text-green-400",
+  middle: "text-blue-400",
+  "strong-middle": "text-purple-400",
+  senior: "text-amber-400",
+};
 
 function calcSkillXp(subtopics: string[], subtopicState: Record<string, boolean> | undefined, maxWeight: number): number {
   if (subtopics.length === 0) return 0;
@@ -43,10 +52,15 @@ export default function TreeClient({ slug }: TreeClientProps) {
     }),
   );
 
+  const accent = LEVEL_ACCENT[currentLevel.slug] || "text-blue-400";
+
   if (progressLoading || assessmentsLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-slate-400">Загрузка...</div>
+      <div className="flex items-center justify-center py-16">
+        <div className="flex items-center gap-3 text-slate-400">
+          <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-blue-400" />
+          Загрузка...
+        </div>
       </div>
     );
   }
@@ -54,12 +68,16 @@ export default function TreeClient({ slug }: TreeClientProps) {
   if (!progress) {
     return (
       <>
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-1">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h1 className={`text-3xl font-bold tracking-tight mb-1 ${accent}`}>
             {currentLevel.name}
           </h1>
           <p className="text-slate-400">{currentLevel.description}</p>
-        </div>
+        </motion.div>
         <LevelTabs levels={levels} />
         <Legend />
         <div className="grid gap-4 md:grid-cols-2">
@@ -86,23 +104,38 @@ export default function TreeClient({ slug }: TreeClientProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-3 nav-md:flex-row nav-md:justify-between nav-md:items-start nav-md:gap-0">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="flex flex-col gap-3 nav-lg:flex-row nav-lg:justify-between nav-lg:items-start nav-lg:gap-0"
+      >
         <div>
-          <h1 className="text-3xl font-bold text-white mb-1">
+          <h1 className={`text-3xl font-bold tracking-tight mb-1 ${accent}`}>
             {currentLevel.name}
           </h1>
           <p className="text-slate-400">{currentLevel.description}</p>
         </div>
-        <div className="flex items-center gap-x-4 nav-md:items-end nav-md:flex-col nav-md:gap-x-0 nav-md:text-right text-sm text-slate-500">
-          <div>Всего XP: {currentScore}</div>
+        <div className="flex items-center gap-x-4 nav-lg:items-end nav-lg:flex-col nav-lg:gap-x-0 nav-lg:text-right text-sm text-slate-500">
+          <div className="flex items-center gap-1.5">
+            <span>Всего XP:</span>
+            <AnimatedNumber
+              value={currentScore}
+              className="font-mono font-semibold text-slate-200"
+            />
+          </div>
           {nextLevel && (
             <div>
               До {nextLevel.name}:{" "}
-              {Math.max(0, nextLevel.minScore - currentScore)} XP
+              <AnimatedNumber
+                value={Math.max(0, nextLevel.minScore - currentScore)}
+                className="font-mono font-semibold text-blue-300"
+              />{" "}
+              XP
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       <LevelTabs levels={levels} />
       <Legend isAuthenticated={true} />
@@ -127,7 +160,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
       )}
       {isCurrentOrPast && !isCompleted && (
         <div className="grid gap-4 md:grid-cols-2">
-          {levelCategories.map((cat) => {
+          {levelCategories.map((cat, index) => {
             const catScore = calcCategoryScore(cat.skills, assessmentMap);
             return (
               <CategoryCard
@@ -137,6 +170,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
                 skills={cat.skills}
                 assessments={assessmentMap}
                 isLocked={catScore >= cat.maxScore}
+                index={index}
               />
             );
           })}

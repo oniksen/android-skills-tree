@@ -1,10 +1,13 @@
 "use client";
 
+import { motion } from "motion/react";
 import { useUserProgress, useAssessments } from "@/hooks";
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import GapList from "@/components/roadmap/GapList";
+
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function RoadmapClient() {
   const { progress, loading: progressLoading } = useUserProgress();
@@ -12,8 +15,11 @@ export default function RoadmapClient() {
 
   if (progressLoading || assessmentsLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-slate-400">Загрузка...</div>
+      <div className="flex items-center justify-center py-16">
+        <div className="flex items-center gap-3 text-slate-400">
+          <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-blue-400" />
+          Загрузка...
+        </div>
       </div>
     );
   }
@@ -62,19 +68,29 @@ export default function RoadmapClient() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Roadmap</h1>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: EASE }}
+      >
+        <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Roadmap</h1>
         <p className="text-slate-400">
           Навыки, требующие внимания. Сосредоточьтесь на навыках с низкой
           оценкой.
         </p>
         {currentLevel && (
-          <p className="text-sm text-blue-400 mt-1">
+          <p className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-300">
             Текущий фокус: {currentLevel.name}
           </p>
         )}
-      </div>
-      <GapList gaps={gaps} />
+      </motion.div>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
+      >
+        <GapList gaps={gaps} />
+      </motion.div>
     </div>
   );
 }

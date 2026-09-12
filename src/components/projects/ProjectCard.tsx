@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { Check } from "lucide-react";
 import { toggleProjectCompletion } from "@/lib/firestore-actions";
 
@@ -14,39 +15,89 @@ export default function ProjectCard({ projectId, name, description, requiredTech
     setSaving(true);
     const newVal = !done;
     setDone(newVal);
-    try { await toggleProjectCompletion(projectId, newVal); }
-    catch { setDone(!newVal); }
-    finally { setSaving(false); }
+    try {
+      await toggleProjectCompletion(projectId, newVal);
+    } catch {
+      setDone(!newVal);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <div
+    <motion.div
       onClick={handleToggle}
-      className={`border rounded-xl p-5 transition-all cursor-pointer select-none ${done ? "bg-emerald-900/20 border-emerald-800 hover:border-emerald-700" : "bg-slate-900 border-slate-800 hover:border-slate-600"}`}>
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.995 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      className={`group relative overflow-hidden rounded-xl border p-5 transition-colors cursor-pointer select-none ${
+        done
+          ? "border-emerald-500/30 bg-emerald-500/[0.07] hover:border-emerald-400/50 shadow-[0_10px_30px_-12px_rgba(34,197,94,0.3)]"
+          : "card-surface hover:border-blue-400/40 hover:shadow-[0_10px_30px_-12px_rgba(59,130,246,0.25)]"
+      }`}
+    >
+      <div
+        className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent ${
+          done ? "via-emerald-400/50" : "via-blue-400/40"
+        } to-transparent`}
+      />
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-white">{name}</h3>
-            <span className="text-xs text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full">{levelName}</span>
+            <h3 className={`font-semibold ${done ? "text-emerald-300" : "text-white"}`}>{name}</h3>
+            <span className={`text-xs px-2 py-0.5 rounded-full ${
+              done ? "bg-emerald-500/15 text-emerald-400" : "bg-slate-800 text-slate-400"
+            }`}>
+              {levelName}
+            </span>
           </div>
-          <p className="text-sm text-slate-400 mt-1">{description}</p>
+          <p className={`text-sm mt-1 ${done ? "text-slate-400" : "text-slate-400"}`}>{description}</p>
           <div className="flex gap-1.5 mt-3 flex-wrap">
             {requiredTechnologies.map(tech => (
-              <span key={tech} className="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full">{tech}</span>
+              <span
+                key={tech}
+                className="text-xs bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded-full border border-white/[0.04]"
+              >
+                {tech}
+              </span>
             ))}
           </div>
         </div>
-        <button
-          onClick={(e) => { e.stopPropagation(); void handleToggle(); }}
+        <motion.button
+          whileTap={{ scale: 0.8 }}
+          onClick={(e) => {
+            e.stopPropagation();
+            void handleToggle();
+          }}
           disabled={saving}
           aria-label={done ? "Отметить проект как невыполненный" : "Отметить проект как выполненный"}
           aria-pressed={done}
-          className={`ml-4 w-7 h-7 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0 ${
-            done ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-600 hover:border-slate-400"
-          }`}>
-          {saving ? <span className="text-xs text-slate-400">...</span> : done ? <Check className="w-4 h-4" strokeWidth={3} /> : null}
-        </button>
+          className={`relative ml-4 w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${
+            done
+              ? "bg-emerald-500 border-emerald-400 text-white shadow-[0_0_14px_rgba(34,197,94,0.5)]"
+              : "border-slate-600 hover:border-slate-400 hover:bg-emerald-500/10"
+          }`}
+        >
+          {saving ? (
+            <span className="text-xs text-slate-400">...</span>
+          ) : (
+            <AnimatePresence>
+              {done && (
+                <motion.span
+                  key="check"
+                  initial={{ scale: 0, rotate: -40 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  exit={{ scale: 0 }}
+                  transition={{ type: "spring", stiffness: 600, damping: 22 }}
+                  className="inline-flex"
+                >
+                  <Check className="w-4 h-4" strokeWidth={3.5} />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          )}
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 }

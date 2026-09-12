@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "motion/react";
 import { useAchievements, useStreak } from "@/hooks";
 import AchievementCard from "@/components/achievements/AchievementCard";
 import {
@@ -19,14 +20,19 @@ function groupKeyOf(def: AchievementDef): string {
   return def.type.startsWith("streak") ? "streak" : def.type;
 }
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 export default function AchievementsClient() {
   const { achievements, loading } = useAchievements();
   const { currentStreak } = useStreak();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-slate-400">Загрузка...</div>
+      <div className="flex items-center justify-center py-16">
+        <div className="flex items-center gap-3 text-slate-400">
+          <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-blue-400" />
+          Загрузка...
+        </div>
       </div>
     );
   }
@@ -40,7 +46,16 @@ export default function AchievementsClient() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-white">Достижения</h1>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: EASE }}
+      >
+        <h1 className="text-3xl font-bold tracking-tight text-white">Достижения</h1>
+        <p className="mt-1 text-slate-400">
+          Получено {earnedIds.size} из {catalog.length}
+        </p>
+      </motion.div>
       {GROUPS.map((group) => {
         const items = catalog.filter((def) => groupKeyOf(def) === group.key);
         if (items.length === 0) return null;
@@ -51,24 +66,31 @@ export default function AchievementsClient() {
               {group.label}
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
-              {items.map((def) => {
+              {items.map((def, index) => {
                 const earned = earnedIds.has(def.id);
                 const achievement = achievements.find((a) => def.matches(a));
                 return (
-                  <AchievementCard
+                  <motion.div
                     key={def.id}
-                    title={def.title}
-                    icon={def.icon}
-                    condition={def.condition}
-                    achievedAt={achievement?.achievedAt ?? null}
-                    hint={
-                      group.key === "streak" &&
-                      !earned &&
-                      currentStreak > 0
-                        ? `Стрик сейчас: ${currentStreak}`
-                        : undefined
-                    }
-                  />
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+                    transition={{ duration: 0.4, delay: (index % 4) * 0.06, ease: EASE }}
+                  >
+                    <AchievementCard
+                      title={def.title}
+                      icon={def.icon}
+                      condition={def.condition}
+                      achievedAt={achievement?.achievedAt ?? null}
+                      hint={
+                        group.key === "streak" &&
+                        !earned &&
+                        currentStreak > 0
+                          ? `Стрик сейчас: ${currentStreak}`
+                          : undefined
+                      }
+                    />
+                  </motion.div>
                 );
               })}
             </div>
