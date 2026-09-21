@@ -213,7 +213,7 @@ export default function Header({
       )}
 
       <div className="flex min-h-dvh flex-1 min-w-0 flex-col">
-        <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-slate-950/70 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+        <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-slate-950/70 pt-[env(safe-area-inset-top)] backdrop-blur-xl header-blur">
           <div className="h-14 flex items-center justify-between gap-4 pl-[max(env(safe-area-inset-left),1rem)] pr-[max(env(safe-area-inset-right),1rem)]">
             <Link
               href="/tree/junior"
