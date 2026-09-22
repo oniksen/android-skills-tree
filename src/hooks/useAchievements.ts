@@ -4,13 +4,10 @@ import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import {
   collection,
-  doc,
-  setDoc,
-  getDocs,
-  query,
   onSnapshot,
 } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { addAchievementIfNotExists } from "@/lib/firestore";
 import type { Achievement } from "@/types";
 
 export function useAchievements() {
@@ -47,35 +44,15 @@ export function useAchievements() {
     return () => unsubscribe();
   }, [uid, authLoading]);
 
-  const addAchievementIfNotExists = async (
+  const addAchievement = async (
     type: string,
     metadata: Record<string, unknown>,
     matchKey?: string,
     matchValue?: unknown,
   ) => {
     if (!uid) return;
-
-    const achievementsRef = collection(db, "users", uid, "achievements");
-    const snap = await getDocs(query(achievementsRef));
-
-    const exists = snap.docs.some((doc) => {
-      const data = doc.data();
-      if (data.type !== type) return false;
-      if (matchKey && matchValue !== undefined) {
-        return data.metadata?.[matchKey] === matchValue;
-      }
-      return true;
-    });
-
-    if (!exists) {
-      const newRef = doc(achievementsRef);
-      await setDoc(newRef, {
-        type,
-        metadata,
-        achievedAt: new Date(),
-      });
-    }
+    await addAchievementIfNotExists(uid, type, metadata, matchKey, matchValue);
   };
 
-  return { achievements, loading, addAchievementIfNotExists };
+  return { achievements, loading, addAchievementIfNotExists: addAchievement };
 }

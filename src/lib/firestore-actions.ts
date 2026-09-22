@@ -16,6 +16,7 @@ import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import { syncStreak } from "@/lib/streak";
 import { calcSkillScore } from "@/lib/scoring";
+import { addAchievementIfNotExists } from "@/lib/firestore";
 
 function getUid(): string {
   const user = auth.currentUser;
@@ -65,35 +66,6 @@ async function updateUserProgress(
       unlockedLevelIds: ["junior"],
       totalScore: 0,
       ...data,
-    });
-  }
-}
-
-async function addAchievementIfNotExists(
-  uid: string,
-  type: string,
-  metadata: Record<string, unknown>,
-  matchKey?: string,
-  matchValue?: unknown,
-) {
-  const achievementsRef = collection(db, "users", uid, "achievements");
-  const snap = await getDocs(query(achievementsRef));
-
-  const exists = snap.docs.some((d) => {
-    const data = d.data();
-    if (data.type !== type) return false;
-    if (matchKey && matchValue !== undefined) {
-      return data.metadata?.[matchKey] === matchValue;
-    }
-    return true;
-  });
-
-  if (!exists) {
-    const newRef = doc(achievementsRef);
-    await setDoc(newRef, {
-      type,
-      metadata,
-      achievedAt: new Date(),
     });
   }
 }

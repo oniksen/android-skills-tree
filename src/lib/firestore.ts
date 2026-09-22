@@ -150,30 +150,6 @@ export async function getUserAchievements(uid: string): Promise<Achievement[]> {
   })) as Achievement[];
 }
 
-export async function addAchievement(
-  uid: string,
-  type: string,
-  metadata: Record<string, unknown>,
-) {
-  const achievementsRef = collection(db, "users", uid, "achievements");
-  const existingQuery = query(achievementsRef);
-  const snap = await getDocs(existingQuery);
-
-  const exists = snap.docs.some((doc) => {
-    const data = doc.data();
-    return data.type === type;
-  });
-
-  if (!exists) {
-    const newRef = doc(achievementsRef);
-    await setDoc(newRef, {
-      type,
-      metadata,
-      achievedAt: new Date(),
-    });
-  }
-}
-
 export async function addAchievementIfNotExists(
   uid: string,
   type: string,
