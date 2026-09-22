@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { db } from "@/lib/firebase";
 import {
   collection,
   doc,
@@ -11,26 +10,21 @@ import {
   query,
   onSnapshot,
 } from "firebase/firestore";
+import { useFirebaseAuth } from "./useFirebaseAuth";
 import type { Achievement } from "@/types";
 
 export function useAchievements() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
-  const [uid, setUid] = useState<string | null>(null);
+  const { uid, loading: authLoading } = useFirebaseAuth();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUid(user?.uid ?? null);
-      if (!user) {
-        setAchievements([]);
-        setLoading(false);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!uid) return;
+    if (authLoading) return;
+    if (!uid) {
+      setAchievements([]);
+      setLoading(false);
+      return;
+    }
 
     const achievementsRef = collection(db, "users", uid, "achievements");
 
@@ -51,7 +45,7 @@ export function useAchievements() {
     });
 
     return () => unsubscribe();
-  }, [uid]);
+  }, [uid, authLoading]);
 
   const addAchievementIfNotExists = async (
     type: string,

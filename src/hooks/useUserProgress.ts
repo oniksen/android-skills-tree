@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { db } from "@/lib/firebase";
 import {
   doc,
   getDoc,
   setDoc,
   onSnapshot,
 } from "firebase/firestore";
+import { useFirebaseAuth } from "./useFirebaseAuth";
 import type { UserProgress } from "@/types";
 
 const DEFAULT_PROGRESS: UserProgress = {
@@ -20,21 +20,15 @@ const DEFAULT_PROGRESS: UserProgress = {
 export function useUserProgress() {
   const [progress, setProgress] = useState<UserProgress | null>(null);
   const [loading, setLoading] = useState(true);
-  const [uid, setUid] = useState<string | null>(null);
+  const { uid, loading: authLoading } = useFirebaseAuth();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUid(user?.uid ?? null);
-      if (!user) {
-        setProgress(null);
-        setLoading(false);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!uid) return;
+    if (authLoading) return;
+    if (!uid) {
+      setProgress(null);
+      setLoading(false);
+      return;
+    }
 
     const progressRef = doc(db, "users", uid, "progress", "current");
 
@@ -56,7 +50,7 @@ export function useUserProgress() {
     );
 
     return () => unsubscribe();
-  }, [uid]);
+  }, [uid, authLoading]);
 
   const updateProgress = async (data: Partial<UserProgress>) => {
     if (!uid) return;

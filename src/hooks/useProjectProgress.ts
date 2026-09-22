@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { db } from "@/lib/firebase";
 import {
   collection,
   doc,
@@ -10,25 +9,20 @@ import {
   deleteDoc,
   onSnapshot,
 } from "firebase/firestore";
+import { useFirebaseAuth } from "./useFirebaseAuth";
 
 export function useProjectProgress() {
   const [projectMap, setProjectMap] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
-  const [uid, setUid] = useState<string | null>(null);
+  const { uid, loading: authLoading } = useFirebaseAuth();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUid(user?.uid ?? null);
-      if (!user) {
-        setProjectMap({});
-        setLoading(false);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!uid) return;
+    if (authLoading) return;
+    if (!uid) {
+      setProjectMap({});
+      setLoading(false);
+      return;
+    }
 
     const projectsRef = collection(db, "users", uid, "projects");
 
@@ -43,7 +37,7 @@ export function useProjectProgress() {
     });
 
     return () => unsubscribe();
-  }, [uid]);
+  }, [uid, authLoading]);
 
   const toggleProjectCompletion = async (
     projectId: string,

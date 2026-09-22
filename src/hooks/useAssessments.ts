@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { db } from "@/lib/firebase";
 import {
   collection,
   doc,
@@ -12,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { skills } from "@/data/skills";
 import { syncStreak } from "@/lib/streak";
+import { useFirebaseAuth } from "./useFirebaseAuth";
 import type { AssessmentData } from "@/types";
 
 function calcSkillScore(skillId: string, subtopics: Record<string, boolean>): number {
@@ -26,21 +26,15 @@ export function useAssessments() {
     Record<string, AssessmentData>
   >({});
   const [loading, setLoading] = useState(true);
-  const [uid, setUid] = useState<string | null>(null);
+  const { uid, loading: authLoading } = useFirebaseAuth();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUid(user?.uid ?? null);
-      if (!user) {
-        setAssessmentMap({});
-        setLoading(false);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!uid) return;
+    if (authLoading) return;
+    if (!uid) {
+      setAssessmentMap({});
+      setLoading(false);
+      return;
+    }
 
     const assessmentsRef = collection(db, "users", uid, "assessments");
 
@@ -58,7 +52,7 @@ export function useAssessments() {
     });
 
     return () => unsubscribe();
-  }, [uid]);
+  }, [uid, authLoading]);
 
   const toggleSubtopic = useCallback(
     async (skillId: string, subtopicName: string) => {
