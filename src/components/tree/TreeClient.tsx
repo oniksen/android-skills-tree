@@ -11,6 +11,7 @@ import CategoryCardReadonly from "@/components/tree/CategoryCardReadonly";
 import LevelGate from "@/components/tree/LevelGate";
 import Legend from "@/components/tree/Legend";
 import AnimatedNumber from "@/components/shared/AnimatedNumber";
+import { calcCategoryScore } from "@/lib/scoring";
 
 const LEVEL_ACCENT: Record<string, string> = {
   junior: "text-green-400",
@@ -18,21 +19,6 @@ const LEVEL_ACCENT: Record<string, string> = {
   "strong-middle": "text-purple-400",
   senior: "text-amber-400",
 };
-
-function calcSkillXp(subtopics: string[], subtopicState: Record<string, boolean> | undefined, maxWeight: number): number {
-  if (subtopics.length === 0) return 0;
-  const completed = subtopics.filter((st) => subtopicState?.[st]).length;
-  return Math.round((completed / subtopics.length) * maxWeight);
-}
-
-function calcCategoryScore(
-  catSkills: { id: string; subtopics: string[]; maxWeight: number }[],
-  assessmentMap: Record<string, { subtopics?: Record<string, boolean> }>,
-): number {
-  return catSkills.reduce((sum, s) => {
-    return sum + calcSkillXp(s.subtopics, assessmentMap[s.id]?.subtopics, s.maxWeight);
-  }, 0);
-}
 
 interface TreeClientProps {
   slug: string;

@@ -15,18 +15,12 @@ import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import { syncStreak } from "@/lib/streak";
+import { calcSkillScore } from "@/lib/scoring";
 
 function getUid(): string {
   const user = auth.currentUser;
   if (!user) throw new Error("Not authenticated");
   return user.uid;
-}
-
-function calcSkillScore(skillId: string, subtopics: Record<string, boolean> | undefined): number {
-  const skill = skills.find((s) => s.id === skillId);
-  if (!skill || !skill.subtopics || skill.subtopics.length === 0 || !subtopics) return 0;
-  const completed = skill.subtopics.filter((st) => subtopics[st]).length;
-  return Math.round((completed / skill.subtopics.length) * skill.maxWeight);
 }
 
 async function getAssessmentMap(uid: string): Promise<Record<string, { score: number; subtopics?: Record<string, boolean> }>> {

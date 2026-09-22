@@ -9,17 +9,10 @@ import {
   deleteDoc,
   onSnapshot,
 } from "firebase/firestore";
-import { skills } from "@/data/skills";
 import { syncStreak } from "@/lib/streak";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { calcSkillScore } from "@/lib/scoring";
 import type { AssessmentData } from "@/types";
-
-function calcSkillScore(skillId: string, subtopics: Record<string, boolean>): number {
-  const skill = skills.find((s) => s.id === skillId);
-  if (!skill || !skill.subtopics || skill.subtopics.length === 0) return 0;
-  const completed = skill.subtopics.filter((st) => subtopics[st]).length;
-  return Math.round((completed / skill.subtopics.length) * skill.maxWeight);
-}
 
 export function useAssessments() {
   const [assessmentMap, setAssessmentMap] = useState<
