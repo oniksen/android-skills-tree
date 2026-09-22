@@ -9,12 +9,7 @@ import {
   setDoc,
   onSnapshot,
 } from "firebase/firestore";
-
-interface UserProgress {
-  currentLevelId: string;
-  unlockedLevelIds: string[];
-  totalScore: number;
-}
+import type { UserProgress } from "@/types";
 
 const DEFAULT_PROGRESS: UserProgress = {
   currentLevelId: "junior",

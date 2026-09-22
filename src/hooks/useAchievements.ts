@@ -11,13 +11,7 @@ import {
   query,
   onSnapshot,
 } from "firebase/firestore";
-
-interface Achievement {
-  id: string;
-  type: string;
-  metadata: Record<string, unknown>;
-  achievedAt: Date;
-}
+import type { Achievement } from "@/types";
 
 export function useAchievements() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);

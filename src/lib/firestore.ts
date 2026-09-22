@@ -9,33 +9,7 @@ import {
   query,
 } from "firebase/firestore";
 import { db } from "./firebase";
-
-// ============ Types ============
-
-export interface UserProgress {
-  currentLevelId: string;
-  unlockedLevelIds: string[];
-  totalScore: number;
-}
-
-export interface Assessment {
-  skillId: string;
-  score: number;
-  updatedAt: Date;
-}
-
-export interface ProjectProgress {
-  projectId: string;
-  completed: boolean;
-  completedAt: Date | null;
-}
-
-export interface Achievement {
-  id: string;
-  type: string;
-  metadata: Record<string, unknown>;
-  achievedAt: Date;
-}
+import type { UserProgress, Assessment, ProjectProgress, Achievement } from "@/types";
 
 // ============ User Progress ============
 

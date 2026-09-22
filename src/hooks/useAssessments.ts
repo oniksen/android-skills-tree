@@ -12,11 +12,7 @@ import {
 } from "firebase/firestore";
 import { skills } from "@/data/skills";
 import { syncStreak } from "@/lib/streak";
-
-export interface AssessmentData {
-  score: number;
-  subtopics?: Record<string, boolean>;
-}
+import type { AssessmentData } from "@/types";
 
 function calcSkillScore(skillId: string, subtopics: Record<string, boolean>): number {
   const skill = skills.find((s) => s.id === skillId);
