@@ -31,8 +31,15 @@ export interface Achievement {
 
 export interface StreakData {
   activeDays: string[];
+  frozenDays: string[];
   lastActiveDate: string;
   currentStreak: number;
   longestStreak: number;
+  updatedAt: Date;
+}
+
+export interface CurrencyData {
+  balance: number;
+  items: Record<string, number>;
   updatedAt: Date;
 }
