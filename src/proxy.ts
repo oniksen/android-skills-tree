@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const protectedRoutes = ["/dashboard", "/projects", "/roadmap"];
+const protectedRoutes = ["/dashboard", "/projects", "/roadmap", "/shop"];
 const SESSION_COOKIE_NAME = "firebase-session";
 
 export async function proxy(request: NextRequest) {

@@ -8,6 +8,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter, usePathname } from "next/navigation";
 import { logout } from "@/app/actions/auth";
 import StreakBadge from "@/components/shared/StreakBadge";
+import CurrencyBadge from "@/components/shared/CurrencyBadge";
 import {
   LayoutDashboard,
   GitBranch,
@@ -223,6 +224,7 @@ export default function Header({
             </Link>
             <div className="ml-auto flex items-center gap-2">
               {!loading && user && <StreakBadge />}
+              {!loading && user && <CurrencyBadge />}
               {!loading &&
                 (user ? (
                   <motion.button
