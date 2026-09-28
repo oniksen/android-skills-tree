@@ -8,17 +8,26 @@ import {
   setDoc,
   deleteDoc,
   onSnapshot,
+  runTransaction,
 } from "firebase/firestore";
 import { syncStreak } from "@/lib/streak";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { calcSkillScore } from "@/lib/scoring";
-import type { AssessmentData } from "@/types";
+import { getCrystalRewardForSkill } from "@/lib/currency";
+import type { AssessmentData, CurrencyData } from "@/types";
+
+export interface CrystalAward {
+  skillId: string;
+  amount: number;
+  id: number;
+}
 
 export function useAssessments() {
   const [assessmentMap, setAssessmentMap] = useState<
     Record<string, AssessmentData>
   >({});
   const [loading, setLoading] = useState(true);
+  const [lastAwarded, setLastAwarded] = useState<CrystalAward | null>(null);
   const { uid, loading: authLoading } = useFirebaseAuth();
 
   useEffect(() => {
@@ -51,6 +60,7 @@ export function useAssessments() {
     async (skillId: string, subtopicName: string) => {
       if (!uid) return;
       const assessmentRef = doc(db, "users", uid, "assessments", skillId);
+      const currencyRef = doc(db, "users", uid, "currency", "current");
 
       const current = assessmentMap[skillId];
       const currentSubtopics = current?.subtopics || {};
@@ -59,16 +69,61 @@ export function useAssessments() {
       const updatedSubtopics = { ...currentSubtopics, [subtopicName]: newValue };
       const newScore = calcSkillScore(skillId, updatedSubtopics);
 
-      await setDoc(assessmentRef, {
-        subtopics: updatedSubtopics,
-        score: newScore,
-        updatedAt: new Date(),
-      }, { merge: true });
+      let awarded = 0;
+
+      try {
+        await runTransaction(db, async (tx) => {
+          const [assessmentSnap, currencySnap] = await Promise.all([
+            tx.get(assessmentRef),
+            tx.get(currencyRef),
+          ]);
+
+          const stored = assessmentSnap.exists()
+            ? (assessmentSnap.data() as { claimed?: unknown })
+            : {};
+          const claimed = Array.isArray(stored.claimed)
+            ? (stored.claimed as string[])
+            : [];
+          const currency = currencySnap.exists()
+            ? (currencySnap.data() as Partial<CurrencyData>)
+            : {};
+          const balance = typeof currency.balance === "number" ? currency.balance : 0;
+
+          const isNewClaim = newValue && !claimed.includes(subtopicName);
+          awarded = isNewClaim ? getCrystalRewardForSkill(skillId) : 0;
+
+          tx.set(
+            assessmentRef,
+            {
+              subtopics: updatedSubtopics,
+              score: newScore,
+              claimed: isNewClaim ? [...claimed, subtopicName] : claimed,
+              updatedAt: new Date(),
+            },
+            { merge: true },
+          );
+
+          if (awarded > 0) {
+            tx.set(
+              currencyRef,
+              { balance: balance + awarded, updatedAt: new Date() },
+              { merge: true },
+            );
+          }
+        });
+      } catch (error) {
+        console.error("Error saving assessment:", error);
+        return;
+      }
 
       const updatedMap = { ...assessmentMap, [skillId]: { score: newScore, subtopics: updatedSubtopics } };
       const totalScore = Object.values(updatedMap).reduce((sum, d) => sum + d.score, 0);
       const progressRef = doc(db, "users", uid, "progress", "current");
       await setDoc(progressRef, { totalScore }, { merge: true });
+
+      if (awarded > 0) {
+        setLastAwarded({ skillId, amount: awarded, id: Date.now() });
+      }
 
       if (newValue) {
         void syncStreak();
@@ -90,5 +145,6 @@ export function useAssessments() {
     loading,
     toggleSubtopic,
     deleteAssessmentsByLevel,
+    lastAwarded,
   };
 }
