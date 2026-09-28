@@ -1,6 +1,8 @@
 "use client";
 
 import { auth, db } from "@/lib/firebase";
+import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
+import { getFreezeCount } from "@/lib/currency";
 import {
   collection,
   doc,
@@ -10,7 +12,7 @@ import {
   runTransaction,
   setDoc,
 } from "firebase/firestore";
-import type { StreakData } from "@/types";
+import type { CurrencyData, StreakData } from "@/types";
 
 export type { StreakData };
 
@@ -182,5 +184,73 @@ async function checkStreakAchievements(uid: string, currentStreak: number) {
     if (currentStreak >= days) {
       await addStreakAchievementIfNotExists(uid, days);
     }
+  }
+}
+
+export async function freezeStreakDay(day: string): Promise<StreakData | null> {
+  const user = auth.currentUser;
+  if (!user) return null;
+
+  const today = getLocalDayString();
+  if (day >= today) return null;
+
+  const streakRef = doc(db, "users", user.uid, "streaks", "current");
+  const currencyRef = doc(db, "users", user.uid, "currency", "current");
+
+  try {
+    return await runTransaction(db, async (tx) => {
+      const [streakSnap, currencySnap] = await Promise.all([
+        tx.get(streakRef),
+        tx.get(currencyRef),
+      ]);
+
+      const existing = streakSnap.exists()
+        ? (streakSnap.data() as Partial<StreakData>)
+        : {};
+      const currency = currencySnap.exists()
+        ? (currencySnap.data() as Partial<CurrencyData>)
+        : {};
+
+      const activeDays = Array.isArray(existing.activeDays) ? existing.activeDays : [];
+      const frozenDays = Array.isArray(existing.frozenDays) ? existing.frozenDays : [];
+      const freezes = getFreezeCount(currency as CurrencyData);
+
+      if (freezes <= 0) return null;
+      if (findFreezableDay(activeDays, frozenDays, today) !== day) return null;
+
+      const nextFrozenDays = [...frozenDays, day];
+      const { currentStreak, longestStreak } = computeStreaks(
+        activeDays,
+        nextFrozenDays,
+        today,
+      );
+
+      const streakData: StreakData = {
+        activeDays,
+        frozenDays: nextFrozenDays,
+        lastActiveDate: existing.lastActiveDate ?? day,
+        currentStreak,
+        longestStreak,
+        updatedAt: new Date(),
+      };
+
+      const items =
+        currency.items && typeof currency.items === "object" ? currency.items : {};
+
+      tx.set(streakRef, streakData);
+      tx.set(
+        currencyRef,
+        {
+          items: { ...items, [STREAK_FREEZE_ITEM_ID]: freezes - 1 },
+          updatedAt: new Date(),
+        },
+        { merge: true },
+      );
+
+      return streakData;
+    });
+  } catch (error) {
+    console.error("Error freezing streak day:", error);
+    return null;
   }
 }
