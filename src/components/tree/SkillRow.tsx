@@ -29,7 +29,9 @@ export default function SkillRow({
   const [showCelebration, setShowCelebration] = useState(false);
   const [levelResult, setLevelResult] = useState<{ fromLevel: string; toLevel: string; score: number } | null>(null);
   const [expanded, setExpanded] = useState(false);
-  const { assessmentMap, toggleSubtopic } = useAssessments();
+  const { assessmentMap, toggleSubtopic, lastAwarded } = useAssessments();
+
+  const award = lastAwarded?.skillId === skillId ? lastAwarded : null;
 
   const subtopicState = assessmentMap[skillId]?.subtopics || {};
   const completedCount = (subtopics ?? []).filter((st) => subtopicState[st]).length;
@@ -95,6 +97,20 @@ export default function SkillRow({
             )}
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            <AnimatePresence>
+              {award && (
+                <motion.span
+                  key={award.id}
+                  initial={{ opacity: 0, y: 8, scale: 0.8 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.9 }}
+                  transition={{ duration: 0.9, ease: "easeOut" }}
+                  className="font-mono text-xs text-cyan-300 whitespace-nowrap"
+                >
+                  +{award.amount} 💎
+                </motion.span>
+              )}
+            </AnimatePresence>
             {subtopics.length > 0 && (
               <motion.span
                 key={completedCount}

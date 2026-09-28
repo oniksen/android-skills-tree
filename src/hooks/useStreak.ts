@@ -6,14 +6,18 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import {
   computeStreaks,
+  findFreezableDay,
   getLocalDayString,
   shiftDay,
   syncStreak as syncStreakFirestore,
+  freezeStreakDay as freezeStreakDayFirestore,
 } from "@/lib/streak";
 
 export interface StreakDay {
   date: string;
   active: boolean;
+  frozen: boolean;
+  freezable: boolean;
   isToday: boolean;
 }
 
@@ -76,21 +80,34 @@ export function useStreak() {
     return syncStreakFirestore();
   }, [uid]);
 
+  const freezeDay = useCallback(async (day: string) => {
+    if (!uid) return null;
+    return freezeStreakDayFirestore(day);
+  }, [uid]);
+
   const today = getLocalDayString();
+
+  const freezableDay = useMemo(
+    () => findFreezableDay(activeDays, frozenDays, today),
+    [activeDays, frozenDays, today],
+  );
 
   const week: StreakDay[] = useMemo(() => {
     const daysSet = new Set(activeDays);
+    const frozenSet = new Set(frozenDays);
     const result: StreakDay[] = [];
     for (let i = 6; i >= 0; i -= 1) {
       const date = shiftDay(today, -i);
       result.push({
         date,
         active: daysSet.has(date),
+        frozen: frozenSet.has(date),
+        freezable: date === freezableDay,
         isToday: date === today,
       });
     }
     return result;
-  }, [activeDays, today]);
+  }, [activeDays, frozenDays, freezableDay, today]);
 
   return {
     currentStreak,
@@ -98,8 +115,10 @@ export function useStreak() {
     lastActiveDate,
     activeDays,
     frozenDays,
+    freezableDay,
     week,
     loading,
     syncStreak,
+    freezeDay,
   };
 }
