@@ -10,14 +10,9 @@ import {
   runTransaction,
   setDoc,
 } from "firebase/firestore";
+import type { StreakData } from "@/types";
 
-export interface StreakData {
-  activeDays: string[];
-  lastActiveDate: string;
-  currentStreak: number;
-  longestStreak: number;
-  updatedAt: Date;
-}
+export type { StreakData };
 
 export const STREAK_ACHIEVEMENT_DAYS = [7, 30, 60, 100];
 
@@ -42,15 +37,16 @@ export function shiftDay(day: string, delta: number): string {
 
 export function computeStreaks(
   activeDays: string[],
+  frozenDays: string[],
   today: string,
 ): { currentStreak: number; longestStreak: number } {
-  const daysSet = new Set(activeDays);
+  const covered = Array.from(new Set([...activeDays, ...frozenDays])).sort();
+  const daysSet = new Set(covered);
 
   let longestStreak = 0;
-  const unique = Array.from(new Set(activeDays)).sort();
   let run = 0;
   let prev: string | null = null;
-  for (const day of unique) {
+  for (const day of covered) {
     if (prev !== null && shiftDay(prev, 1) === day) {
       run += 1;
     } else {
@@ -76,15 +72,40 @@ export function computeStreaks(
   return { currentStreak: current, longestStreak };
 }
 
+export const FREEZE_WINDOW_DAYS = 7;
+
+export function findFreezableDay(
+  activeDays: string[],
+  frozenDays: string[],
+  today: string,
+): string | null {
+  const daysSet = new Set([...activeDays, ...frozenDays]);
+
+  let cursor = daysSet.has(today) ? today : shiftDay(today, -1);
+  if (!daysSet.has(cursor)) return null;
+
+  while (daysSet.has(shiftDay(cursor, -1))) {
+    cursor = shiftDay(cursor, -1);
+  }
+
+  const candidate = shiftDay(cursor, -1);
+  const windowStart = shiftDay(today, -(FREEZE_WINDOW_DAYS - 1));
+  if (candidate < windowStart) return null;
+  if (daysSet.has(candidate)) return null;
+  return candidate;
+}
+
 export async function getStreak(uid: string): Promise<StreakData | null> {
   const streakRef = doc(db, "users", uid, "streaks", "current");
   const snap = await getDoc(streakRef);
   if (!snap.exists()) return null;
   const data = snap.data() as Omit<StreakData, "updatedAt"> & {
+    frozenDays?: string[];
     updatedAt?: { toDate?: () => Date };
   };
   return {
     ...data,
+    frozenDays: Array.isArray(data.frozenDays) ? data.frozenDays : [],
     updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : (data.updatedAt as Date),
   };
 }
@@ -101,11 +122,17 @@ export async function syncStreak(): Promise<StreakData | null> {
       const snap = await tx.get(streakRef);
       const existing = snap.exists() ? (snap.data() as Partial<StreakData>) : {};
       const activeDays = Array.isArray(existing.activeDays) ? existing.activeDays : [];
-      const { currentStreak, longestStreak } = computeStreaks(activeDays, today);
+      const frozenDays = Array.isArray(existing.frozenDays) ? existing.frozenDays : [];
+      const { currentStreak, longestStreak } = computeStreaks(
+        activeDays,
+        frozenDays,
+        today,
+      );
 
       if (activeDays.includes(today)) {
         return {
           activeDays,
+          frozenDays,
           lastActiveDate: existing.lastActiveDate ?? today,
           currentStreak,
           longestStreak,
@@ -116,6 +143,7 @@ export async function syncStreak(): Promise<StreakData | null> {
       const nextActiveDays = [...activeDays, today];
       const data: StreakData = {
         activeDays: nextActiveDays,
+        frozenDays,
         lastActiveDate: today,
         currentStreak,
         longestStreak,

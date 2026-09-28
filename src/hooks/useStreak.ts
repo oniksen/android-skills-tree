@@ -22,6 +22,7 @@ export function useStreak() {
   const [longestStreak, setLongestStreak] = useState(0);
   const [lastActiveDate, setLastActiveDate] = useState<string | null>(null);
   const [activeDays, setActiveDays] = useState<string[]>([]);
+  const [frozenDays, setFrozenDays] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState<string | null>(null);
 
@@ -33,6 +34,7 @@ export function useStreak() {
         setLongestStreak(0);
         setLastActiveDate(null);
         setActiveDays([]);
+        setFrozenDays([]);
         setLoading(false);
       }
     });
@@ -48,17 +50,20 @@ export function useStreak() {
       if (snapshot.exists()) {
         const data = snapshot.data();
         const days = Array.isArray(data.activeDays) ? data.activeDays : [];
+        const frozen = Array.isArray(data.frozenDays) ? data.frozenDays : [];
         const today = getLocalDayString();
-        const streaks = computeStreaks(days, today);
+        const streaks = computeStreaks(days, frozen, today);
         setCurrentStreak(streaks.currentStreak);
         setLongestStreak(streaks.longestStreak);
         setLastActiveDate(data.lastActiveDate ?? null);
         setActiveDays(days);
+        setFrozenDays(frozen);
       } else {
         setCurrentStreak(0);
         setLongestStreak(0);
         setLastActiveDate(null);
         setActiveDays([]);
+        setFrozenDays([]);
       }
       setLoading(false);
     });
@@ -92,6 +97,7 @@ export function useStreak() {
     longestStreak,
     lastActiveDate,
     activeDays,
+    frozenDays,
     week,
     loading,
     syncStreak,
