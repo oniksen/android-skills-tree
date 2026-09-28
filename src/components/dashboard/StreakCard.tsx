@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useStreak } from "@/hooks";
+import { useStreak, useCurrency } from "@/hooks";
 import { parseDayString } from "@/lib/streak";
+import { STREAK_FREEZE_ICON } from "@/data/shop";
 
 const DAYS_SHORT = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 
@@ -14,6 +15,7 @@ function pluralDays(n: number): string {
 
 export default function StreakCard() {
   const { week, currentStreak, longestStreak } = useStreak();
+  const { freezes } = useCurrency();
 
   return (
     <div className="group relative card-surface overflow-hidden rounded-xl p-6 transition-shadow duration-300 hover:shadow-[0_16px_40px_-12px_rgba(245,158,11,0.18)]">
@@ -37,6 +39,15 @@ export default function StreakCard() {
           </div>
         </div>
       </div>
+      {freezes > 0 && (
+        <div className="mb-5 flex items-center gap-2 rounded-lg bg-sky-500/[0.07] px-3 py-2 text-xs text-slate-400">
+          <span className="text-base leading-none">{STREAK_FREEZE_ICON}</span>
+          <span>
+            Заморозок:{" "}
+            <span className="font-mono font-semibold text-sky-300">{freezes}</span>
+          </span>
+        </div>
+      )}
       <div className="flex justify-between gap-1">
         {week.map((d) => (
           <div key={d.date} className="flex flex-col items-center gap-1 flex-1">
@@ -52,12 +63,14 @@ export default function StreakCard() {
               className={`w-full h-10 rounded-lg flex items-center justify-center text-xs border transition-colors duration-300 ${
                 d.active
                   ? "bg-orange-500/20 text-orange-400 border-orange-500/40 shadow-[0_0_12px_rgba(245,158,11,0.25)]"
-                  : d.isToday
-                    ? "bg-slate-800 text-slate-500 border-orange-500/40"
-                    : "bg-slate-800 text-slate-700 border-slate-800"
+                  : d.frozen
+                    ? "bg-sky-500/20 text-sky-300 border-sky-400/40"
+                    : d.isToday
+                      ? "bg-slate-800 text-slate-500 border-orange-500/40"
+                      : "bg-slate-800 text-slate-700 border-slate-800"
               }`}
             >
-              {d.active ? "🔥" : ""}
+              {d.active ? "🔥" : d.frozen ? STREAK_FREEZE_ICON : ""}
             </motion.div>
           </div>
         ))}
