@@ -5,7 +5,7 @@ export { categories, getCategoriesByLevelId, getCategoryById } from "./categorie
 export type { Category } from "./categories";
 
 export { skills, getSkillsByCategoryId, getSkillById, getSkillsByLevelId } from "./skills";
-export type { Skill } from "./skills";
+export type { Skill, Difficulty } from "./skills";
 
 export { projects, getProjectsByLevelId, getProjectById } from "./projects";
 export type { Project } from "./projects";

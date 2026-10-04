@@ -9,6 +9,7 @@ import LevelProgressCard from "@/components/dashboard/LevelProgressCard";
 import QuickStats from "@/components/dashboard/QuickStats";
 import NextMilestone from "@/components/dashboard/NextMilestone";
 import StreakCard from "@/components/dashboard/StreakCard";
+import { getLevelMinScore } from "@/lib/weights";
 
 const levelColors: Record<string, string> = {
   junior: "text-green-400",
@@ -46,7 +47,7 @@ export default function DashboardClient() {
   const assessedSkills = Object.keys(assessmentMap).length;
   const completedProjects = Object.values(projectMap).filter(Boolean).length;
   const totalProjects = projects.length;
-  const canLevelUp = nextLevel ? currentScore >= nextLevel.minScore : false;
+  const canLevelUp = nextLevel ? currentScore >= getLevelMinScore(nextLevel.id) : false;
 
   return (
     <div className="space-y-6">
@@ -71,7 +72,7 @@ export default function DashboardClient() {
             currentLevel={currentLevel.name}
             currentScore={currentScore}
             nextLevel={nextLevel?.name || null}
-            nextThreshold={nextLevel?.minScore || null}
+            nextThreshold={nextLevel ? getLevelMinScore(nextLevel.id) : null}
             levelColor={levelColors[currentLevel.slug] || "text-blue-400"}
           />
         </motion.div>
@@ -102,8 +103,8 @@ export default function DashboardClient() {
           <NextMilestone
             items={[
               {
-                label: `Набрать ${nextLevel.minScore} XP`,
-                done: currentScore >= nextLevel.minScore,
+                label: `Набрать ${getLevelMinScore(nextLevel.id)} XP`,
+                done: currentScore >= getLevelMinScore(nextLevel.id),
               },
             ]}
             canLevelUp={canLevelUp}

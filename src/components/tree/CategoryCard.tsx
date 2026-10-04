@@ -2,38 +2,31 @@
 import { motion } from "motion/react";
 import SkillRow from "./SkillRow";
 import ProgressBar from "@/components/shared/ProgressBar";
+import { calcCategoryScore, calcSkillCompletionPercent } from "@/lib/scoring";
+import { getCategoryMaxScore } from "@/lib/weights";
 
 interface SkillItem {
   id: string;
   name: string;
   description: string;
   subtopics: string[];
-  maxWeight: number;
   sortOrder: number;
   requiredForLevelUp: boolean;
 }
 
 interface CategoryCardProps {
+  categoryId: string;
   name: string;
-  maxScore: number;
   skills: SkillItem[];
   assessments: Record<string, { subtopics?: Record<string, boolean> }>;
   isLocked?: boolean;
   index?: number;
 }
 
-function calcSkillScore(subtopics: string[], subtopicState: Record<string, boolean> | undefined, maxWeight: number): number {
-  if (!subtopics || subtopics.length === 0) return 0;
-  const completed = subtopics.filter((st) => subtopicState?.[st]).length;
-  return Math.round((completed / subtopics.length) * maxWeight);
-}
-
-export default function CategoryCard({ name, maxScore, skills, assessments, isLocked = false, index = 0 }: CategoryCardProps) {
+export default function CategoryCard({ categoryId, name, skills, assessments, isLocked = false, index = 0 }: CategoryCardProps) {
   const sorted = [...skills].sort((a, b) => a.sortOrder - b.sortOrder);
-  const catScore = sorted.reduce((sum, s) => {
-    const subtopicState = assessments[s.id]?.subtopics;
-    return sum + calcSkillScore(s.subtopics, subtopicState, s.maxWeight);
-  }, 0);
+  const maxScore = getCategoryMaxScore(categoryId);
+  const catScore = calcCategoryScore(categoryId, assessments);
 
   return (
     <motion.div
@@ -65,9 +58,7 @@ export default function CategoryCard({ name, maxScore, skills, assessments, isLo
       <ProgressBar current={catScore} max={maxScore} color={isLocked ? "bg-yellow-500" : "bg-blue-500"} showLabel={false} shimmer />
       <div className="mt-3 space-y-0.5">
         {sorted.map(skill => {
-          const subtopicState = assessments[skill.id]?.subtopics;
-          const completed = (skill.subtopics ?? []).filter((st) => subtopicState?.[st]).length;
-          const percent = skill.subtopics.length > 0 ? Math.round((completed / skill.subtopics.length) * 100) : 0;
+          const percent = calcSkillCompletionPercent(skill.id, assessments[skill.id]?.subtopics);
           return (
             <SkillRow
               key={skill.id}

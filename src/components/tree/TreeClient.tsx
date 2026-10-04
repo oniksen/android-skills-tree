@@ -3,8 +3,8 @@
 import { motion } from "motion/react";
 import { useUserProgress, useAssessments } from "@/hooks";
 import { levels } from "@/data/levels";
-import { categories } from "@/data/categories";
-import { skills } from "@/data/skills";
+import { getCategoriesByLevelId } from "@/data/categories";
+import { getSkillsByCategoryId } from "@/data/skills";
 import LevelTabs from "@/components/tree/LevelTabs";
 import CategoryCard from "@/components/tree/CategoryCard";
 import CategoryCardReadonly from "@/components/tree/CategoryCardReadonly";
@@ -12,6 +12,7 @@ import LevelGate from "@/components/tree/LevelGate";
 import Legend from "@/components/tree/Legend";
 import AnimatedNumber from "@/components/shared/AnimatedNumber";
 import { calcCategoryScore } from "@/lib/scoring";
+import { getCategoryMaxScore, getLevelMaxScore, getLevelMinScore } from "@/lib/weights";
 
 const LEVEL_ACCENT: Record<string, string> = {
   junior: "text-green-400",
@@ -70,8 +71,8 @@ export default function TreeClient({ slug }: TreeClientProps) {
           {levelCategories.map((cat) => (
             <CategoryCardReadonly
               key={cat.id}
+              categoryId={cat.id}
               name={cat.name}
-              maxScore={cat.maxScore}
               skills={cat.skills}
             />
           ))}
@@ -114,7 +115,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
             <div>
               До {nextLevel.name}:{" "}
               <AnimatedNumber
-                value={Math.max(0, nextLevel.minScore - currentScore)}
+                value={Math.max(0, getLevelMinScore(nextLevel.id) - currentScore)}
                 className="font-mono font-semibold text-blue-300"
               />{" "}
               XP
@@ -130,7 +131,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
         <LevelGate
           isUnlocked={false}
           isCompleted={false}
-          requiredScore={levels[levelIndex - 1]?.maxScore || 9999}
+          requiredScore={getLevelMaxScore(levels[levelIndex - 1]?.id ?? "")}
           currentScore={currentScore}
           levelName={currentLevel.name}
         />
@@ -147,15 +148,16 @@ export default function TreeClient({ slug }: TreeClientProps) {
       {isCurrentOrPast && !isCompleted && (
         <div className="grid gap-4 md:grid-cols-2">
           {levelCategories.map((cat, index) => {
-            const catScore = calcCategoryScore(cat.skills, assessmentMap);
+            const catScore = calcCategoryScore(cat.id, assessmentMap);
+            const catMax = getCategoryMaxScore(cat.id);
             return (
               <CategoryCard
                 key={cat.id}
+                categoryId={cat.id}
                 name={cat.name}
-                maxScore={cat.maxScore}
                 skills={cat.skills}
                 assessments={assessmentMap}
-                isLocked={catScore >= cat.maxScore}
+                isLocked={catScore >= catMax}
                 index={index}
               />
             );
@@ -164,16 +166,4 @@ export default function TreeClient({ slug }: TreeClientProps) {
       )}
     </>
   );
-}
-
-function getCategoriesByLevelId(levelId: string) {
-  return categories
-    .filter((c) => c.levelId === levelId)
-    .sort((a, b) => a.sortOrder - b.sortOrder);
-}
-
-function getSkillsByCategoryId(categoryId: string) {
-  return skills
-    .filter((s) => s.categoryId === categoryId)
-    .sort((a, b) => a.sortOrder - b.sortOrder);
 }

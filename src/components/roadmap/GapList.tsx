@@ -1,11 +1,14 @@
 "use client";
 import { motion } from "motion/react";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import DifficultyBadge from "@/components/shared/DifficultyBadge";
 
 interface Gap {
+  skillId: string;
   skillName: string;
   categoryName: string;
   levelName: string;
+  completionPercent: number;
   currentScore: number;
   maxScore: number;
 }
@@ -31,7 +34,6 @@ export default function GapList({ gaps }: { gaps: Gap[] }) {
   return (
     <div className="space-y-2">
       {gaps.map((gap, i) => {
-        const pct = Math.min((gap.currentScore / gap.maxScore) * 100, 100);
         const critical = gap.currentScore === 0;
         return (
           <motion.div
@@ -64,8 +66,9 @@ export default function GapList({ gaps }: { gaps: Gap[] }) {
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-3">
+              <DifficultyBadge skillId={gap.skillId} />
               <span className="font-mono text-sm text-slate-500">
-                {gap.currentScore}/{gap.maxScore}
+                {gap.currentScore}/{gap.maxScore} XP
               </span>
               <div className="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden">
                 <div
@@ -74,7 +77,7 @@ export default function GapList({ gaps }: { gaps: Gap[] }) {
                       ? "bg-gradient-to-r from-red-500 to-orange-400"
                       : "bg-gradient-to-r from-yellow-500 to-amber-400"
                   }`}
-                  style={{ width: `${pct}%` }}
+                  style={{ width: `${gap.completionPercent}%` }}
                 />
               </div>
             </div>

@@ -37,10 +37,20 @@ export default function Legend({ isAuthenticated }: { isAuthenticated?: boolean 
                 <span className="text-slate-400 leading-snug">Обязательный навык для перехода на следующий уровень</span>
               </div>
               <div className="flex items-start gap-3 pl-1">
+                <span className="shrink-0 inline-flex items-center gap-1 rounded bg-amber-500/15 px-1.5 py-0.5 text-xs font-medium text-amber-400 mt-0.5">
+                  сложно <span className="font-mono opacity-80">30 XP</span>
+                </span>
+                <span className="text-slate-400 leading-snug">
+                  XP зависят от сложности навыка: у лёгких тем меньше, у сложных — больше
+                </span>
+              </div>
+              <div className="flex items-start gap-3 pl-1">
                 <span className="w-6 h-6 rounded bg-slate-800 text-xs font-medium flex items-center justify-center text-slate-500 border border-blue-500/50 shadow-[0_0_8px_rgba(59,130,246,0.3)] shrink-0">
                   ✓
                 </span>
-                <span className="text-slate-400 leading-snug">Отмечайте подтемы — XP считаются по количеству чекбоксов</span>
+                <span className="text-slate-400 leading-snug">
+                  Отмечайте подтемы — доля отмеченных даёт соответствующую долю XP навыка
+                </span>
               </div>
               <div className="flex items-start gap-3 pl-1">
                 <span className="text-xs text-slate-500 font-mono mt-0.5 shrink-0">(3/5)</span>

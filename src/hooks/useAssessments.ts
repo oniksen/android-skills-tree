@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { syncStreak } from "@/lib/streak";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { calcSkillScore } from "@/lib/scoring";
+import { calcSkillScore, calcTotalScore } from "@/lib/scoring";
 import { getCrystalRewardForSkill } from "@/lib/currency";
 import type { AssessmentData, CurrencyData } from "@/types";
 
@@ -44,9 +44,10 @@ export function useAssessments() {
       const map: Record<string, AssessmentData> = {};
       snapshot.forEach((d) => {
         const data = d.data();
+        const subtopics = data.subtopics;
         map[d.id] = {
-          score: data.score,
-          subtopics: data.subtopics,
+          score: subtopics ? calcSkillScore(d.id, subtopics) : data.score || 0,
+          subtopics,
         };
       });
       setAssessmentMap(map);
@@ -117,7 +118,7 @@ export function useAssessments() {
       }
 
       const updatedMap = { ...assessmentMap, [skillId]: { score: newScore, subtopics: updatedSubtopics } };
-      const totalScore = Object.values(updatedMap).reduce((sum, d) => sum + d.score, 0);
+      const totalScore = calcTotalScore(updatedMap);
       const progressRef = doc(db, "users", uid, "progress", "current");
       await setDoc(progressRef, { totalScore }, { merge: true });
 

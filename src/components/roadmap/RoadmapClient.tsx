@@ -6,8 +6,12 @@ import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import GapList from "@/components/roadmap/GapList";
+import { calcSkillCompletionPercent } from "@/lib/scoring";
+import { getSkillWeight } from "@/lib/weights";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+const GAP_COMPLETION_PERCENT = 60;
 
 export default function RoadmapClient() {
   const { progress, loading: progressLoading } = useUserProgress();
@@ -37,9 +41,11 @@ export default function RoadmapClient() {
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
   const gaps: {
+    skillId: string;
     skillName: string;
     categoryName: string;
     levelName: string;
+    completionPercent: number;
     currentScore: number;
     maxScore: number;
   }[] = [];
@@ -49,20 +55,25 @@ export default function RoadmapClient() {
     const level = levels.find((l) => l.id === cat.levelId);
 
     catSkills.forEach((skill) => {
-      const score = assessmentMap[skill.id]?.score || 0;
-      if (score < 3) {
+      const completionPercent = calcSkillCompletionPercent(
+        skill.id,
+        assessmentMap[skill.id]?.subtopics,
+      );
+      if (completionPercent < GAP_COMPLETION_PERCENT) {
         gaps.push({
+          skillId: skill.id,
           skillName: skill.name,
           categoryName: cat.name,
           levelName: level?.name || "",
-          currentScore: score,
-          maxScore: 5,
+          completionPercent,
+          currentScore: assessmentMap[skill.id]?.score || 0,
+          maxScore: getSkillWeight(skill.id),
         });
       }
     });
   });
 
-  gaps.sort((a, b) => a.currentScore - b.currentScore);
+  gaps.sort((a, b) => a.completionPercent - b.completionPercent);
 
   const currentLevel = levels.find((l) => l.id === currentLevelId);
 

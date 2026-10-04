@@ -15,7 +15,12 @@ import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import { syncStreak } from "@/lib/streak";
-import { calcSkillScore } from "@/lib/scoring";
+import { calcCategoryScore, calcSkillScore, calcTotalScore } from "@/lib/scoring";
+import {
+  getCategoryMaxScore,
+  getLevelMinScore,
+  LEVEL_UP_THRESHOLD,
+} from "@/lib/weights";
 import { addAchievementIfNotExists } from "@/lib/firestore";
 
 function getUid(): string {
@@ -82,15 +87,15 @@ async function getProjectProgressMap(
   return map;
 }
 
-async function recalculateScore(uid: string) {
+export async function backfillTotalScore(uid: string): Promise<number> {
   const assessmentMap = await getAssessmentMap(uid);
+  const totalScore = calcTotalScore(assessmentMap);
 
-  let totalScore = 0;
-  for (const [skillId, data] of Object.entries(assessmentMap)) {
-    const skill = skills.find((s) => s.id === skillId);
-    if (!skill) continue;
-    totalScore += data.score;
-  }
+  const progressRef = doc(db, "users", uid, "progress", "current");
+  const snap = await getDoc(progressRef);
+  const stored = snap.exists() ? snap.data()?.totalScore : undefined;
+
+  if (snap.exists() && stored === totalScore) return totalScore;
 
   await updateUserProgress(uid, { totalScore });
   return totalScore;
@@ -129,12 +134,7 @@ async function checkAchievements(uid: string) {
     if (levelCategories.length === 0) continue;
 
     const allMaxed = levelCategories.every((cat) => {
-      const catSkills = skills.filter((s) => s.categoryId === cat.id);
-      const catScore = catSkills.reduce((sum, s) => {
-        const data = assessmentMap[s.id];
-        return sum + (data?.score || 0);
-      }, 0);
-      return catScore >= cat.maxScore;
+      return calcCategoryScore(cat.id, assessmentMap) >= getCategoryMaxScore(cat.id);
     });
 
     if (!allMaxed) continue;
@@ -184,15 +184,12 @@ export async function checkLevelUp() {
     (c) => c.levelId === currentLevelId,
   );
   for (const cat of currentCategories) {
-    const catSkills = skills.filter((s) => s.categoryId === cat.id);
-    const catXp = catSkills.reduce((sum, s) => {
-      return sum + (assessmentMap[s.id]?.score || 0);
-    }, 0);
-    if (catXp < cat.maxScore * 0.8) return null;
+    const catXp = calcCategoryScore(cat.id, assessmentMap);
+    if (catXp < getCategoryMaxScore(cat.id) * LEVEL_UP_THRESHOLD) return null;
   }
 
-  const totalScore = Object.values(assessmentMap).reduce((sum, d) => sum + d.score, 0);
-  if (totalScore < nextLevel.minScore) return null;
+  const totalScore = calcTotalScore(assessmentMap);
+  if (totalScore < getLevelMinScore(nextLevel.id)) return null;
 
   const requiredSkills = skills.filter(
     (s) =>
@@ -284,5 +281,6 @@ export async function resetLevelProgress(levelId: string) {
     await deleteDoc(projectRef);
   }
 
-  await updateUserProgress(uid, { totalScore: 0 });
+  const assessmentMap = await getAssessmentMap(uid);
+  await updateUserProgress(uid, { totalScore: calcTotalScore(assessmentMap) });
 }

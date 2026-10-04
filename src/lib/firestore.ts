@@ -9,6 +9,7 @@ import {
   query,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { calcSkillScore } from "@/lib/scoring";
 import type { UserProgress, Assessment, ProjectProgress, Achievement } from "@/types";
 
 // ============ User Progress ============
@@ -63,7 +64,7 @@ export async function getAssessmentMap(
   const assessments = await getUserAssessments(uid);
   const map: Record<string, number> = {};
   assessments.forEach((a) => {
-    map[a.skillId] = a.score;
+    map[a.skillId] = a.subtopics ? calcSkillScore(a.skillId, a.subtopics) : a.score || 0;
   });
   return map;
 }

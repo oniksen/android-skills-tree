@@ -9,6 +9,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { backfillTotalScore } from "@/lib/firestore-actions";
 import type { UserProgress } from "@/types";
 
 const DEFAULT_PROGRESS: UserProgress = {
@@ -51,6 +52,13 @@ export function useUserProgress() {
 
     return () => unsubscribe();
   }, [uid, authLoading]);
+
+  useEffect(() => {
+    if (!uid) return;
+    void backfillTotalScore(uid).catch((error) => {
+      console.error("Error recalculating total score:", error);
+    });
+  }, [uid]);
 
   const updateProgress = async (data: Partial<UserProgress>) => {
     if (!uid) return;

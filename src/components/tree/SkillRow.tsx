@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Check } from "lucide-react";
 import { checkLevelUp as checkLevelUpAction } from "@/lib/firestore-actions";
 import CelebrationModal from "@/components/shared/CelebrationModal";
+import DifficultyBadge from "@/components/shared/DifficultyBadge";
 import { useAssessments } from "@/hooks";
 
 interface SkillRowProps {
@@ -128,6 +129,7 @@ export default function SkillRow({
                 {completedCount}/{subtopics.length}
               </motion.span>
             )}
+            <DifficultyBadge skillId={skillId} />
           </div>
         </div>
 

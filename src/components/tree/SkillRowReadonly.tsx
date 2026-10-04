@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import DifficultyBadge from "@/components/shared/DifficultyBadge";
 
 interface SkillRowReadonlyProps {
+  skillId: string;
   name: string;
   description: string;
   subtopics: string[];
-  maxWeight: number;
 }
 
-export default function SkillRowReadonly({ name, description, subtopics, maxWeight }: SkillRowReadonlyProps) {
+export default function SkillRowReadonly({ skillId, name, description, subtopics }: SkillRowReadonlyProps) {
   const [expanded, setExpanded] = useState(false);
   const hasContent = description || subtopics.length > 0;
 
@@ -41,7 +42,7 @@ export default function SkillRowReadonly({ name, description, subtopics, maxWeig
           )}
           <span className="text-base text-slate-300 truncate">{name}</span>
         </div>
-        <span className="font-mono text-sm text-slate-600 shrink-0">вес: {maxWeight}</span>
+        <DifficultyBadge skillId={skillId} />
       </div>
 
       <AnimatePresence initial={false}>

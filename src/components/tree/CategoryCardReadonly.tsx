@@ -1,32 +1,25 @@
 import SkillRowReadonly from "./SkillRowReadonly";
 import ProgressBar from "@/components/shared/ProgressBar";
+import { calcCategoryScore } from "@/lib/scoring";
+import { getCategoryMaxScore } from "@/lib/weights";
 
 interface SkillItem {
   id: string;
   name: string;
   description: string;
   subtopics: string[];
-  maxWeight: number;
   sortOrder: number;
 }
 
-function calcSkillScore(subtopics: string[], subtopicState: Record<string, boolean> | undefined, maxWeight: number): number {
-  if (!subtopics || subtopics.length === 0) return 0;
-  const completed = subtopics.filter((st) => subtopicState?.[st]).length;
-  return Math.round((completed / subtopics.length) * maxWeight);
-}
-
-export default function CategoryCardReadonly({ name, maxScore, skills, assessments = {} }: {
+export default function CategoryCardReadonly({ categoryId, name, skills, assessments = {} }: {
+  categoryId: string;
   name: string;
-  maxScore: number;
   skills: SkillItem[];
   assessments?: Record<string, { subtopics?: Record<string, boolean> }>;
 }) {
   const sorted = [...skills].sort((a, b) => a.sortOrder - b.sortOrder);
-  const catScore = sorted.reduce((sum, s) => {
-    const subtopicState = assessments[s.id]?.subtopics;
-    return sum + calcSkillScore(s.subtopics, subtopicState, s.maxWeight);
-  }, 0);
+  const maxScore = getCategoryMaxScore(categoryId);
+  const catScore = calcCategoryScore(categoryId, assessments);
 
   return (
     <div className="group relative card-surface overflow-hidden rounded-xl p-5 transition-shadow duration-300 hover:shadow-[0_16px_40px_-12px_rgba(59,130,246,0.18)]">
@@ -40,10 +33,10 @@ export default function CategoryCardReadonly({ name, maxScore, skills, assessmen
         {sorted.map(skill => (
           <SkillRowReadonly
             key={skill.id}
+            skillId={skill.id}
             name={skill.name}
             description={skill.description}
             subtopics={skill.subtopics}
-            maxWeight={skill.maxWeight}
           />
         ))}
       </div>
