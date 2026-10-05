@@ -7,6 +7,7 @@ import {
   calcSkillCompletionPercent,
   calcSkillScore,
   calcTotalScore,
+  isSkillComplete,
 } from "@/lib/scoring";
 import { getCategoryMaxScore, getSkillWeight } from "@/lib/weights";
 
@@ -82,6 +83,37 @@ describe("calcSkillCompletionPercent", () => {
     expect(calcSkillCompletionPercent(sampleSkillId, noneChecked(sampleSkillId))).toBe(0);
     expect(calcSkillCompletionPercent(sampleSkillId, allSubtopicsChecked(sampleSkillId))).toBe(100);
     expect(calcSkillCompletionPercent(sampleSkillId, undefined)).toBe(0);
+  });
+});
+
+describe("isSkillComplete", () => {
+  it("завершён когда закрыты все подтемы", () => {
+    expect(isSkillComplete(sampleSkillId, allSubtopicsChecked(sampleSkillId))).toBe(true);
+  });
+
+  it("не завершён пока закрыта хотя бы одна подтема", () => {
+    const skill = skills.find((s) => s.id === sampleSkillId)!;
+    expect(isSkillComplete(sampleSkillId, firstNChecked(sampleSkillId, skill.subtopics.length - 1))).toBe(
+      false,
+    );
+    expect(isSkillComplete(sampleSkillId, noneChecked(sampleSkillId))).toBe(false);
+  });
+
+  it("не завершён когда карта не передана", () => {
+    expect(isSkillComplete(sampleSkillId, undefined)).toBe(false);
+  });
+
+  it("не завершён для неизвестного скилла", () => {
+    expect(isSkillComplete("no-such-skill", { whatever: true })).toBe(false);
+  });
+
+  it("завершён только если отмечены именно все подтемы навыка", () => {
+    for (const skill of skills) {
+      expect(isSkillComplete(skill.id, allSubtopicsChecked(skill.id)), skill.id).toBe(true);
+      expect(isSkillComplete(skill.id, { ...allSubtopicsChecked(skill.id), ghost: true }), skill.id).toBe(
+        true,
+      );
+    }
   });
 });
 

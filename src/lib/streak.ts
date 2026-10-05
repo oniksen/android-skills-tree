@@ -74,27 +74,118 @@ export function computeStreaks(
   return { currentStreak: current, longestStreak };
 }
 
-export const FREEZE_WINDOW_DAYS = 7;
-
-export function findFreezableDay(
+export function collectMissedDays(
   activeDays: string[],
   frozenDays: string[],
   today: string,
-): string | null {
-  const daysSet = new Set([...activeDays, ...frozenDays]);
+): string[] {
+  const covered = new Set([...activeDays, ...frozenDays]);
+  if (covered.size === 0) return [];
 
-  let cursor = daysSet.has(today) ? today : shiftDay(today, -1);
-  if (!daysSet.has(cursor)) return null;
-
-  while (daysSet.has(shiftDay(cursor, -1))) {
+  const missed: string[] = [];
+  let cursor = shiftDay(today, -1);
+  while (!covered.has(cursor)) {
+    missed.push(cursor);
     cursor = shiftDay(cursor, -1);
   }
 
-  const candidate = shiftDay(cursor, -1);
-  const windowStart = shiftDay(today, -(FREEZE_WINDOW_DAYS - 1));
-  if (candidate < windowStart) return null;
-  if (daysSet.has(candidate)) return null;
-  return candidate;
+  return missed.reverse();
+}
+
+export interface AutoFreezeReport {
+  frozen: string[];
+  unfundedMisses: number;
+}
+
+export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
+  const user = auth.currentUser;
+  if (!user) return null;
+
+  const today = getLocalDayString();
+  const streakRef = doc(db, "users", user.uid, "streaks", "current");
+  const currencyRef = doc(db, "users", user.uid, "currency", "current");
+
+  try {
+    const result = await runTransaction(db, async (tx) => {
+      const streakSnap = await tx.get(streakRef);
+      const existing = streakSnap.exists()
+        ? (streakSnap.data() as Partial<StreakData>)
+        : {};
+      const activeDays = Array.isArray(existing.activeDays) ? existing.activeDays : [];
+      const frozenDays = Array.isArray(existing.frozenDays) ? existing.frozenDays : [];
+
+      const missed = collectMissedDays(activeDays, frozenDays, today);
+      if (missed.length === 0) {
+        return { frozen: [] as string[], unfundedMisses: 0, currentStreak: null };
+      }
+
+      const currencySnap = await tx.get(currencyRef);
+      const currency = currencySnap.exists()
+        ? (currencySnap.data() as Partial<CurrencyData>)
+        : {};
+      const freezes = getFreezeCount(currency as CurrencyData);
+
+      // Заморозки тратятся на пропуски по порядку: первая закрывает самый давний
+      // пропуск после последнего захода, каждая следующая — следующий за ним.
+      const toFreeze = missed.slice(0, freezes);
+      if (toFreeze.length === 0) {
+        return { frozen: [] as string[], unfundedMisses: missed.length, currentStreak: null };
+      }
+
+      const nextFrozenDays = [...frozenDays, ...toFreeze];
+      const { currentStreak, longestStreak } = computeStreaks(
+        activeDays,
+        nextFrozenDays,
+        today,
+      );
+
+      tx.set(streakRef, {
+        activeDays,
+        frozenDays: nextFrozenDays,
+        lastActiveDate: existing.lastActiveDate ?? today,
+        currentStreak,
+        longestStreak,
+        updatedAt: new Date(),
+      });
+      tx.set(
+        currencyRef,
+        {
+          items: {
+            ...(currency.items ?? {}),
+            [STREAK_FREEZE_ITEM_ID]: freezes - toFreeze.length,
+          },
+          updatedAt: new Date(),
+        },
+        { merge: true },
+      );
+
+      return {
+        frozen: toFreeze,
+        unfundedMisses: missed.length - toFreeze.length,
+        currentStreak,
+      };
+    });
+
+    if (result.currentStreak !== null) {
+      await checkStreakAchievements(user.uid, result.currentStreak);
+    }
+
+    return { frozen: result.frozen, unfundedMisses: result.unfundedMisses };
+  } catch (error) {
+    console.error("Error applying automatic freezes:", error);
+    return null;
+  }
+}
+
+let autoFreezeInFlight: Promise<AutoFreezeReport | null> | null = null;
+
+export function applyAutoFreezesOnce(): Promise<AutoFreezeReport | null> {
+  if (!autoFreezeInFlight) {
+    autoFreezeInFlight = applyAutoFreezes().finally(() => {
+      autoFreezeInFlight = null;
+    });
+  }
+  return autoFreezeInFlight;
 }
 
 export async function getStreak(uid: string): Promise<StreakData | null> {
@@ -184,73 +275,5 @@ async function checkStreakAchievements(uid: string, currentStreak: number) {
     if (currentStreak >= days) {
       await addStreakAchievementIfNotExists(uid, days);
     }
-  }
-}
-
-export async function freezeStreakDay(day: string): Promise<StreakData | null> {
-  const user = auth.currentUser;
-  if (!user) return null;
-
-  const today = getLocalDayString();
-  if (day >= today) return null;
-
-  const streakRef = doc(db, "users", user.uid, "streaks", "current");
-  const currencyRef = doc(db, "users", user.uid, "currency", "current");
-
-  try {
-    return await runTransaction(db, async (tx) => {
-      const [streakSnap, currencySnap] = await Promise.all([
-        tx.get(streakRef),
-        tx.get(currencyRef),
-      ]);
-
-      const existing = streakSnap.exists()
-        ? (streakSnap.data() as Partial<StreakData>)
-        : {};
-      const currency = currencySnap.exists()
-        ? (currencySnap.data() as Partial<CurrencyData>)
-        : {};
-
-      const activeDays = Array.isArray(existing.activeDays) ? existing.activeDays : [];
-      const frozenDays = Array.isArray(existing.frozenDays) ? existing.frozenDays : [];
-      const freezes = getFreezeCount(currency as CurrencyData);
-
-      if (freezes <= 0) return null;
-      if (findFreezableDay(activeDays, frozenDays, today) !== day) return null;
-
-      const nextFrozenDays = [...frozenDays, day];
-      const { currentStreak, longestStreak } = computeStreaks(
-        activeDays,
-        nextFrozenDays,
-        today,
-      );
-
-      const streakData: StreakData = {
-        activeDays,
-        frozenDays: nextFrozenDays,
-        lastActiveDate: existing.lastActiveDate ?? day,
-        currentStreak,
-        longestStreak,
-        updatedAt: new Date(),
-      };
-
-      const items =
-        currency.items && typeof currency.items === "object" ? currency.items : {};
-
-      tx.set(streakRef, streakData);
-      tx.set(
-        currencyRef,
-        {
-          items: { ...items, [STREAK_FREEZE_ITEM_ID]: freezes - 1 },
-          updatedAt: new Date(),
-        },
-        { merge: true },
-      );
-
-      return streakData;
-    });
-  } catch (error) {
-    console.error("Error freezing streak day:", error);
-    return null;
   }
 }

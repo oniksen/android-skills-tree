@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "@/lib/firebase";
 import {
   collection,
@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { syncStreak } from "@/lib/streak";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { calcSkillScore, calcTotalScore } from "@/lib/scoring";
+import { calcSkillScore, calcTotalScore, isSkillComplete } from "@/lib/scoring";
 import { getCrystalRewardForSkill } from "@/lib/currency";
 import type { AssessmentData, CurrencyData } from "@/types";
 
@@ -29,10 +29,12 @@ export function useAssessments() {
   const [loading, setLoading] = useState(true);
   const [lastAwarded, setLastAwarded] = useState<CrystalAward | null>(null);
   const { uid, loading: authLoading } = useFirebaseAuth();
+  const mapRef = useRef<Record<string, AssessmentData>>({});
 
   useEffect(() => {
     if (authLoading) return;
     if (!uid) {
+      mapRef.current = {};
       setAssessmentMap({});
       setLoading(false);
       return;
@@ -50,6 +52,7 @@ export function useAssessments() {
           subtopics,
         };
       });
+      mapRef.current = map;
       setAssessmentMap(map);
       setLoading(false);
     });
@@ -59,46 +62,45 @@ export function useAssessments() {
 
   const toggleSubtopic = useCallback(
     async (skillId: string, subtopicName: string) => {
-      if (!uid) return;
+      if (!uid) return null;
+
       const assessmentRef = doc(db, "users", uid, "assessments", skillId);
       const currencyRef = doc(db, "users", uid, "currency", "current");
 
-      const current = assessmentMap[skillId];
-      const currentSubtopics = current?.subtopics || {};
-      const newValue = !currentSubtopics[subtopicName];
-
-      const updatedSubtopics = { ...currentSubtopics, [subtopicName]: newValue };
-      const newScore = calcSkillScore(skillId, updatedSubtopics);
-
-      let awarded = 0;
-
       try {
-        await runTransaction(db, async (tx) => {
+        const result = await runTransaction(db, async (tx) => {
           const [assessmentSnap, currencySnap] = await Promise.all([
             tx.get(assessmentRef),
             tx.get(currencyRef),
           ]);
 
-          const stored = assessmentSnap.exists()
-            ? (assessmentSnap.data() as { claimed?: unknown })
-            : {};
-          const claimed = Array.isArray(stored.claimed)
-            ? (stored.claimed as string[])
-            : [];
+          const storedSubtopics =
+            (assessmentSnap.data()?.subtopics as Record<string, boolean> | undefined) ?? {};
+          const nextSubtopics = {
+            ...storedSubtopics,
+            [subtopicName]: !storedSubtopics[subtopicName],
+          };
+          const nextValue = nextSubtopics[subtopicName] === true;
+          const complete = isSkillComplete(skillId, nextSubtopics);
+          const newScore = calcSkillScore(skillId, nextSubtopics);
+
           const currency = currencySnap.exists()
             ? (currencySnap.data() as Partial<CurrencyData>)
             : {};
           const balance = typeof currency.balance === "number" ? currency.balance : 0;
+          const claimedSkills =
+            currency.claimedSkills && typeof currency.claimedSkills === "object"
+              ? currency.claimedSkills
+              : {};
 
-          const isNewClaim = newValue && !claimed.includes(subtopicName);
-          awarded = isNewClaim ? getCrystalRewardForSkill(skillId) : 0;
+          const alreadyClaimed = typeof claimedSkills[skillId] === "string";
+          const awarded = complete && !alreadyClaimed ? getCrystalRewardForSkill(skillId) : 0;
 
           tx.set(
             assessmentRef,
             {
-              subtopics: updatedSubtopics,
+              subtopics: nextSubtopics,
               score: newScore,
-              claimed: isNewClaim ? [...claimed, subtopicName] : claimed,
               updatedAt: new Date(),
             },
             { merge: true },
@@ -107,30 +109,53 @@ export function useAssessments() {
           if (awarded > 0) {
             tx.set(
               currencyRef,
-              { balance: balance + awarded, updatedAt: new Date() },
+              {
+                balance: balance + awarded,
+                claimedSkills: { ...claimedSkills, [skillId]: new Date().toISOString() },
+                updatedAt: new Date(),
+              },
               { merge: true },
             );
           }
+
+          return {
+            nextValue,
+            nextSubtopics,
+            newScore,
+            complete,
+            awarded,
+            justCompleted: complete && !isSkillComplete(skillId, storedSubtopics),
+          };
         });
+
+        const { nextValue, nextSubtopics, newScore, awarded, justCompleted } = result;
+
+        const nextMap = {
+          ...mapRef.current,
+          [skillId]: { score: newScore, subtopics: nextSubtopics },
+        };
+        mapRef.current = nextMap;
+        setAssessmentMap(nextMap);
+
+        const totalScore = calcTotalScore(nextMap);
+        const progressRef = doc(db, "users", uid, "progress", "current");
+        await setDoc(progressRef, { totalScore }, { merge: true });
+
+        if (awarded > 0) {
+          setLastAwarded({ skillId, amount: awarded, id: Date.now() });
+        }
+
+        if (nextValue) {
+          void syncStreak();
+        }
+
+        return { justCompleted };
       } catch (error) {
         console.error("Error saving assessment:", error);
-        return;
-      }
-
-      const updatedMap = { ...assessmentMap, [skillId]: { score: newScore, subtopics: updatedSubtopics } };
-      const totalScore = calcTotalScore(updatedMap);
-      const progressRef = doc(db, "users", uid, "progress", "current");
-      await setDoc(progressRef, { totalScore }, { merge: true });
-
-      if (awarded > 0) {
-        setLastAwarded({ skillId, amount: awarded, id: Date.now() });
-      }
-
-      if (newValue) {
-        void syncStreak();
+        return null;
       }
     },
-    [uid, assessmentMap],
+    [uid],
   );
 
   const deleteAssessmentsByLevel = async (skillIds: string[]) => {

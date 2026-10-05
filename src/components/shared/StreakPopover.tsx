@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { useStreak, useCurrency } from "@/hooks";
@@ -17,19 +16,8 @@ const DAYS_SHORT = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 const FREEZE_ITEM = getShopItem(STREAK_FREEZE_ITEM_ID);
 
 export default function StreakPopover({ onClose }: { onClose: () => void }) {
-  const { week, currentStreak, longestStreak, freezeDay } = useStreak();
+  const { week, currentStreak, longestStreak, autoFreeze } = useStreak();
   const { freezes } = useCurrency();
-  const [freezing, setFreezing] = useState(false);
-
-  const handleFreeze = async (day: string) => {
-    if (freezes <= 0 || freezing) return;
-    setFreezing(true);
-    try {
-      await freezeDay(day);
-    } finally {
-      setFreezing(false);
-    }
-  };
 
   return (
     <div
@@ -67,66 +55,47 @@ export default function StreakPopover({ onClose }: { onClose: () => void }) {
           <div key={d.date} className="flex flex-col items-center gap-1 flex-1">
             <span
               className={`text-[9px] uppercase ${
-                d.isToday
-                  ? "text-orange-400"
-                  : d.freezable
-                    ? "text-sky-400"
-                    : "text-slate-600"
+                d.isToday ? "text-orange-400" : "text-slate-600"
               }`}
             >
               {DAYS_SHORT[parseDayString(d.date).getDay()]}
             </span>
-            {d.freezable ? (
-              <motion.button
-                type="button"
-                whileTap={freezes > 0 ? { scale: 0.85 } : undefined}
-                onClick={() => handleFreeze(d.date)}
-                disabled={freezes <= 0 || freezing}
-                animate={
-                  freezes > 0
-                    ? {
-                        boxShadow: [
-                          "0 0 0 0 rgba(56,189,248,0.5)",
-                          "0 0 0 6px rgba(56,189,248,0)",
-                        ],
-                      }
-                    : undefined
-                }
-                transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
-                className={`w-full h-9 rounded-lg flex items-center justify-center text-xs border transition-colors duration-300 ${
-                  freezes > 0
-                    ? "bg-sky-500/15 text-sky-300 border-sky-400/50 cursor-pointer"
-                    : "bg-slate-800 text-slate-600 border-slate-700 cursor-not-allowed"
-                }`}
-                aria-label={`Заморозить ${d.date} за 1 ${STREAK_FREEZE_ICON}`}
-              >
-                {STREAK_FREEZE_ICON}
-              </motion.button>
-            ) : (
-              <motion.div
-                initial={{ scale: 0.6, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 420, damping: 26 }}
-                className={`w-full h-9 rounded-lg flex items-center justify-center text-xs border transition-colors duration-300 ${
-                  d.active
-                    ? "bg-orange-500/20 text-orange-400 border-orange-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]"
-                    : d.frozen
-                      ? "bg-sky-500/20 text-sky-300 border-sky-400/40"
-                      : d.isToday
-                        ? "bg-slate-800 text-slate-500 border-orange-500/40"
-                        : "bg-slate-800 text-slate-700 border-slate-800"
-                }`}
-              >
-                {d.active
-                  ? "🔥"
+            <motion.div
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 420, damping: 26 }}
+              className={`w-full h-9 rounded-lg flex items-center justify-center text-xs border transition-colors duration-300 ${
+                d.active
+                  ? "bg-orange-500/20 text-orange-400 border-orange-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]"
                   : d.frozen
-                    ? STREAK_FREEZE_ICON
-                    : parseDayString(d.date).getDate()}
-              </motion.div>
-            )}
+                    ? "bg-sky-500/20 text-sky-300 border-sky-400/40"
+                    : d.isToday
+                      ? "bg-slate-800 text-slate-500 border-orange-500/40"
+                      : "bg-slate-800 text-slate-700 border-slate-800"
+              }`}
+            >
+              {d.active ? "🔥" : d.frozen ? STREAK_FREEZE_ICON : parseDayString(d.date).getDate()}
+            </motion.div>
           </div>
         ))}
       </div>
+
+      <p className="mb-3 text-[11px] leading-relaxed text-slate-500">
+        {STREAK_FREEZE_ICON} Заморозка тратится сама за каждый день, в который ничего не изучено.
+      </p>
+
+      {autoFreeze && autoFreeze.frozen.length > 0 && (
+        <div className="mb-3 rounded-lg bg-sky-500/[0.07] px-2.5 py-2 text-xs text-slate-300">
+          Автоматически закрыто пропусков:{" "}
+          <span className="font-mono font-semibold text-sky-300">{autoFreeze.frozen.length}</span>
+          {autoFreeze.unfundedMisses > 0 && (
+            <span className="text-slate-500">
+              {" "}
+              · не хватило заморозок: {autoFreeze.unfundedMisses}
+            </span>
+          )}
+        </div>
+      )}
 
       <div className="mb-3 flex items-center justify-between rounded-lg bg-sky-500/[0.07] px-2.5 py-2">
         <span className="text-xs text-slate-400">

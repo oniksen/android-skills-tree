@@ -4,12 +4,25 @@ import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCurrency } from "@/hooks";
 import { SHOP_ITEMS, CURRENCY_ICON } from "@/data/shop";
-import { CRYSTAL_REWARDS } from "@/lib/currency";
+import { CRYSTALS_PER_XP } from "@/lib/currency";
+import { DIFFICULTY_WEIGHT, LEVEL_MULTIPLIER } from "@/lib/weights";
 import { levels } from "@/data/levels";
+import type { Difficulty } from "@/data/skills";
 import type { BuyResult } from "@/lib/currency";
 import ShopItemCard from "./ShopItemCard";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+const DIFFICULTY_ROWS: { difficulty: Difficulty; label: string }[] = [
+  { difficulty: "easy", label: "Легко" },
+  { difficulty: "medium", label: "Средне" },
+  { difficulty: "hard", label: "Сложно" },
+];
+
+function rewardFor(difficulty: Difficulty, levelId: string): number {
+  const weight = DIFFICULTY_WEIGHT[difficulty] * (LEVEL_MULTIPLIER[levelId] ?? 1);
+  return Math.round(weight * CRYSTALS_PER_XP);
+}
 
 const ERROR_MESSAGES: Record<Exclude<BuyResult, { ok: true }>["reason"], string> = {
   "not-found": "Товар не найден",
@@ -84,19 +97,33 @@ export default function ShopClient() {
       >
         <h2 className="text-sm font-semibold text-white">Как заработать {CURRENCY_ICON}</h2>
         <p className="mt-1 text-xs leading-relaxed text-slate-400">
-          Кристаллы начисляются один раз за каждую отмеченную подтему. Сколько даётся —
-          зависит от уровня навыка:
+          {CURRENCY_ICON} начисляются один раз за полностью закрытый навык: закрой все его
+          подпункты. Чем сложнее навык и выше уровень — тем больше награда.
         </p>
-        <ul className="mt-3 space-y-1.5">
-          {levels.map((level) => (
-            <li key={level.id} className="flex items-center justify-between text-sm">
-              <span className="text-slate-400">{level.name}</span>
-              <span className="font-mono text-slate-200">
-                +{CRYSTAL_REWARDS[level.id] ?? 0} {CURRENCY_ICON}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <table className="mt-3 w-full text-xs">
+          <thead>
+            <tr>
+              <th className="pb-1 text-left font-medium text-slate-500">Сложность</th>
+              {levels.map((level) => (
+                <th key={level.id} className="pb-1 text-right font-medium text-slate-500">
+                  {level.name}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {DIFFICULTY_ROWS.map((row) => (
+              <tr key={row.difficulty}>
+                <td className="py-0.5 text-slate-400">{row.label}</td>
+                {levels.map((level) => (
+                  <td key={level.id} className="py-0.5 text-right font-mono text-slate-200">
+                    +{rewardFor(row.difficulty, level.id)} {CURRENCY_ICON}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </motion.section>
 
       <AnimatePresence>

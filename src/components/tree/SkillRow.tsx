@@ -6,6 +6,7 @@ import { Check } from "lucide-react";
 import { checkLevelUp as checkLevelUpAction } from "@/lib/firestore-actions";
 import CelebrationModal from "@/components/shared/CelebrationModal";
 import DifficultyBadge from "@/components/shared/DifficultyBadge";
+import { getCrystalRewardForSkill } from "@/lib/currency";
 import { useAssessments } from "@/hooks";
 
 interface SkillRowProps {
@@ -36,22 +37,22 @@ export default function SkillRow({
 
   const subtopicState = assessmentMap[skillId]?.subtopics || {};
   const completedCount = (subtopics ?? []).filter((st) => subtopicState[st]).length;
+  const crystalReward = getCrystalRewardForSkill(skillId);
+  const pendingReward = crystalReward > 0 && completedCount < subtopics.length;
 
   const handleToggleSubtopic = async (subtopicName: string) => {
     if (disabled) return;
-    const wasAllComplete = subtopics.length > 0 && subtopics.every((st) => subtopicState[st]);
-    await toggleSubtopic(skillId, subtopicName);
-    const isNowAllComplete = completedCount + 1 === subtopics.length;
-    if (!wasAllComplete && isNowAllComplete) {
-      try {
-        const result = await checkLevelUpAction();
-        if (result) {
-          setLevelResult(result);
-          setShowCelebration(true);
-        }
-      } catch {
-        // ignore level-up errors
+    const result = await toggleSubtopic(skillId, subtopicName);
+    if (!result?.justCompleted) return;
+
+    try {
+      const levelResult = await checkLevelUpAction();
+      if (levelResult) {
+        setLevelResult(levelResult);
+        setShowCelebration(true);
       }
+    } catch {
+      // ignore level-up errors
     }
   };
 
@@ -214,6 +215,12 @@ export default function SkillRow({
                       </div>
                       <span className="font-mono text-xs text-slate-600">{subtopicPercent}%</span>
                     </div>
+                    {pendingReward && (
+                      <p className="text-xs text-cyan-300/80 pt-1">
+                        Закрой все подпункты —{" "}
+                        <span className="font-mono">+{crystalReward} 💎</span>
+                      </p>
+                    )}
                   </div>
                 )}
               </div>

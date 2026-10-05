@@ -22,6 +22,15 @@ export function calcSkillCompletionPercent(
   return Math.round((completed / skill.subtopics.length) * 100);
 }
 
+export function isSkillComplete(
+  skillId: string,
+  subtopics: Record<string, boolean> | undefined,
+): boolean {
+  const skill = skills.find((s) => s.id === skillId);
+  if (!skill || skill.subtopics.length === 0 || !subtopics) return false;
+  return skill.subtopics.every((st) => subtopics[st] === true);
+}
+
 export function calcCategoryScore(
   categoryId: string,
   assessmentMap: Record<string, { subtopics?: Record<string, boolean> }>,

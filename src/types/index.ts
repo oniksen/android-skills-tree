@@ -41,5 +41,6 @@ export interface StreakData {
 export interface CurrencyData {
   balance: number;
   items: Record<string, number>;
+  claimedSkills?: Record<string, string>;
   updatedAt: Date;
 }

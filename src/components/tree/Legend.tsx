@@ -41,7 +41,8 @@ export default function Legend({ isAuthenticated }: { isAuthenticated?: boolean 
                   сложно <span className="font-mono opacity-80">30 XP</span>
                 </span>
                 <span className="text-slate-400 leading-snug">
-                  XP зависят от сложности навыка: у лёгких тем меньше, у сложных — больше
+                  XP зависят от сложности навыка: у лёгких тем меньше, у сложных — больше.
+                  За полностью закрытый навык ещё начисляются 💎
                 </span>
               </div>
               <div className="flex items-start gap-3 pl-1">

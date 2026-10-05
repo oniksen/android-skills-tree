@@ -5,19 +5,18 @@ import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import {
+  applyAutoFreezesOnce,
   computeStreaks,
-  findFreezableDay,
   getLocalDayString,
   shiftDay,
   syncStreak as syncStreakFirestore,
-  freezeStreakDay as freezeStreakDayFirestore,
+  type AutoFreezeReport,
 } from "@/lib/streak";
 
 export interface StreakDay {
   date: string;
   active: boolean;
   frozen: boolean;
-  freezable: boolean;
   isToday: boolean;
 }
 
@@ -27,6 +26,7 @@ export function useStreak() {
   const [lastActiveDate, setLastActiveDate] = useState<string | null>(null);
   const [activeDays, setActiveDays] = useState<string[]>([]);
   const [frozenDays, setFrozenDays] = useState<string[]>([]);
+  const [autoFreeze, setAutoFreeze] = useState<AutoFreezeReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState<string | null>(null);
 
@@ -39,6 +39,7 @@ export function useStreak() {
         setLastActiveDate(null);
         setActiveDays([]);
         setFrozenDays([]);
+        setAutoFreeze(null);
         setLoading(false);
       }
     });
@@ -75,22 +76,25 @@ export function useStreak() {
     return () => unsubscribe();
   }, [uid]);
 
+  useEffect(() => {
+    if (!uid) return;
+
+    let cancelled = false;
+    void applyAutoFreezesOnce().then((report) => {
+      if (!cancelled && report) setAutoFreeze(report);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [uid]);
+
   const syncStreak = useCallback(async () => {
     if (!uid) return null;
     return syncStreakFirestore();
   }, [uid]);
 
-  const freezeDay = useCallback(async (day: string) => {
-    if (!uid) return null;
-    return freezeStreakDayFirestore(day);
-  }, [uid]);
-
   const today = getLocalDayString();
-
-  const freezableDay = useMemo(
-    () => findFreezableDay(activeDays, frozenDays, today),
-    [activeDays, frozenDays, today],
-  );
 
   const week: StreakDay[] = useMemo(() => {
     const daysSet = new Set(activeDays);
@@ -102,12 +106,11 @@ export function useStreak() {
         date,
         active: daysSet.has(date),
         frozen: frozenSet.has(date),
-        freezable: date === freezableDay,
         isToday: date === today,
       });
     }
     return result;
-  }, [activeDays, frozenDays, freezableDay, today]);
+  }, [activeDays, frozenDays, today]);
 
   return {
     currentStreak,
@@ -115,10 +118,9 @@ export function useStreak() {
     lastActiveDate,
     activeDays,
     frozenDays,
-    freezableDay,
+    autoFreeze,
     week,
     loading,
     syncStreak,
-    freezeDay,
   };
 }

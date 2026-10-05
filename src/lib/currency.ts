@@ -1,17 +1,10 @@
 import { auth, db } from "@/lib/firebase";
 import { doc, runTransaction } from "firebase/firestore";
-import { getCategoryById, getSkillById } from "@/data";
 import { getShopItem, STREAK_FREEZE_ITEM_ID } from "@/data/shop";
+import { getSkillWeight } from "@/lib/weights";
 import type { CurrencyData } from "@/types";
 
-export const CRYSTAL_REWARDS: Record<string, number> = {
-  junior: 2,
-  middle: 3,
-  "strong-middle": 5,
-  senior: 8,
-};
-
-export const DEFAULT_CRYSTAL_REWARD = 2;
+export const CRYSTALS_PER_XP = 0.5;
 
 export const EMPTY_CURRENCY: CurrencyData = {
   balance: 0,
@@ -19,16 +12,8 @@ export const EMPTY_CURRENCY: CurrencyData = {
   updatedAt: new Date(0),
 };
 
-export function getCrystalRewardForLevelId(levelId: string): number {
-  return CRYSTAL_REWARDS[levelId] ?? DEFAULT_CRYSTAL_REWARD;
-}
-
 export function getCrystalRewardForSkill(skillId: string): number {
-  const skill = getSkillById(skillId);
-  if (!skill) return DEFAULT_CRYSTAL_REWARD;
-  const category = getCategoryById(skill.categoryId);
-  if (!category) return DEFAULT_CRYSTAL_REWARD;
-  return getCrystalRewardForLevelId(category.levelId);
+  return Math.round(getSkillWeight(skillId) * CRYSTALS_PER_XP);
 }
 
 export function getOwnedCount(
@@ -78,11 +63,15 @@ export async function buyItem(itemId: string): Promise<BuyResult> {
         return { ok: false as const, reason: "not-enough" as const };
       }
 
-      tx.set(currencyRef, {
-        balance: balance - item.price,
-        items: { ...items, [itemId]: owned + 1 },
-        updatedAt: new Date(),
-      });
+      tx.set(
+        currencyRef,
+        {
+          balance: balance - item.price,
+          items: { ...items, [itemId]: owned + 1 },
+          updatedAt: new Date(),
+        },
+        { merge: true },
+      );
       return { ok: true as const };
     });
   } catch (error) {
