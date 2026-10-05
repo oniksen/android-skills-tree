@@ -23,6 +23,7 @@ import {
 import {
   addAchievementIfNotExists,
   addAchievementsIfNotExists,
+  deleteAchievementsByLevel,
 } from "@/lib/firestore";
 import {
   evaluateAchievements,
@@ -227,6 +228,8 @@ export async function resetLevelProgress(levelId: string) {
     const projectRef = doc(db, "users", uid, "projects", projectId);
     await deleteDoc(projectRef);
   }
+
+  await deleteAchievementsByLevel(uid, levelId);
 
   const assessmentMap = await getAssessmentMap(uid);
   await updateUserProgress(uid, { totalScore: calcTotalScore(assessmentMap) });

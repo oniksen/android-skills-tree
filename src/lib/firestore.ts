@@ -209,6 +209,26 @@ export async function addAchievementsIfNotExists(
   }
 }
 
+export async function deleteAchievementsByLevel(uid: string, levelId: string) {
+  const achievementsRef = collection(db, "users", uid, "achievements");
+  const snap = await getDocs(achievementsRef);
+
+  for (const achievementDoc of snap.docs) {
+    const data = achievementDoc.data() as {
+      type?: string;
+      metadata?: Record<string, unknown>;
+    };
+    const isLevelScoped =
+      (data.type === "category_perfect" || data.type === "level_master") &&
+      data.metadata?.level_id === levelId;
+    const invalidatesPath = data.type === "path_complete";
+
+    if (isLevelScoped || invalidatesPath) {
+      await deleteDoc(achievementDoc.ref);
+    }
+  }
+}
+
 // ============ Helpers ============
 
 export function createDefaultUserProgress(uid: string) {

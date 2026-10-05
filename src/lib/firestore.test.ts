@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
 import { evaluateAchievements, type AssessmentMap } from "@/lib/achievement-conditions";
-import { addAchievementsIfNotExists } from "@/lib/firestore";
+import { addAchievementsIfNotExists, deleteAchievementsByLevel } from "@/lib/firestore";
 
 const mocks = vi.hoisted(() => ({
   doc: vi.fn(),
@@ -33,10 +33,14 @@ interface StoredAchievement {
 
 function snapshotOf(stored: StoredAchievement[]) {
   return {
-    docs: stored.map((data, index) => ({
-      id: `stored-${index}`,
-      data: () => data,
-    })),
+    docs: stored.map((data, index) => {
+      const id = `stored-${index}`;
+      return {
+        id,
+        ref: { id },
+        data: () => data,
+      };
+    }),
   };
 }
 
@@ -59,6 +63,14 @@ function categoryIdsOfLevel(levelId: string): string[] {
 const juniorAwards = evaluateAchievements(allCheckedMap(categoryIdsOfLevel("junior")));
 const categoryAward = juniorAwards.find((a) => a.type === "category_perfect")!;
 const levelAward = juniorAwards.find((a) => a.type === "level_master")!;
+
+const middleAwards = evaluateAchievements(allCheckedMap(categoryIdsOfLevel("middle")));
+const middleCategoryAward = middleAwards.find((a) => a.type === "category_perfect")!;
+
+const fullPathAwards = evaluateAchievements(
+  allCheckedMap(categories.map((c) => c.id)),
+);
+const pathAward = fullPathAwards.find((a) => a.type === "path_complete")!;
 
 describe("addAchievementsIfNotExists", () => {
   beforeEach(() => {
@@ -140,5 +152,84 @@ describe("addAchievementsIfNotExists", () => {
     await addAchievementsIfNotExists(UID, [categoryAward]);
 
     expect(mocks.setDoc).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("deleteAchievementsByLevel", () => {
+  const storedOf = (award: { type: string; metadata: Record<string, unknown> }) => ({
+    type: award.type,
+    metadata: award.metadata,
+    achievedAt: new Date(),
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.collection.mockReturnValue(ACHIEVEMENTS_REF);
+    mocks.deleteDoc.mockResolvedValue(undefined);
+  });
+
+  it("удаляет category_perfect, у которого metadata.level_id совпадает со сбрасываемым уровнем", async () => {
+    mocks.getDocs.mockResolvedValue(snapshotOf([storedOf(categoryAward)]));
+
+    await deleteAchievementsByLevel(UID, "junior");
+
+    expect(mocks.collection).toHaveBeenCalledWith({ name: "mock-db" }, "users", UID, "achievements");
+    expect(mocks.deleteDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.deleteDoc).toHaveBeenCalledWith({ id: "stored-0" });
+  });
+
+  it("удаляет level_master, у которого metadata.level_id совпадает со сбрасываемым уровнем", async () => {
+    mocks.getDocs.mockResolvedValue(snapshotOf([storedOf(levelAward)]));
+
+    await deleteAchievementsByLevel(UID, "junior");
+
+    expect(mocks.deleteDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.deleteDoc).toHaveBeenCalledWith({ id: "stored-0" });
+  });
+
+  it("удаляет path_complete, хотя у него нет level_id", async () => {
+    expect(pathAward.metadata).not.toHaveProperty("level_id");
+
+    mocks.getDocs.mockResolvedValue(snapshotOf([storedOf(pathAward)]));
+
+    await deleteAchievementsByLevel(UID, "junior");
+
+    expect(mocks.deleteDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.deleteDoc).toHaveBeenCalledWith({ id: "stored-0" });
+  });
+
+  it("не трогает category_perfect за другой уровень", async () => {
+    expect(middleCategoryAward.metadata.level_id).toBe("middle");
+
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf([storedOf(categoryAward), storedOf(middleCategoryAward)]),
+    );
+
+    await deleteAchievementsByLevel(UID, "junior");
+
+    expect(mocks.deleteDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.deleteDoc).toHaveBeenCalledWith({ id: "stored-0" });
+  });
+
+  it("не трогает level_up и streak_N", async () => {
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf([
+        { type: "level_up", metadata: { from_level: "Junior", to_level: "Middle" }, achievedAt: new Date() },
+        { type: "streak_3", metadata: { days: 3 }, achievedAt: new Date() },
+      ]),
+    );
+
+    await deleteAchievementsByLevel(UID, "junior");
+
+    expect(mocks.deleteDoc).not.toHaveBeenCalled();
+  });
+
+  it("на пустой коллекции ни разу не вызывает deleteDoc", async () => {
+    mocks.getDocs.mockResolvedValue(snapshotOf([]));
+
+    await deleteAchievementsByLevel(UID, "junior");
+
+    expect(mocks.getDocs).toHaveBeenCalledWith(ACHIEVEMENTS_REF);
+    expect(mocks.deleteDoc).not.toHaveBeenCalled();
   });
 });
