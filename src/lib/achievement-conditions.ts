@@ -1,8 +1,7 @@
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
-import { calcCategoryScore, calcTotalScore, isSkillComplete } from "@/lib/scoring";
-import { getCategoryMaxScore } from "@/lib/weights";
+import { calcTotalScore, isSkillComplete } from "@/lib/scoring";
 
 export type AssessmentMap = Record<string, { subtopics?: Record<string, boolean> }>;
 
@@ -48,9 +47,7 @@ export function isLevelMastered(
   const levelCategories = categories.filter((c) => c.levelId === levelId);
   if (levelCategories.length === 0) return false;
 
-  return levelCategories.every(
-    (cat) => calcCategoryScore(cat.id, assessmentMap) >= getCategoryMaxScore(cat.id),
-  );
+  return levelCategories.every((cat) => isCategoryPerfect(cat.id, assessmentMap));
 }
 
 export function evaluateAchievements(assessmentMap: AssessmentMap): AchievementAward[] {
@@ -70,8 +67,12 @@ export function evaluateAchievements(assessmentMap: AssessmentMap): AchievementA
     });
   }
 
+  const masteredLevelIds = new Set(
+    levels.filter((level) => isLevelMastered(level.id, assessmentMap)).map((level) => level.id),
+  );
+
   for (const level of levels) {
-    if (!isLevelMastered(level.id, assessmentMap)) continue;
+    if (!masteredLevelIds.has(level.id)) continue;
     awards.push({
       type: "level_master",
       metadata: {
@@ -85,7 +86,7 @@ export function evaluateAchievements(assessmentMap: AssessmentMap): AchievementA
   }
 
   const allLevelsMastered =
-    levels.length > 0 && levels.every((l) => isLevelMastered(l.id, assessmentMap));
+    levels.length > 0 && levels.every((level) => masteredLevelIds.has(level.id));
   if (allLevelsMastered) {
     awards.push({
       type: "path_complete",

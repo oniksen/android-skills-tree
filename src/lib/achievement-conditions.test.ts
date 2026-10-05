@@ -9,6 +9,7 @@ import {
   selectMissingAwards,
   type AssessmentMap,
 } from "@/lib/achievement-conditions";
+import { getTotalMaxScore } from "@/lib/weights";
 
 const OSNOVY = "junior-osnovy";
 
@@ -68,6 +69,17 @@ describe("isLevelMastered", () => {
       true,
     );
   });
+
+  it("не расходится с isCategoryPerfect: один подтем ломает и категорию, и уровень", () => {
+    const map = allCheckedMap(categoryIdsOfLevel("junior"));
+    const skill = skills.find((s) => s.id === "junior-osnovy-tipy")!;
+    const subtopics = { ...map[skill.id].subtopics };
+    subtopics[skill.subtopics[0]] = false;
+    map[skill.id] = { subtopics };
+
+    expect(isCategoryPerfect("junior-osnovy", map)).toBe(false);
+    expect(isLevelMastered("junior", map)).toBe(false);
+  });
 });
 
 describe("evaluateAchievements", () => {
@@ -86,6 +98,14 @@ describe("evaluateAchievements", () => {
     expect(award!.metadata.level_id).toBe("junior");
     expect(award!.matchKey).toBe("category_id");
     expect(award!.matchValue).toBe(OSNOVY);
+  });
+
+  it("даёт category_perfect для каждой закрытой категории, а не только для первой", () => {
+    const allCategoriesChecked = allCheckedMap(categories.map((c) => c.id));
+
+    expect(
+      evaluateAchievements(allCategoriesChecked).filter((a) => a.type === "category_perfect"),
+    ).toHaveLength(categories.length);
   });
 
   it("не даёт level_master при неполном уровне", () => {
@@ -118,8 +138,7 @@ describe("evaluateAchievements", () => {
     );
 
     expect(award).toBeDefined();
-    expect(typeof award!.metadata.total_score).toBe("number");
-    expect(award!.metadata.total_score).toBeGreaterThan(0);
+    expect(award!.metadata.total_score).toBe(getTotalMaxScore());
   });
 });
 
