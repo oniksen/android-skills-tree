@@ -72,6 +72,7 @@ describe("addAchievementsIfNotExists", () => {
   it("читает achievements один раз на весь пакет и пишет каждую награду", async () => {
     await addAchievementsIfNotExists(UID, [categoryAward, levelAward]);
 
+    expect(mocks.collection).toHaveBeenCalledWith({ name: "mock-db" }, "users", UID, "achievements");
     expect(mocks.getDocs).toHaveBeenCalledTimes(1);
     expect(mocks.getDocs).toHaveBeenCalledWith(ACHIEVEMENTS_REF);
     expect(mocks.setDoc).toHaveBeenCalledTimes(2);
@@ -81,6 +82,24 @@ describe("addAchievementsIfNotExists", () => {
     mocks.getDocs.mockResolvedValue(
       snapshotOf([
         { type: categoryAward.type, metadata: categoryAward.metadata, achievedAt: new Date() },
+      ]),
+    );
+
+    await addAchievementsIfNotExists(UID, [categoryAward]);
+
+    expect(mocks.setDoc).not.toHaveBeenCalled();
+  });
+
+  it("игнорирует записанные matchKey и matchValue, сверяясь по type и metadata", async () => {
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf([
+        {
+          type: categoryAward.type,
+          metadata: categoryAward.metadata,
+          matchKey: "чужой_ключ",
+          matchValue: "чужое_значение",
+          achievedAt: new Date(),
+        },
       ]),
     );
 
@@ -100,7 +119,6 @@ describe("addAchievementsIfNotExists", () => {
     await addAchievementsIfNotExists(UID, [categoryAward]);
 
     expect(mocks.doc).toHaveBeenCalledWith(ACHIEVEMENTS_REF);
-    expect(mocks.doc.mock.calls[0]).toHaveLength(1);
     expect(mocks.setDoc).toHaveBeenCalledWith(AUTO_DOC_REF, {
       type: categoryAward.type,
       metadata: categoryAward.metadata,
