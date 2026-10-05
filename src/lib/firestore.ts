@@ -9,6 +9,11 @@ import {
   query,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import {
+  achievementKey,
+  selectMissingAwards,
+  type AchievementAward,
+} from "@/lib/achievement-conditions";
 import { calcSkillScore } from "@/lib/scoring";
 import type { UserProgress, Assessment, ProjectProgress, Achievement } from "@/types";
 
@@ -175,6 +180,29 @@ export async function addAchievementIfNotExists(
     await setDoc(newRef, {
       type,
       metadata,
+      achievedAt: new Date(),
+    });
+  }
+}
+
+export async function addAchievementsIfNotExists(
+  uid: string,
+  awards: AchievementAward[],
+) {
+  if (awards.length === 0) return;
+
+  const achievementsRef = collection(db, "users", uid, "achievements");
+  const snap = await getDocs(achievementsRef);
+
+  const existingKeys = snap.docs.map((d) => {
+    const data = d.data();
+    return achievementKey(data.type, data.metadata);
+  });
+
+  for (const award of selectMissingAwards(awards, existingKeys)) {
+    await setDoc(doc(achievementsRef), {
+      type: award.type,
+      metadata: award.metadata,
       achievedAt: new Date(),
     });
   }
