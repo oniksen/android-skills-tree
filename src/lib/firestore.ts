@@ -194,9 +194,10 @@ export async function addAchievementsIfNotExists(
   const achievementsRef = collection(db, "users", uid, "achievements");
   const snap = await getDocs(achievementsRef);
 
-  const existingKeys = snap.docs.map((d) => {
-    const data = d.data();
-    return achievementKey(data.type, data.metadata);
+  const existingKeys = snap.docs.flatMap((d) => {
+    const data = d.data() as { type?: string; metadata?: Record<string, unknown> };
+    if (typeof data.type !== "string") return [];
+    return [achievementKey(data.type, data.metadata)];
   });
 
   for (const award of selectMissingAwards(awards, existingKeys)) {
