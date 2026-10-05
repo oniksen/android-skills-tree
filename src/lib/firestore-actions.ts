@@ -9,7 +9,6 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
-  query,
 } from "firebase/firestore";
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
@@ -21,7 +20,15 @@ import {
   getLevelMinScore,
   LEVEL_UP_THRESHOLD,
 } from "@/lib/weights";
-import { addAchievementIfNotExists } from "@/lib/firestore";
+import {
+  addAchievementIfNotExists,
+  addAchievementsIfNotExists,
+  deleteAchievementsByLevel,
+} from "@/lib/firestore";
+import {
+  evaluateAchievements,
+  type AssessmentMap,
+} from "@/lib/achievement-conditions";
 
 function getUid(): string {
   const user = auth.currentUser;
@@ -29,7 +36,7 @@ function getUid(): string {
   return user.uid;
 }
 
-async function getAssessmentMap(uid: string): Promise<Record<string, { score: number; subtopics?: Record<string, boolean> }>> {
+export async function readAssessmentMap(uid: string): Promise<Record<string, { score: number; subtopics?: Record<string, boolean> }>> {
   const assessmentsRef = collection(db, "users", uid, "assessments");
   const snap = await getDocs(assessmentsRef);
   const map: Record<string, { score: number; subtopics?: Record<string, boolean> }> = {};
@@ -87,8 +94,13 @@ async function getProjectProgressMap(
   return map;
 }
 
-export async function backfillTotalScore(uid: string): Promise<number> {
-  const assessmentMap = await getAssessmentMap(uid);
+type PreloadedAssessments = AssessmentMap | Promise<AssessmentMap>;
+
+export async function backfillTotalScore(
+  uid: string,
+  preloadedMap?: PreloadedAssessments,
+): Promise<number> {
+  const assessmentMap = await (preloadedMap ?? readAssessmentMap(uid));
   const totalScore = calcTotalScore(assessmentMap);
 
   const progressRef = doc(db, "users", uid, "progress", "current");
@@ -101,70 +113,14 @@ export async function backfillTotalScore(uid: string): Promise<number> {
   return totalScore;
 }
 
-async function checkAchievements(uid: string) {
-  const assessmentMap = await getAssessmentMap(uid);
-
-  for (const cat of categories) {
-    const catSkills = skills.filter((s) => s.categoryId === cat.id);
-    if (catSkills.length === 0) continue;
-
-    const allMaxed = catSkills.every((s) => {
-      const data = assessmentMap[s.id];
-      return data && s.subtopics.length > 0 && data.subtopics &&
-        s.subtopics.every((st) => data.subtopics?.[st]);
-    });
-
-    if (!allMaxed) continue;
-
-    await addAchievementIfNotExists(
-      uid,
-      "category_perfect",
-      {
-        category_id: cat.id,
-        category_name: cat.name,
-        level_id: cat.levelId,
-      },
-      "category_id",
-      cat.id,
-    );
-  }
-
-  for (const level of levels) {
-    const levelCategories = categories.filter((c) => c.levelId === level.id);
-    if (levelCategories.length === 0) continue;
-
-    const allMaxed = levelCategories.every((cat) => {
-      return calcCategoryScore(cat.id, assessmentMap) >= getCategoryMaxScore(cat.id);
-    });
-
-    if (!allMaxed) continue;
-
-    await addAchievementIfNotExists(
-      uid,
-      "level_master",
-      { level_id: level.id, level_name: level.name, level_slug: level.slug },
-      "level_id",
-      level.id,
-    );
-  }
-
-  const achievementsRef = collection(db, "users", uid, "achievements");
-  const achievementsSnap = await getDocs(query(achievementsRef));
-  const masteredLevelIds = new Set<string>();
-  achievementsSnap.docs.forEach((d) => {
-    const data = d.data();
-    if (data.type === "level_master" && data.metadata?.level_id) {
-      masteredLevelIds.add(data.metadata.level_id);
-    }
-  });
-
-  const allLevelsMastered = levels.every((l) => masteredLevelIds.has(l.id));
-  if (allLevelsMastered && levels.length > 0) {
-    const progress = await getUserProgress(uid);
-    await addAchievementIfNotExists(uid, "path_complete", {
-      total_score: progress?.totalScore ?? 0,
-    });
-  }
+export async function checkAchievements(
+  uid: string,
+  preloadedMap?: PreloadedAssessments,
+) {
+  const assessmentMap = await (preloadedMap ?? readAssessmentMap(uid));
+  const awards = evaluateAchievements(assessmentMap);
+  await addAchievementsIfNotExists(uid, awards);
+  return awards;
 }
 
 export async function checkLevelUp() {
@@ -178,7 +134,7 @@ export async function checkLevelUp() {
   if (currentIndex >= levels.length - 1) return null;
 
   const nextLevel = levels[currentIndex + 1];
-  const assessmentMap = await getAssessmentMap(uid);
+  const assessmentMap = await readAssessmentMap(uid);
 
   const currentCategories = categories.filter(
     (c) => c.levelId === currentLevelId,
@@ -281,6 +237,8 @@ export async function resetLevelProgress(levelId: string) {
     await deleteDoc(projectRef);
   }
 
-  const assessmentMap = await getAssessmentMap(uid);
+  await deleteAchievementsByLevel(uid, levelId);
+
+  const assessmentMap = await readAssessmentMap(uid);
   await updateUserProgress(uid, { totalScore: calcTotalScore(assessmentMap) });
 }

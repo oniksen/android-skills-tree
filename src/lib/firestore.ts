@@ -9,6 +9,11 @@ import {
   query,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import {
+  achievementKey,
+  selectMissingAwards,
+  type AchievementAward,
+} from "@/lib/achievement-conditions";
 import { calcSkillScore } from "@/lib/scoring";
 import type { UserProgress, Assessment, ProjectProgress, Achievement } from "@/types";
 
@@ -79,16 +84,6 @@ export async function saveAssessment(
     score,
     updatedAt: new Date(),
   });
-}
-
-export async function deleteAssessmentsByLevel(
-  uid: string,
-  skillIds: string[],
-) {
-  for (const skillId of skillIds) {
-    const assessmentRef = doc(db, "users", uid, "assessments", skillId);
-    await deleteDoc(assessmentRef);
-  }
 }
 
 // ============ Project Progress ============
@@ -177,6 +172,68 @@ export async function addAchievementIfNotExists(
       metadata,
       achievedAt: new Date(),
     });
+  }
+}
+
+export async function addAchievementsIfNotExists(
+  uid: string,
+  awards: AchievementAward[],
+) {
+  if (awards.length === 0) return;
+
+  const achievementsRef = collection(db, "users", uid, "achievements");
+  const snap = await getDocs(achievementsRef);
+
+  const existingKeys = snap.docs.flatMap((d) => {
+    const data = d.data() as { type?: string; metadata?: Record<string, unknown> };
+    if (typeof data.type !== "string") return [];
+    return [achievementKey(data.type, data.metadata)];
+  });
+
+  for (const award of selectMissingAwards(awards, existingKeys)) {
+    await setDoc(doc(achievementsRef, achievementKey(award.type, award.metadata)), {
+      type: award.type,
+      metadata: award.metadata,
+      achievedAt: new Date(),
+    });
+  }
+}
+
+export async function deleteAchievementsByLevel(uid: string, levelId: string) {
+  const achievementsRef = collection(db, "users", uid, "achievements");
+  const snap = await getDocs(achievementsRef);
+
+  for (const achievementDoc of snap.docs) {
+    const data = achievementDoc.data() as {
+      type?: string;
+      metadata?: Record<string, unknown>;
+    };
+    const isLevelScoped =
+      (data.type === "category_perfect" || data.type === "level_master") &&
+      data.metadata?.level_id === levelId;
+    const invalidatesPath = data.type === "path_complete";
+
+    if (isLevelScoped || invalidatesPath) {
+      await deleteDoc(achievementDoc.ref);
+    }
+  }
+}
+
+export async function deleteCategoryPerfectAchievement(uid: string, categoryId: string) {
+  const achievementsRef = collection(db, "users", uid, "achievements");
+  const snap = await getDocs(achievementsRef);
+
+  const revokedKey = achievementKey("category_perfect", { category_id: categoryId });
+
+  for (const achievementDoc of snap.docs) {
+    const data = achievementDoc.data() as {
+      type?: string;
+      metadata?: Record<string, unknown>;
+    };
+    if (typeof data.type !== "string") continue;
+    if (achievementKey(data.type, data.metadata) !== revokedKey) continue;
+
+    await deleteDoc(achievementDoc.ref);
   }
 }
 

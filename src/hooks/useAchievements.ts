@@ -7,7 +7,6 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { addAchievementIfNotExists } from "@/lib/firestore";
 import type { Achievement } from "@/types";
 
 export function useAchievements() {
@@ -44,15 +43,5 @@ export function useAchievements() {
     return () => unsubscribe();
   }, [uid, authLoading]);
 
-  const addAchievement = async (
-    type: string,
-    metadata: Record<string, unknown>,
-    matchKey?: string,
-    matchValue?: unknown,
-  ) => {
-    if (!uid) return;
-    await addAchievementIfNotExists(uid, type, metadata, matchKey, matchValue);
-  };
-
-  return { achievements, loading, addAchievementIfNotExists: addAchievement };
+  return { achievements, loading };
 }

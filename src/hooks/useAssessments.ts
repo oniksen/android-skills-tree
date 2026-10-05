@@ -6,7 +6,6 @@ import {
   collection,
   doc,
   setDoc,
-  deleteDoc,
   onSnapshot,
   runTransaction,
 } from "firebase/firestore";
@@ -14,6 +13,10 @@ import { syncStreak } from "@/lib/streak";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { calcSkillScore, calcTotalScore, isSkillComplete } from "@/lib/scoring";
 import { getCrystalRewardForSkill } from "@/lib/currency";
+import { checkAchievements } from "@/lib/firestore-actions";
+import { deleteCategoryPerfectAchievement } from "@/lib/firestore";
+import { isCategoryPerfect } from "@/lib/achievement-conditions";
+import { skills } from "@/data/skills";
 import type { AssessmentData, CurrencyData } from "@/types";
 
 export interface CrystalAward {
@@ -141,6 +144,20 @@ export function useAssessments() {
         const progressRef = doc(db, "users", uid, "progress", "current");
         await setDoc(progressRef, { totalScore }, { merge: true });
 
+        const categoryId = skills.find((s) => s.id === skillId)?.categoryId;
+
+        if (justCompleted) {
+          void checkAchievements(uid, nextMap).catch((error) => {
+            console.error("Error checking achievements:", error);
+          });
+        }
+
+        if (categoryId && nextValue === false && !isCategoryPerfect(categoryId, nextMap)) {
+          await deleteCategoryPerfectAchievement(uid, categoryId).catch((error) => {
+            console.error("Error revoking achievement:", error);
+          });
+        }
+
         if (awarded > 0) {
           setLastAwarded({ skillId, amount: awarded, id: Date.now() });
         }
@@ -158,19 +175,10 @@ export function useAssessments() {
     [uid],
   );
 
-  const deleteAssessmentsByLevel = async (skillIds: string[]) => {
-    if (!uid) return;
-    for (const skillId of skillIds) {
-      const assessmentRef = doc(db, "users", uid, "assessments", skillId);
-      await deleteDoc(assessmentRef);
-    }
-  };
-
   return {
     assessmentMap,
     loading,
     toggleSubtopic,
-    deleteAssessmentsByLevel,
     lastAwarded,
   };
 }
