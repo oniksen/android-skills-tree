@@ -14,6 +14,7 @@ import { syncStreak } from "@/lib/streak";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { calcSkillScore, calcTotalScore, isSkillComplete } from "@/lib/scoring";
 import { getCrystalRewardForSkill } from "@/lib/currency";
+import { checkAchievements } from "@/lib/firestore-actions";
 import type { AssessmentData, CurrencyData } from "@/types";
 
 export interface CrystalAward {
@@ -140,6 +141,12 @@ export function useAssessments() {
         const totalScore = calcTotalScore(nextMap);
         const progressRef = doc(db, "users", uid, "progress", "current");
         await setDoc(progressRef, { totalScore }, { merge: true });
+
+        if (justCompleted) {
+          void checkAchievements(uid, nextMap).catch((error) => {
+            console.error("Error checking achievements:", error);
+          });
+        }
 
         if (awarded > 0) {
           setLastAwarded({ skillId, amount: awarded, id: Date.now() });

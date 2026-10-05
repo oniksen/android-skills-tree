@@ -9,7 +9,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { backfillTotalScore } from "@/lib/firestore-actions";
+import { backfillTotalScore, checkAchievements } from "@/lib/firestore-actions";
 import type { UserProgress } from "@/types";
 
 const DEFAULT_PROGRESS: UserProgress = {
@@ -57,6 +57,9 @@ export function useUserProgress() {
     if (!uid) return;
     void backfillTotalScore(uid).catch((error) => {
       console.error("Error recalculating total score:", error);
+    });
+    void checkAchievements(uid).catch((error) => {
+      console.error("Error checking achievements:", error);
     });
   }, [uid]);
 
