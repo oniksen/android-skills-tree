@@ -43,3 +43,9 @@ next-env.d.ts
 # project-specific
 .mcp/database.db
 opencode.json
+
+# local agent scratch (plans, sdd briefs/reports)
+.opencode/
+
+# git worktrees used for isolated feature work
+.worktrees/
