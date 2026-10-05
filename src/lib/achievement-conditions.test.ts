@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
+import { levels } from "@/data/levels";
 import {
   achievementKey,
   evaluateAchievements,
@@ -126,6 +127,14 @@ describe("evaluateAchievements", () => {
     expect(award!.matchValue).toBe("junior");
   });
 
+  it("даёт level_master для каждого закрытого уровня, а не только для первого", () => {
+    const allLevelsChecked = allCheckedMap(categories.map((c) => c.id));
+
+    expect(
+      evaluateAchievements(allLevelsChecked).filter((a) => a.type === "level_master"),
+    ).toHaveLength(levels.length);
+  });
+
   it("не даёт path_complete пока закрыт не весь путь", () => {
     const awards = evaluateAchievements(allCheckedMap(categoryIdsOfLevel("junior")));
 
@@ -192,5 +201,19 @@ describe("selectMissingAwards", () => {
     const award = evaluateAchievements(allCheckedMap([OSNOVY]))[0];
 
     expect(selectMissingAwards([award, award], [])).toEqual([award]);
+  });
+
+  it("matchValue каждого award совпадает с ключом дедупликации", () => {
+    const awards = evaluateAchievements(allCheckedMap(categories.map((c) => c.id))).filter(
+      (a) => a.matchKey !== undefined,
+    );
+
+    expect(awards.length).toBeGreaterThan(0);
+    for (const award of awards) {
+      expect(award.matchValue).toBeDefined();
+      expect(achievementKey(award.type, award.metadata)).toBe(
+        `${award.type}::${award.matchValue}`,
+      );
+    }
   });
 });
