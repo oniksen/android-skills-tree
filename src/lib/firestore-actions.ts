@@ -36,7 +36,7 @@ function getUid(): string {
   return user.uid;
 }
 
-async function getAssessmentMap(uid: string): Promise<Record<string, { score: number; subtopics?: Record<string, boolean> }>> {
+export async function getAssessmentMap(uid: string): Promise<Record<string, { score: number; subtopics?: Record<string, boolean> }>> {
   const assessmentsRef = collection(db, "users", uid, "assessments");
   const snap = await getDocs(assessmentsRef);
   const map: Record<string, { score: number; subtopics?: Record<string, boolean> }> = {};
@@ -94,8 +94,13 @@ async function getProjectProgressMap(
   return map;
 }
 
-export async function backfillTotalScore(uid: string): Promise<number> {
-  const assessmentMap = await getAssessmentMap(uid);
+type PreloadedAssessments = AssessmentMap | Promise<AssessmentMap>;
+
+export async function backfillTotalScore(
+  uid: string,
+  preloadedMap?: PreloadedAssessments,
+): Promise<number> {
+  const assessmentMap = await (preloadedMap ?? getAssessmentMap(uid));
   const totalScore = calcTotalScore(assessmentMap);
 
   const progressRef = doc(db, "users", uid, "progress", "current");
@@ -108,8 +113,11 @@ export async function backfillTotalScore(uid: string): Promise<number> {
   return totalScore;
 }
 
-export async function checkAchievements(uid: string, preloadedMap?: AssessmentMap) {
-  const assessmentMap = preloadedMap ?? (await getAssessmentMap(uid));
+export async function checkAchievements(
+  uid: string,
+  preloadedMap?: PreloadedAssessments,
+) {
+  const assessmentMap = await (preloadedMap ?? getAssessmentMap(uid));
   const awards = evaluateAchievements(assessmentMap);
   await addAchievementsIfNotExists(uid, awards);
   return awards;

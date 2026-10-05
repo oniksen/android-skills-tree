@@ -86,16 +86,6 @@ export async function saveAssessment(
   });
 }
 
-export async function deleteAssessmentsByLevel(
-  uid: string,
-  skillIds: string[],
-) {
-  for (const skillId of skillIds) {
-    const assessmentRef = doc(db, "users", uid, "assessments", skillId);
-    await deleteDoc(assessmentRef);
-  }
-}
-
 // ============ Project Progress ============
 
 export async function getUserProjectProgress(

@@ -1,8 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
+import { calcTotalScore } from "@/lib/scoring";
 import { type AssessmentMap } from "@/lib/achievement-conditions";
-import { checkAchievements } from "@/lib/firestore-actions";
+import {
+  backfillTotalScore,
+  checkAchievements,
+  getAssessmentMap,
+} from "@/lib/firestore-actions";
 
 const mocks = vi.hoisted(() => ({
   collection: vi.fn(),
@@ -115,5 +120,59 @@ describe("checkAchievements", () => {
       .filter((award) => award.type === "category_perfect")
       .map((award) => award.metadata.category_id);
     expect(awardedCategoryIds).toEqual(juniorCategoryIds);
+  });
+});
+
+describe("backfillTotalScore", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.collection.mockImplementation(
+      (...segments: unknown[]) => ({ path: segments.slice(1).join("/") }),
+    );
+    mocks.getDocs.mockImplementation((ref: { path: string }) =>
+      Promise.resolve(
+        ref.path.endsWith("/assessments")
+          ? assessmentSnapshot(juniorMap)
+          : snapshotOf([]),
+      ),
+    );
+    mocks.doc.mockReturnValue({ name: "doc-ref" });
+    mocks.setDoc.mockResolvedValue(undefined);
+    mocks.updateDoc.mockResolvedValue(undefined);
+    mocks.getDoc.mockResolvedValue({
+      exists: () => true,
+      data: () => ({ totalScore: 0 }),
+    });
+  });
+
+  function assessmentReads(): number {
+    return mocks.getDocs.mock.calls.filter(([ref]) =>
+      (ref as { path: string }).path.endsWith("/assessments"),
+    ).length;
+  }
+
+  it("с готовой картой не читает коллекцию assessments, без неё — читает один раз", async () => {
+    await backfillTotalScore(UID, juniorMap);
+
+    expect(assessmentReads()).toBe(0);
+
+    await backfillTotalScore(UID);
+
+    expect(assessmentReads()).toBe(1);
+  });
+
+  it("принимает общий промис с картой: обе функции читают assessments один раз и считают по ней", async () => {
+    const shared = getAssessmentMap(UID);
+
+    const [totalScore, awards] = await Promise.all([
+      backfillTotalScore(UID, shared),
+      checkAchievements(UID, shared),
+    ]);
+
+    expect(assessmentReads()).toBe(1);
+    expect(totalScore).toBe(calcTotalScore(juniorMap));
+    expect(
+      awards.filter((award) => award.type === "category_perfect"),
+    ).toHaveLength(juniorCategoryIds.length);
   });
 });
