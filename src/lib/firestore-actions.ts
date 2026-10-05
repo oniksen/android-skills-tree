@@ -36,7 +36,7 @@ function getUid(): string {
   return user.uid;
 }
 
-export async function getAssessmentMap(uid: string): Promise<Record<string, { score: number; subtopics?: Record<string, boolean> }>> {
+export async function readAssessmentMap(uid: string): Promise<Record<string, { score: number; subtopics?: Record<string, boolean> }>> {
   const assessmentsRef = collection(db, "users", uid, "assessments");
   const snap = await getDocs(assessmentsRef);
   const map: Record<string, { score: number; subtopics?: Record<string, boolean> }> = {};
@@ -100,7 +100,7 @@ export async function backfillTotalScore(
   uid: string,
   preloadedMap?: PreloadedAssessments,
 ): Promise<number> {
-  const assessmentMap = await (preloadedMap ?? getAssessmentMap(uid));
+  const assessmentMap = await (preloadedMap ?? readAssessmentMap(uid));
   const totalScore = calcTotalScore(assessmentMap);
 
   const progressRef = doc(db, "users", uid, "progress", "current");
@@ -117,7 +117,7 @@ export async function checkAchievements(
   uid: string,
   preloadedMap?: PreloadedAssessments,
 ) {
-  const assessmentMap = await (preloadedMap ?? getAssessmentMap(uid));
+  const assessmentMap = await (preloadedMap ?? readAssessmentMap(uid));
   const awards = evaluateAchievements(assessmentMap);
   await addAchievementsIfNotExists(uid, awards);
   return awards;
@@ -134,7 +134,7 @@ export async function checkLevelUp() {
   if (currentIndex >= levels.length - 1) return null;
 
   const nextLevel = levels[currentIndex + 1];
-  const assessmentMap = await getAssessmentMap(uid);
+  const assessmentMap = await readAssessmentMap(uid);
 
   const currentCategories = categories.filter(
     (c) => c.levelId === currentLevelId,
@@ -239,6 +239,6 @@ export async function resetLevelProgress(levelId: string) {
 
   await deleteAchievementsByLevel(uid, levelId);
 
-  const assessmentMap = await getAssessmentMap(uid);
+  const assessmentMap = await readAssessmentMap(uid);
   await updateUserProgress(uid, { totalScore: calcTotalScore(assessmentMap) });
 }

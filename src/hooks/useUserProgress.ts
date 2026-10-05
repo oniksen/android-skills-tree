@@ -12,7 +12,7 @@ import { useFirebaseAuth } from "./useFirebaseAuth";
 import {
   backfillTotalScore,
   checkAchievements,
-  getAssessmentMap,
+  readAssessmentMap,
 } from "@/lib/firestore-actions";
 import type { UserProgress } from "@/types";
 
@@ -59,7 +59,7 @@ export function useUserProgress() {
 
   useEffect(() => {
     if (!uid) return;
-    const assessments = getAssessmentMap(uid);
+    const assessments = readAssessmentMap(uid);
     void backfillTotalScore(uid, assessments).catch((error) => {
       console.error("Error recalculating total score:", error);
     });

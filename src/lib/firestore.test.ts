@@ -2,7 +2,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
 import { evaluateAchievements, achievementKey, type AssessmentMap } from "@/lib/achievement-conditions";
-import { addAchievementsIfNotExists, deleteAchievementsByLevel } from "@/lib/firestore";
+import {
+  addAchievementsIfNotExists,
+  deleteAchievementsByLevel,
+  deleteCategoryPerfectAchievement,
+} from "@/lib/firestore";
 
 const mocks = vi.hoisted(() => ({
   doc: vi.fn(),
@@ -63,6 +67,16 @@ function categoryIdsOfLevel(levelId: string): string[] {
 const juniorAwards = evaluateAchievements(allCheckedMap(categoryIdsOfLevel("junior")));
 const categoryAward = juniorAwards.find((a) => a.type === "category_perfect")!;
 const levelAward = juniorAwards.find((a) => a.type === "level_master")!;
+
+const siblingCategoryAward = juniorAwards.find(
+  (a) =>
+    a.type === "category_perfect" &&
+    a.metadata.category_id !== categoryAward.metadata.category_id,
+)!;
+
+const CATEGORY_ID = categoryAward.metadata.category_id as string;
+const SIBLING_CATEGORY_ID = siblingCategoryAward.metadata.category_id as string;
+const LEGACY_AUTO_ID = "aBcDeFgHiJkLmNoPqRsT";
 
 const middleAwards = evaluateAchievements(allCheckedMap(categoryIdsOfLevel("middle")));
 const middleCategoryAward = middleAwards.find((a) => a.type === "category_perfect")!;
@@ -249,6 +263,82 @@ describe("deleteAchievementsByLevel", () => {
     mocks.getDocs.mockResolvedValue(snapshotOf([]));
 
     await deleteAchievementsByLevel(UID, "junior");
+
+    expect(mocks.getDocs).toHaveBeenCalledWith(ACHIEVEMENTS_REF);
+    expect(mocks.deleteDoc).not.toHaveBeenCalled();
+  });
+});
+
+describe("deleteCategoryPerfectAchievement", () => {
+  const storedOf = (award: { type: string; metadata: Record<string, unknown> }) => ({
+    type: award.type,
+    metadata: award.metadata,
+    achievedAt: new Date(),
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.collection.mockReturnValue(ACHIEVEMENTS_REF);
+    mocks.doc.mockReturnValue(AUTO_DOC_REF);
+    mocks.deleteDoc.mockResolvedValue(undefined);
+  });
+
+  it("удаляет category_perfect под авто-id, каким его писали до детерминированных id", async () => {
+    mocks.getDocs.mockResolvedValue(snapshotOf([storedOf(categoryAward)], [LEGACY_AUTO_ID]));
+
+    await deleteCategoryPerfectAchievement(UID, CATEGORY_ID);
+
+    expect(mocks.collection).toHaveBeenCalledWith({ name: "mock-db" }, "users", UID, "achievements");
+    expect(mocks.getDocs).toHaveBeenCalledWith(ACHIEVEMENTS_REF);
+    expect(mocks.deleteDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.deleteDoc).toHaveBeenCalledWith({ id: LEGACY_AUTO_ID });
+  });
+
+  it("удаляет category_perfect, сохранённый под id, равным ключу награды", async () => {
+    const key = achievementKey(categoryAward.type, categoryAward.metadata);
+
+    mocks.getDocs.mockResolvedValue(snapshotOf([storedOf(categoryAward)], [key]));
+
+    await deleteCategoryPerfectAchievement(UID, CATEGORY_ID);
+
+    expect(mocks.deleteDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.deleteDoc).toHaveBeenCalledWith({ id: key });
+  });
+
+  it("не трогает category_perfect за другую категорию того же уровня", async () => {
+    expect(siblingCategoryAward.metadata.level_id).toBe(categoryAward.metadata.level_id);
+    expect(SIBLING_CATEGORY_ID).not.toBe(CATEGORY_ID);
+
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf(
+        [storedOf(categoryAward), storedOf(siblingCategoryAward)],
+        [LEGACY_AUTO_ID, "sibling-id"],
+      ),
+    );
+
+    await deleteCategoryPerfectAchievement(UID, CATEGORY_ID);
+
+    expect(mocks.deleteDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.deleteDoc).toHaveBeenCalledWith({ id: LEGACY_AUTO_ID });
+  });
+
+  it("не трогает level_master и path_complete", async () => {
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf(
+        [storedOf(levelAward), storedOf(pathAward)],
+        [LEGACY_AUTO_ID, "path-id"],
+      ),
+    );
+
+    await deleteCategoryPerfectAchievement(UID, CATEGORY_ID);
+
+    expect(mocks.deleteDoc).not.toHaveBeenCalled();
+  });
+
+  it("на пустой коллекции ни разу не вызывает deleteDoc", async () => {
+    mocks.getDocs.mockResolvedValue(snapshotOf([]));
+
+    await deleteCategoryPerfectAchievement(UID, CATEGORY_ID);
 
     expect(mocks.getDocs).toHaveBeenCalledWith(ACHIEVEMENTS_REF);
     expect(mocks.deleteDoc).not.toHaveBeenCalled();

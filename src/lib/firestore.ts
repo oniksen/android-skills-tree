@@ -219,6 +219,24 @@ export async function deleteAchievementsByLevel(uid: string, levelId: string) {
   }
 }
 
+export async function deleteCategoryPerfectAchievement(uid: string, categoryId: string) {
+  const achievementsRef = collection(db, "users", uid, "achievements");
+  const snap = await getDocs(achievementsRef);
+
+  const revokedKey = achievementKey("category_perfect", { category_id: categoryId });
+
+  for (const achievementDoc of snap.docs) {
+    const data = achievementDoc.data() as {
+      type?: string;
+      metadata?: Record<string, unknown>;
+    };
+    if (typeof data.type !== "string") continue;
+    if (achievementKey(data.type, data.metadata) !== revokedKey) continue;
+
+    await deleteDoc(achievementDoc.ref);
+  }
+}
+
 // ============ Helpers ============
 
 export function createDefaultUserProgress(uid: string) {

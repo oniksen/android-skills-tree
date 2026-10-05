@@ -55,6 +55,18 @@ describe("isCategoryPerfect", () => {
   it("возвращает false для несуществующей категории", () => {
     expect(isCategoryPerfect("no-such-category", allCheckedMap([OSNOVY]))).toBe(false);
   });
+
+  it("после снятия одного подтема ломает только свою категорию, а не соседние", () => {
+    const sibling = categoryIdsOfLevel("junior").find((id) => id !== OSNOVY)!;
+    const map = allCheckedMap([OSNOVY, sibling]);
+    const unticked = skills.find((s) => s.categoryId === OSNOVY)!;
+    map[unticked.id] = {
+      subtopics: { ...map[unticked.id].subtopics, [unticked.subtopics[0]]: false },
+    };
+
+    expect(isCategoryPerfect(OSNOVY, map)).toBe(false);
+    expect(isCategoryPerfect(sibling, map)).toBe(true);
+  });
 });
 
 describe("isLevelMastered", () => {

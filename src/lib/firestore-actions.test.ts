@@ -6,7 +6,7 @@ import { type AssessmentMap } from "@/lib/achievement-conditions";
 import {
   backfillTotalScore,
   checkAchievements,
-  getAssessmentMap,
+  readAssessmentMap,
 } from "@/lib/firestore-actions";
 
 const mocks = vi.hoisted(() => ({
@@ -162,7 +162,7 @@ describe("backfillTotalScore", () => {
   });
 
   it("принимает общий промис с картой: обе функции читают assessments один раз и считают по ней", async () => {
-    const shared = getAssessmentMap(UID);
+    const shared = readAssessmentMap(UID);
 
     const [totalScore, awards] = await Promise.all([
       backfillTotalScore(UID, shared),

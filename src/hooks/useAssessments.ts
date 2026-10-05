@@ -14,9 +14,9 @@ import { useFirebaseAuth } from "./useFirebaseAuth";
 import { calcSkillScore, calcTotalScore, isSkillComplete } from "@/lib/scoring";
 import { getCrystalRewardForSkill } from "@/lib/currency";
 import { checkAchievements } from "@/lib/firestore-actions";
-import { deleteAchievementsByLevel } from "@/lib/firestore";
+import { deleteCategoryPerfectAchievement } from "@/lib/firestore";
+import { isCategoryPerfect } from "@/lib/achievement-conditions";
 import { skills } from "@/data/skills";
-import { categories } from "@/data/categories";
 import type { AssessmentData, CurrencyData } from "@/types";
 
 export interface CrystalAward {
@@ -145,7 +145,6 @@ export function useAssessments() {
         await setDoc(progressRef, { totalScore }, { merge: true });
 
         const categoryId = skills.find((s) => s.id === skillId)?.categoryId;
-        const levelId = categories.find((c) => c.id === categoryId)?.levelId;
 
         if (justCompleted) {
           void checkAchievements(uid, nextMap).catch((error) => {
@@ -153,9 +152,9 @@ export function useAssessments() {
           });
         }
 
-        if (nextValue === false && levelId) {
-          void deleteAchievementsByLevel(uid, levelId).catch((error) => {
-            console.error("Error revoking achievements:", error);
+        if (categoryId && nextValue === false && !isCategoryPerfect(categoryId, nextMap)) {
+          await deleteCategoryPerfectAchievement(uid, categoryId).catch((error) => {
+            console.error("Error revoking achievement:", error);
           });
         }
 
