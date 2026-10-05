@@ -201,7 +201,7 @@ export async function addAchievementsIfNotExists(
   });
 
   for (const award of selectMissingAwards(awards, existingKeys)) {
-    await setDoc(doc(achievementsRef), {
+    await setDoc(doc(achievementsRef, achievementKey(award.type, award.metadata)), {
       type: award.type,
       metadata: award.metadata,
       achievedAt: new Date(),

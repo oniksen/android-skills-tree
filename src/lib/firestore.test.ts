@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
-import { evaluateAchievements, type AssessmentMap } from "@/lib/achievement-conditions";
+import { evaluateAchievements, achievementKey, type AssessmentMap } from "@/lib/achievement-conditions";
 import { addAchievementsIfNotExists, deleteAchievementsByLevel } from "@/lib/firestore";
 
 const mocks = vi.hoisted(() => ({
@@ -31,10 +31,10 @@ interface StoredAchievement {
   achievedAt?: Date;
 }
 
-function snapshotOf(stored: StoredAchievement[]) {
+function snapshotOf(stored: StoredAchievement[], ids?: string[]) {
   return {
     docs: stored.map((data, index) => {
-      const id = `stored-${index}`;
+      const id = ids?.[index] ?? `stored-${index}`;
       return {
         id,
         ref: { id },
@@ -127,15 +127,36 @@ describe("addAchievementsIfNotExists", () => {
     expect(mocks.setDoc).not.toHaveBeenCalled();
   });
 
-  it("добавляет документ с авто-id, а не перезаписывает существующий", async () => {
+  it("пишет документ под id, равным ключу награды, а не под авто-id", async () => {
     await addAchievementsIfNotExists(UID, [categoryAward]);
 
-    expect(mocks.doc).toHaveBeenCalledWith(ACHIEVEMENTS_REF);
+    expect(mocks.doc).toHaveBeenCalledWith(
+      ACHIEVEMENTS_REF,
+      achievementKey(categoryAward.type, categoryAward.metadata),
+    );
     expect(mocks.setDoc).toHaveBeenCalledWith(AUTO_DOC_REF, {
       type: categoryAward.type,
       metadata: categoryAward.metadata,
       achievedAt: expect.any(Date),
     });
+  });
+
+  it("второй вызов для уже сохранённой награды не пишет заново", async () => {
+    await addAchievementsIfNotExists(UID, [categoryAward]);
+
+    expect(mocks.setDoc).toHaveBeenCalledTimes(1);
+
+    const key = achievementKey(categoryAward.type, categoryAward.metadata);
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf(
+        [{ type: categoryAward.type, metadata: categoryAward.metadata, achievedAt: new Date() }],
+        [key],
+      ),
+    );
+
+    await addAchievementsIfNotExists(UID, [categoryAward]);
+
+    expect(mocks.setDoc).toHaveBeenCalledTimes(1);
   });
 
   it("пишет награду того же типа, если у сохранённой другой category_id", async () => {
