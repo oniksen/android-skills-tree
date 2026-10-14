@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import SkillDetailContent, { type SkillDetailContentProps } from "./SkillDetailContent";
@@ -28,7 +29,9 @@ export default function SkillDetailModal({ open, onClose, ...contentProps }: Ski
     };
   }, [open, onClose]);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
@@ -37,7 +40,7 @@ export default function SkillDetailModal({ open, onClose, ...contentProps }: Ski
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/70 backdrop-blur-md sm:items-center"
+          className="fixed inset-0 z-[60] flex items-end justify-center bg-slate-950/70 backdrop-blur-md sm:items-center"
           onClick={onClose}
         >
           <motion.div
@@ -66,6 +69,7 @@ export default function SkillDetailModal({ open, onClose, ...contentProps }: Ski
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
