@@ -41,7 +41,7 @@ function Brand() {
         <GitBranch className="h-4 w-4" strokeWidth={2.4} />
         <span className="absolute -inset-1 -z-10 rounded-lg bg-gradient-to-br from-blue-500/40 to-fuchsia-500/40 blur-md" />
       </span>
-      <span className="text-base font-bold tracking-tight">
+      <span className="hidden nav-md:block text-base font-bold tracking-tight">
         <span className="text-gradient">Android</span>{" "}
         <span className="text-white">Skill Tree</span>
       </span>
