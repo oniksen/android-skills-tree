@@ -2,7 +2,7 @@
 import { motion } from "motion/react";
 import SkillRow from "./SkillRow";
 import ProgressBar from "@/components/shared/ProgressBar";
-import { calcCategoryScore, calcSkillCompletionPercent } from "@/lib/scoring";
+import { calcCategoryScore } from "@/lib/scoring";
 import { getCategoryMaxScore } from "@/lib/weights";
 
 interface SkillItem {
@@ -57,21 +57,17 @@ export default function CategoryCard({ categoryId, name, skills, assessments, is
       </div>
       <ProgressBar current={catScore} max={maxScore} color={isLocked ? "bg-yellow-500" : "bg-blue-500"} showLabel={false} shimmer />
       <div className="mt-3 space-y-0.5">
-        {sorted.map(skill => {
-          const percent = calcSkillCompletionPercent(skill.id, assessments[skill.id]?.subtopics);
-          return (
-            <SkillRow
-              key={skill.id}
-              skillId={skill.id}
-              name={skill.name}
-              description={skill.description}
-              subtopics={skill.subtopics}
-              subtopicPercent={percent}
-              required={skill.requiredForLevelUp}
-              disabled={isLocked}
-            />
-          );
-        })}
+        {sorted.map(skill => (
+          <SkillRow
+            key={skill.id}
+            skillId={skill.id}
+            name={skill.name}
+            description={skill.description}
+            subtopics={skill.subtopics}
+            required={skill.requiredForLevelUp}
+            disabled={isLocked}
+          />
+        ))}
       </div>
     </motion.div>
   );

@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useParams, useRouter } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 import DifficultyBadge from "@/components/shared/DifficultyBadge";
+import { isDesktopViewport, skillDetailHref } from "@/lib/viewport";
+import SkillDetailModal from "./SkillDetailModal";
 
 interface SkillRowReadonlyProps {
   skillId: string;
@@ -12,68 +15,51 @@ interface SkillRowReadonlyProps {
 }
 
 export default function SkillRowReadonly({ skillId, name, description, subtopics }: SkillRowReadonlyProps) {
-  const [expanded, setExpanded] = useState(false);
-  const hasContent = description || subtopics.length > 0;
+  const router = useRouter();
+  const params = useParams();
+  const slug = (params?.slug as string) ?? "";
+
+  const [open, setOpen] = useState(false);
+  const hasContent = !!description || subtopics.length > 0;
+
+  const handleOpen = () => {
+    if (!hasContent) return;
+    if (isDesktopViewport()) {
+      setOpen(true);
+    } else if (slug) {
+      router.push(skillDetailHref(slug, skillId));
+    }
+  };
 
   return (
     <div className="py-1">
-      <div
-        className={`flex items-center justify-between px-3 rounded-lg transition-colors ${
-          hasContent && expanded ? "bg-white/[0.03]" : "hover:bg-white/[0.03]"
-        }`}
-      >
-        <div className="flex items-center gap-2 min-w-0">
-          {hasContent && (
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="text-slate-600 hover:text-slate-400 transition-colors shrink-0"
-              aria-label={expanded ? "Свернуть" : "Развернуть"}
-            >
-              <svg
-                className={`w-4 h-4 transition-transform ${expanded ? "rotate-90" : ""}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          )}
-          <span className="text-base text-slate-300 truncate">{name}</span>
-        </div>
-        <DifficultyBadge skillId={skillId} />
+      <div className={`rounded-lg transition-colors ${hasContent ? "hover:bg-white/[0.03]" : ""}`}>
+        <button
+          type="button"
+          onClick={handleOpen}
+          disabled={!hasContent}
+          aria-haspopup={hasContent ? "dialog" : undefined}
+          className="flex w-full items-center justify-between px-3 py-1 text-left disabled:cursor-default"
+        >
+          <div className="flex min-w-0 items-center gap-2">
+            {hasContent && <ChevronRight className="h-4 w-4 shrink-0 text-slate-600" />}
+            <span className="truncate text-base text-slate-300">{name}</span>
+          </div>
+          <DifficultyBadge skillId={skillId} />
+        </button>
       </div>
 
-      <AnimatePresence initial={false}>
-        {expanded && hasContent && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden"
-          >
-            <div className="ml-9 mr-3 mb-1 mt-1 pl-3 border-l border-white/[0.08] space-y-1.5">
-              {description && (
-                <p className="text-sm text-slate-500 leading-relaxed">{description}</p>
-              )}
-              {subtopics.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {subtopics.map((st) => (
-                    <span
-                      key={st}
-                      className="text-sm text-slate-600 bg-slate-800/60 px-2 py-0.5 rounded-full"
-                    >
-                      {st}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <SkillDetailModal
+        open={open}
+        onClose={() => setOpen(false)}
+        skillId={skillId}
+        name={name}
+        description={description}
+        subtopics={subtopics}
+        subtopicState={{}}
+        subtopicPercent={0}
+        readonly
+      />
     </div>
   );
 }
