@@ -5,6 +5,7 @@ import { useProjectProgress } from "@/hooks";
 import { levels } from "@/data/levels";
 import { projects } from "@/data/projects";
 import ProjectCard from "@/components/projects/ProjectCard";
+import { ProjectsSkeleton } from "@/components/shared/skeletons";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -12,14 +13,7 @@ export default function ProjectsClient() {
   const { projectMap, loading } = useProjectProgress();
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <div className="flex items-center gap-3 text-slate-400">
-          <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-blue-400" />
-          Загрузка...
-        </div>
-      </div>
-    );
+    return <ProjectsSkeleton />;
   }
 
   const grouped = new Map<string, typeof projects>();

@@ -9,6 +9,7 @@ import { DIFFICULTY_WEIGHT, LEVEL_MULTIPLIER } from "@/lib/weights";
 import { levels } from "@/data/levels";
 import type { Difficulty } from "@/data/skills";
 import type { BuyResult } from "@/lib/currency";
+import { ShopSkeleton } from "@/components/shared/skeletons";
 import ShopItemCard from "./ShopItemCard";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -48,14 +49,7 @@ export default function ShopClient() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <div className="flex items-center gap-3 text-slate-400">
-          <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-blue-400" />
-          Загрузка...
-        </div>
-      </div>
-    );
+    return <ShopSkeleton />;
   }
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { auth } from "@/lib/firebase";
@@ -32,8 +32,6 @@ interface HeaderProps {
   mainClassName?: string;
 }
 
-const EASE = [0.22, 1, 0.36, 1] as const;
-
 function Brand() {
   return (
     <span className="flex items-center gap-2.5">
@@ -46,6 +44,18 @@ function Brand() {
         <span className="text-white">Skill Tree</span>
       </span>
     </span>
+  );
+}
+
+function PendingIndicator({ className = "" }: { className?: string }) {
+  const { pending } = useLinkStatus();
+  return (
+    <span
+      aria-hidden
+      className={`pointer-events-none absolute h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(59,130,246,0.9)] transition-opacity duration-200 delay-100 ${
+        pending ? "opacity-100 animate-pulse" : "opacity-0"
+      } ${className}`}
+    />
   );
 }
 
@@ -82,6 +92,7 @@ function DesktopNavItem({
         }`}
       />
       <span className="relative">{item.label}</span>
+      <PendingIndicator className="right-3 top-1/2 -translate-y-1/2" />
     </Link>
   );
 }
@@ -115,6 +126,7 @@ function TabletNavItem({
         }`}
       />
       <span className="relative whitespace-nowrap">{item.shortLabel ?? item.label}</span>
+      <PendingIndicator className="right-1.5 top-1.5" />
     </Link>
   );
 }
@@ -147,6 +159,7 @@ function MobileNavItem({
         }`}
       />
       <span className="relative">{item.shortLabel ?? item.label}</span>
+      <PendingIndicator className="right-1.5 top-1.5" />
     </Link>
   );
 }
@@ -251,15 +264,9 @@ export default function Header({
           <div className="pointer-events-none h-px w-full bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
         </header>
 
-        <motion.main
-          key={pathname}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: EASE }}
-          className={`w-full max-w-6xl mx-auto flex-1 ${mainClassName}`}
-        >
+        <main className={`w-full max-w-6xl mx-auto flex-1 ${mainClassName}`}>
           {children}
-        </motion.main>
+        </main>
       </div>
 
       {showNav && (

@@ -11,6 +11,7 @@ import CategoryCardReadonly from "@/components/tree/CategoryCardReadonly";
 import LevelGate from "@/components/tree/LevelGate";
 import Legend from "@/components/tree/Legend";
 import AnimatedNumber from "@/components/shared/AnimatedNumber";
+import { TreeSkeleton } from "@/components/shared/skeletons";
 import { calcCategoryScore } from "@/lib/scoring";
 import { getCategoryMaxScore, getLevelMaxScore, getLevelMinScore } from "@/lib/weights";
 
@@ -42,19 +43,12 @@ export default function TreeClient({ slug }: TreeClientProps) {
   const accent = LEVEL_ACCENT[currentLevel.slug] || "text-blue-400";
 
   if (progressLoading || assessmentsLoading) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <div className="flex items-center gap-3 text-slate-400">
-          <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-blue-400" />
-          Загрузка...
-        </div>
-      </div>
-    );
+    return <TreeSkeleton />;
   }
 
   if (!progress) {
     return (
-      <>
+      <div className="space-y-6">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -77,7 +71,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
             />
           ))}
         </div>
-      </>
+      </div>
     );
   }
 
@@ -90,7 +84,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
   const nextLevel = levels[currentLevelIndex + 1] || null;
 
   return (
-    <>
+    <div className="space-y-6">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -164,6 +158,6 @@ export default function TreeClient({ slug }: TreeClientProps) {
           })}
         </div>
       )}
-    </>
+    </div>
   );
 }

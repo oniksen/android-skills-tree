@@ -6,6 +6,7 @@ import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import GapList from "@/components/roadmap/GapList";
+import { RoadmapSkeleton } from "@/components/shared/skeletons";
 import { calcSkillCompletionPercent } from "@/lib/scoring";
 import { getSkillWeight } from "@/lib/weights";
 
@@ -18,14 +19,7 @@ export default function RoadmapClient() {
   const { assessmentMap, loading: assessmentsLoading } = useAssessments();
 
   if (progressLoading || assessmentsLoading) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <div className="flex items-center gap-3 text-slate-400">
-          <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-blue-400" />
-          Загрузка...
-        </div>
-      </div>
-    );
+    return <RoadmapSkeleton />;
   }
 
   const currentLevelId = progress?.currentLevelId || levels[0]?.id || "";

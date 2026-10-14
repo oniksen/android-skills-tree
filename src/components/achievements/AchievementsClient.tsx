@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { useAchievements, useStreak } from "@/hooks";
 import AchievementCard from "@/components/achievements/AchievementCard";
+import { AchievementsSkeleton } from "@/components/shared/skeletons";
 import {
   getAchievementCatalog,
   type AchievementDef,
@@ -27,14 +28,7 @@ export default function AchievementsClient() {
   const { currentStreak } = useStreak();
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <div className="flex items-center gap-3 text-slate-400">
-          <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-blue-400" />
-          Загрузка...
-        </div>
-      </div>
-    );
+    return <AchievementsSkeleton />;
   }
 
   const catalog = getAchievementCatalog();

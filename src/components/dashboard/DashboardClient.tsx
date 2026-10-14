@@ -9,6 +9,7 @@ import LevelProgressCard from "@/components/dashboard/LevelProgressCard";
 import QuickStats from "@/components/dashboard/QuickStats";
 import NextMilestone from "@/components/dashboard/NextMilestone";
 import StreakCard from "@/components/dashboard/StreakCard";
+import { DashboardSkeleton } from "@/components/shared/skeletons";
 import { getLevelMinScore } from "@/lib/weights";
 
 const levelColors: Record<string, string> = {
@@ -26,14 +27,7 @@ export default function DashboardClient() {
   const { projectMap, loading: projectsLoading } = useProjectProgress();
 
   if (progressLoading || assessmentsLoading || projectsLoading) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <div className="flex items-center gap-3 text-slate-400">
-          <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-blue-400" />
-          Загрузка...
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   const currentLevelId = progress?.currentLevelId || levels[0].id;

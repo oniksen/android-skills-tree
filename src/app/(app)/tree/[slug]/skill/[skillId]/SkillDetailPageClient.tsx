@@ -8,6 +8,7 @@ import { useUserProgress } from "@/hooks";
 import { useSkillDetail } from "@/hooks/useSkillDetail";
 import SkillDetailContent from "@/components/tree/SkillDetailContent";
 import CelebrationModal from "@/components/shared/CelebrationModal";
+import { SkillDetailSkeleton } from "@/components/shared/skeletons";
 
 interface SkillDetailPageClientProps {
   slug: string;
@@ -44,9 +45,7 @@ export default function SkillDetailPageClient({ slug, skillId }: SkillDetailPage
       <div className="card-surface relative overflow-hidden rounded-2xl p-5">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-blue-400" />
-          </div>
+          <SkillDetailSkeleton />
         ) : (
           <SkillDetailContent
             skillId={skillId}
