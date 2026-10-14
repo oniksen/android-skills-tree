@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { ChevronRight } from "lucide-react";
 import CelebrationModal from "@/components/shared/CelebrationModal";
 import DifficultyBadge from "@/components/shared/DifficultyBadge";
 import { useSkillDetail } from "@/hooks/useSkillDetail";
@@ -61,10 +60,9 @@ export default function SkillRow({
           onClick={handleOpen}
           disabled={!hasContent}
           aria-haspopup={hasContent ? "dialog" : undefined}
-          className="flex w-full items-center justify-between px-2 py-2 text-left disabled:cursor-default"
+          className="flex w-full cursor-pointer items-center justify-between px-2 py-2 text-left disabled:cursor-default"
         >
           <div className="flex min-w-0 items-center gap-2">
-            {hasContent && <ChevronRight className="h-4 w-4 shrink-0 text-slate-500" />}
             <span className="truncate text-base text-slate-300">{name}</span>
             {required && (
               <span className="shrink-0 rounded bg-blue-600/20 px-1.5 py-0.5 text-xs text-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
