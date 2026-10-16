@@ -9,6 +9,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { logout } from "@/app/actions/auth";
 import StreakBadge from "@/components/shared/StreakBadge";
 import CurrencyBadge from "@/components/shared/CurrencyBadge";
+import BrandMark from "@/components/shared/BrandMark";
 import {
   DashboardSkeleton,
   TreeSkeleton,
@@ -59,9 +60,7 @@ interface HeaderProps {
 function Brand() {
   return (
     <span className="flex items-center gap-2.5">
-      <span className="flex h-8 w-8 items-center justify-center rounded-md border border-blue-500/40 bg-blue-500/10 font-mono text-sm font-bold text-blue-600">
-        {">_"}
-      </span>
+      <BrandMark className="h-8 w-8 shrink-0" />
       <span className="hidden nav-md:block text-sm font-bold tracking-tight">
         <span className="text-gradient">android</span>
         <span className="text-slate-500">/</span>
@@ -307,9 +306,7 @@ export default function Header({
                 href="/tree/junior"
                 className="nav-lg:hidden shrink-0 transition-opacity hover:opacity-80"
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-md border border-blue-500/40 bg-blue-500/10 font-mono text-xs font-bold text-blue-600">
-                  {">_"}
-                </span>
+                <BrandMark className="h-7 w-7" />
               </Link>
               <Prompt path={pathname ?? ""} />
             </div>
