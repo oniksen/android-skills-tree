@@ -47,19 +47,19 @@ export default function LevelTabs({ levels }: { levels: Level[] }) {
             <Link
               key={level.slug}
               href={`/tree/${level.slug}`}
-              className={`relative shrink-0 rounded-xl px-4 py-2.5 text-base font-medium transition-colors duration-200 ${
-                isActive ? color.text : "text-slate-500 hover:text-slate-300"
+              className={`relative shrink-0 rounded-md px-3.5 py-2 font-mono text-sm font-medium transition-colors duration-150 ${
+                isActive ? color.text : "text-slate-500 hover:text-white"
               }`}
             >
               {isActive && (
                 <motion.span
                   layoutId="level-tab"
-                  className={`absolute inset-0 rounded-xl border ${color.border} bg-slate-900 ${color.shadow}`}
+                  className={`absolute inset-0 rounded-md border ${color.border} bg-slate-900`}
                   transition={{ type: "spring", stiffness: 380, damping: 32 }}
                   initial={false}
                 />
               )}
-              <span className="relative">{level.name}</span>
+              <span className="relative">[ {level.name} ]</span>
             </Link>
           );
         })}

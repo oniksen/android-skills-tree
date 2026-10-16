@@ -50,8 +50,10 @@ export default function DashboardClient() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: EASE }}
       >
-        <h1 className="text-3xl font-bold tracking-tight text-white">Дашборд</h1>
-        <p className="mt-1 text-slate-400">Ваш прогресс на пути к senior.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-white">
+          <span className="text-blue-600">#</span> Дашборд
+        </h1>
+        <p className="mt-1 text-sm text-slate-400">Ваш прогресс на пути к senior.</p>
       </motion.div>
       <motion.div
         initial="hidden"

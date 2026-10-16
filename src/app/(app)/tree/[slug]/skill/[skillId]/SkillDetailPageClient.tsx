@@ -42,7 +42,7 @@ export default function SkillDetailPageClient({ slug, skillId }: SkillDetailPage
         Назад к дереву
       </Link>
 
-      <div className="card-surface relative overflow-hidden rounded-2xl p-5">
+      <div className="card-surface relative overflow-hidden rounded-lg p-5">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
         {loading ? (
           <SkillDetailSkeleton />

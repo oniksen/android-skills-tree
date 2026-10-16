@@ -58,7 +58,7 @@ export default function SkillDetailContent({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -10, scale: 0.9 }}
                   transition={{ duration: 0.9, ease: "easeOut" }}
-                  className="whitespace-nowrap font-mono text-sm text-cyan-300"
+                  className="whitespace-nowrap font-mono text-sm text-cyan-600"
                 >
                   +{award.amount} 💎
                 </motion.span>
@@ -69,7 +69,7 @@ export default function SkillDetailContent({
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {required && (
-            <span className="rounded bg-blue-600/20 px-1.5 py-0.5 text-xs text-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+            <span className="rounded border border-blue-500/40 bg-blue-500/10 px-1.5 py-0.5 font-mono text-xs text-blue-600">
               required
             </span>
           )}
@@ -128,7 +128,7 @@ export default function SkillDetailContent({
                         disabled
                           ? "cursor-not-allowed"
                           : checked
-                            ? "border-blue-500 bg-blue-500 text-white shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                            ? "border-blue-600 bg-blue-600 text-[#faf9f5]"
                             : "border-slate-600 group-hover:border-slate-400 group-hover:bg-blue-500/10"
                       }`}
                     >
@@ -176,7 +176,7 @@ export default function SkillDetailContent({
           </div>
 
           {pendingReward && (
-            <p className="text-xs text-cyan-300/80">
+            <p className="text-xs text-cyan-600/90">
               Закрой все подпункты — <span className="font-mono">+{crystalReward} 💎</span>
             </p>
           )}

@@ -32,10 +32,10 @@ export default function AchievementCard({
     <motion.div
       whileHover={{ y: -2 }}
       transition={{ type: "spring", stiffness: 400, damping: 28 }}
-      className={`group relative overflow-hidden rounded-xl p-5 flex items-center gap-4 transition-colors ${
+      className={`group relative overflow-hidden rounded-lg p-5 flex items-center gap-4 transition-colors ${
         earned
-          ? "card-surface border-blue-400/25 hover:shadow-[0_12px_32px_-12px_rgba(59,130,246,0.35)]"
-          : "border-white/[0.05] bg-white/[0.02] hover:border-white/[0.1]"
+          ? "card-surface border-blue-500/40 hover:border-blue-500/60"
+          : "border border-slate-700 bg-white/[0.02] hover:border-slate-600"
       }`}
     >
       {earned && (
@@ -52,8 +52,8 @@ export default function AchievementCard({
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
         className={`relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border text-3xl ${
           earned
-            ? "border-blue-400/30 bg-blue-500/10 shadow-[0_0_18px_rgba(59,130,246,0.25)]"
-            : "border-white/[0.06] bg-white/[0.02]"
+            ? "border-blue-500/40 bg-blue-500/10"
+            : "border-slate-700 bg-white/[0.02]"
         } ${earned ? "" : "opacity-50 grayscale"}`}
       >
         {earned ? icon : <Lock className="h-5 w-5 text-slate-500" />}
@@ -75,7 +75,7 @@ export default function AchievementCard({
           {condition}
         </p>
         {earned ? (
-          <p className="font-mono text-xs text-blue-300/80 mt-1">{formattedDate}</p>
+          <p className="font-mono text-xs text-blue-600/80 mt-1">{formattedDate}</p>
         ) : (
           <p className="text-xs text-slate-600 mt-1">
             Не получено{hint ? ` · ${hint}` : ""}

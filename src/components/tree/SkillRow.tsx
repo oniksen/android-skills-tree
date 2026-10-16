@@ -63,9 +63,20 @@ export default function SkillRow({
           className="flex w-full cursor-pointer items-center justify-between px-2 py-2 text-left disabled:cursor-default"
         >
           <div className="flex min-w-0 items-center gap-2">
+            <span
+              className={`w-3 shrink-0 text-center font-mono ${
+                subtopicPercent === 100
+                  ? "text-emerald-600"
+                  : subtopicPercent > 0
+                    ? "text-blue-500"
+                    : "text-slate-600"
+              }`}
+            >
+              {subtopicPercent === 100 ? "+" : subtopicPercent > 0 ? "·" : "-"}
+            </span>
             <span className="truncate text-base text-slate-300">{name}</span>
             {required && (
-              <span className="shrink-0 rounded bg-blue-600/20 px-1.5 py-0.5 text-xs text-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+              <span className="shrink-0 rounded border border-blue-500/40 bg-blue-500/10 px-1.5 py-0.5 font-mono text-xs text-blue-600">
                 required
               </span>
             )}
@@ -79,7 +90,7 @@ export default function SkillRow({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -10, scale: 0.9 }}
                   transition={{ duration: 0.9, ease: "easeOut" }}
-                  className="whitespace-nowrap font-mono text-xs text-cyan-300"
+                  className="whitespace-nowrap font-mono text-xs text-cyan-600"
                 >
                   +{award.amount} 💎
                 </motion.span>
@@ -93,9 +104,9 @@ export default function SkillRow({
                 transition={{ type: "spring", stiffness: 500, damping: 22 }}
                 className={`rounded px-1.5 py-0.5 font-mono text-sm ${
                   subtopicPercent === 100
-                    ? "bg-green-600/20 text-green-400"
+                    ? "bg-emerald-500/10 text-emerald-600"
                     : subtopicPercent > 0
-                      ? "bg-blue-600/20 text-blue-400"
+                      ? "bg-blue-500/10 text-blue-600"
                       : "text-slate-600"
                 }`}
               >

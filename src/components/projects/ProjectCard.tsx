@@ -30,10 +30,10 @@ export default function ProjectCard({ projectId, name, description, requiredTech
       whileHover={{ y: -2 }}
       whileTap={{ scale: 0.995 }}
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
-      className={`group relative overflow-hidden rounded-xl border p-5 transition-colors cursor-pointer select-none ${
+      className={`group relative overflow-hidden rounded-lg border p-5 transition-colors cursor-pointer select-none ${
         done
-          ? "border-emerald-500/30 bg-emerald-500/[0.07] hover:border-emerald-400/50 shadow-[0_10px_30px_-12px_rgba(34,197,94,0.3)]"
-          : "card-surface hover:border-blue-400/40 hover:shadow-[0_10px_30px_-12px_rgba(59,130,246,0.25)]"
+          ? "border-emerald-500/40 bg-emerald-500/[0.07] hover:border-emerald-500/60"
+          : "card-surface hover:border-blue-500/40"
       }`}
     >
       <div
@@ -44,9 +44,9 @@ export default function ProjectCard({ projectId, name, description, requiredTech
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <h3 className={`font-semibold ${done ? "text-emerald-300" : "text-white"}`}>{name}</h3>
-            <span className={`text-xs px-2 py-0.5 rounded-full ${
-              done ? "bg-emerald-500/15 text-emerald-400" : "bg-slate-800 text-slate-400"
+            <h3 className={`font-semibold ${done ? "text-emerald-600" : "text-white"}`}>{name}</h3>
+            <span className={`font-mono text-xs px-2 py-0.5 rounded-md ${
+              done ? "bg-emerald-500/10 text-emerald-600" : "bg-slate-800 text-slate-500"
             }`}>
               {levelName}
             </span>
@@ -74,7 +74,7 @@ export default function ProjectCard({ projectId, name, description, requiredTech
           aria-pressed={done}
           className={`relative ml-4 w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${
             done
-              ? "bg-emerald-500 border-emerald-400 text-white shadow-[0_0_14px_rgba(34,197,94,0.5)]"
+              ? "bg-emerald-500 border-emerald-500 text-[#faf9f5]"
               : "border-slate-600 hover:border-slate-400 hover:bg-emerald-500/10"
           }`}
         >

@@ -19,20 +19,19 @@ export default function NextMilestone({ items, canLevelUp, nextLevelName }: Next
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 22 }}
-        className="relative overflow-hidden rounded-xl border border-emerald-500/30 bg-emerald-500/[0.08] p-6"
+        className="relative overflow-hidden rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-6"
       >
-        <div className="pointer-events-none absolute -right-6 -top-6 h-32 w-32 rounded-full bg-emerald-500/20 blur-3xl" />
-        <h2 className="text-lg font-semibold text-emerald-400 mb-2">🎉 Условия выполнены!</h2>
-        <p className="text-slate-300">
-          Вы готовы перейти на уровень <strong className="text-emerald-300">{nextLevelName}</strong>.
+        <h2 className="mb-2 font-mono text-sm font-semibold text-emerald-600">[ READY ] условия выполнены</h2>
+        <p className="text-sm text-slate-400">
+          Вы готовы перейти на уровень <strong className="text-emerald-600">{nextLevelName}</strong>.
         </p>
       </motion.div>
     );
   }
   return (
-    <div className="group relative card-surface overflow-hidden rounded-xl p-6 transition-shadow duration-300 hover:shadow-[0_16px_40px_-12px_rgba(34,197,94,0.15)]">
+    <div className="group relative card-surface overflow-hidden rounded-lg p-6 transition-colors duration-200 hover:border-emerald-500/40">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent" />
-      <h2 className="text-lg font-semibold text-white mb-3">Что нужно для {nextLevelName}</h2>
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Что нужно для {nextLevelName}</h2>
       <ul className="space-y-2">
         {items.map((item, i) => (
           <motion.li
@@ -44,13 +43,13 @@ export default function NextMilestone({ items, canLevelUp, nextLevelName }: Next
           >
             <motion.span
               whileHover={{ scale: 1.15 }}
-              className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${
+              className={`flex h-5 w-5 items-center justify-center rounded border font-mono text-[10px] ${
                 item.done
-                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_10px_rgba(34,197,94,0.3)]"
-                  : "bg-slate-800 text-slate-600 border border-slate-700"
+                  ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-600"
+                  : "border-slate-600 text-slate-600"
               }`}
             >
-              {item.done ? "✓" : "○"}
+              {item.done ? "x" : " "}
             </motion.span>
             <span className={item.done ? "text-slate-400" : "text-slate-300"}>{item.label}</span>
           </motion.li>

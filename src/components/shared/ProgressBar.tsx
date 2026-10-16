@@ -1,33 +1,39 @@
+const TONES = {
+  coral: "text-blue-600",
+  amber: "text-amber-500",
+  green: "text-emerald-500",
+  muted: "text-slate-600",
+} as const;
+
+export type ProgressTone = keyof typeof TONES;
+
 export default function ProgressBar({
   current,
   max,
-  color = "bg-blue-500",
+  tone = "coral",
   showLabel = true,
-  shimmer = false,
+  blocks = 20,
 }: {
   current: number;
   max: number;
-  color?: string;
+  tone?: ProgressTone;
   showLabel?: boolean;
-  shimmer?: boolean;
+  blocks?: number;
 }) {
   const pct = max > 0 ? Math.min(Math.round((current / max) * 100), 100) : 0;
+  const filled = Math.round((pct / 100) * blocks);
+  const bar = "█".repeat(filled) + "░".repeat(Math.max(0, blocks - filled));
+
   return (
     <div className="w-full">
-      <div className="h-2 bg-slate-800/80 rounded-full overflow-hidden shadow-inner">
-        <div
-          className={`relative h-full rounded-full transition-all duration-700 ease-out ${color} ${
-            pct > 0 ? "shadow-[0_0_8px_rgba(255,255,255,0.15)]" : ""
-          }`}
-          style={{ width: `${pct}%` }}
-        >
-          {shimmer && pct > 0 && pct < 100 && (
-            <span className="absolute inset-y-0 left-0 w-1/3 animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-          )}
-        </div>
+      <div className="flex items-center gap-2 font-mono text-xs leading-none">
+        <span className="text-slate-600">[</span>
+        <span className={`${TONES[tone]} truncate`}>{bar}</span>
+        <span className="text-slate-600">]</span>
+        {showLabel && <span className="shrink-0 text-slate-500">{pct}%</span>}
       </div>
       {showLabel && (
-        <p className="text-xs text-slate-500 mt-0.5">
+        <p className="mt-1 font-mono text-[11px] text-slate-500">
           {current}/{max}
         </p>
       )}

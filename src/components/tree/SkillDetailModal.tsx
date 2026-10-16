@@ -57,7 +57,7 @@ export default function SkillDetailModal({ open, onClose, ...contentProps }: Ski
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 16 }}
             transition={{ type: "spring", stiffness: 340, damping: 28 }}
-            className="relative flex max-h-[88vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-white/[0.08] bg-slate-900/95 shadow-2xl shadow-indigo-900/30 sm:rounded-3xl"
+            className="relative flex max-h-[88vh] w-full max-w-lg flex-col overflow-hidden rounded-t-lg border border-slate-700 bg-slate-900/98 shadow-[0_20px_60px_rgba(26,25,21,0.28)] sm:rounded-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/50 to-transparent" />

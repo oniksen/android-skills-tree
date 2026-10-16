@@ -10,6 +10,14 @@ import { logout } from "@/app/actions/auth";
 import StreakBadge from "@/components/shared/StreakBadge";
 import CurrencyBadge from "@/components/shared/CurrencyBadge";
 import {
+  DashboardSkeleton,
+  TreeSkeleton,
+  ProjectsSkeleton,
+  RoadmapSkeleton,
+  AchievementsSkeleton,
+  ShopSkeleton,
+} from "@/components/shared/skeletons";
+import {
   LayoutDashboard,
   GitBranch,
   FolderGit2,
@@ -20,12 +28,28 @@ import {
 } from "lucide-react";
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Дашборд", icon: LayoutDashboard },
-  { href: "/tree/junior", label: "Дерево навыков", shortLabel: "Дерево", icon: GitBranch },
-  { href: "/projects", label: "Проекты", icon: FolderGit2 },
-  { href: "/roadmap", label: "Roadmap", icon: Map },
-  { href: "/achievements", label: "Достижения", icon: Trophy },
+  { href: "/dashboard", label: "dashboard", icon: LayoutDashboard },
+  { href: "/tree/junior", label: "tree", shortLabel: "tree", icon: GitBranch },
+  { href: "/projects", label: "projects", icon: FolderGit2 },
+  { href: "/roadmap", label: "roadmap", icon: Map },
+  { href: "/achievements", label: "achievements", icon: Trophy },
 ];
+
+const ROUTE_SKELETONS: Record<string, React.ComponentType> = {
+  "/dashboard": DashboardSkeleton,
+  "/tree/junior": TreeSkeleton,
+  "/projects": ProjectsSkeleton,
+  "/roadmap": RoadmapSkeleton,
+  "/achievements": AchievementsSkeleton,
+  "/shop": ShopSkeleton,
+};
+
+function RoutePlaceholder({ href }: { href: string }) {
+  const Placeholder = ROUTE_SKELETONS[href] ?? TreeSkeleton;
+  return <Placeholder />;
+}
+
+type PendingNav = { href: string; startedPath: string };
 
 interface HeaderProps {
   children?: React.ReactNode;
@@ -35,14 +59,27 @@ interface HeaderProps {
 function Brand() {
   return (
     <span className="flex items-center gap-2.5">
-      <span className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-blue-500/30">
-        <GitBranch className="h-4 w-4" strokeWidth={2.4} />
-        <span className="absolute -inset-1 -z-10 rounded-lg bg-gradient-to-br from-blue-500/40 to-fuchsia-500/40 blur-md" />
+      <span className="flex h-8 w-8 items-center justify-center rounded-md border border-blue-500/40 bg-blue-500/10 font-mono text-sm font-bold text-blue-600">
+        {">_"}
       </span>
-      <span className="hidden nav-md:block text-base font-bold tracking-tight">
-        <span className="text-gradient">Android</span>{" "}
-        <span className="text-white">Skill Tree</span>
+      <span className="hidden nav-md:block text-sm font-bold tracking-tight">
+        <span className="text-gradient">android</span>
+        <span className="text-slate-500">/</span>
+        <span className="text-white">skill-tree</span>
       </span>
+    </span>
+  );
+}
+
+function Prompt({ path }: { path: string }) {
+  const clean = path && path !== "/" ? path : "/tree/junior";
+  return (
+    <span className="flex min-w-0 items-center gap-1 font-mono text-xs">
+      <span className="shrink-0 text-blue-600">user@skill-tree</span>
+      <span className="shrink-0 text-slate-600">:</span>
+      <span className="truncate text-slate-400">~{clean}</span>
+      <span className="shrink-0 text-blue-600">$</span>
+      <span className="ml-0.5 inline-block h-3.5 w-1.5 shrink-0 animate-caret-blink bg-blue-600 align-middle" />
     </span>
   );
 }
@@ -52,7 +89,7 @@ function PendingIndicator({ className = "" }: { className?: string }) {
   return (
     <span
       aria-hidden
-      className={`pointer-events-none absolute h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(59,130,246,0.9)] transition-opacity duration-200 delay-100 ${
+      className={`pointer-events-none absolute h-1.5 w-1.5 rounded-sm bg-blue-500 transition-opacity duration-200 delay-100 ${
         pending ? "opacity-100 animate-pulse" : "opacity-0"
       } ${className}`}
     />
@@ -62,37 +99,42 @@ function PendingIndicator({ className = "" }: { className?: string }) {
 function DesktopNavItem({
   item,
   active,
+  onNavigate,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
+  onNavigate: (href: string) => void;
 }) {
   return (
     <Link
       href={item.href}
-      className={`relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors duration-200 ${
+      onClick={() => onNavigate(item.href)}
+      className={`group relative flex items-center gap-2.5 rounded-md px-2.5 py-2 font-mono text-sm transition-colors duration-150 ${
         active ? "text-white" : "text-slate-400 hover:text-white"
       }`}
     >
       {active && (
         <motion.span
           layoutId="nav-active-desktop"
-          className="absolute inset-0 rounded-xl border border-white/[0.08] bg-gradient-to-r from-blue-500/20 to-indigo-500/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+          className="absolute inset-0 rounded-md border border-blue-500/30 bg-blue-500/10"
           transition={{ type: "spring", stiffness: 380, damping: 32 }}
           initial={false}
         />
       )}
       <span
-        className={`absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-gradient-to-b from-blue-400 to-indigo-500 transition-all duration-300 ${
-          active ? "opacity-100" : "opacity-0"
+        className={`relative shrink-0 font-bold ${
+          active ? "text-blue-600" : "text-slate-600 group-hover:text-blue-500"
         }`}
-      />
+      >
+        {active ? "▸" : ">"}
+      </span>
       <item.icon
-        className={`relative h-5 w-5 shrink-0 transition-all duration-200 ${
-          active ? "text-blue-400" : "text-slate-500 group-hover:text-slate-300"
+        className={`relative h-4 w-4 shrink-0 ${
+          active ? "text-blue-600" : "text-slate-400 group-hover:text-slate-600"
         }`}
       />
       <span className="relative">{item.label}</span>
-      <PendingIndicator className="right-3 top-1/2 -translate-y-1/2" />
+      <PendingIndicator className="right-2.5 top-1/2 -translate-y-1/2" />
     </Link>
   );
 }
@@ -100,32 +142,33 @@ function DesktopNavItem({
 function TabletNavItem({
   item,
   active,
+  onNavigate,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
+  onNavigate: (href: string) => void;
 }) {
   return (
     <Link
       href={item.href}
       title={item.label}
-      className={`relative flex flex-col items-center gap-1 rounded-xl px-1 py-2 text-center text-[10px] leading-tight font-medium transition-colors duration-200 ${
-        active ? "text-white" : "text-slate-400 hover:text-white"
+      onClick={() => onNavigate(item.href)}
+      className={`relative flex flex-col items-center gap-1 rounded-md px-1.5 py-2 text-center font-mono text-[10px] leading-tight transition-colors duration-150 ${
+        active ? "text-blue-600" : "text-slate-400 hover:text-white"
       }`}
     >
       {active && (
         <motion.span
           layoutId="nav-active-tablet"
-          className="absolute inset-0 rounded-xl border border-white/[0.08] bg-blue-500/15"
+          className="absolute inset-0 rounded-md border border-blue-500/30 bg-blue-500/10"
           transition={{ type: "spring", stiffness: 380, damping: 32 }}
           initial={false}
         />
       )}
-      <item.icon
-        className={`relative h-5 w-5 transition-all duration-200 ${
-          active ? "text-blue-400 drop-shadow-[0_0_6px_rgba(59,130,246,0.8)]" : ""
-        }`}
-      />
-      <span className="relative whitespace-nowrap">{item.shortLabel ?? item.label}</span>
+      <item.icon className="relative h-5 w-5" />
+      <span className="relative whitespace-nowrap">
+        {item.shortLabel ?? item.label}
+      </span>
       <PendingIndicator className="right-1.5 top-1.5" />
     </Link>
   );
@@ -134,30 +177,29 @@ function TabletNavItem({
 function MobileNavItem({
   item,
   active,
+  onNavigate,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
+  onNavigate: (href: string) => void;
 }) {
   return (
     <Link
       href={item.href}
-      className={`relative flex flex-col items-center gap-1 py-2.5 text-[10px] font-medium transition-colors duration-200 ${
-        active ? "text-blue-400" : "text-slate-400 hover:text-white"
+      onClick={() => onNavigate(item.href)}
+      className={`relative flex flex-col items-center gap-1 py-2.5 font-mono text-[10px] transition-colors duration-150 ${
+        active ? "text-blue-600" : "text-slate-400 hover:text-white"
       }`}
     >
       {active && (
         <motion.span
           layoutId="nav-active-mobile"
-          className="absolute top-1 h-1 w-8 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 shadow-[0_0_10px_rgba(59,130,246,0.9)]"
+          className="absolute top-1 h-0.5 w-6 bg-blue-600"
           transition={{ type: "spring", stiffness: 380, damping: 30 }}
           initial={false}
         />
       )}
-      <item.icon
-        className={`relative h-5 w-5 transition-transform duration-200 ${
-          active ? "scale-110 drop-shadow-[0_0_6px_rgba(59,130,246,0.8)]" : ""
-        }`}
-      />
+      <item.icon className="relative h-5 w-5" />
       <span className="relative">{item.shortLabel ?? item.label}</span>
       <PendingIndicator className="right-1.5 top-1.5" />
     </Link>
@@ -172,6 +214,8 @@ export default function Header({
   const pathname = usePathname();
   const [user, setUser] = useState<{ uid: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pending, setPending] = useState<PendingNav | null>(null);
+  const [readyPending, setReadyPending] = useState<PendingNav | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -180,6 +224,18 @@ export default function Header({
     });
     return () => unsubscribe();
   }, []);
+
+  const isNavigating = pending !== null && pending.startedPath === pathname;
+
+  useEffect(() => {
+    if (!isNavigating || !pending) return;
+    const timer = setTimeout(() => setReadyPending(pending), 120);
+    return () => clearTimeout(timer);
+  }, [isNavigating, pending]);
+
+  const handleNavigate = (href: string) => {
+    if (pathname !== href) setPending({ href, startedPath: pathname });
+  };
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -197,45 +253,67 @@ export default function Header({
     <div className="flex min-h-dvh">
       {showNav && (
         <nav
-          className="hidden nav-lg:flex sticky top-0 self-start h-dvh z-40 w-64 flex-col border-r border-white/[0.06] bg-slate-950/70 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] backdrop-blur-xl"
+          className="hidden nav-lg:flex sticky top-0 self-start h-dvh z-40 w-64 flex-col border-r border-slate-700/70 bg-slate-950/90 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] backdrop-blur-xl"
           aria-label="Основная навигация"
         >
-          <div className="flex h-16 shrink-0 items-center border-b border-white/[0.06] px-6">
+          <div className="flex h-9 shrink-0 items-center gap-1.5 border-b border-slate-700/70 px-4">
+            <span className="font-mono text-[11px] text-slate-500">
+              android-skill-tree
+            </span>
+          </div>
+          <div className="flex h-14 shrink-0 items-center border-b border-slate-700/70 px-4">
             <Link href="/tree/junior" className="transition-opacity hover:opacity-80">
               <Brand />
             </Link>
           </div>
-          <div className="flex-1 space-y-1 overflow-y-auto px-4 py-5">
+          <div className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
             {NAV_ITEMS.map((item) => (
               <div key={item.href} className="group">
-                <DesktopNavItem item={item} active={item.href === activeHref} />
+                <DesktopNavItem
+                  item={item}
+                  active={item.href === activeHref}
+                  onNavigate={handleNavigate}
+                />
               </div>
             ))}
+          </div>
+          <div className="border-t border-slate-700/70 px-4 py-3 font-mono text-[10px] text-slate-600">
+            {showNav ? "status: online" : "status: offline"}
           </div>
         </nav>
       )}
 
       {showNav && (
         <nav
-          className="hidden nav-md:flex nav-lg:hidden sticky top-0 self-start h-dvh z-40 w-max flex-col items-stretch gap-1 border-r border-white/[0.06] bg-slate-950/70 px-3 pt-[max(env(safe-area-inset-top),1.25rem)] pb-[max(env(safe-area-inset-bottom),0.75rem)] backdrop-blur-xl"
+          className="hidden nav-md:flex nav-lg:hidden sticky top-0 self-start h-dvh z-40 w-max flex-col items-stretch gap-1 border-r border-slate-700/70 bg-slate-950/90 px-3 pt-[max(env(safe-area-inset-top),1.25rem)] pb-[max(env(safe-area-inset-bottom),0.75rem)] backdrop-blur-xl"
           aria-label="Основная навигация"
         >
           {NAV_ITEMS.map((item) => (
-            <TabletNavItem key={item.href} item={item} active={item.href === activeHref} />
+            <TabletNavItem
+              key={item.href}
+              item={item}
+              active={item.href === activeHref}
+              onNavigate={handleNavigate}
+            />
           ))}
         </nav>
       )}
 
       <div className="flex min-h-dvh flex-1 min-w-0 flex-col">
-        <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-slate-950/70 pt-[env(safe-area-inset-top)] backdrop-blur-xl header-blur">
+        <header className="sticky top-0 z-50 border-b border-slate-700/70 bg-slate-950/90 pt-[env(safe-area-inset-top)] backdrop-blur-xl header-blur">
           <div className="h-14 flex items-center justify-between gap-4 pl-[max(env(safe-area-inset-left),1rem)] pr-[max(env(safe-area-inset-right),1rem)]">
-            <Link
-              href="/tree/junior"
-              className="nav-lg:hidden truncate transition-opacity hover:opacity-80"
-            >
-              <Brand />
-            </Link>
-            <div className="ml-auto flex items-center gap-2">
+            <div className="flex min-w-0 items-center gap-3">
+              <Link
+                href="/tree/junior"
+                className="nav-lg:hidden shrink-0 transition-opacity hover:opacity-80"
+              >
+                <span className="flex h-7 w-7 items-center justify-center rounded-md border border-blue-500/40 bg-blue-500/10 font-mono text-xs font-bold text-blue-600">
+                  {">_"}
+                </span>
+              </Link>
+              <Prompt path={pathname ?? ""} />
+            </div>
+            <div className="ml-auto flex shrink-0 items-center gap-2">
               {!loading && user && <StreakBadge />}
               {!loading && user && <CurrencyBadge />}
               {!loading &&
@@ -243,19 +321,19 @@ export default function Header({
                   <motion.button
                     whileTap={{ scale: 0.94 }}
                     onClick={handleLogout}
-                    className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-slate-400 transition-colors hover:bg-white/[0.04] hover:text-white"
+                    className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 font-mono text-xs text-slate-400 transition-colors hover:bg-blue-500/10 hover:text-blue-600"
                   >
                     <LogOut className="h-4 w-4" />
-                    Выйти
+                    <span className="hidden nav-md:inline">logout</span>
                   </motion.button>
                 ) : (
                   pathname !== "/login" && (
                     <Link
                       href="/login"
-                      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-slate-400 transition-colors hover:bg-white/[0.04] hover:text-white"
+                      className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 font-mono text-xs text-slate-400 transition-colors hover:bg-blue-500/10 hover:text-blue-600"
                     >
                       <LogIn className="h-4 w-4" />
-                      Войти
+                      <span className="hidden nav-md:inline">login</span>
                     </Link>
                   )
                 ))}
@@ -265,7 +343,11 @@ export default function Header({
         </header>
 
         <main className={`w-full max-w-6xl mx-auto flex-1 ${mainClassName}`}>
-          {children}
+          {isNavigating && pending && readyPending === pending ? (
+            <RoutePlaceholder href={pending.href} />
+          ) : (
+            children
+          )}
         </main>
       </div>
 
@@ -274,11 +356,15 @@ export default function Header({
           className="nav-md:hidden fixed inset-x-0 bottom-0 z-50 px-4 pb-[max(env(safe-area-inset-bottom),0.875rem)] pl-[max(env(safe-area-inset-left),1rem)] pr-[max(env(safe-area-inset-right),1rem)]"
           aria-label="Основная навигация"
         >
-          <div className="mx-auto max-w-md overflow-hidden rounded-2xl border border-white/[0.08] bg-slate-950/85 shadow-[0_20px_50px_rgba(0,0,0,0.55)] backdrop-blur-xl">
+          <div className="mx-auto max-w-md overflow-hidden rounded-lg border border-slate-700/70 bg-slate-950/95 shadow-[0_10px_30px_rgba(26,25,21,0.18)] backdrop-blur-xl">
             <ul className="grid grid-cols-5">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
-                  <MobileNavItem item={item} active={item.href === activeHref} />
+                  <MobileNavItem
+                    item={item}
+                    active={item.href === activeHref}
+                    onNavigate={handleNavigate}
+                  />
                 </li>
               ))}
             </ul>

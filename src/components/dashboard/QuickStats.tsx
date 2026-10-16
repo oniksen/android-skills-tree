@@ -26,9 +26,9 @@ function StatBar({ value, max, color }: { value: number; max: number; color: str
 
 export default function QuickStats({ totalSkills, assessedSkills, completedProjects, totalProjects }: QuickStatsProps) {
   return (
-    <div className="group relative card-surface overflow-hidden rounded-xl p-6 transition-shadow duration-300 hover:shadow-[0_16px_40px_-12px_rgba(139,92,246,0.2)]">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-fuchsia-400/40 to-transparent" />
-      <h2 className="text-lg font-semibold text-white mb-4">Статистика</h2>
+    <div className="group relative card-surface overflow-hidden rounded-lg p-6 transition-colors duration-200 hover:border-blue-500/40">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+      <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">Статистика</h2>
       <div className="space-y-3">
         <div className="flex justify-between">
           <span className="text-slate-400">Оценено навыков</span>

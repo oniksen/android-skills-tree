@@ -2,7 +2,7 @@
 
 import { useId, useMemo } from "react";
 
-const COLORS = ["#60a5fa", "#a78bfa", "#34d399", "#fbbf24", "#f472b6", "#38bdf8"];
+const COLORS = ["#d97757", "#c15f3c", "#4f9d69", "#a9761a", "#8a4fa0", "#2f8080"];
 
 function mulberry32(seed: number) {
   return () => {
@@ -33,7 +33,7 @@ export default function Confetti({ count = 60 }: { count?: number }) {
       color: COLORS[i % COLORS.length],
       width: 6 + rand() * 5,
       height: 8 + rand() * 8,
-      radius: rand() > 0.6 ? 9999 : 2,
+      radius: 2,
     }));
   }, [count, id]);
 

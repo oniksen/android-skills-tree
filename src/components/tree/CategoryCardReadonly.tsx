@@ -22,13 +22,13 @@ export default function CategoryCardReadonly({ categoryId, name, skills, assessm
   const catScore = calcCategoryScore(categoryId, assessments);
 
   return (
-    <div className="group relative card-surface overflow-hidden rounded-xl p-5 transition-shadow duration-300 hover:shadow-[0_16px_40px_-12px_rgba(59,130,246,0.18)]">
+    <div className="group relative card-surface overflow-hidden rounded-lg p-5 transition-colors duration-200 hover:border-blue-500/40">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
       <div className="flex justify-between items-center mb-3">
         <h3 className="font-semibold text-lg text-white">{name}</h3>
         <span className="font-mono text-sm text-slate-500">{catScore}/{maxScore} XP</span>
       </div>
-      <ProgressBar current={catScore} max={maxScore} color="bg-blue-500" showLabel={false} shimmer />
+      <ProgressBar current={catScore} max={maxScore} tone="coral" showLabel={false} />
       <div className="mt-3 space-y-0.5">
         {sorted.map(skill => (
           <SkillRowReadonly

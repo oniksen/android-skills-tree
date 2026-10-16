@@ -28,7 +28,7 @@ export default function StreakPopover({ onClose }: { onClose: () => void }) {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <motion.span
-            className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500/15 text-2xl"
+            className="relative flex h-10 w-10 items-center justify-center rounded-md border border-orange-500/40 bg-orange-500/10 text-2xl"
             animate={{ scale: [1, 1.1, 1] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
@@ -66,7 +66,7 @@ export default function StreakPopover({ onClose }: { onClose: () => void }) {
               transition={{ type: "spring", stiffness: 420, damping: 26 }}
               className={`w-full h-9 rounded-lg flex items-center justify-center text-xs border transition-colors duration-300 ${
                 d.active
-                  ? "bg-orange-500/20 text-orange-400 border-orange-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]"
+                  ? "bg-orange-500/15 text-orange-600 border-orange-500/40"
                   : d.frozen
                     ? "bg-sky-500/20 text-sky-300 border-sky-400/40"
                     : d.isToday
@@ -106,7 +106,7 @@ export default function StreakPopover({ onClose }: { onClose: () => void }) {
         <Link
           href="/shop"
           onClick={onClose}
-          className="text-xs font-medium text-cyan-300 transition-colors hover:text-cyan-200"
+          className="text-xs font-medium text-cyan-600 transition-colors hover:text-cyan-500"
         >
           {freezes > 0 ? "Купить ещё" : `Купить за ${FREEZE_ITEM?.price} 💎`}
         </Link>

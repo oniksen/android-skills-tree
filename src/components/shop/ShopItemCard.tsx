@@ -27,7 +27,7 @@ export default function ShopItemCard({ item, owned, balance, buying, onBuy }: Pr
   }
 
   return (
-    <div className="card-surface flex items-start gap-4 rounded-xl p-4">
+    <div className="card-surface flex items-start gap-4 rounded-lg p-4">
       <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-3xl">
         {item.icon}
       </div>
@@ -35,7 +35,7 @@ export default function ShopItemCard({ item, owned, balance, buying, onBuy }: Pr
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-2">
           <h2 className="truncate font-semibold text-white">{item.name}</h2>
-          <span className="shrink-0 font-mono text-sm font-semibold text-cyan-300">
+          <span className="shrink-0 font-mono text-sm font-semibold text-cyan-600">
             {item.price} 💎
           </span>
         </div>
@@ -55,7 +55,7 @@ export default function ShopItemCard({ item, owned, balance, buying, onBuy }: Pr
             className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
               disabled
                 ? "cursor-not-allowed bg-slate-800 text-slate-500"
-                : "bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25"
+                : "border border-cyan-500/40 bg-cyan-500/10 text-cyan-600 hover:bg-cyan-500/20"
             }`}
           >
             {label}

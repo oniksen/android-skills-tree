@@ -59,7 +59,9 @@ export default function ShopClient() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: EASE }}
       >
-        <h1 className="text-3xl font-bold tracking-tight text-white">Магазин</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-white">
+          <span className="text-blue-600">#</span> Магазин
+        </h1>
         <p className="mt-1 text-sm text-slate-400">
           Трать {CURRENCY_ICON} на бонусы за прогресс в обучении.
         </p>
@@ -87,9 +89,9 @@ export default function ShopClient() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1, ease: EASE }}
-        className="card-surface rounded-xl p-4"
+        className="card-surface rounded-lg p-4"
       >
-        <h2 className="text-sm font-semibold text-white">Как заработать {CURRENCY_ICON}</h2>
+        <h2 className="font-mono text-sm font-semibold text-slate-500 uppercase tracking-wide">Как заработать {CURRENCY_ICON}</h2>
         <p className="mt-1 text-xs leading-relaxed text-slate-400">
           {CURRENCY_ICON} начисляются один раз за полностью закрытый навык: закрой все его
           подпункты. Чем сложнее навык и выше уровень — тем больше награда.

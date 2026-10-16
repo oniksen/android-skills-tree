@@ -35,10 +35,10 @@ export default function CategoryCard({ categoryId, name, skills, assessments, is
       viewport={{ once: true, margin: "0px 0px -60px 0px" }}
       transition={{ duration: 0.45, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -3 }}
-      className={`group relative card-surface overflow-hidden rounded-xl p-5 transition-shadow duration-300 ${
+      className={`group relative card-surface overflow-hidden rounded-lg p-5 transition-colors duration-200 ${
         isLocked
-          ? "border-yellow-600/40 hover:shadow-[0_16px_40px_-12px_rgba(245,158,11,0.25)]"
-          : "border-white/[0.06] hover:shadow-[0_16px_40px_-12px_rgba(59,130,246,0.25)]"
+          ? "border-amber-500/40 hover:border-amber-500/60"
+          : "border-slate-700 hover:border-blue-500/40"
       }`}
     >
       <div
@@ -55,7 +55,7 @@ export default function CategoryCard({ categoryId, name, skills, assessments, is
           <span className="font-mono text-sm text-slate-500">{catScore}/{maxScore} XP</span>
         </span>
       </div>
-      <ProgressBar current={catScore} max={maxScore} color={isLocked ? "bg-yellow-500" : "bg-blue-500"} showLabel={false} shimmer />
+      <ProgressBar current={catScore} max={maxScore} tone={isLocked ? "amber" : "coral"} showLabel={false} />
       <div className="mt-3 space-y-0.5">
         {sorted.map(skill => (
           <SkillRow

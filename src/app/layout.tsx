@@ -1,16 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin", "cyrillic"],
-  variable: "--font-inter",
-  display: "swap",
-});
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-mono",
+  variable: "--font-jetbrains-mono",
   display: "swap",
 });
 
@@ -20,7 +14,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: "Android Skill Tree",
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
   },
   formatDetection: {
     telephone: false,
@@ -30,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#020617",
+  themeColor: "#faf9f5",
   viewportFit: "cover",
 };
 
@@ -40,8 +34,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="text-white antialiased">{children}</body>
+    <html lang="ru" className={jetbrainsMono.variable}>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

@@ -54,10 +54,10 @@ export default function TreeClient({ slug }: TreeClientProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h1 className={`text-3xl font-bold tracking-tight mb-1 ${accent}`}>
-            {currentLevel.name}
+          <h1 className={`text-2xl font-bold tracking-tight mb-1 ${accent}`}>
+            <span className="text-slate-600">##</span> {currentLevel.name}
           </h1>
-          <p className="text-slate-400">{currentLevel.description}</p>
+          <p className="text-sm text-slate-400">{currentLevel.description}</p>
         </motion.div>
         <LevelTabs levels={levels} />
         <Legend />
@@ -92,10 +92,10 @@ export default function TreeClient({ slug }: TreeClientProps) {
         className="flex flex-col gap-3 nav-lg:flex-row nav-lg:justify-between nav-lg:items-start nav-lg:gap-0"
       >
         <div>
-          <h1 className={`text-3xl font-bold tracking-tight mb-1 ${accent}`}>
-            {currentLevel.name}
+          <h1 className={`text-2xl font-bold tracking-tight mb-1 ${accent}`}>
+            <span className="text-slate-600">##</span> {currentLevel.name}
           </h1>
-          <p className="text-slate-400">{currentLevel.description}</p>
+          <p className="text-sm text-slate-400">{currentLevel.description}</p>
         </div>
         <div className="flex items-center gap-x-4 nav-lg:items-end nav-lg:flex-col nav-lg:gap-x-0 nav-lg:text-right text-sm text-slate-500">
           <div className="flex items-center gap-1.5">

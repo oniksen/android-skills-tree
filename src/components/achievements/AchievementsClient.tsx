@@ -45,9 +45,11 @@ export default function AchievementsClient() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: EASE }}
       >
-        <h1 className="text-3xl font-bold tracking-tight text-white">Достижения</h1>
-        <p className="mt-1 text-slate-400">
-          Получено {earnedIds.size} из {catalog.length}
+        <h1 className="text-2xl font-bold tracking-tight text-white">
+          <span className="text-blue-600">#</span> Достижения
+        </h1>
+        <p className="mt-1 font-mono text-sm text-slate-400">
+          [{earnedIds.size}/{catalog.length}]
         </p>
       </motion.div>
       {GROUPS.map((group) => {
@@ -56,8 +58,8 @@ export default function AchievementsClient() {
 
         return (
           <div key={group.key}>
-            <h2 className="text-xl font-semibold text-slate-200 mb-4">
-              {group.label}
+            <h2 className="mb-4 font-mono text-lg font-semibold text-slate-300">
+              <span className="text-slate-600">##</span> {group.label}
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
               {items.map((def, index) => {

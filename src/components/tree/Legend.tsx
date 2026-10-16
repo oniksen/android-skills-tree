@@ -46,7 +46,7 @@ export default function Legend({ isAuthenticated }: { isAuthenticated?: boolean 
                 </span>
               </div>
               <div className="flex items-start gap-3 pl-1">
-                <span className="w-6 h-6 rounded bg-slate-800 text-xs font-medium flex items-center justify-center text-slate-500 border border-blue-500/50 shadow-[0_0_8px_rgba(59,130,246,0.3)] shrink-0">
+                <span className="w-6 h-6 rounded font-mono text-xs font-medium flex items-center justify-center text-slate-600 border border-blue-500/50 shrink-0">
                   ✓
                 </span>
                 <span className="text-slate-400 leading-snug">

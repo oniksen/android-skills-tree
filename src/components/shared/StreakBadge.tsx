@@ -28,16 +28,16 @@ export default function StreakBadge() {
       <motion.button
         whileTap={{ scale: 0.92 }}
         onClick={() => setOpen((v) => !v)}
-        className={`flex items-center gap-1.5 rounded-lg px-2 py-1 transition-colors ${
+        className={`flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-xs transition-colors ${
           open
-            ? "bg-orange-500/15 text-orange-400 shadow-[0_0_12px_rgba(245,158,11,0.25)]"
-            : "text-slate-400 hover:text-orange-400"
+            ? "border-orange-500/50 bg-orange-500/10 text-orange-600"
+            : "border-slate-700 text-slate-500 hover:border-orange-500/40 hover:text-orange-600"
         }`}
         title="Стрик дней подряд"
         aria-haspopup="dialog"
         aria-expanded={open}
       >
-        <span className="text-lg leading-none">🔥</span>
+        <span className="text-sm leading-none">🔥</span>
         <span className="font-semibold">{currentStreak}</span>
       </motion.button>
       <AnimatePresence>

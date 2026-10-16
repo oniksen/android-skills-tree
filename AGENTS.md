@@ -3,3 +3,39 @@
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
+
+# android-skills-tree — agent guide
+
+An Android developer skills tree / progress tracker. Users tick subtopics, earn XP and
+crystals, keep a streak, unlock achievements. Data lives in Firebase Firestore; the UI is
+server-rendered Next.js with client components talking to Firestore via hooks.
+
+## Project map
+
+- `src/app/` — App Router: `page.tsx`, `layout.tsx`, `login/`, `(app)/` group, `actions/auth.ts`, `manifest.ts`, `globals.css`.
+- `src/components/` — feature UI: `dashboard/`, `tree/`, `roadmap/`, `projects/`, `shop/`, `achievements/`, `shared/`.
+- `src/data/` — static content: `skills.ts` (~227 skills), `categories.ts`, `levels.ts`, `projects.ts`, `shop.ts`, `achievements.ts`.
+- `src/hooks/` — client Firestore hooks (`useUserProgress`, `useStreak`, `useCurrency`, `useAchievements`, `useAssessments`, …).
+- `src/lib/` — domain logic with co-located `*.test.ts`: `firestore.ts`, `firestore-actions.ts`, `scoring.ts`, `streak.ts`, `currency.ts`, `weights.ts`, `achievement-conditions.ts`, `auth.ts`, `viewport.ts`, `queries.ts`.
+- `src/types/` — shared TypeScript types.
+- Root: `next.config.ts`, `vitest.config.mts`, `eslint.config.mjs`, `tsconfig.json`.
+
+## Stack & conventions
+
+- Next.js 16 (App Router) + React 19, TypeScript. Firebase 12 (Firestore), Tailwind CSS v4,
+  `motion` for animation, `lucide-react` icons. Tests with Vitest.
+- Local Next.js docs: read `node_modules/next/dist/docs/` before using any Next API.
+- Match existing patterns; keep domain logic in `src/lib` with a matching `*.test.ts`.
+
+## Workflow rules
+
+1. **Explore with Serena first.** Before reading many files, use Serena's semantic tools
+   (`get_symbols_overview`, `find_symbol`, `find_referencing_symbols`) to pull only the
+   symbols you need. Fall back to file reads only when Serena can't answer.
+2. **Read memories at session start.** Serena keeps project knowledge in `.serena/memories/`
+   (gitignored). Check it before re-deriving how the project works.
+3. **Persist durable knowledge in the memory MCP.** Record cross-session facts and decisions
+   (architecture choices, gotchas, "why") via the `memory` server so they survive new sessions.
+4. **Plans and specs have a home.** Write task plans to `docs/superpowers/plans/YYYY-MM-DD-<topic>.md`
+   and design docs to `docs/superpowers/specs/YYYY-MM-DD-<topic>.md`. Do not scatter plan files elsewhere.
+5. **Verify before claiming done:** `npm run lint`, `npm run typecheck`, `npm test`.

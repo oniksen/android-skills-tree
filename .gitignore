@@ -44,6 +44,11 @@ next-env.d.ts
 .mcp/database.db
 opencode.json
 
+# agent memory (Serena index/memories, memory MCP graph)
+.serena/
+.mcp/memory.jsonl
+.mcp/*.lock
+
 # local agent scratch (plans, sdd briefs/reports)
 .opencode/
 

@@ -15,7 +15,13 @@ interface Gap {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export default function GapList({ gaps }: { gaps: Gap[] }) {
+export default function GapList({
+  gaps,
+  emptyMessage = "Нет навыков для текущего грейда",
+}: {
+  gaps: Gap[];
+  emptyMessage?: string;
+}) {
   if (gaps.length === 0) {
     return (
       <motion.div
@@ -26,15 +32,16 @@ export default function GapList({ gaps }: { gaps: Gap[] }) {
       >
         <div className="pointer-events-none absolute -left-6 -top-6 h-24 w-24 rounded-full bg-emerald-500/20 blur-3xl" />
         <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-emerald-400" />
-        <p className="text-emerald-400 font-medium">Все навыки оценены! Отличная работа!</p>
+        <p className="text-emerald-400 font-medium">{emptyMessage}</p>
       </motion.div>
     );
   }
 
   return (
     <div className="space-y-2">
-      {gaps.map((gap, i) => {
-        const critical = gap.currentScore === 0;
+            {gaps.map((gap, i) => {
+        const done = gap.completionPercent === 100;
+        const critical = !done && gap.currentScore === 0;
         return (
           <motion.div
             key={`${gap.skillName}-${i}`}
@@ -45,18 +52,28 @@ export default function GapList({ gaps }: { gaps: Gap[] }) {
             whileHover={{ x: 4 }}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
             className={`group relative flex items-center justify-between gap-3 overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 transition-colors ${
-              critical ? "hover:border-red-400/40" : "hover:border-yellow-400/40"
+              done
+                ? "hover:border-emerald-400/40"
+                : critical
+                  ? "hover:border-red-400/40"
+                  : "hover:border-yellow-400/40"
             }`}
           >
             <div className="flex min-w-0 items-start gap-3">
               <span
                 className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
-                  critical
-                    ? "bg-red-500/15 text-red-400"
-                    : "bg-yellow-500/15 text-yellow-400"
+                  done
+                    ? "bg-emerald-500/15 text-emerald-400"
+                    : critical
+                      ? "bg-red-500/15 text-red-400"
+                      : "bg-yellow-500/15 text-yellow-400"
                 }`}
               >
-                <AlertTriangle className="h-3.5 w-3.5" />
+                {done ? (
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                ) : (
+                  <AlertTriangle className="h-3.5 w-3.5" />
+                )}
               </span>
               <div className="min-w-0">
                 <span className="font-medium text-white">{gap.skillName}</span>
@@ -73,9 +90,11 @@ export default function GapList({ gaps }: { gaps: Gap[] }) {
               <div className="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-700 ease-out ${
-                    critical
-                      ? "bg-gradient-to-r from-red-500 to-orange-400"
-                      : "bg-gradient-to-r from-yellow-500 to-amber-400"
+                    done
+                      ? "bg-gradient-to-r from-emerald-500 to-teal-400"
+                      : critical
+                        ? "bg-gradient-to-r from-red-500 to-orange-400"
+                        : "bg-gradient-to-r from-yellow-500 to-amber-400"
                   }`}
                   style={{ width: `${gap.completionPercent}%` }}
                 />
