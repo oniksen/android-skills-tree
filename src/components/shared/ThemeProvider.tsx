@@ -28,22 +28,26 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 const listeners = new Set<() => void>();
 
+function getSystemMediaQuery(): MediaQueryList | null {
+  try {
+    return window.matchMedia("(prefers-color-scheme: dark)");
+  } catch {
+    return null;
+  }
+}
+
 function subscribe(listener: () => void): () => void {
   listeners.add(listener);
-  const mql = window.matchMedia("(prefers-color-scheme: dark)");
-  mql.addEventListener("change", listener);
+  const mql = getSystemMediaQuery();
+  mql?.addEventListener("change", listener);
   return () => {
     listeners.delete(listener);
-    mql.removeEventListener("change", listener);
+    mql?.removeEventListener("change", listener);
   };
 }
 
 function systemPrefersDark(): boolean {
-  try {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  } catch {
-    return false;
-  }
+  return getSystemMediaQuery()?.matches ?? false;
 }
 
 function readPreference(): ThemePreference {
