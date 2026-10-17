@@ -38,13 +38,15 @@ export default function SkillRowReadonly({ skillId, name, description, subtopics
           onClick={handleOpen}
           disabled={!hasContent}
           aria-haspopup={hasContent ? "dialog" : undefined}
-          className="flex w-full cursor-pointer items-center justify-between px-3 py-1 text-left disabled:cursor-default"
+          className="flex w-full cursor-pointer flex-col gap-1.5 px-3 py-1 text-left disabled:cursor-default nav-md:flex-row nav-md:items-center nav-md:justify-between nav-md:gap-0"
         >
           <div className="flex min-w-0 items-center gap-2">
             <span className="w-3 shrink-0 text-center font-mono text-slate-600">·</span>
-            <span className="truncate text-base text-slate-300">{name}</span>
+            <span className="text-base text-slate-300 nav-md:truncate">{name}</span>
           </div>
-          <DifficultyBadge skillId={skillId} />
+          <div className="pl-5 nav-md:pl-0">
+            <DifficultyBadge skillId={skillId} />
+          </div>
         </button>
       </div>
 
