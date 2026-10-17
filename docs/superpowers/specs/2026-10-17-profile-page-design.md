@@ -100,9 +100,10 @@ export default async function ProfilePage() {
    - освоено навыков: `assessedSkills / totalSkills`;
    - проекты: `completedProjects / totalProjects`;
    - достижения: `earned / total`.
-3. **Достижения** (`ProfileAchievements`) — компактная сетка заработанных
-   значков; незаработанные приглушены. Использует `getAchievementCatalog()` и
-   `useAchievements()`. Заголовок со счётчиком `[N/M]` и ссылка «все
+3. **Достижения** (`ProfileAchievements`) — компактная сетка **только
+   заработанных** значков; незаработанные не рендерятся. Если открытых нет —
+   строка «Открытых достижений пока нет.». Использует `getAchievementCatalog()`
+   и `useAchievements()`. Заголовок со счётчиком `[N/M]` и ссылка «все
    достижения» → `/achievements`.
 4. **Ссылки на разделы** (`ProfileLinks`) — компактный список: dashboard, tree,
    projects, roadmap, achievements, shop.

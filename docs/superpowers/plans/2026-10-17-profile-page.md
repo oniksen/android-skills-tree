@@ -521,14 +521,13 @@ git commit -m "feat: add profile stats grid"
 
 - [ ] **Step 1: Create the component**
 
-Create `src/components/profile/ProfileAchievements.tsx`:
+Create `src/components/profile/ProfileAchievements.tsx` — компактная сетка **только открытых** достижений; если открытых нет, вместо сетки — строка-заглушка «Открытых достижений пока нет.». Счётчик `[N/M]` и ссылка «все достижения» сохраняются.
 
 ```tsx
 "use client";
 
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Lock } from "lucide-react";
 import type { AchievementDef } from "@/data/achievements";
 
 interface ProfileAchievementsProps {
@@ -543,6 +542,7 @@ export default function ProfileAchievements({
   earnedIds,
 }: ProfileAchievementsProps) {
   const earned = new Set(earnedIds);
+  const earnedDefs = catalog.filter((def) => earned.has(def.id));
 
   return (
     <section className="card-surface rounded-lg p-5">
@@ -560,10 +560,13 @@ export default function ProfileAchievements({
           все достижения →
         </Link>
       </div>
-      <ul className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8">
-        {catalog.map((def, index) => {
-          const owned = earned.has(def.id);
-          return (
+      {earnedDefs.length === 0 ? (
+        <p className="font-mono text-xs text-slate-500">
+          Открытых достижений пока нет.
+        </p>
+      ) : (
+        <ul className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8">
+          {earnedDefs.map((def, index) => (
             <motion.li
               key={def.id}
               title={`${def.title} — ${def.condition}`}
@@ -571,26 +574,14 @@ export default function ProfileAchievements({
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "0px 0px -20px 0px" }}
               transition={{ duration: 0.3, delay: (index % 8) * 0.03, ease: EASE }}
-              className={`flex aspect-square items-center justify-center rounded-lg border text-2xl ${
-                owned
-                  ? "border-blue-500/40 bg-blue-500/10"
-                  : "border-slate-700 bg-white/[0.02] opacity-50 grayscale"
-              }`}
+              className="flex aspect-square items-center justify-center rounded-lg border border-blue-500/40 bg-blue-500/10 text-2xl"
             >
-              {owned ? (
-                <span aria-hidden>{def.icon}</span>
-              ) : (
-                <Lock className="h-4 w-4 text-slate-500" aria-hidden />
-              )}
-              <span className="sr-only">
-                {owned
-                  ? `Получено: ${def.title}`
-                  : `Не получено: ${def.title}`}
-              </span>
+              <span aria-hidden>{def.icon}</span>
+              <span className="sr-only">Получено: {def.title}</span>
             </motion.li>
-          );
-        })}
-      </ul>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
@@ -1446,3 +1437,5 @@ If nothing changed, skip this step.
 - **Deviation from spec:** `ProfilePageClient` is dropped; the `/profile` page renders `ProfileContent` directly (noted in Task 10).
 - **Type consistency:** `ProfileSummary` fields (`earnedAchievementIds`, `xp`, `crystals`, etc.) are used unchanged in Tasks 5 and 8; `MatchableAchievement` matches `AchievementDef` structurally; `useFirebaseAuth` returns `email` in Task 2 and is consumed in Task 8.
 - **Placeholder scan:** none.
+
+> Amendment 2026-10-17: ProfileAchievements теперь показывает только открытые достижения; счётчик `[N/M]` и ссылка «все достижения» сохранены. См. `2026-10-17-profile-earned-achievements.md`.
