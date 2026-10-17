@@ -6,3 +6,4 @@ export { default as RoadmapSkeleton } from "./RoadmapSkeleton";
 export { default as AchievementsSkeleton } from "./AchievementsSkeleton";
 export { default as ShopSkeleton } from "./ShopSkeleton";
 export { default as SkillDetailSkeleton } from "./SkillDetailSkeleton";
+export { default as ProfileSkeleton } from "./ProfileSkeleton";
