@@ -85,7 +85,7 @@ function applyTheme(theme: ResolvedTheme) {
   if (!meta) {
     meta = document.createElement("meta");
     meta.name = "theme-color";
-    document.head.appendChild(meta);
+    document.head.prepend(meta);
   }
   meta.content = THEME_COLORS[theme];
 }
