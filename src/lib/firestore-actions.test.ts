@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
-import { calcTotalScore } from "@/lib/scoring";
-import { type AssessmentMap } from "@/lib/achievement-conditions";
+import { calcTotalScore } from "@/core/domain/scoring";
+import { type AssessmentMap } from "@/core/domain/achievement-conditions";
 import {
   backfillTotalScore,
   checkAchievements,

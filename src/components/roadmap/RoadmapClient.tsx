@@ -9,9 +9,9 @@ import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import GapList from "@/components/roadmap/GapList";
 import { RoadmapSkeleton } from "@/components/shared/skeletons";
-import { calcSkillCompletionPercent } from "@/lib/scoring";
-import { getSkillWeight } from "@/lib/weights";
-import { sortRoadmapItems, type RoadmapSortKey } from "@/lib/roadmap-sort";
+import { calcSkillCompletionPercent } from "@/core/domain/scoring";
+import { getSkillWeight } from "@/core/domain/weights";
+import { sortRoadmapItems, type RoadmapSortKey } from "@/core/domain/roadmap-sort";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 

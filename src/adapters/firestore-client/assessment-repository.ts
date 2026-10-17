@@ -1,7 +1,7 @@
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { userAssessmentsPath } from "./paths";
-import { calcSkillScore } from "@/lib/scoring";
+import { calcSkillScore } from "@/core/domain/scoring";
 import type {
   AssessmentMap,
   AssessmentRepository,

@@ -1,7 +1,7 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { userCurrencyPath } from "./paths";
-import { EMPTY_CURRENCY } from "@/lib/currency";
+import { EMPTY_CURRENCY } from "@/core/domain/currency";
 import type { CurrencyRepository } from "@/ports/currency-repository";
 import type { CurrencyData } from "@/types";
 

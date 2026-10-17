@@ -9,8 +9,8 @@ import {
   isLevelMastered,
   selectMissingAwards,
   type AssessmentMap,
-} from "@/lib/achievement-conditions";
-import { getTotalMaxScore } from "@/lib/weights";
+} from "@/core/domain/achievement-conditions";
+import { getTotalMaxScore } from "@/core/domain/weights";
 
 const OSNOVY = "junior-osnovy";
 

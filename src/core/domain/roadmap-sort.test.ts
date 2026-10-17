@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { sortRoadmapItems } from "@/lib/roadmap-sort";
+import { sortRoadmapItems } from "@/core/domain/roadmap-sort";
 
 const make = (currentScore: number, completionPercent: number) => ({
   currentScore,

@@ -1,7 +1,7 @@
 import SkillRowReadonly from "./SkillRowReadonly";
 import ProgressBar from "@/components/shared/ProgressBar";
-import { calcCategoryScore } from "@/lib/scoring";
-import { getCategoryMaxScore } from "@/lib/weights";
+import { calcCategoryScore } from "@/core/domain/scoring";
+import { getCategoryMaxScore } from "@/core/domain/weights";
 
 interface SkillItem {
   id: string;

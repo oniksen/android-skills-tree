@@ -12,8 +12,8 @@ import LevelGate from "@/components/tree/LevelGate";
 import Legend from "@/components/tree/Legend";
 import AnimatedNumber from "@/components/shared/AnimatedNumber";
 import { TreeSkeleton } from "@/components/shared/skeletons";
-import { calcCategoryScore } from "@/lib/scoring";
-import { getCategoryMaxScore, getLevelMaxScore, getLevelMinScore } from "@/lib/weights";
+import { calcCategoryScore } from "@/core/domain/scoring";
+import { getCategoryMaxScore, getLevelMaxScore, getLevelMinScore } from "@/core/domain/weights";
 
 const LEVEL_ACCENT: Record<string, string> = {
   junior: "text-green-400",

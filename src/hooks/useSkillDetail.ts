@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { getSkillById } from "@/data";
 import { checkLevelUp as checkLevelUpAction } from "@/lib/firestore-actions";
-import { calcSkillCompletionPercent } from "@/lib/scoring";
+import { calcSkillCompletionPercent } from "@/core/domain/scoring";
 import { useAssessments } from "./useAssessments";
 
 export interface LevelUpResult {

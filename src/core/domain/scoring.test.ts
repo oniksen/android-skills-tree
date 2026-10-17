@@ -8,8 +8,8 @@ import {
   calcSkillScore,
   calcTotalScore,
   isSkillComplete,
-} from "@/lib/scoring";
-import { getCategoryMaxScore, getSkillWeight } from "@/lib/weights";
+} from "@/core/domain/scoring";
+import { getCategoryMaxScore, getSkillWeight } from "@/core/domain/weights";
 
 function allSubtopicsChecked(skillId: string) {
   const skill = skills.find((s) => s.id === skillId)!;

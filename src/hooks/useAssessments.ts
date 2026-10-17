@@ -3,14 +3,14 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "@/lib/firebase";
 import { doc, setDoc, runTransaction } from "firebase/firestore";
-import { syncStreak } from "@/lib/streak";
+import { syncStreak } from "@/adapters/firestore-client/streak-commands";
 import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { calcSkillScore, calcTotalScore, isSkillComplete } from "@/lib/scoring";
-import { getCrystalRewardForSkill } from "@/lib/currency";
+import { calcSkillScore, calcTotalScore } from "@/core/domain/scoring";
+import { computeAssessmentToggle } from "@/core/use-cases/compute-assessment-toggle";
 import { checkAchievements } from "@/lib/firestore-actions";
 import { deleteCategoryPerfectAchievement } from "@/lib/firestore";
-import { isCategoryPerfect } from "@/lib/achievement-conditions";
+import { isCategoryPerfect } from "@/core/domain/achievement-conditions";
 import { skills } from "@/data/skills";
 import {
   userAssessmentPath,
@@ -69,25 +69,23 @@ export function useAssessments() {
 
           const storedSubtopics =
             (assessmentSnap.data()?.subtopics as Record<string, boolean> | undefined) ?? {};
-          const nextSubtopics = {
-            ...storedSubtopics,
-            [subtopicName]: !storedSubtopics[subtopicName],
-          };
-          const nextValue = nextSubtopics[subtopicName] === true;
-          const complete = isSkillComplete(skillId, nextSubtopics);
-          const newScore = calcSkillScore(skillId, nextSubtopics);
-
           const currency = currencySnap.exists()
             ? (currencySnap.data() as Partial<CurrencyData>)
             : {};
           const balance = typeof currency.balance === "number" ? currency.balance : 0;
           const claimedSkills =
             currency.claimedSkills && typeof currency.claimedSkills === "object"
-              ? currency.claimedSkills
+              ? (currency.claimedSkills as Record<string, string>)
               : {};
 
-          const alreadyClaimed = typeof claimedSkills[skillId] === "string";
-          const awarded = complete && !alreadyClaimed ? getCrystalRewardForSkill(skillId) : 0;
+          const { nextSubtopics, nextValue, complete, justCompleted, awarded } =
+            computeAssessmentToggle({
+              skillId,
+              subtopicName,
+              storedSubtopics,
+              claimedSkills,
+            });
+          const newScore = calcSkillScore(skillId, nextSubtopics);
 
           tx.set(
             assessmentRef,
@@ -111,14 +109,7 @@ export function useAssessments() {
             );
           }
 
-          return {
-            nextValue,
-            nextSubtopics,
-            newScore,
-            complete,
-            awarded,
-            justCompleted: complete && !isSkillComplete(skillId, storedSubtopics),
-          };
+          return { nextValue, nextSubtopics, newScore, complete, awarded, justCompleted };
         });
 
         const { nextValue, nextSubtopics, newScore, awarded, justCompleted } = result;

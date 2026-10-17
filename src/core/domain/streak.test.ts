@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { collectMissedDays, computeStreaks } from "@/lib/streak";
+import { collectMissedDays, computeStreaks } from "@/core/domain/streak";
 
 // Опорный день — середина января: за пределами этого диапазона в некоторых
 // странах меняется переход на летнее время, а shiftDay работает по локальному календарю.

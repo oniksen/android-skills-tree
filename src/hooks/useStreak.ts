@@ -5,12 +5,14 @@ import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import {
   applyAutoFreezesOnce,
+  syncStreak as syncStreakFirestore,
+} from "@/adapters/firestore-client/streak-commands";
+import {
   computeStreaks,
   getLocalDayString,
   shiftDay,
-  syncStreak as syncStreakFirestore,
   type AutoFreezeReport,
-} from "@/lib/streak";
+} from "@/core/domain/streak";
 
 export interface StreakDay {
   date: string;

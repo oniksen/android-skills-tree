@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "motion/react";
 import { useStreak, useCurrency } from "@/hooks";
-import { parseDayString } from "@/lib/streak";
+import { parseDayString } from "@/core/domain/streak";
 import {
   getShopItem,
   STREAK_FREEZE_ITEM_ID,

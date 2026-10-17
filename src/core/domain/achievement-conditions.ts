@@ -1,7 +1,7 @@
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
-import { calcTotalScore, isSkillComplete } from "@/lib/scoring";
+import { calcTotalScore, isSkillComplete } from "@/core/domain/scoring";
 
 export type AssessmentMap = Record<string, { subtopics?: Record<string, boolean> }>;
 

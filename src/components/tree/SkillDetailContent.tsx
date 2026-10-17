@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Check } from "lucide-react";
 import DifficultyBadge from "@/components/shared/DifficultyBadge";
-import { getCrystalRewardForSkill } from "@/lib/currency";
+import { getCrystalRewardForSkill } from "@/core/domain/currency";
 import { getCategoryById, getSkillById } from "@/data";
 
 export interface SkillDetailContentProps {

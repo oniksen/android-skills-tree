@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCurrency } from "@/hooks";
 import { SHOP_ITEMS, CURRENCY_ICON } from "@/data/shop";
-import { CRYSTALS_PER_XP } from "@/lib/currency";
-import { DIFFICULTY_WEIGHT, LEVEL_MULTIPLIER } from "@/lib/weights";
+import { CRYSTALS_PER_XP } from "@/core/domain/currency";
+import { DIFFICULTY_WEIGHT, LEVEL_MULTIPLIER } from "@/core/domain/weights";
 import { levels } from "@/data/levels";
 import type { Difficulty } from "@/data/skills";
-import type { BuyResult } from "@/lib/currency";
+import type { BuyResult } from "@/core/domain/currency";
 import { ShopSkeleton } from "@/components/shared/skeletons";
 import ShopItemCard from "./ShopItemCard";
 

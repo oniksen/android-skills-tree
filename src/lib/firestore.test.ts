@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
-import { evaluateAchievements, achievementKey, type AssessmentMap } from "@/lib/achievement-conditions";
+import { evaluateAchievements, achievementKey, type AssessmentMap } from "@/core/domain/achievement-conditions";
 import {
   addAchievementsIfNotExists,
   deleteAchievementsByLevel,

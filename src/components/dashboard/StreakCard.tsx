@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { useStreak, useCurrency } from "@/hooks";
-import { parseDayString } from "@/lib/streak";
+import { parseDayString } from "@/core/domain/streak";
 import { STREAK_FREEZE_ICON } from "@/data/shop";
 
 const DAYS_SHORT = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];

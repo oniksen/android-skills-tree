@@ -12,7 +12,7 @@ import {
   achievementKey,
   selectMissingAwards,
   type AchievementAward,
-} from "@/lib/achievement-conditions";
+} from "@/core/domain/achievement-conditions";
 import {
   userProgressPath,
   userProjectsPath,

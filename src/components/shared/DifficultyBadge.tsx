@@ -1,4 +1,4 @@
-import { getSkillDifficulty, getSkillWeight } from "@/lib/weights";
+import { getSkillDifficulty, getSkillWeight } from "@/core/domain/weights";
 import type { Difficulty } from "@/data";
 
 const LABELS: Record<Difficulty, string> = {

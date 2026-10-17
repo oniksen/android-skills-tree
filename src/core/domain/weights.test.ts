@@ -12,7 +12,7 @@ import {
   getSkillDifficulty,
   getSkillWeight,
   getTotalMaxScore,
-} from "@/lib/weights";
+} from "@/core/domain/weights";
 
 const VALID_DIFFICULTIES = ["easy", "medium", "hard"];
 

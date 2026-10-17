@@ -1,6 +1,6 @@
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
-import { getSkillWeight } from "@/lib/weights";
+import { getSkillWeight } from "@/core/domain/weights";
 
 export function calcSkillScore(
   skillId: string,

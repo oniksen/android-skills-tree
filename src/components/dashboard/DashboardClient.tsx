@@ -10,7 +10,7 @@ import QuickStats from "@/components/dashboard/QuickStats";
 import NextMilestone from "@/components/dashboard/NextMilestone";
 import StreakCard from "@/components/dashboard/StreakCard";
 import { DashboardSkeleton } from "@/components/shared/skeletons";
-import { getLevelMinScore } from "@/lib/weights";
+import { getLevelMinScore } from "@/core/domain/weights";
 
 const levelColors: Record<string, string> = {
   junior: "text-green-400",

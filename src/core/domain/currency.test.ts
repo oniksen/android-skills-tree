@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
 import { getShopItem, STREAK_FREEZE_ITEM_ID } from "@/data/shop";
-import { getCrystalRewardForSkill } from "@/lib/currency";
-import { getSkillWeight } from "@/lib/weights";
+import { getCrystalRewardForSkill } from "@/core/domain/currency";
+import { getSkillWeight } from "@/core/domain/weights";
 
 function levelIdOfCategory(categoryId: string) {
   return categories.find((c) => c.id === categoryId)?.levelId as string;

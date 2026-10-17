@@ -11,13 +11,13 @@ import {
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
-import { syncStreak } from "@/lib/streak";
-import { calcCategoryScore, calcSkillScore, calcTotalScore } from "@/lib/scoring";
+import { syncStreak } from "@/adapters/firestore-client/streak-commands";
+import { calcCategoryScore, calcSkillScore, calcTotalScore } from "@/core/domain/scoring";
 import {
   getCategoryMaxScore,
   getLevelMinScore,
   LEVEL_UP_THRESHOLD,
-} from "@/lib/weights";
+} from "@/core/domain/weights";
 import {
   addAchievementIfNotExists,
   addAchievementsIfNotExists,
@@ -29,7 +29,7 @@ import {
 import {
   evaluateAchievements,
   type AssessmentMap,
-} from "@/lib/achievement-conditions";
+} from "@/core/domain/achievement-conditions";
 import {
   userAssessmentPath,
   userAssessmentsPath,

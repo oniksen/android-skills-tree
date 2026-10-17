@@ -20,7 +20,7 @@ import { levels } from "@/data/levels";
 import { skills } from "@/data/skills";
 import { projects } from "@/data/projects";
 import { getAchievementCatalog } from "@/data/achievements";
-import { summarizeProfile } from "@/lib/profile";
+import { summarizeProfile } from "@/core/domain/profile";
 import { ProfileSkeleton } from "@/components/shared/skeletons";
 import ProfileStats from "@/components/profile/ProfileStats";
 import ProfileAchievements from "@/components/profile/ProfileAchievements";

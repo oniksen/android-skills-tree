@@ -3,12 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { buyItem } from "@/adapters/firestore-client/currency-commands";
 import {
-  buyItem,
   getFreezeCount,
   EMPTY_CURRENCY,
   type BuyResult,
-} from "@/lib/currency";
+} from "@/core/domain/currency";
 import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
 import type { CurrencyData } from "@/types";
 
