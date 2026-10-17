@@ -12,6 +12,11 @@ import {
   runTransaction,
   setDoc,
 } from "firebase/firestore";
+import {
+  userAchievementsPath,
+  userCurrencyPath,
+  userStreakPath,
+} from "@/adapters/firestore-client/paths";
 import type { CurrencyData, StreakData } from "@/types";
 
 export type { StreakData };
@@ -102,8 +107,8 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
   if (!user) return null;
 
   const today = getLocalDayString();
-  const streakRef = doc(db, "users", user.uid, "streaks", "current");
-  const currencyRef = doc(db, "users", user.uid, "currency", "current");
+  const streakRef = doc(db, ...userStreakPath(user.uid));
+  const currencyRef = doc(db, ...userCurrencyPath(user.uid));
 
   try {
     const result = await runTransaction(db, async (tx) => {
@@ -189,7 +194,7 @@ export function applyAutoFreezesOnce(): Promise<AutoFreezeReport | null> {
 }
 
 export async function getStreak(uid: string): Promise<StreakData | null> {
-  const streakRef = doc(db, "users", uid, "streaks", "current");
+  const streakRef = doc(db, ...userStreakPath(uid));
   const snap = await getDoc(streakRef);
   if (!snap.exists()) return null;
   const data = snap.data() as Omit<StreakData, "updatedAt"> & {
@@ -208,7 +213,7 @@ export async function syncStreak(): Promise<StreakData | null> {
   if (!user) return null;
 
   const today = getLocalDayString();
-  const streakRef = doc(db, "users", user.uid, "streaks", "current");
+  const streakRef = doc(db, ...userStreakPath(user.uid));
 
   try {
     const result = await runTransaction(db, async (tx) => {
@@ -255,7 +260,7 @@ export async function syncStreak(): Promise<StreakData | null> {
 }
 
 async function addStreakAchievementIfNotExists(uid: string, days: number) {
-  const achievementsRef = collection(db, "users", uid, "achievements");
+  const achievementsRef = collection(db, ...userAchievementsPath(uid));
   const snap = await getDocs(query(achievementsRef));
   const type = `streak_${days}`;
   const exists = snap.docs.some((d) => d.data().type === type);

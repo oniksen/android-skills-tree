@@ -2,6 +2,7 @@ import { auth, db } from "@/lib/firebase";
 import { doc, runTransaction } from "firebase/firestore";
 import { getShopItem, STREAK_FREEZE_ITEM_ID } from "@/data/shop";
 import { getSkillWeight } from "@/lib/weights";
+import { userCurrencyPath } from "@/adapters/firestore-client/paths";
 import type { CurrencyData } from "@/types";
 
 export const CRYSTALS_PER_XP = 0.5;
@@ -43,7 +44,7 @@ export async function buyItem(itemId: string): Promise<BuyResult> {
   const item = getShopItem(itemId);
   if (!item) return { ok: false, reason: "not-found" };
 
-  const currencyRef = doc(db, "users", user.uid, "currency", "current");
+  const currencyRef = doc(db, ...userCurrencyPath(user.uid));
 
   try {
     return await runTransaction(db, async (tx) => {

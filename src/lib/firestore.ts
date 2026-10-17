@@ -6,7 +6,6 @@ import {
   deleteDoc,
   collection,
   getDocs,
-  query,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import {
@@ -14,8 +13,12 @@ import {
   selectMissingAwards,
   type AchievementAward,
 } from "@/lib/achievement-conditions";
-import { calcSkillScore } from "@/lib/scoring";
-import type { UserProgress, Assessment, ProjectProgress, Achievement } from "@/types";
+import {
+  userProgressPath,
+  userProjectsPath,
+  userAchievementsPath,
+} from "@/adapters/firestore-client/paths";
+import type { UserProgress } from "@/types";
 
 // ============ User Progress ============
 
@@ -26,7 +29,7 @@ const DEFAULT_USER_PROGRESS: UserProgress = {
 };
 
 export async function getUserProgress(uid: string): Promise<UserProgress> {
-  const progressRef = doc(db, "users", uid, "progress", "current");
+  const progressRef = doc(db, ...userProgressPath(uid));
   const snap = await getDoc(progressRef);
 
   if (!snap.exists()) {
@@ -41,7 +44,7 @@ export async function updateUserProgress(
   uid: string,
   data: Partial<UserProgress>,
 ) {
-  const progressRef = doc(db, "users", uid, "progress", "current");
+  const progressRef = doc(db, ...userProgressPath(uid));
   const snap = await getDoc(progressRef);
 
   if (!snap.exists()) {
@@ -51,100 +54,22 @@ export async function updateUserProgress(
   }
 }
 
-// ============ Assessments ============
-
-export async function getUserAssessments(uid: string): Promise<Assessment[]> {
-  const assessmentsRef = collection(db, "users", uid, "assessments");
-  const snap = await getDocs(assessmentsRef);
-
-  return snap.docs.map((doc) => ({
-    skillId: doc.id,
-    ...doc.data(),
-  })) as Assessment[];
-}
-
-export async function getAssessmentMap(
-  uid: string,
-): Promise<Record<string, number>> {
-  const assessments = await getUserAssessments(uid);
-  const map: Record<string, number> = {};
-  assessments.forEach((a) => {
-    map[a.skillId] = a.subtopics ? calcSkillScore(a.skillId, a.subtopics) : a.score || 0;
-  });
-  return map;
-}
-
-export async function saveAssessment(
-  uid: string,
-  skillId: string,
-  score: number,
-) {
-  const assessmentRef = doc(db, "users", uid, "assessments", skillId);
-  await setDoc(assessmentRef, {
-    score,
-    updatedAt: new Date(),
-  });
-}
-
 // ============ Project Progress ============
-
-export async function getUserProjectProgress(
-  uid: string,
-): Promise<ProjectProgress[]> {
-  const projectsRef = collection(db, "users", uid, "projects");
-  const snap = await getDocs(projectsRef);
-
-  return snap.docs.map((doc) => ({
-    projectId: doc.id,
-    ...doc.data(),
-  })) as ProjectProgress[];
-}
 
 export async function getProjectProgressMap(
   uid: string,
 ): Promise<Record<string, boolean>> {
-  const progress = await getUserProjectProgress(uid);
+  const projectsRef = collection(db, ...userProjectsPath(uid));
+  const snap = await getDocs(projectsRef);
+
   const map: Record<string, boolean> = {};
-  progress.forEach((p) => {
-    map[p.projectId] = p.completed;
+  snap.forEach((d) => {
+    map[d.id] = d.data().completed;
   });
   return map;
 }
 
-export async function toggleProjectCompletion(
-  uid: string,
-  projectId: string,
-  completed: boolean,
-) {
-  const projectRef = doc(db, "users", uid, "projects", projectId);
-  await setDoc(projectRef, {
-    completed,
-    completedAt: completed ? new Date() : null,
-  });
-}
-
-export async function deleteProjectProgress(
-  uid: string,
-  projectIds: string[],
-) {
-  for (const projectId of projectIds) {
-    const projectRef = doc(db, "users", uid, "projects", projectId);
-    await deleteDoc(projectRef);
-  }
-}
-
 // ============ Achievements ============
-
-export async function getUserAchievements(uid: string): Promise<Achievement[]> {
-  const achievementsRef = collection(db, "users", uid, "achievements");
-  const q = query(achievementsRef);
-  const snap = await getDocs(q);
-
-  return snap.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Achievement[];
-}
 
 export async function addAchievementIfNotExists(
   uid: string,
@@ -153,7 +78,7 @@ export async function addAchievementIfNotExists(
   matchKey?: string,
   matchValue?: unknown,
 ) {
-  const achievementsRef = collection(db, "users", uid, "achievements");
+  const achievementsRef = collection(db, ...userAchievementsPath(uid));
   const snap = await getDocs(achievementsRef);
 
   const exists = snap.docs.some((doc) => {
@@ -181,7 +106,7 @@ export async function addAchievementsIfNotExists(
 ) {
   if (awards.length === 0) return;
 
-  const achievementsRef = collection(db, "users", uid, "achievements");
+  const achievementsRef = collection(db, ...userAchievementsPath(uid));
   const snap = await getDocs(achievementsRef);
 
   const existingKeys = snap.docs.flatMap((d) => {
@@ -200,7 +125,7 @@ export async function addAchievementsIfNotExists(
 }
 
 export async function deleteAchievementsByLevel(uid: string, levelId: string) {
-  const achievementsRef = collection(db, "users", uid, "achievements");
+  const achievementsRef = collection(db, ...userAchievementsPath(uid));
   const snap = await getDocs(achievementsRef);
 
   for (const achievementDoc of snap.docs) {
@@ -220,7 +145,7 @@ export async function deleteAchievementsByLevel(uid: string, levelId: string) {
 }
 
 export async function deleteCategoryPerfectAchievement(uid: string, categoryId: string) {
-  const achievementsRef = collection(db, "users", uid, "achievements");
+  const achievementsRef = collection(db, ...userAchievementsPath(uid));
   const snap = await getDocs(achievementsRef);
 
   const revokedKey = achievementKey("category_perfect", { category_id: categoryId });
@@ -235,10 +160,4 @@ export async function deleteCategoryPerfectAchievement(uid: string, categoryId: 
 
     await deleteDoc(achievementDoc.ref);
   }
-}
-
-// ============ Helpers ============
-
-export function createDefaultUserProgress(uid: string) {
-  return setDoc(doc(db, "users", uid, "progress", "current"), DEFAULT_USER_PROGRESS);
 }

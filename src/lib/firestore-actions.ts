@@ -4,10 +4,8 @@ import { auth, db } from "@/lib/firebase";
 import {
   collection,
   doc,
-  getDoc,
   getDocs,
   setDoc,
-  updateDoc,
   deleteDoc,
 } from "firebase/firestore";
 import { levels } from "@/data/levels";
@@ -24,11 +22,20 @@ import {
   addAchievementIfNotExists,
   addAchievementsIfNotExists,
   deleteAchievementsByLevel,
+  getProjectProgressMap,
+  getUserProgress,
+  updateUserProgress,
 } from "@/lib/firestore";
 import {
   evaluateAchievements,
   type AssessmentMap,
 } from "@/lib/achievement-conditions";
+import {
+  userAssessmentPath,
+  userAssessmentsPath,
+  userProjectPath,
+  userProjectsPath,
+} from "@/adapters/firestore-client/paths";
 
 function getUid(): string {
   const user = auth.currentUser;
@@ -37,7 +44,7 @@ function getUid(): string {
 }
 
 export async function readAssessmentMap(uid: string): Promise<Record<string, { score: number; subtopics?: Record<string, boolean> }>> {
-  const assessmentsRef = collection(db, "users", uid, "assessments");
+  const assessmentsRef = collection(db, ...userAssessmentsPath(uid));
   const snap = await getDocs(assessmentsRef);
   const map: Record<string, { score: number; subtopics?: Record<string, boolean> }> = {};
   snap.forEach((d) => {
@@ -45,51 +52,6 @@ export async function readAssessmentMap(uid: string): Promise<Record<string, { s
     const subtopics = data.subtopics;
     const score = subtopics ? calcSkillScore(d.id, subtopics) : (data.score || 0);
     map[d.id] = { score, subtopics };
-  });
-  return map;
-}
-
-async function getUserProgress(uid: string) {
-  const progressRef = doc(db, "users", uid, "progress", "current");
-  const snap = await getDoc(progressRef);
-  if (!snap.exists()) {
-    const defaultProgress = {
-      currentLevelId: "junior",
-      unlockedLevelIds: ["junior"],
-      totalScore: 0,
-    };
-    await setDoc(progressRef, defaultProgress);
-    return defaultProgress;
-  }
-  return snap.data();
-}
-
-async function updateUserProgress(
-  uid: string,
-  data: Record<string, unknown>,
-) {
-  const progressRef = doc(db, "users", uid, "progress", "current");
-  const snap = await getDoc(progressRef);
-  if (snap.exists()) {
-    await updateDoc(progressRef, data);
-  } else {
-    await setDoc(progressRef, {
-      currentLevelId: "junior",
-      unlockedLevelIds: ["junior"],
-      totalScore: 0,
-      ...data,
-    });
-  }
-}
-
-async function getProjectProgressMap(
-  uid: string,
-): Promise<Record<string, boolean>> {
-  const projectsRef = collection(db, "users", uid, "projects");
-  const snap = await getDocs(projectsRef);
-  const map: Record<string, boolean> = {};
-  snap.forEach((d) => {
-    map[d.id] = d.data().completed;
   });
   return map;
 }
@@ -103,11 +65,8 @@ export async function backfillTotalScore(
   const assessmentMap = await (preloadedMap ?? readAssessmentMap(uid));
   const totalScore = calcTotalScore(assessmentMap);
 
-  const progressRef = doc(db, "users", uid, "progress", "current");
-  const snap = await getDoc(progressRef);
-  const stored = snap.exists() ? snap.data()?.totalScore : undefined;
-
-  if (snap.exists() && stored === totalScore) return totalScore;
+  const { totalScore: stored } = await getUserProgress(uid);
+  if (stored === totalScore) return totalScore;
 
   await updateUserProgress(uid, { totalScore });
   return totalScore;
@@ -197,7 +156,7 @@ export async function toggleProjectCompletion(
   completed: boolean,
 ) {
   const uid = getUid();
-  const projectRef = doc(db, "users", uid, "projects", projectId);
+  const projectRef = doc(db, ...userProjectPath(uid, projectId));
   await setDoc(projectRef, {
     completed,
     completedAt: completed ? new Date() : null,
@@ -219,12 +178,12 @@ export async function resetLevelProgress(levelId: string) {
     .map((s) => s.id);
 
   for (const skillId of levelSkillIds) {
-    const assessmentRef = doc(db, "users", uid, "assessments", skillId);
+    const assessmentRef = doc(db, ...userAssessmentPath(uid, skillId));
     await deleteDoc(assessmentRef);
   }
 
   const levelProjectIds = (
-    await getDocs(collection(db, "users", uid, "projects"))
+    await getDocs(collection(db, ...userProjectsPath(uid)))
   ).docs
     .filter((d) => {
       const data = d.data();
@@ -233,7 +192,7 @@ export async function resetLevelProgress(levelId: string) {
     .map((d) => d.id);
 
   for (const projectId of levelProjectIds) {
-    const projectRef = doc(db, "users", uid, "projects", projectId);
+    const projectRef = doc(db, ...userProjectPath(uid, projectId));
     await deleteDoc(projectRef);
   }
 

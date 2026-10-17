@@ -14,6 +14,7 @@ import {
   checkAchievements,
   readAssessmentMap,
 } from "@/lib/firestore-actions";
+import { userProgressPath } from "@/adapters/firestore-client/paths";
 import type { UserProgress } from "@/types";
 
 const DEFAULT_PROGRESS: UserProgress = {
@@ -28,14 +29,9 @@ export function useUserProgress() {
   const { uid, loading: authLoading } = useFirebaseAuth();
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!uid) {
-      setProgress(null);
-      setLoading(false);
-      return;
-    }
+    if (authLoading || !uid) return;
 
-    const progressRef = doc(db, "users", uid, "progress", "current");
+    const progressRef = doc(db, ...userProgressPath(uid));
 
     const unsubscribe = onSnapshot(
       progressRef,
@@ -70,7 +66,7 @@ export function useUserProgress() {
 
   const updateProgress = async (data: Partial<UserProgress>) => {
     if (!uid) return;
-    const progressRef = doc(db, "users", uid, "progress", "current");
+    const progressRef = doc(db, ...userProgressPath(uid));
     const snap = await getDoc(progressRef);
     if (snap.exists()) {
       const { updateDoc } = await import("firebase/firestore");
@@ -80,5 +76,11 @@ export function useUserProgress() {
     }
   };
 
-  return { progress, loading, updateProgress };
+  const signedOut = !authLoading && !uid;
+
+  return {
+    progress: signedOut ? null : progress,
+    loading: signedOut ? false : loading,
+    updateProgress,
+  };
 }

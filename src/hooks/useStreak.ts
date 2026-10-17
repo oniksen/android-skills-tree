@@ -12,6 +12,7 @@ import {
   syncStreak as syncStreakFirestore,
   type AutoFreezeReport,
 } from "@/lib/streak";
+import { userStreakPath } from "@/adapters/firestore-client/paths";
 
 export interface StreakDay {
   date: string;
@@ -49,7 +50,7 @@ export function useStreak() {
   useEffect(() => {
     if (!uid) return;
 
-    const streakRef = doc(db, "users", uid, "streaks", "current");
+    const streakRef = doc(db, ...userStreakPath(uid));
 
     const unsubscribe = onSnapshot(streakRef, (snapshot) => {
       if (snapshot.exists()) {

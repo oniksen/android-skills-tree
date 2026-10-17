@@ -10,6 +10,9 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { userProjectPath, userProjectsPath } from "@/adapters/firestore-client/paths";
+
+const EMPTY_PROJECT_MAP: Record<string, boolean> = {};
 
 export function useProjectProgress() {
   const [projectMap, setProjectMap] = useState<Record<string, boolean>>({});
@@ -17,14 +20,9 @@ export function useProjectProgress() {
   const { uid, loading: authLoading } = useFirebaseAuth();
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!uid) {
-      setProjectMap({});
-      setLoading(false);
-      return;
-    }
+    if (authLoading || !uid) return;
 
-    const projectsRef = collection(db, "users", uid, "projects");
+    const projectsRef = collection(db, ...userProjectsPath(uid));
 
     const unsubscribe = onSnapshot(projectsRef, (snapshot) => {
       const map: Record<string, boolean> = {};
@@ -44,7 +42,7 @@ export function useProjectProgress() {
     completed: boolean,
   ) => {
     if (!uid) return;
-    const projectRef = doc(db, "users", uid, "projects", projectId);
+    const projectRef = doc(db, ...userProjectPath(uid, projectId));
     await setDoc(projectRef, {
       completed,
       completedAt: completed ? new Date() : null,
@@ -54,10 +52,17 @@ export function useProjectProgress() {
   const deleteProjectProgress = async (projectIds: string[]) => {
     if (!uid) return;
     for (const projectId of projectIds) {
-      const projectRef = doc(db, "users", uid, "projects", projectId);
+      const projectRef = doc(db, ...userProjectPath(uid, projectId));
       await deleteDoc(projectRef);
     }
   };
 
-  return { projectMap, loading, toggleProjectCompletion, deleteProjectProgress };
+  const signedOut = !authLoading && !uid;
+
+  return {
+    projectMap: signedOut ? EMPTY_PROJECT_MAP : projectMap,
+    loading: signedOut ? false : loading,
+    toggleProjectCompletion,
+    deleteProjectProgress,
+  };
 }

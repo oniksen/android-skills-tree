@@ -7,6 +7,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { userAchievementsPath } from "@/adapters/firestore-client/paths";
 import type { Achievement } from "@/types";
 
 export function useAchievements() {
@@ -15,14 +16,9 @@ export function useAchievements() {
   const { uid, loading: authLoading } = useFirebaseAuth();
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!uid) {
-      setAchievements([]);
-      setLoading(false);
-      return;
-    }
+    if (authLoading || !uid) return;
 
-    const achievementsRef = collection(db, "users", uid, "achievements");
+    const achievementsRef = collection(db, ...userAchievementsPath(uid));
 
     const unsubscribe = onSnapshot(achievementsRef, (snapshot) => {
       const list: Achievement[] = [];
@@ -43,5 +39,12 @@ export function useAchievements() {
     return () => unsubscribe();
   }, [uid, authLoading]);
 
-  return { achievements, loading };
+  const signedOut = !authLoading && !uid;
+
+  return {
+    achievements: signedOut ? EMPTY_ACHIEVEMENTS : achievements,
+    loading: signedOut ? false : loading,
+  };
 }
+
+const EMPTY_ACHIEVEMENTS: Achievement[] = [];

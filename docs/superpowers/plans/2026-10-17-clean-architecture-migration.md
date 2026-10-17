@@ -6,10 +6,11 @@
   `npm run typecheck`, `npm test` и коммитом. Поведение приложения сохраняется,
   кроме явно указанных улучшений безопасности.
 
-## Открытые вопросы (закрыть до фазы 4)
+## Решения по открытым вопросам
 
-- [ ] `ADMIN_EMAIL` / `ADMIN_PASSWORD_HASH`: переиспользовать (admin-панель/бутстрап)
-      или удалить как мёртвую конфигурацию.
+- [x] `ADMIN_EMAIL` / `ADMIN_PASSWORD_HASH`: **удалены** как мёртвая конфигурация
+      (в коде не используются). Admin-доступ в будущем — через Firebase custom
+      claims / allowlist UID, проверяемый на сервере, а не через password hash в env.
 
 ---
 
@@ -29,18 +30,22 @@
 
 Цель: устранить конфигурационные и дублирующие проблемы, не двигая слои.
 
-1. `src/adapters/env/index.ts` — zod-схема для `NEXT_PUBLIC_FIREBASE_*`,
-   `AUTH_SECRET`, серверных Admin-переменных; экспорт типизированного объекта.
-2. `.env.example` с полным списком переменных и комментариями.
-3. `src/lib/firebase.ts` — убрать хардкод-fallback; читать только из env-модуля.
-4. `src/adapters/firestore-client/paths.ts` — константы путей коллекций
-   (`users/{uid}/progress/current` и т.д.).
-5. Устранить дублирование `firestore.ts` ↔ `firestore-actions.ts`:
-   оставить по одной реализации хелперов; удалить мёртвый код
-   (`queries.ts`, неиспользуемые экспорты).
-6. Добавить `firebase.json`, `.firebaserc`, `firestore.indexes.json` (пустой/заготовка).
+- [x] 1. `src/adapters/env/client.ts` + `server.ts` — zod-валидация
+      `NEXT_PUBLIC_FIREBASE_*` и `AUTH_SECRET`.
+- [x] 2. `.env.example` с полным списком переменных и комментариями.
+- [x] 3. `src/lib/firebase.ts` — убран хардкод-fallback; читает из env-модуля.
+- [x] 4. `src/adapters/firestore-client/paths.ts` — константы путей коллекций.
+- [x] 5. Устранено дублирование `firestore.ts` ↔ `firestore-actions.ts`; удалён
+      мёртвый код (`queries.ts`, `saveAssessment`, `getAssessmentMap`,
+      `getUserAssessments`, `getUserProjectProgress`, `createDefaultUserProgress`,
+      `toggleProjectCompletion`/`deleteProjectProgress` из `firestore.ts`).
+- [x] 6. Добавлены `firebase.json`, `.firebaserc`, `firestore.indexes.json`
+      (правила — Фаза 5).
+- [x] 7. Исправлены 4 lint-ошибки `react-hooks/set-state-in-effect` в хуках
+      (signed-out состояние выведено на рендер).
+- [x] 8. `ADMIN_EMAIL`/`ADMIN_PASSWORD_HASH` удалены из `.env.local`.
 
-**Проверка:** `npm run lint && npm run typecheck && npm test`.
+**Проверка:** `lint` ✅ `typecheck` ✅ `test` (154) ✅ `build` ✅.
 **Критерий:** поведение идентично; ключи только из env; дублей нет.
 
 ---

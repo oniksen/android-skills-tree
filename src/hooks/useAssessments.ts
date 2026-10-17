@@ -17,6 +17,12 @@ import { checkAchievements } from "@/lib/firestore-actions";
 import { deleteCategoryPerfectAchievement } from "@/lib/firestore";
 import { isCategoryPerfect } from "@/lib/achievement-conditions";
 import { skills } from "@/data/skills";
+import {
+  userAssessmentPath,
+  userAssessmentsPath,
+  userCurrencyPath,
+  userProgressPath,
+} from "@/adapters/firestore-client/paths";
 import type { AssessmentData, CurrencyData } from "@/types";
 
 export interface CrystalAward {
@@ -35,15 +41,9 @@ export function useAssessments() {
   const mapRef = useRef<Record<string, AssessmentData>>({});
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!uid) {
-      mapRef.current = {};
-      setAssessmentMap({});
-      setLoading(false);
-      return;
-    }
+    if (authLoading || !uid) return;
 
-    const assessmentsRef = collection(db, "users", uid, "assessments");
+    const assessmentsRef = collection(db, ...userAssessmentsPath(uid));
 
     const unsubscribe = onSnapshot(assessmentsRef, (snapshot) => {
       const map: Record<string, AssessmentData> = {};
@@ -67,8 +67,8 @@ export function useAssessments() {
     async (skillId: string, subtopicName: string) => {
       if (!uid) return null;
 
-      const assessmentRef = doc(db, "users", uid, "assessments", skillId);
-      const currencyRef = doc(db, "users", uid, "currency", "current");
+      const assessmentRef = doc(db, ...userAssessmentPath(uid, skillId));
+      const currencyRef = doc(db, ...userCurrencyPath(uid));
 
       try {
         const result = await runTransaction(db, async (tx) => {
@@ -141,7 +141,7 @@ export function useAssessments() {
         setAssessmentMap(nextMap);
 
         const totalScore = calcTotalScore(nextMap);
-        const progressRef = doc(db, "users", uid, "progress", "current");
+        const progressRef = doc(db, ...userProgressPath(uid));
         await setDoc(progressRef, { totalScore }, { merge: true });
 
         const categoryId = skills.find((s) => s.id === skillId)?.categoryId;
@@ -175,10 +175,14 @@ export function useAssessments() {
     [uid],
   );
 
+  const signedOut = !authLoading && !uid;
+
   return {
-    assessmentMap,
-    loading,
+    assessmentMap: signedOut ? EMPTY_ASSESSMENT_MAP : assessmentMap,
+    loading: signedOut ? false : loading,
     toggleSubtopic,
     lastAwarded,
   };
 }
+
+const EMPTY_ASSESSMENT_MAP: Record<string, AssessmentData> = {};

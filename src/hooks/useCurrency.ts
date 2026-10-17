@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { userCurrencyPath } from "@/adapters/firestore-client/paths";
 import {
   buyItem,
   getFreezeCount,
@@ -29,7 +30,7 @@ export function useCurrency() {
     if (authLoading) return;
     if (!uid) return;
 
-    const currencyRef = doc(db, "users", uid, "currency", "current");
+    const currencyRef = doc(db, ...userCurrencyPath(uid));
     const unsubscribe = onSnapshot(currencyRef, (snapshot) => {
       if (snapshot.exists()) {
         const raw = snapshot.data();
