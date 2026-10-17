@@ -247,7 +247,9 @@ function MobileNavItem({
     <Link
       href={item.href}
       onClick={() => onNavigate(item.href)}
-      className={`relative flex flex-col items-center gap-1 py-2.5 font-mono text-[10px] transition-colors duration-150 ${
+      aria-label={item.label}
+      title={item.label}
+      className={`relative flex flex-col items-center justify-center py-2.5 transition-colors duration-150 ${
         active ? "text-blue-600" : "text-slate-400 hover:text-white"
       }`}
     >
@@ -259,8 +261,7 @@ function MobileNavItem({
           initial={false}
         />
       )}
-      <item.icon className="relative h-5 w-5" />
-      <span className="relative">{item.shortLabel ?? item.label}</span>
+      <item.icon className="relative h-6 w-6" />
       <PendingIndicator className="right-1.5 top-1.5" />
     </Link>
   );
