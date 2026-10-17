@@ -10,6 +10,7 @@ import { logout } from "@/app/actions/auth";
 import StreakBadge from "@/components/shared/StreakBadge";
 import CurrencyBadge from "@/components/shared/CurrencyBadge";
 import BrandMark from "@/components/shared/BrandMark";
+import ThemeToggle from "@/components/shared/ThemeToggle";
 import {
   DashboardSkeleton,
   TreeSkeleton,
@@ -311,6 +312,7 @@ export default function Header({
               <Prompt path={pathname ?? ""} />
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-2">
+              <ThemeToggle />
               {!loading && user && <StreakBadge />}
               {!loading && user && <CurrencyBadge />}
               {!loading &&
