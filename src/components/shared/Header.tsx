@@ -101,11 +101,13 @@ function PendingIndicator({ className = "" }: { className?: string }) {
 function DesktopNavItem({
   item,
   active,
+  profileOpen,
   onNavigate,
   onOpenProfile,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
+  profileOpen: boolean;
   onNavigate: (href: string) => void;
   onOpenProfile: () => void;
 }) {
@@ -150,7 +152,7 @@ function DesktopNavItem({
         data-profile-trigger
         onClick={onOpenProfile}
         aria-haspopup="dialog"
-        aria-expanded={active}
+        aria-expanded={profileOpen}
         className={`${className} w-full text-left`}
       >
         {inner}
@@ -172,11 +174,13 @@ function DesktopNavItem({
 function TabletNavItem({
   item,
   active,
+  profileOpen,
   onNavigate,
   onOpenProfile,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
+  profileOpen: boolean;
   onNavigate: (href: string) => void;
   onOpenProfile: () => void;
 }) {
@@ -210,7 +214,7 @@ function TabletNavItem({
         data-profile-trigger
         onClick={onOpenProfile}
         aria-haspopup="dialog"
-        aria-expanded={active}
+        aria-expanded={profileOpen}
         className={className}
       >
         {inner}
@@ -322,6 +326,7 @@ export default function Header({
                 <DesktopNavItem
                   item={item}
                   active={isActive(item.href)}
+                  profileOpen={profileOpen}
                   onNavigate={handleNavigate}
                   onOpenProfile={() => setProfileOpen(true)}
                 />
@@ -344,6 +349,7 @@ export default function Header({
               key={item.href}
               item={item}
               active={isActive(item.href)}
+              profileOpen={profileOpen}
               onNavigate={handleNavigate}
               onOpenProfile={() => setProfileOpen(true)}
             />
