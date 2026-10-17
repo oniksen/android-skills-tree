@@ -51,7 +51,7 @@ export default function GapList({
             }}
             whileHover={{ x: 4 }}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
-            className={`group relative flex items-center justify-between gap-3 overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 transition-colors ${
+            className={`group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 transition-colors nav-md:flex-row nav-md:items-center nav-md:justify-between ${
               done
                 ? "hover:border-emerald-400/40"
                 : critical
@@ -77,7 +77,7 @@ export default function GapList({
               </span>
               <div className="min-w-0">
                 <span className="font-medium text-white">{gap.skillName}</span>
-                <span className="ml-2 text-sm text-slate-500">
+                <span className="block text-sm text-slate-500 nav-md:ml-2 nav-md:inline">
                   {gap.categoryName} · {gap.levelName}
                 </span>
               </div>
@@ -87,7 +87,7 @@ export default function GapList({
               <span className="font-mono text-sm text-slate-500">
                 {gap.currentScore}/{gap.maxScore} XP
               </span>
-              <div className="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+              <div className="h-1.5 w-24 flex-1 rounded-full bg-slate-800 overflow-hidden nav-md:flex-none">
                 <div
                   className={`h-full rounded-full transition-all duration-700 ease-out ${
                     done
