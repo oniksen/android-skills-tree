@@ -6,7 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
 } from "react";
 import {
   DEFAULT_PREFERENCE,
@@ -18,20 +18,56 @@ import {
   type ThemePreference,
 } from "@/lib/theme";
 
-interface ThemeState {
+interface ThemeContextValue {
   preference: ThemePreference;
   resolvedTheme: ResolvedTheme;
-}
-
-interface ThemeContextValue extends ThemeState {
   setTheme: (preference: ThemePreference) => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
+const listeners = new Set<() => void>();
+
+function subscribe(listener: () => void): () => void {
+  listeners.add(listener);
+  const mql = window.matchMedia("(prefers-color-scheme: dark)");
+  mql.addEventListener("change", listener);
+  return () => {
+    listeners.delete(listener);
+    mql.removeEventListener("change", listener);
+  };
+}
+
 function systemPrefersDark(): boolean {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  try {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  } catch {
+    return false;
+  }
+}
+
+function readPreference(): ThemePreference {
+  try {
+    return parseStoredTheme(window.localStorage.getItem(THEME_STORAGE_KEY));
+  } catch {
+    return DEFAULT_PREFERENCE;
+  }
+}
+
+function getPreferenceSnapshot(): ThemePreference {
+  return readPreference();
+}
+
+function getResolvedSnapshot(): ResolvedTheme {
+  return resolveTheme(readPreference(), systemPrefersDark());
+}
+
+function getServerPreferenceSnapshot(): ThemePreference {
+  return DEFAULT_PREFERENCE;
+}
+
+function getServerResolvedSnapshot(): ResolvedTheme {
+  return "light";
 }
 
 function applyTheme(theme: ResolvedTheme) {
@@ -56,25 +92,20 @@ function clearOverrideMeta() {
     .forEach((el) => el.remove());
 }
 
-function readPreference(): ThemePreference {
-  if (typeof window === "undefined") return DEFAULT_PREFERENCE;
-  return parseStoredTheme(window.localStorage.getItem(THEME_STORAGE_KEY));
-}
-
-function initialState(): ThemeState {
-  const preference = readPreference();
-  return {
-    preference,
-    resolvedTheme: resolveTheme(preference, systemPrefersDark()),
-  };
+function writePreference(next: ThemePreference) {
+  try {
+    window.localStorage.setItem(THEME_STORAGE_KEY, next);
+  } catch {
+    return;
+  }
 }
 
 export function useTheme(): ThemeContextValue {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) {
+  const context = useContext(ThemeContext);
+  if (!context) {
     throw new Error("useTheme must be used within ThemeProvider");
   }
-  return ctx;
+  return context;
 }
 
 export default function ThemeProvider({
@@ -82,51 +113,37 @@ export default function ThemeProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [state, setState] = useState<ThemeState>(initialState);
+  const preference = useSyncExternalStore(
+    subscribe,
+    getPreferenceSnapshot,
+    getServerPreferenceSnapshot
+  );
+  const resolvedTheme = useSyncExternalStore(
+    subscribe,
+    getResolvedSnapshot,
+    getServerResolvedSnapshot
+  );
 
   useEffect(() => {
     const root = document.documentElement;
-    root.setAttribute("data-theme", state.resolvedTheme);
-    root.style.colorScheme = state.resolvedTheme;
+    root.setAttribute("data-theme", resolvedTheme);
+    root.style.colorScheme = resolvedTheme;
 
-    if (state.preference === "system") {
+    if (preference === "system") {
       clearOverrideMeta();
     } else {
-      applyTheme(state.resolvedTheme);
+      applyTheme(resolvedTheme);
     }
-  }, [state]);
-
-  useEffect(() => {
-    const mql = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = (event: MediaQueryListEvent) => {
-      setState((prev) =>
-        prev.preference === "system"
-          ? {
-              preference: prev.preference,
-              resolvedTheme: resolveTheme("system", event.matches),
-            }
-          : prev
-      );
-    };
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
+  }, [preference, resolvedTheme]);
 
   const setTheme = useCallback((next: ThemePreference) => {
-    window.localStorage.setItem(THEME_STORAGE_KEY, next);
-    setState({
-      preference: next,
-      resolvedTheme: resolveTheme(next, systemPrefersDark()),
-    });
+    writePreference(next);
+    listeners.forEach((listener) => listener());
   }, []);
 
   const value = useMemo(
-    () => ({
-      preference: state.preference,
-      resolvedTheme: state.resolvedTheme,
-      setTheme,
-    }),
-    [state.preference, state.resolvedTheme, setTheme]
+    () => ({ preference, resolvedTheme, setTheme }),
+    [preference, resolvedTheme, setTheme]
   );
 
   return (
