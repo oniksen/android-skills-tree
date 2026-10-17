@@ -4,13 +4,12 @@ import Link, { useLinkStatus } from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { auth } from "@/lib/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { useRouter, usePathname } from "next/navigation";
-import { logout } from "@/app/actions/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import { usePathname } from "next/navigation";
 import StreakBadge from "@/components/shared/StreakBadge";
 import CurrencyBadge from "@/components/shared/CurrencyBadge";
 import BrandMark from "@/components/shared/BrandMark";
-import ThemeToggle from "@/components/shared/ThemeToggle";
+import ProfileModal from "@/components/profile/ProfileModal";
 import {
   DashboardSkeleton,
   TreeSkeleton,
@@ -18,6 +17,7 @@ import {
   RoadmapSkeleton,
   AchievementsSkeleton,
   ShopSkeleton,
+  ProfileSkeleton,
 } from "@/components/shared/skeletons";
 import {
   LayoutDashboard,
@@ -25,8 +25,8 @@ import {
   FolderGit2,
   Map,
   Trophy,
+  CircleUser,
   LogIn,
-  LogOut,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -35,6 +35,7 @@ const NAV_ITEMS = [
   { href: "/projects", label: "projects", icon: FolderGit2 },
   { href: "/roadmap", label: "roadmap", icon: Map },
   { href: "/achievements", label: "achievements", icon: Trophy },
+  { href: "/profile", label: "профиль", icon: CircleUser },
 ];
 
 const ROUTE_SKELETONS: Record<string, React.ComponentType> = {
@@ -44,6 +45,7 @@ const ROUTE_SKELETONS: Record<string, React.ComponentType> = {
   "/roadmap": RoadmapSkeleton,
   "/achievements": AchievementsSkeleton,
   "/shop": ShopSkeleton,
+  "/profile": ProfileSkeleton,
 };
 
 function RoutePlaceholder({ href }: { href: string }) {
@@ -100,19 +102,20 @@ function DesktopNavItem({
   item,
   active,
   onNavigate,
+  onOpenProfile,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
   onNavigate: (href: string) => void;
+  onOpenProfile: () => void;
 }) {
-  return (
-    <Link
-      href={item.href}
-      onClick={() => onNavigate(item.href)}
-      className={`group relative flex items-center gap-2.5 rounded-md px-2.5 py-2 font-mono text-sm transition-colors duration-150 ${
-        active ? "text-white" : "text-slate-400 hover:text-white"
-      }`}
-    >
+  const isProfile = item.href === "/profile";
+  const className = `group relative flex items-center gap-2.5 rounded-md px-2.5 py-2 font-mono text-sm transition-colors duration-150 ${
+    active ? "text-white" : "text-slate-400 hover:text-white"
+  }`;
+
+  const inner = (
+    <>
       {active && (
         <motion.span
           layoutId="nav-active-desktop"
@@ -134,7 +137,34 @@ function DesktopNavItem({
         }`}
       />
       <span className="relative">{item.label}</span>
-      <PendingIndicator className="right-2.5 top-1/2 -translate-y-1/2" />
+      {!isProfile && (
+        <PendingIndicator className="right-2.5 top-1/2 -translate-y-1/2" />
+      )}
+    </>
+  );
+
+  if (isProfile) {
+    return (
+      <button
+        type="button"
+        data-profile-trigger
+        onClick={onOpenProfile}
+        aria-haspopup="dialog"
+        aria-expanded={active}
+        className={`${className} w-full text-left`}
+      >
+        {inner}
+      </button>
+    );
+  }
+
+  return (
+    <Link
+      href={item.href}
+      onClick={() => onNavigate(item.href)}
+      className={className}
+    >
+      {inner}
     </Link>
   );
 }
@@ -143,20 +173,20 @@ function TabletNavItem({
   item,
   active,
   onNavigate,
+  onOpenProfile,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
   onNavigate: (href: string) => void;
+  onOpenProfile: () => void;
 }) {
-  return (
-    <Link
-      href={item.href}
-      title={item.label}
-      onClick={() => onNavigate(item.href)}
-      className={`relative flex flex-col items-center gap-1 rounded-md px-1.5 py-2 text-center font-mono text-[10px] leading-tight transition-colors duration-150 ${
-        active ? "text-blue-600" : "text-slate-400 hover:text-white"
-      }`}
-    >
+  const isProfile = item.href === "/profile";
+  const className = `relative flex flex-col items-center gap-1 rounded-md px-1.5 py-2 text-center font-mono text-[10px] leading-tight transition-colors duration-150 ${
+    active ? "text-blue-600" : "text-slate-400 hover:text-white"
+  }`;
+
+  const inner = (
+    <>
       {active && (
         <motion.span
           layoutId="nav-active-tablet"
@@ -169,7 +199,33 @@ function TabletNavItem({
       <span className="relative whitespace-nowrap">
         {item.shortLabel ?? item.label}
       </span>
-      <PendingIndicator className="right-1.5 top-1.5" />
+      {!isProfile && <PendingIndicator className="right-1.5 top-1.5" />}
+    </>
+  );
+
+  if (isProfile) {
+    return (
+      <button
+        type="button"
+        data-profile-trigger
+        onClick={onOpenProfile}
+        aria-haspopup="dialog"
+        aria-expanded={active}
+        className={className}
+      >
+        {inner}
+      </button>
+    );
+  }
+
+  return (
+    <Link
+      href={item.href}
+      title={item.label}
+      onClick={() => onNavigate(item.href)}
+      className={className}
+    >
+      {inner}
     </Link>
   );
 }
@@ -210,12 +266,12 @@ export default function Header({
   children,
   mainClassName = "px-4 pt-8 pb-32 nav-md:pb-8",
 }: HeaderProps) {
-  const router = useRouter();
   const pathname = usePathname();
   const [user, setUser] = useState<{ uid: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState<PendingNav | null>(null);
   const [readyPending, setReadyPending] = useState<PendingNav | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -237,16 +293,10 @@ export default function Header({
     if (pathname !== href) setPending({ href, startedPath: pathname });
   };
 
-  const handleLogout = async () => {
-    await signOut(auth);
-    await logout();
-    setUser(null);
-    router.push("/");
-    router.refresh();
-  };
-
   const segment = (pathname ?? "").split("/")[1] || "";
   const activeHref = segment === "tree" ? "/tree/junior" : `/${segment}`;
+  const isActive = (href: string) =>
+    href === "/profile" ? profileOpen || activeHref === "/profile" : href === activeHref;
   const showNav = !loading && user;
 
   return (
@@ -271,8 +321,9 @@ export default function Header({
               <div key={item.href} className="group">
                 <DesktopNavItem
                   item={item}
-                  active={item.href === activeHref}
+                  active={isActive(item.href)}
                   onNavigate={handleNavigate}
+                  onOpenProfile={() => setProfileOpen(true)}
                 />
               </div>
             ))}
@@ -292,8 +343,9 @@ export default function Header({
             <TabletNavItem
               key={item.href}
               item={item}
-              active={item.href === activeHref}
+              active={isActive(item.href)}
               onNavigate={handleNavigate}
+              onOpenProfile={() => setProfileOpen(true)}
             />
           ))}
         </nav>
@@ -312,30 +364,19 @@ export default function Header({
               <Prompt path={pathname ?? ""} />
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-2">
-              <ThemeToggle />
               {!loading && user && <StreakBadge />}
               {!loading && user && <CurrencyBadge />}
               {!loading &&
-                (user ? (
-                  <motion.button
-                    whileTap={{ scale: 0.94 }}
-                    onClick={handleLogout}
+                !user &&
+                pathname !== "/login" && (
+                  <Link
+                    href="/login"
                     className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 font-mono text-xs text-slate-400 transition-colors hover:bg-blue-500/10 hover:text-blue-600"
                   >
-                    <LogOut className="h-4 w-4" />
-                    <span className="hidden nav-md:inline">logout</span>
-                  </motion.button>
-                ) : (
-                  pathname !== "/login" && (
-                    <Link
-                      href="/login"
-                      className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 font-mono text-xs text-slate-400 transition-colors hover:bg-blue-500/10 hover:text-blue-600"
-                    >
-                      <LogIn className="h-4 w-4" />
-                      <span className="hidden nav-md:inline">login</span>
-                    </Link>
-                  )
-                ))}
+                    <LogIn className="h-4 w-4" />
+                    <span className="hidden nav-md:inline">login</span>
+                  </Link>
+                )}
             </div>
           </div>
           <div className="pointer-events-none h-px w-full bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
@@ -356,12 +397,12 @@ export default function Header({
           aria-label="Основная навигация"
         >
           <div className="mx-auto max-w-md overflow-hidden rounded-lg border border-slate-700/70 bg-slate-950/95 shadow-[0_10px_30px_rgba(26,25,21,0.18)] backdrop-blur-xl">
-            <ul className="grid grid-cols-5">
+            <ul className="grid grid-cols-6">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <MobileNavItem
                     item={item}
-                    active={item.href === activeHref}
+                    active={isActive(item.href)}
                     onNavigate={handleNavigate}
                   />
                 </li>
@@ -370,6 +411,8 @@ export default function Header({
           </div>
         </nav>
       )}
+
+      <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} />
     </div>
   );
 }
