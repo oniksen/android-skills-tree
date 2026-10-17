@@ -26,10 +26,19 @@ import ProfileStats from "@/components/profile/ProfileStats";
 import ProfileAchievements from "@/components/profile/ProfileAchievements";
 import ProfileLinks from "@/components/profile/ProfileLinks";
 import ThemeSetting from "@/components/profile/ThemeSetting";
+import ThemeIcon from "@/components/shared/ThemeIcon";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export default function ProfileContent() {
+interface ProfileContentProps {
+  onClose?: () => void;
+  headingId?: string;
+}
+
+export default function ProfileContent({
+  onClose,
+  headingId = "profile-heading",
+}: ProfileContentProps) {
   const router = useRouter();
   const { email, loading: authLoading } = useFirebaseAuth();
   const { progress, loading: progressLoading } = useUserProgress();
@@ -54,6 +63,7 @@ export default function ProfileContent() {
     try {
       await signOut(auth);
       await logout();
+      onClose?.();
       router.push("/");
       router.refresh();
     } finally {
@@ -99,13 +109,16 @@ export default function ProfileContent() {
         </span>
         <div className="min-w-0">
           <h1
-            id="profile-heading"
+            id={headingId}
             className="text-xl font-bold tracking-tight text-white"
           >
             <span className="text-blue-600">#</span> Профиль
           </h1>
           <p className="truncate font-mono text-xs text-slate-500">
             {email ?? "—"}
+          </p>
+          <p className="truncate font-mono text-xs text-slate-600">
+            уровень: {summary.levelName}
           </p>
         </div>
       </motion.header>
@@ -129,11 +142,13 @@ export default function ProfileContent() {
         earnedIds={summary.earnedAchievementIds}
       />
 
-      <ProfileLinks />
+      <ProfileLinks onNavigate={onClose} />
 
       <section className="card-surface rounded-lg p-5">
-        <h2 className="mb-4 font-mono text-sm font-semibold text-slate-300">
+        <h2 className="mb-4 flex items-center gap-2 font-mono text-sm font-semibold text-slate-300">
           <span className="text-slate-600">##</span> Оформление
+          <ThemeIcon theme="light" className="theme-icon-sun h-4 w-4 text-slate-500" />
+          <ThemeIcon theme="dark" className="theme-icon-moon h-4 w-4 text-slate-500" />
         </h2>
         <ThemeSetting />
         <button

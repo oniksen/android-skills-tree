@@ -78,7 +78,7 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
             ref={panelRef}
             role="dialog"
             aria-modal="true"
-            aria-labelledby="profile-heading"
+            aria-labelledby="profile-modal-heading"
             tabIndex={-1}
             initial={{ opacity: 0, scale: 0.97, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -95,7 +95,7 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
             >
               <X className="h-4 w-4" />
             </button>
-            <ProfileContent />
+            <ProfileContent onClose={onClose} headingId="profile-modal-heading" />
           </motion.div>
         </motion.div>
       )}
