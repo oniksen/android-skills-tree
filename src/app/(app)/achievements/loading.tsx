@@ -1,4 +1,4 @@
-import AchievementsSkeleton from "@/components/shared/skeletons/AchievementsSkeleton";
+import AchievementsSkeleton from "@/shared/ui/skeletons/AchievementsSkeleton";
 
 export default function Loading() {
   return <AchievementsSkeleton />;

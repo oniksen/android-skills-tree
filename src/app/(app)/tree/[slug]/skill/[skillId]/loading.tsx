@@ -1,5 +1,5 @@
-import { Skeleton } from "@/components/shared/skeletons";
-import SkillDetailSkeleton from "@/components/shared/skeletons/SkillDetailSkeleton";
+import { Skeleton } from "@/shared/ui/skeletons";
+import SkillDetailSkeleton from "@/shared/ui/skeletons/SkillDetailSkeleton";
 
 export default function Loading() {
   return (

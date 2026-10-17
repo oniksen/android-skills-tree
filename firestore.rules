@@ -1,0 +1,18 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Клиент не пишет в Firestore вообще: все мутации идут через
+    // серверные server actions (Firebase Admin SDK), который обходит правила.
+    // Чтение разрешено только подписанным пользователем и только своих данных.
+    match /users/{userId}/{document=**} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false;
+    }
+
+    // Любые другие документы недоступны клиенту напрямую.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

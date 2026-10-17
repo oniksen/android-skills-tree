@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/adapters/auth/session";
-import ProfileContent from "@/components/profile/ProfileContent";
+import ProfileContent from "@/features/profile/components/ProfileContent";
 
 export default async function ProfilePage() {
   const uid = await getCurrentUser();

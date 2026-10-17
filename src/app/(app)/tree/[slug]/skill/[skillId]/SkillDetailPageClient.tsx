@@ -6,9 +6,9 @@ import { ArrowLeft } from "lucide-react";
 import { getSkillById } from "@/data";
 import { useUserProgress } from "@/hooks";
 import { useSkillDetail } from "@/hooks/useSkillDetail";
-import SkillDetailContent from "@/components/tree/SkillDetailContent";
-import CelebrationModal from "@/components/shared/CelebrationModal";
-import { SkillDetailSkeleton } from "@/components/shared/skeletons";
+import SkillDetailContent from "@/features/tree/components/SkillDetailContent";
+import CelebrationModal from "@/shared/ui/CelebrationModal";
+import { SkillDetailSkeleton } from "@/shared/ui/skeletons";
 
 interface SkillDetailPageClientProps {
   slug: string;

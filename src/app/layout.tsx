@@ -3,7 +3,7 @@ import { JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { NO_FLASH_SCRIPT } from "@/lib/theme";
-import ThemeProvider from "@/components/shared/ThemeProvider";
+import ThemeProvider from "@/shared/ui/ThemeProvider";
 import { ServicesProvider } from "@/composition/services-context";
 
 const jetbrainsMono = JetBrains_Mono({

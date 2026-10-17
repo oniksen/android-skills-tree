@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/adapters/auth/session";
-import ProjectsClient from "@/components/projects/ProjectsClient";
+import ProjectsClient from "@/features/projects/components/ProjectsClient";
 
 export default async function ProjectsPage() {
   const uid = await getCurrentUser();

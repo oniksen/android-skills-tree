@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/adapters/auth/session";
-import ShopClient from "@/components/shop/ShopClient";
+import ShopClient from "@/features/shop/components/ShopClient";
 
 export default async function ShopPage() {
   const uid = await getCurrentUser();

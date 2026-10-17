@@ -1,6 +1,6 @@
 import { getLevelBySlug } from "@/data/levels";
 import { notFound } from "next/navigation";
-import TreeClient from "@/components/tree/TreeClient";
+import TreeClient from "@/features/tree/components/TreeClient";
 
 export default async function LevelPage({
   params,

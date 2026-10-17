@@ -1,4 +1,4 @@
-import ProjectsSkeleton from "@/components/shared/skeletons/ProjectsSkeleton";
+import ProjectsSkeleton from "@/shared/ui/skeletons/ProjectsSkeleton";
 
 export default function Loading() {
   return <ProjectsSkeleton />;
