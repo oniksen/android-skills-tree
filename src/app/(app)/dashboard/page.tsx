@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser } from "@/adapters/auth/session";
 import DashboardClient from "@/components/dashboard/DashboardClient";
 
 export default async function DashboardPage() {

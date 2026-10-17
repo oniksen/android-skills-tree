@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser } from "@/adapters/auth/session";
 import ProfileContent from "@/components/profile/ProfileContent";
 
 export default async function ProfilePage() {

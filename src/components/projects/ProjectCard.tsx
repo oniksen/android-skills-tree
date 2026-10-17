@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Check } from "lucide-react";
-import { toggleProjectCompletion } from "@/lib/firestore-actions";
+import { toggleProjectCompletionAction } from "@/features/projects/actions";
 
 export default function ProjectCard({ projectId, name, description, requiredTechnologies, levelName, completed }: {
   projectId: string; name: string; description: string; requiredTechnologies: string[]; levelName: string; completed: boolean;
@@ -16,7 +16,7 @@ export default function ProjectCard({ projectId, name, description, requiredTech
     const newVal = !done;
     setDone(newVal);
     try {
-      await toggleProjectCompletion(projectId, newVal);
+      await toggleProjectCompletionAction(projectId, newVal);
     } catch {
       setDone(!newVal);
     } finally {

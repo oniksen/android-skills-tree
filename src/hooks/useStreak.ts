@@ -3,10 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import {
-  applyAutoFreezesOnce,
-  syncStreak as syncStreakFirestore,
-} from "@/adapters/firestore-client/streak-commands";
+import { syncStreakAction, applyAutoFreezesAction } from "@/features/streak/actions";
 import {
   computeStreaks,
   getLocalDayString,
@@ -48,15 +45,15 @@ export function useStreak() {
         } else {
           const today = getLocalDayString();
           const streaks = computeStreaks(
-            snapshot.activeDays,
-            snapshot.frozenDays,
+            snapshot.activeDays as string[],
+            (snapshot.frozenDays as string[]) ?? [],
             today,
           );
           setCurrentStreak(streaks.currentStreak);
           setLongestStreak(streaks.longestStreak);
-          setLastActiveDate(snapshot.lastActiveDate);
-          setActiveDays(snapshot.activeDays);
-          setFrozenDays(snapshot.frozenDays);
+          setLastActiveDate((snapshot.lastActiveDate as string) ?? null);
+          setActiveDays(snapshot.activeDays as string[]);
+          setFrozenDays((snapshot.frozenDays as string[]) ?? []);
         }
         setLoading(false);
       },
@@ -71,9 +68,13 @@ export function useStreak() {
     if (!uid) return;
 
     let cancelled = false;
-    void applyAutoFreezesOnce().then((report) => {
-      if (!cancelled && report) setAutoFreeze(report);
-    });
+    void applyAutoFreezesAction()
+      .then((report) => {
+        if (!cancelled && report) setAutoFreeze(report);
+      })
+      .catch((error) => {
+        console.error("Error applying automatic freezes:", error);
+      });
 
     return () => {
       cancelled = true;
@@ -81,8 +82,8 @@ export function useStreak() {
   }, [uid]);
 
   const syncStreak = useCallback(async () => {
-    if (!uid) return null;
-    return syncStreakFirestore();
+    if (!uid) return false;
+    return syncStreakAction();
   }, [uid]);
 
   const signedOut = !authLoading && !uid;

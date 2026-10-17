@@ -1,23 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { db } from "@/lib/firebase";
-import { doc, setDoc, runTransaction } from "firebase/firestore";
-import { syncStreak } from "@/adapters/firestore-client/streak-commands";
 import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { calcSkillScore, calcTotalScore } from "@/core/domain/scoring";
-import { computeAssessmentToggle } from "@/core/use-cases/compute-assessment-toggle";
-import { checkAchievements } from "@/lib/firestore-actions";
-import { deleteCategoryPerfectAchievement } from "@/lib/firestore";
-import { isCategoryPerfect } from "@/core/domain/achievement-conditions";
-import { skills } from "@/data/skills";
-import {
-  userAssessmentPath,
-  userCurrencyPath,
-  userProgressPath,
-} from "@/adapters/firestore-client/paths";
-import type { AssessmentData, CurrencyData } from "@/types";
+import { toggleSubtopicAction } from "@/features/progress/actions";
+import type { AssessmentData } from "@/types";
+import type { ToggleSubtopicResult } from "@/adapters/firestore-admin/assessment";
 
 export interface CrystalAward {
   skillId: string;
@@ -54,100 +42,20 @@ export function useAssessments() {
   }, [uid, authLoading, repository]);
 
   const toggleSubtopic = useCallback(
-    async (skillId: string, subtopicName: string) => {
+    async (
+      skillId: string,
+      subtopicName: string,
+    ): Promise<ToggleSubtopicResult | null> => {
       if (!uid) return null;
 
-      const assessmentRef = doc(db, ...userAssessmentPath(uid, skillId));
-      const currencyRef = doc(db, ...userCurrencyPath(uid));
-
       try {
-        const result = await runTransaction(db, async (tx) => {
-          const [assessmentSnap, currencySnap] = await Promise.all([
-            tx.get(assessmentRef),
-            tx.get(currencyRef),
-          ]);
+        const result = await toggleSubtopicAction(skillId, subtopicName);
 
-          const storedSubtopics =
-            (assessmentSnap.data()?.subtopics as Record<string, boolean> | undefined) ?? {};
-          const currency = currencySnap.exists()
-            ? (currencySnap.data() as Partial<CurrencyData>)
-            : {};
-          const balance = typeof currency.balance === "number" ? currency.balance : 0;
-          const claimedSkills =
-            currency.claimedSkills && typeof currency.claimedSkills === "object"
-              ? (currency.claimedSkills as Record<string, string>)
-              : {};
-
-          const { nextSubtopics, nextValue, complete, justCompleted, awarded } =
-            computeAssessmentToggle({
-              skillId,
-              subtopicName,
-              storedSubtopics,
-              claimedSkills,
-            });
-          const newScore = calcSkillScore(skillId, nextSubtopics);
-
-          tx.set(
-            assessmentRef,
-            {
-              subtopics: nextSubtopics,
-              score: newScore,
-              updatedAt: new Date(),
-            },
-            { merge: true },
-          );
-
-          if (awarded > 0) {
-            tx.set(
-              currencyRef,
-              {
-                balance: balance + awarded,
-                claimedSkills: { ...claimedSkills, [skillId]: new Date().toISOString() },
-                updatedAt: new Date(),
-              },
-              { merge: true },
-            );
-          }
-
-          return { nextValue, nextSubtopics, newScore, complete, awarded, justCompleted };
-        });
-
-        const { nextValue, nextSubtopics, newScore, awarded, justCompleted } = result;
-
-        const nextMap = {
-          ...mapRef.current,
-          [skillId]: { score: newScore, subtopics: nextSubtopics },
-        };
-        mapRef.current = nextMap;
-        setAssessmentMap(nextMap);
-
-        const totalScore = calcTotalScore(nextMap);
-        const progressRef = doc(db, ...userProgressPath(uid));
-        await setDoc(progressRef, { totalScore }, { merge: true });
-
-        const categoryId = skills.find((s) => s.id === skillId)?.categoryId;
-
-        if (justCompleted) {
-          void checkAchievements(uid, nextMap).catch((error) => {
-            console.error("Error checking achievements:", error);
-          });
+        if (result.awarded > 0) {
+          setLastAwarded({ skillId, amount: result.awarded, id: Date.now() });
         }
 
-        if (categoryId && nextValue === false && !isCategoryPerfect(categoryId, nextMap)) {
-          await deleteCategoryPerfectAchievement(uid, categoryId).catch((error) => {
-            console.error("Error revoking achievement:", error);
-          });
-        }
-
-        if (awarded > 0) {
-          setLastAwarded({ skillId, amount: awarded, id: Date.now() });
-        }
-
-        if (nextValue) {
-          void syncStreak();
-        }
-
-        return { justCompleted };
+        return result;
       } catch (error) {
         console.error("Error saving assessment:", error);
         return null;

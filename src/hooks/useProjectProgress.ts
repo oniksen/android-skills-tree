@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { doc, setDoc, deleteDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { userProjectPath } from "@/adapters/firestore-client/paths";
+import {
+  toggleProjectCompletionAction,
+  deleteProjectProgressAction,
+} from "@/features/projects/actions";
 
 const EMPTY_PROJECT_MAP: Record<string, boolean> = {};
 
@@ -35,18 +36,19 @@ export function useProjectProgress() {
     completed: boolean,
   ) => {
     if (!uid) return;
-    const projectRef = doc(db, ...userProjectPath(uid, projectId));
-    await setDoc(projectRef, {
-      completed,
-      completedAt: completed ? new Date() : null,
-    });
+    try {
+      await toggleProjectCompletionAction(projectId, completed);
+    } catch (error) {
+      console.error("Error toggling project completion:", error);
+    }
   };
 
   const deleteProjectProgress = async (projectIds: string[]) => {
     if (!uid) return;
-    for (const projectId of projectIds) {
-      const projectRef = doc(db, ...userProjectPath(uid, projectId));
-      await deleteDoc(projectRef);
+    try {
+      await deleteProjectProgressAction(projectIds);
+    } catch (error) {
+      console.error("Error deleting project progress:", error);
     }
   };
 

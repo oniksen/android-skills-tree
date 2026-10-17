@@ -3,13 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { buyItem } from "@/adapters/firestore-client/currency-commands";
-import {
-  getFreezeCount,
-  EMPTY_CURRENCY,
-  type BuyResult,
-} from "@/core/domain/currency";
-import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
+import { buyItemAction } from "@/features/shop/actions";
+import { getFreezeCount, EMPTY_CURRENCY } from "@/core/domain/currency";
+import type { BuyResult } from "@/core/domain/currency";
 import type { CurrencyData } from "@/types";
 
 interface CurrencyState {
@@ -37,23 +33,25 @@ export function useCurrency() {
     });
   }, [uid, authLoading, repository]);
 
+  const buyFreeze = useCallback(
+    async (): Promise<BuyResult> => {
+      setBuying(true);
+      try {
+        return await buyItemAction("streak_freeze");
+      } finally {
+        setBuying(false);
+      }
+    },
+    [],
+  );
+
   const signedOut = !authLoading && !uid;
   const currency = signedOut ? EMPTY_CURRENCY : state.currency;
-  const loading = signedOut ? false : state.loading;
-
-  const buyFreeze = useCallback(async (): Promise<BuyResult> => {
-    setBuying(true);
-    try {
-      return await buyItem(STREAK_FREEZE_ITEM_ID);
-    } finally {
-      setBuying(false);
-    }
-  }, []);
 
   return {
     balance: currency.balance,
     freezes: getFreezeCount(currency),
-    loading,
+    loading: signedOut ? false : state.loading,
     buying,
     buyFreeze,
   };

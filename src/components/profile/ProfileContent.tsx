@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { Loader2, LogOut } from "lucide-react";
-import { logout } from "@/app/actions/auth";
+import { logout } from "@/features/auth/actions/logout";
 import {
   useAchievements,
   useAssessments,

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser } from "@/adapters/auth/session";
 import ShopClient from "@/components/shop/ShopClient";
 
 export default async function ShopPage() {

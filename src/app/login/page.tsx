@@ -8,7 +8,7 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { login } from "@/app/actions/auth";
+import { login } from "@/features/auth/actions/login";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -45,7 +45,7 @@ export default function LoginPage() {
         ? await createUserWithEmailAndPassword(auth, email, password)
         : await signInWithEmailAndPassword(auth, email, password);
 
-      await login(userCredential.user.uid);
+      await login(await userCredential.user.getIdToken());
       router.push("/dashboard");
       router.refresh();
     } catch (err: unknown) {

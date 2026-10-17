@@ -2,15 +2,9 @@
 
 import { useCallback, useState } from "react";
 import { getSkillById } from "@/data";
-import { checkLevelUp as checkLevelUpAction } from "@/lib/firestore-actions";
 import { calcSkillCompletionPercent } from "@/core/domain/scoring";
 import { useAssessments } from "./useAssessments";
-
-export interface LevelUpResult {
-  fromLevel: string;
-  toLevel: string;
-  score: number;
-}
+import type { LevelUpResult } from "@/adapters/firestore-admin/progress";
 
 export function useSkillDetail(skillId: string) {
   const { assessmentMap, toggleSubtopic, lastAwarded } = useAssessments();
@@ -26,14 +20,8 @@ export function useSkillDetail(skillId: string) {
   const toggle = useCallback(
     async (subtopicName: string) => {
       const result = await toggleSubtopic(skillId, subtopicName);
-      if (!result?.justCompleted) return;
-
-      try {
-        const levelResult = await checkLevelUpAction();
-        if (levelResult) setLevelUp(levelResult);
-      } catch {
-        // ignore level-up errors
-      }
+      if (!result) return;
+      if (result.levelUp) setLevelUp(result.levelUp);
     },
     [skillId, toggleSubtopic],
   );
