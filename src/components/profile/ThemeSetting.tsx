@@ -61,6 +61,7 @@ export default function ThemeSetting() {
             aria-checked={active}
             tabIndex={active ? 0 : -1}
             onClick={() => setTheme(option.value)}
+            aria-label={option.label}
             className={`flex items-center justify-center gap-1.5 rounded-sm px-2.5 py-2 font-mono text-xs transition-colors ${
               active
                 ? "border border-blue-500/40 bg-blue-500/10 text-blue-600"
@@ -68,7 +69,7 @@ export default function ThemeSetting() {
             }`}
           >
             <option.icon className="h-3.5 w-3.5 shrink-0" />
-            <span>{option.label}</span>
+            <span className="hidden nav-md:inline">{option.label}</span>
             {active && <Check className="h-3.5 w-3.5 shrink-0" />}
           </button>
         );
