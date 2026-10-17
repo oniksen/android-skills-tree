@@ -191,13 +191,17 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
 - **`src/components/shared/ThemeIcon.tsx`** — своя SVG (24×24): солнце для
   `light`, полумесяц для `dark`; `stroke="currentColor"`, `aria-hidden`.
-  Используется в кнопке (глиф по `resolvedTheme`).
+  В кнопке рендерятся оба глифа (`.theme-icon-sun`/`.theme-icon-moon`),
+  видимость переключает CSS по `[data-theme]` — значит глиф корректен с
+  первого кадра и не мерцает до гидртации.
 - **`src/components/shared/ThemeToggle.tsx`** — client. Кнопка с
   `aria-label="Тема оформления"`, `aria-haspopup="menu"`, `aria-expanded`.
   По клику — поповер (`role="menu"`) с тремя `menuitemradio`
   (иконки lucide `Sun`, `Moon`, `Monitor`; подписи «Светлая», «Тёмная»,
-  «Системная»; `aria-checked`). Закрытие по Escape и клику вне; фокус
-  возвращается на кнопку. Анимация появления — `motion`.
+  «Системная»; `aria-checked`). Открытие переводит фокус на активный пункт;
+  `ArrowUp/ArrowDown/Home/End` двигают фокус по пунктам; `Escape` и выбор
+  пункта закрывают меню и возвращают фокус на кнопку; клик вне закрывает меню
+  без перехвата фокуса. Анимация появления — `motion`.
 - **Место:** `src/components/shared/Header.tsx`, правый кластер действий
   (первым элементом, до `StreakBadge`), виден независимо от статуса загрузки
   авторизации. Работает во всех трёх раскладках (сайдбар `nav-lg`, рейл
@@ -208,8 +212,9 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
 - Кнопка: `aria-label`, `aria-haspopup="menu"`, `aria-expanded`.
 - Меню: `role="menu"`, пункты `role="menuitemradio"` + `aria-checked`.
-- Управление: `Enter/Space` открывает, `Escape` закрывает, клик вне закрывает,
-  фокус возвращается на кнопку.
+- Управление: `Enter/Space` открывает (фокус на активном пункте),
+  `ArrowUp/ArrowDown/Home/End` перемещают фокус, `Escape`/выбор закрывают и
+  возвращают фокус на кнопку; клик вне закрывает без перехвата фокуса.
 - Уважается `prefers-reduced-motion` (общее правило в `globals.css`).
 
 ## 7. Тестирование

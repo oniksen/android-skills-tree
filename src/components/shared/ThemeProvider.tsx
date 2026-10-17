@@ -28,6 +28,8 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 const listeners = new Set<() => void>();
 
+let memoryPreference: ThemePreference | null = null;
+
 function getSystemMediaQuery(): MediaQueryList | null {
   try {
     return window.matchMedia("(prefers-color-scheme: dark)");
@@ -51,6 +53,9 @@ function systemPrefersDark(): boolean {
 }
 
 function readPreference(): ThemePreference {
+  if (memoryPreference !== null) {
+    return memoryPreference;
+  }
   try {
     return parseStoredTheme(window.localStorage.getItem(THEME_STORAGE_KEY));
   } catch {
@@ -74,11 +79,7 @@ function getServerResolvedSnapshot(): ResolvedTheme {
   return "light";
 }
 
-function applyTheme(theme: ResolvedTheme) {
-  const root = document.documentElement;
-  root.setAttribute("data-theme", theme);
-  root.style.colorScheme = theme;
-
+function setThemeColorOverride(theme: ResolvedTheme) {
   let meta = document.querySelector<HTMLMetaElement>(
     'meta[name="theme-color"]:not([media])'
   );
@@ -97,6 +98,7 @@ function clearOverrideMeta() {
 }
 
 function writePreference(next: ThemePreference) {
+  memoryPreference = next;
   try {
     window.localStorage.setItem(THEME_STORAGE_KEY, next);
   } catch {
@@ -136,7 +138,7 @@ export default function ThemeProvider({
     if (preference === "system") {
       clearOverrideMeta();
     } else {
-      applyTheme(resolvedTheme);
+      setThemeColorOverride(resolvedTheme);
     }
   }, [preference, resolvedTheme]);
 
