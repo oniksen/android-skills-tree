@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { userCurrencyPath } from "@/adapters/firestore-client/paths";
 import {
   buyItem,
   getFreezeCount,
@@ -22,33 +20,22 @@ interface CurrencyState {
 const INITIAL_STATE: CurrencyState = { currency: EMPTY_CURRENCY, loading: true };
 
 export function useCurrency() {
+  const { currency: repository } = useServices();
   const [state, setState] = useState<CurrencyState>(INITIAL_STATE);
   const [buying, setBuying] = useState(false);
   const { uid, loading: authLoading } = useFirebaseAuth();
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!uid) return;
+    if (authLoading || !uid) return;
 
-    const currencyRef = doc(db, ...userCurrencyPath(uid));
-    const unsubscribe = onSnapshot(currencyRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const raw = snapshot.data();
-        setState({
-          currency: {
-            balance: typeof raw.balance === "number" ? raw.balance : 0,
-            items: (raw.items as Record<string, number>) ?? {},
-            updatedAt: (raw.updatedAt as Date) ?? new Date(),
-          },
-          loading: false,
-        });
-      } else {
-        setState({ currency: EMPTY_CURRENCY, loading: false });
-      }
+    return repository.subscribe(uid, {
+      next: (currency) => setState({ currency, loading: false }),
+      error: (error) => {
+        console.error("Error listening to currency:", error);
+        setState((prev) => ({ ...prev, loading: false }));
+      },
     });
-
-    return () => unsubscribe();
-  }, [uid, authLoading]);
+  }, [uid, authLoading, repository]);
 
   const signedOut = !authLoading && !uid;
   const currency = signedOut ? EMPTY_CURRENCY : state.currency;

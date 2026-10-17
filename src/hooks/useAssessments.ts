@@ -2,14 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "@/lib/firebase";
-import {
-  collection,
-  doc,
-  setDoc,
-  onSnapshot,
-  runTransaction,
-} from "firebase/firestore";
+import { doc, setDoc, runTransaction } from "firebase/firestore";
 import { syncStreak } from "@/lib/streak";
+import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { calcSkillScore, calcTotalScore, isSkillComplete } from "@/lib/scoring";
 import { getCrystalRewardForSkill } from "@/lib/currency";
@@ -19,7 +14,6 @@ import { isCategoryPerfect } from "@/lib/achievement-conditions";
 import { skills } from "@/data/skills";
 import {
   userAssessmentPath,
-  userAssessmentsPath,
   userCurrencyPath,
   userProgressPath,
 } from "@/adapters/firestore-client/paths";
@@ -31,7 +25,10 @@ export interface CrystalAward {
   id: number;
 }
 
+const EMPTY_ASSESSMENT_MAP: Record<string, AssessmentData> = {};
+
 export function useAssessments() {
+  const { assessments: repository } = useServices();
   const [assessmentMap, setAssessmentMap] = useState<
     Record<string, AssessmentData>
   >({});
@@ -43,25 +40,18 @@ export function useAssessments() {
   useEffect(() => {
     if (authLoading || !uid) return;
 
-    const assessmentsRef = collection(db, ...userAssessmentsPath(uid));
-
-    const unsubscribe = onSnapshot(assessmentsRef, (snapshot) => {
-      const map: Record<string, AssessmentData> = {};
-      snapshot.forEach((d) => {
-        const data = d.data();
-        const subtopics = data.subtopics;
-        map[d.id] = {
-          score: subtopics ? calcSkillScore(d.id, subtopics) : data.score || 0,
-          subtopics,
-        };
-      });
-      mapRef.current = map;
-      setAssessmentMap(map);
-      setLoading(false);
+    return repository.subscribe(uid, {
+      next: (map) => {
+        mapRef.current = map;
+        setAssessmentMap(map);
+        setLoading(false);
+      },
+      error: (error) => {
+        console.error("Error listening to assessments:", error);
+        setLoading(false);
+      },
     });
-
-    return () => unsubscribe();
-  }, [uid, authLoading]);
+  }, [uid, authLoading, repository]);
 
   const toggleSubtopic = useCallback(
     async (skillId: string, subtopicName: string) => {
@@ -184,5 +174,3 @@ export function useAssessments() {
     lastAwarded,
   };
 }
-
-const EMPTY_ASSESSMENT_MAP: Record<string, AssessmentData> = {};

@@ -1,16 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { db } from "@/lib/firebase";
-import {
-  collection,
-  onSnapshot,
-} from "firebase/firestore";
+import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { userAchievementsPath } from "@/adapters/firestore-client/paths";
 import type { Achievement } from "@/types";
 
+const EMPTY_ACHIEVEMENTS: Achievement[] = [];
+
 export function useAchievements() {
+  const { achievements: repository } = useServices();
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
   const { uid, loading: authLoading } = useFirebaseAuth();
@@ -18,26 +16,17 @@ export function useAchievements() {
   useEffect(() => {
     if (authLoading || !uid) return;
 
-    const achievementsRef = collection(db, ...userAchievementsPath(uid));
-
-    const unsubscribe = onSnapshot(achievementsRef, (snapshot) => {
-      const list: Achievement[] = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        list.push({
-          id: doc.id,
-          type: data.type,
-          metadata: data.metadata,
-          achievedAt: data.achievedAt?.toDate() ?? new Date(),
-        });
-      });
-      list.sort((a, b) => b.achievedAt.getTime() - a.achievedAt.getTime());
-      setAchievements(list);
-      setLoading(false);
+    return repository.subscribe(uid, {
+      next: (list) => {
+        setAchievements(list);
+        setLoading(false);
+      },
+      error: (error) => {
+        console.error("Error listening to achievements:", error);
+        setLoading(false);
+      },
     });
-
-    return () => unsubscribe();
-  }, [uid, authLoading]);
+  }, [uid, authLoading, repository]);
 
   const signedOut = !authLoading && !uid;
 
@@ -46,5 +35,3 @@ export function useAchievements() {
     loading: signedOut ? false : loading,
   };
 }
-
-const EMPTY_ACHIEVEMENTS: Achievement[] = [];

@@ -1,13 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import {
-  doc,
-  getDoc,
-  setDoc,
-  onSnapshot,
-} from "firebase/firestore";
+import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import {
   backfillTotalScore,
@@ -24,6 +20,7 @@ const DEFAULT_PROGRESS: UserProgress = {
 };
 
 export function useUserProgress() {
+  const { progress: repository } = useServices();
   const [progress, setProgress] = useState<UserProgress | null>(null);
   const [loading, setLoading] = useState(true);
   const { uid, loading: authLoading } = useFirebaseAuth();
@@ -31,27 +28,17 @@ export function useUserProgress() {
   useEffect(() => {
     if (authLoading || !uid) return;
 
-    const progressRef = doc(db, ...userProgressPath(uid));
-
-    const unsubscribe = onSnapshot(
-      progressRef,
-      async (snapshot) => {
-        if (snapshot.exists()) {
-          setProgress(snapshot.data() as UserProgress);
-        } else {
-          await setDoc(progressRef, DEFAULT_PROGRESS);
-          setProgress(DEFAULT_PROGRESS);
-        }
+    return repository.subscribe(uid, {
+      next: (value) => {
+        setProgress(value);
         setLoading(false);
       },
-      (error) => {
+      error: (error) => {
         console.error("Error listening to progress:", error);
         setLoading(false);
       },
-    );
-
-    return () => unsubscribe();
-  }, [uid, authLoading]);
+    });
+  }, [uid, authLoading, repository]);
 
   useEffect(() => {
     if (!uid) return;
