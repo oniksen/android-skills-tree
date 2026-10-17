@@ -1402,9 +1402,10 @@ Run: `npm run dev`, then:
 
 ```bash
 git add src/components/shared/Header.tsx
-git rm src/components/shared/ThemeToggle.tsx
 git commit -m "feat: open profile from nav, move theme and logout out of header"
 ```
+
+(The `git rm` from Step 11 already staged the `ThemeToggle.tsx` deletion, so it is included in this commit.)
 
 ---
 
