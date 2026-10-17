@@ -253,6 +253,79 @@
 @layer base {
   :root {
     color-scheme: light;
+    --bg: #faf9f5;
+    --fg: #1a1915;
+    --surface: #fdfcf9;
+    --surface-border: rgba(26, 25, 21, 0.12);
+    --panel-border: rgba(26, 25, 21, 0.2);
+    --grid-line: rgba(26, 25, 21, 0.035);
+    --scroll-track: #f0eee6;
+    --scroll-thumb: #dbd8cc;
+    --scroll-thumb-hover: #c9c5b6;
+    --focus-ring: rgba(193, 95, 60, 0.7);
+    --selection-bg: rgba(217, 119, 87, 0.28);
+  }
+
+  :root[data-theme="dark"],
+  :root.dark {
+    color-scheme: dark;
+
+    --color-white: #f2f0e9;
+    --color-slate-50: #faf9f5;
+    --color-slate-100: #f2f0e9;
+    --color-slate-200: #e9e6dc;
+    --color-slate-300: #dbd8cc;
+    --color-slate-400: #b0ac9f;
+    --color-slate-500: #8f8b7e;
+    --color-slate-600: #6f6c64;
+    --color-slate-700: #3a3831;
+    --color-slate-800: #2a2823;
+    --color-slate-900: #201e1a;
+    --color-slate-950: #16140f;
+
+    --color-blue-300: #f0c3b0;
+    --color-blue-400: #dd8263;
+    --color-blue-500: #d97757;
+    --color-blue-600: #e08968;
+
+    --color-emerald-400: #7fc99f;
+    --color-emerald-500: #5fb886;
+    --color-emerald-600: #6fbf8f;
+    --color-green-400: #7fc99f;
+
+    --color-orange-400: #e0995c;
+    --color-orange-500: #dd8a4f;
+    --color-orange-600: #e89a5c;
+
+    --color-cyan-500: #3f9d9d;
+    --color-cyan-600: #4fb0b0;
+
+    --color-sky-300: #7fb0cf;
+
+    --color-amber-400: #e0b451;
+    --color-amber-500: #e0b451;
+    --color-amber-600: #d9a93f;
+
+    --color-yellow-400: #dcb455;
+    --color-yellow-500: #d9b23f;
+
+    --color-purple-400: #bd8fd6;
+
+    --color-red-300: #e58b80;
+    --color-red-400: #e07a6e;
+    --color-red-500: #e07a6e;
+
+    --bg: #16140f;
+    --fg: #f2f0e9;
+    --surface: #1c1b17;
+    --surface-border: rgba(242, 240, 233, 0.1);
+    --panel-border: rgba(242, 240, 233, 0.18);
+    --grid-line: rgba(242, 240, 233, 0.04);
+    --scroll-track: #201e1a;
+    --scroll-thumb: #3a3831;
+    --scroll-thumb-hover: #4a4842;
+    --focus-ring: rgba(224, 138, 104, 0.8);
+    --selection-bg: rgba(217, 119, 87, 0.3);
   }
 
   html {
@@ -262,8 +335,8 @@
   body {
     font-family: var(--font-sans);
     isolation: isolate;
-    background-color: #faf9f5;
-    color: #1a1915;
+    background-color: var(--bg);
+    color: var(--fg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-y: scroll;
@@ -276,18 +349,18 @@
     z-index: -1;
     pointer-events: none;
     background-image:
-      linear-gradient(rgba(26, 25, 21, 0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(26, 25, 21, 0.035) 1px, transparent 1px);
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 24px 24px;
   }
 
   ::selection {
-    background: rgba(217, 119, 87, 0.28);
-    color: #1a1915;
+    background: var(--selection-bg);
+    color: var(--fg);
   }
 
   :focus-visible {
-    outline: 2px solid rgba(193, 95, 60, 0.7);
+    outline: 2px solid var(--focus-ring);
     outline-offset: 2px;
   }
 
@@ -296,20 +369,20 @@
     height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #f0eee6;
+    background: var(--scroll-track);
   }
   ::-webkit-scrollbar-thumb {
-    background: #dbd8cc;
+    background: var(--scroll-thumb);
     border-radius: 9999px;
-    border: 2px solid #f0eee6;
+    border: 2px solid var(--scroll-track);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #c9c5b6;
+    background: var(--scroll-thumb-hover);
   }
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: #dbd8cc transparent;
+    scrollbar-color: var(--scroll-thumb) transparent;
   }
 }
 
@@ -321,17 +394,17 @@
 }
 
 @utility card-surface {
-  background-color: #fdfcf9;
-  border: 1px solid rgba(26, 25, 21, 0.12);
+  background-color: var(--surface);
+  border: 1px solid var(--surface-border);
 }
 
 @utility term-panel {
-  background-color: #fdfcf9;
-  border: 1px dashed rgba(26, 25, 21, 0.2);
+  background-color: var(--surface);
+  border: 1px dashed var(--panel-border);
 }
 
 @utility prompt {
-  color: #c15f3c;
+  color: var(--color-blue-600);
   font-weight: 600;
 }
 
@@ -361,6 +434,16 @@
   to {
     transform: translateX(320%) skewX(-12deg);
   }
+}
+
+.theme-icon-moon {
+  display: none;
+}
+[data-theme="dark"] .theme-icon-sun {
+  display: none;
+}
+[data-theme="dark"] .theme-icon-moon {
+  display: inline-block;
 }
 
 @media (hover: none) and (pointer: coarse) {
