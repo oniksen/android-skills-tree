@@ -61,7 +61,7 @@ export default function AchievementsClient() {
             <h2 className="mb-4 font-mono text-lg font-semibold text-slate-300">
               <span className="text-slate-600">##</span> {group.label}
             </h2>
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {items.map((def, index) => {
                 const earned = earnedIds.has(def.id);
                 const achievement = achievements.find((a) => def.matches(a));
