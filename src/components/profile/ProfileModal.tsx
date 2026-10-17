@@ -14,12 +14,17 @@ interface ProfileModalProps {
 export default function ProfileModal({ open, onClose }: ProfileModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const wasOpen = useRef(false);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
 
   useEffect(() => {
     if (!open) return;
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") onCloseRef.current();
     };
     document.addEventListener("keydown", onKey);
 
@@ -28,7 +33,7 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
 
     const mql = window.matchMedia("(min-width: 600px)");
     const onResize = (event: MediaQueryListEvent) => {
-      if (!event.matches) onClose();
+      if (!event.matches) onCloseRef.current();
     };
     mql.addEventListener("change", onResize);
 
@@ -39,7 +44,7 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
       document.body.style.overflow = previousOverflow;
       mql.removeEventListener("change", onResize);
     };
-  }, [open, onClose]);
+  }, [open]);
 
   useEffect(() => {
     if (open) {
