@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { normalizeReleaseVersion } from "@/lib/version";
 import { usePathname } from "next/navigation";
 import StreakBadge from "@/shared/ui/StreakBadge";
 import CurrencyBadge from "@/shared/ui/CurrencyBadge";
 import BrandMark from "@/shared/ui/BrandMark";
-import ProfileModal from "@/features/profile/components/ProfileModal";
 import {
   DashboardSkeleton,
   TreeSkeleton,
@@ -58,6 +58,8 @@ type PendingNav = { href: string; startedPath: string };
 interface HeaderProps {
   children?: React.ReactNode;
   mainClassName?: string;
+  branch?: string | null;
+  version?: string | null;
 }
 
 function Brand() {
@@ -76,11 +78,11 @@ function Brand() {
 function Prompt({ path }: { path: string }) {
   const clean = path && path !== "/" ? path : "/tree/junior";
   return (
-    <span className="flex min-w-0 items-center gap-1 font-mono text-xs">
-      <span className="shrink-0 text-blue-600">user@skill-tree</span>
-      <span className="shrink-0 text-slate-600">:</span>
+    <span className="min-w-0 flex items-center gap-1 font-mono text-xs">
+      <span className="hidden shrink-0 text-blue-600 nav-md:inline">user@skill-tree</span>
+      <span className="hidden shrink-0 text-slate-600 nav-md:inline">:</span>
       <span className="truncate text-slate-400">~{clean}</span>
-      <span className="shrink-0 text-blue-600">$</span>
+      <span className="shrink-0 text-blue-600"> $</span>
       <span className="ml-0.5 inline-block h-3.5 w-1.5 shrink-0 animate-caret-blink bg-blue-600 align-middle" />
     </span>
   );
@@ -101,15 +103,11 @@ function PendingIndicator({ className = "" }: { className?: string }) {
 function DesktopNavItem({
   item,
   active,
-  profileOpen,
   onNavigate,
-  onOpenProfile,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
-  profileOpen: boolean;
   onNavigate: (href: string) => void;
-  onOpenProfile: () => void;
 }) {
   const isProfile = item.href === "/profile";
   const className = `group relative flex items-center gap-2.5 rounded-md px-2.5 py-2 font-mono text-sm transition-colors duration-150 ${
@@ -145,21 +143,6 @@ function DesktopNavItem({
     </>
   );
 
-  if (isProfile) {
-    return (
-      <button
-        type="button"
-        data-profile-trigger
-        onClick={onOpenProfile}
-        aria-haspopup="dialog"
-        aria-expanded={profileOpen}
-        className={`${className} w-full text-left`}
-      >
-        {inner}
-      </button>
-    );
-  }
-
   return (
     <Link
       href={item.href}
@@ -174,15 +157,11 @@ function DesktopNavItem({
 function TabletNavItem({
   item,
   active,
-  profileOpen,
   onNavigate,
-  onOpenProfile,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
-  profileOpen: boolean;
   onNavigate: (href: string) => void;
-  onOpenProfile: () => void;
 }) {
   const isProfile = item.href === "/profile";
   const className = `relative flex flex-col items-center gap-1 rounded-md px-1.5 py-2 text-center font-mono text-[10px] leading-tight transition-colors duration-150 ${
@@ -206,21 +185,6 @@ function TabletNavItem({
       {!isProfile && <PendingIndicator className="right-1.5 top-1.5" />}
     </>
   );
-
-  if (isProfile) {
-    return (
-      <button
-        type="button"
-        data-profile-trigger
-        onClick={onOpenProfile}
-        aria-haspopup="dialog"
-        aria-expanded={profileOpen}
-        className={className}
-      >
-        {inner}
-      </button>
-    );
-  }
 
   return (
     <Link
@@ -249,19 +213,13 @@ function MobileNavItem({
       onClick={() => onNavigate(item.href)}
       aria-label={item.label}
       title={item.label}
-      className={`relative flex flex-col items-center justify-center py-2.5 transition-colors duration-150 ${
-        active ? "text-blue-600" : "text-slate-400 hover:text-white"
+      className={`relative flex min-h-[52px] min-w-[44px] flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 transition-colors duration-150 ${
+        active
+          ? "bg-blue-500/10 text-blue-600"
+          : "text-slate-400 hover:bg-white/[0.04] hover:text-white"
       }`}
     >
-      {active && (
-        <motion.span
-          layoutId="nav-active-mobile"
-          className="absolute top-1 h-0.5 w-6 bg-blue-600"
-          transition={{ type: "spring", stiffness: 380, damping: 30 }}
-          initial={false}
-        />
-      )}
-      <item.icon className="relative h-6 w-6" />
+      <item.icon className="relative h-7 w-7" />
       <PendingIndicator className="right-1.5 top-1.5" />
     </Link>
   );
@@ -270,14 +228,14 @@ function MobileNavItem({
 export default function Header({
   children,
   mainClassName = "px-4 pt-8 pb-32 nav-md:pb-8",
+  branch,
+  version,
 }: HeaderProps) {
   const pathname = usePathname();
   const [user, setUser] = useState<{ uid: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState<PendingNav | null>(null);
   const [readyPending, setReadyPending] = useState<PendingNav | null>(null);
-  const [profileOpen, setProfileOpen] = useState(false);
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser ? { uid: firebaseUser.uid } : null);
@@ -301,7 +259,7 @@ export default function Header({
   const segment = (pathname ?? "").split("/")[1] || "";
   const activeHref = segment === "tree" ? "/tree/junior" : `/${segment}`;
   const isActive = (href: string) =>
-    href === "/profile" ? profileOpen || activeHref === "/profile" : href === activeHref;
+    href === "/profile" ? activeHref === "/profile" : href === activeHref;
   const showNav = !loading && user;
 
   return (
@@ -311,11 +269,6 @@ export default function Header({
           className="hidden nav-lg:flex sticky top-0 self-start h-dvh z-40 w-64 flex-col border-r border-slate-700/70 bg-slate-950/90 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] backdrop-blur-xl"
           aria-label="Основная навигация"
         >
-          <div className="flex h-9 shrink-0 items-center gap-1.5 border-b border-slate-700/70 px-4">
-            <span className="font-mono text-[11px] text-slate-500">
-              android-skill-tree
-            </span>
-          </div>
           <div className="flex h-14 shrink-0 items-center border-b border-slate-700/70 px-4">
             <Link href="/tree/junior" className="transition-opacity hover:opacity-80">
               <Brand />
@@ -327,15 +280,13 @@ export default function Header({
                 <DesktopNavItem
                   item={item}
                   active={isActive(item.href)}
-                  profileOpen={profileOpen}
                   onNavigate={handleNavigate}
-                  onOpenProfile={() => setProfileOpen(true)}
                 />
               </div>
             ))}
           </div>
           <div className="border-t border-slate-700/70 px-4 py-3 font-mono text-[10px] text-slate-600">
-            {showNav ? "status: online" : "status: offline"}
+            {`status: ${branch ?? "local"} · ${normalizeReleaseVersion(version)}`}
           </div>
         </nav>
       )}
@@ -350,9 +301,7 @@ export default function Header({
               key={item.href}
               item={item}
               active={isActive(item.href)}
-              profileOpen={profileOpen}
               onNavigate={handleNavigate}
-              onOpenProfile={() => setProfileOpen(true)}
             />
           ))}
         </nav>
@@ -403,8 +352,8 @@ export default function Header({
           className="nav-md:hidden fixed inset-x-0 bottom-0 z-50 px-4 pb-[max(env(safe-area-inset-bottom),0.875rem)] pl-[max(env(safe-area-inset-left),1rem)] pr-[max(env(safe-area-inset-right),1rem)]"
           aria-label="Основная навигация"
         >
-          <div className="mx-auto max-w-md overflow-hidden rounded-lg border border-slate-700/70 bg-slate-950/95 shadow-[0_10px_30px_rgba(26,25,21,0.18)] backdrop-blur-xl">
-            <ul className="grid grid-cols-6">
+          <div className="mx-auto max-w-sm rounded-2xl border border-slate-700/70 bg-slate-950/95 px-2 py-2 shadow-[0_18px_40px_rgba(26,25,21,0.28)] backdrop-blur-xl">
+            <ul className="grid grid-cols-6 gap-1">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <MobileNavItem
@@ -418,8 +367,7 @@ export default function Header({
           </div>
         </nav>
       )}
-
-      <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} />
     </div>
+
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { ArrowDown, ArrowUp, Check, Percent, type LucideIcon } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, type LucideIcon } from "lucide-react";
 import { useUserProgress, useAssessments } from "@/hooks";
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
@@ -18,13 +18,12 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const SORT_OPTIONS: { key: RoadmapSortKey; label: string; icon: LucideIcon }[] = [
   { key: "xp-asc", label: "Опыт ↑", icon: ArrowUp },
   { key: "xp-desc", label: "Опыт ↓", icon: ArrowDown },
-  { key: "completion-desc", label: "Закрытие %", icon: Percent },
 ];
 
 export default function RoadmapClient() {
   const { progress, loading: progressLoading } = useUserProgress();
   const { assessmentMap, loading: assessmentsLoading } = useAssessments();
-  const [sortKey, setSortKey] = useState<RoadmapSortKey>("completion-desc");
+  const [sortKey, setSortKey] = useState<RoadmapSortKey>("xp-desc");
   const [hideCompleted, setHideCompleted] = useState(false);
 
   if (progressLoading || assessmentsLoading) {

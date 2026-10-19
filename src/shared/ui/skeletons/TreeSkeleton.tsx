@@ -26,7 +26,7 @@ export default function TreeSkeleton() {
         ))}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="card-surface rounded-2xl p-4">
             <div className="flex items-center justify-between">

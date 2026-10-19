@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "motion/react";
 import { Check } from "lucide-react";
+import { useToast } from "@/shared/lib/toast-context";
 import DifficultyBadge from "@/shared/ui/DifficultyBadge";
 import { getCrystalRewardForSkill } from "@/core/domain/currency";
 import { getCategoryById, getSkillById } from "@/data";
@@ -33,6 +34,7 @@ export default function SkillDetailContent({
   award = null,
   onToggleSubtopic,
 }: SkillDetailContentProps) {
+  const toast = useToast();
   const categoryName = getCategoryById(getSkillById(skillId)?.categoryId ?? "")?.name;
   const completedCount = subtopics.filter((st) => subtopicState[st]).length;
   const crystalReward = getCrystalRewardForSkill(skillId);
@@ -116,7 +118,13 @@ export default function SkillDetailContent({
                     aria-label={st}
                     disabled={disabled}
                     whileTap={interactive ? { scale: 0.98 } : undefined}
-                    onClick={() => interactive && onToggleSubtopic?.(st)}
+                    onClick={() => {
+                      if (disabled) {
+                        toast.show("Уровень заблокирован. Наберите достаточно XP.");
+                        return;
+                      }
+                      if (interactive) onToggleSubtopic?.(st);
+                    }}
                     className={`flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-left transition-colors ${
                       disabled
                         ? "cursor-not-allowed opacity-50"
