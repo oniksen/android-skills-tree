@@ -39,19 +39,23 @@ export default function ProfileAchievements({
           Открытых достижений пока нет.
         </p>
       ) : (
-        <ul className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {earnedDefs.map((def, index) => (
             <motion.li
               key={def.id}
-              title={`${def.title} — ${def.condition}`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "0px 0px -20px 0px" }}
               transition={{ duration: 0.3, delay: (index % 8) * 0.03, ease: EASE }}
-              className="flex aspect-square items-center justify-center rounded-lg border border-blue-500/40 bg-blue-500/10 text-2xl"
+              className="flex items-start gap-3 rounded-lg border border-blue-500/40 bg-blue-500/10 p-3"
             >
-              <span aria-hidden>{def.icon}</span>
-              <span className="sr-only">Получено: {def.title}</span>
+              <span className="text-2xl" aria-hidden>
+                {def.icon}
+              </span>
+              <div className="min-w-0">
+                <p className="font-semibold text-white">{def.title}</p>
+                <p className="mt-1 text-xs text-slate-400">{def.condition}</p>
+              </div>
             </motion.li>
           ))}
         </ul>
