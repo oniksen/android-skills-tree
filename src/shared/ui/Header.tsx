@@ -220,11 +220,6 @@ function MobileNavItem({
       }`}
     >
       <item.icon className="relative h-7 w-7" />
-      {active && (
-        <span className="font-mono text-[10px] font-medium leading-none">
-          {item.shortLabel ?? item.label}
-        </span>
-      )}
       <PendingIndicator className="right-1.5 top-1.5" />
     </Link>
   );
