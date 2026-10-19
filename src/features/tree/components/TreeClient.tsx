@@ -61,7 +61,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
         </motion.div>
         <LevelTabs levels={levels} />
         <Legend />
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {levelCategories.map((cat) => (
             <CategoryCardReadonly
               key={cat.id}
@@ -140,7 +140,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
         />
       )}
       {isCurrentOrPast && !isCompleted && (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {levelCategories.map((cat, index) => {
             const catScore = calcCategoryScore(cat.id, assessmentMap);
             const catMax = getCategoryMaxScore(cat.id);
