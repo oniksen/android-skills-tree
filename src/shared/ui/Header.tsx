@@ -316,11 +316,6 @@ export default function Header({
           className="hidden nav-lg:flex sticky top-0 self-start h-dvh z-40 w-64 flex-col border-r border-slate-700/70 bg-slate-950/90 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] backdrop-blur-xl"
           aria-label="Основная навигация"
         >
-          <div className="flex h-9 shrink-0 items-center gap-1.5 border-b border-slate-700/70 px-4">
-            <span className="font-mono text-[11px] text-slate-500">
-              android-skill-tree
-            </span>
-          </div>
           <div className="flex h-14 shrink-0 items-center border-b border-slate-700/70 px-4">
             <Link href="/tree/junior" className="transition-opacity hover:opacity-80">
               <Brand />
