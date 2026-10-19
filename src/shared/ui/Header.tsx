@@ -58,6 +58,8 @@ type PendingNav = { href: string; startedPath: string };
 interface HeaderProps {
   children?: React.ReactNode;
   mainClassName?: string;
+  branch?: string | null;
+  version?: string | null;
 }
 
 function Brand() {
@@ -270,6 +272,8 @@ function MobileNavItem({
 export default function Header({
   children,
   mainClassName = "px-4 pt-8 pb-32 nav-md:pb-8",
+  branch,
+  version,
 }: HeaderProps) {
   const pathname = usePathname();
   const [user, setUser] = useState<{ uid: string } | null>(null);
@@ -335,7 +339,7 @@ export default function Header({
             ))}
           </div>
           <div className="border-t border-slate-700/70 px-4 py-3 font-mono text-[10px] text-slate-600">
-            {showNav ? "status: online" : "status: offline"}
+            {`status: ${branch ?? "local"} · ${version ? (version.startsWith("v") ? version : `v${version}`) : "unknown"}`}
           </div>
         </nav>
       )}
