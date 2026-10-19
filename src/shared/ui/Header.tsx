@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { normalizeReleaseVersion } from "@/lib/version";
 import { usePathname } from "next/navigation";
 import StreakBadge from "@/shared/ui/StreakBadge";
 import CurrencyBadge from "@/shared/ui/CurrencyBadge";
@@ -339,7 +340,7 @@ export default function Header({
             ))}
           </div>
           <div className="border-t border-slate-700/70 px-4 py-3 font-mono text-[10px] text-slate-600">
-            {`status: ${branch ?? "local"} · ${version ? (version.startsWith("v") ? version : `v${version}`) : "unknown"}`}
+            {`status: ${branch ?? "local"} · ${normalizeReleaseVersion(version)}`}
           </div>
         </nav>
       )}

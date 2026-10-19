@@ -73,3 +73,10 @@ export async function getLatestReleaseVersion(
     return null;
   }
 }
+
+
+export function normalizeReleaseVersion(tag: string | null | undefined): string {
+  if (!tag) return "unknown";
+  const match = tag.match(/v?(\d+\.\d+\.\d+)/);
+  return match ? `v${match[1]}` : tag;
+}

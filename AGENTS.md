@@ -44,3 +44,13 @@ server-rendered Next.js with client components talking to Firestore via hooks.
    write clear, user-facing commit subjects (what changed for the user), use conventional
    types (`feat`, `fix`, `perf`, etc.), and mark breaking changes explicitly. Do not create
    release/version commits locally; releases are created only on push.
+
+## Release workflow (GitHub)
+
+- Локальная разработка ведётся обычными коммитами без релизов.
+- Когда фича готова к preview: коммит/пуш в `preview`; GitHub Actions запускает
+  semantic-release и создаёт prerelease (`vX.Y.Z-preview.N`).
+- После проверки на preview: merge/пуш в `main`; semantic-release создаёт обычный
+  релиз (`vX.Y.Z`), ссылаясь на предыдущие pre-релизы и описывая дельту.
+- В UI отображается только базовый `vX.Y.Z`; prerelease/build-суффикс скрывается.
+- Релизы создаются только на push, локально их не создавать.
