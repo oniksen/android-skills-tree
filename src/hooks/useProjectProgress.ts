@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import {
-  toggleProjectCompletionAction,
-  deleteProjectProgressAction,
-} from "@/features/projects/actions";
+import { useToast } from "@/shared/lib/toast-context";
+import { isPermissionDenied } from "@/shared/lib/permission-denied";
+import { userProjectPath } from "@/adapters/firestore-client/paths";
 
 const EMPTY_PROJECT_MAP: Record<string, boolean> = {};
 
@@ -15,6 +16,7 @@ export function useProjectProgress() {
   const [projectMap, setProjectMap] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const { uid, loading: authLoading } = useFirebaseAuth();
+  const toast = useToast();
 
   useEffect(() => {
     if (authLoading || !uid) return;
@@ -36,19 +38,18 @@ export function useProjectProgress() {
     completed: boolean,
   ) => {
     if (!uid) return;
+    const projectRef = doc(db, ...userProjectPath(uid, projectId));
     try {
-      await toggleProjectCompletionAction(projectId, completed);
+      await setDoc(projectRef, {
+        completed,
+        completedAt: completed ? new Date() : null,
+      });
     } catch (error) {
-      console.error("Error toggling project completion:", error);
-    }
-  };
-
-  const deleteProjectProgress = async (projectIds: string[]) => {
-    if (!uid) return;
-    try {
-      await deleteProjectProgressAction(projectIds);
-    } catch (error) {
-      console.error("Error deleting project progress:", error);
+      console.error("Error toggling project:", error);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      throw error;
     }
   };
 
@@ -58,6 +59,5 @@ export function useProjectProgress() {
     projectMap: signedOut ? EMPTY_PROJECT_MAP : projectMap,
     loading: signedOut ? false : loading,
     toggleProjectCompletion,
-    deleteProjectProgress,
   };
 }

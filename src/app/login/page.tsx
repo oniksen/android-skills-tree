@@ -45,7 +45,7 @@ export default function LoginPage() {
         ? await createUserWithEmailAndPassword(auth, email, password)
         : await signInWithEmailAndPassword(auth, email, password);
 
-      await login(await userCredential.user.getIdToken());
+      await login(userCredential.user.uid, userCredential.user.email);
       router.push("/dashboard");
       router.refresh();
     } catch (err: unknown) {

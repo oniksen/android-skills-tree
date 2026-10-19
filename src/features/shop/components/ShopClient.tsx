@@ -31,6 +31,7 @@ const ERROR_MESSAGES: Record<Exclude<BuyResult, { ok: true }>["reason"], string>
   "max-owned": "Достигнут максимум",
   "signed-out": "Нужно войти в аккаунт",
   error: "Не удалось купить, попробуй ещё раз",
+  "permission-denied": "Для отслеживания прогресса обратитесь к администратору.",
 };
 
 export default function ShopClient() {

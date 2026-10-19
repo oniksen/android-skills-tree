@@ -2,8 +2,13 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useServices } from "@/composition/services-context";
+import { useToast } from "@/shared/lib/toast-context";
+import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { syncStreakAction, applyAutoFreezesAction } from "@/features/streak/actions";
+import {
+  applyAutoFreezesOnce,
+  syncStreak as syncStreakFirestore,
+} from "@/adapters/firestore-client/streak-commands";
 import {
   computeStreaks,
   getLocalDayString,
@@ -30,6 +35,7 @@ export function useStreak() {
   const [autoFreeze, setAutoFreeze] = useState<AutoFreezeReport | null>(null);
   const [loading, setLoading] = useState(true);
   const { uid, loading: authLoading } = useFirebaseAuth();
+  const toast = useToast();
 
   useEffect(() => {
     if (authLoading || !uid) return;
@@ -45,15 +51,15 @@ export function useStreak() {
         } else {
           const today = getLocalDayString();
           const streaks = computeStreaks(
-            snapshot.activeDays as string[],
-            (snapshot.frozenDays as string[]) ?? [],
+            snapshot.activeDays,
+            snapshot.frozenDays,
             today,
           );
           setCurrentStreak(streaks.currentStreak);
           setLongestStreak(streaks.longestStreak);
-          setLastActiveDate((snapshot.lastActiveDate as string) ?? null);
-          setActiveDays(snapshot.activeDays as string[]);
-          setFrozenDays((snapshot.frozenDays as string[]) ?? []);
+          setLastActiveDate(snapshot.lastActiveDate);
+          setActiveDays(snapshot.activeDays);
+          setFrozenDays(snapshot.frozenDays);
         }
         setLoading(false);
       },
@@ -68,23 +74,32 @@ export function useStreak() {
     if (!uid) return;
 
     let cancelled = false;
-    void applyAutoFreezesAction()
-      .then((report) => {
-        if (!cancelled && report) setAutoFreeze(report);
-      })
-      .catch((error) => {
-        console.error("Error applying automatic freezes:", error);
-      });
+    void applyAutoFreezesOnce().then((report) => {
+      if (!cancelled && report) setAutoFreeze(report);
+    }).catch((error) => {
+      console.error("Error applying auto freezes:", error);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+    });
 
     return () => {
       cancelled = true;
     };
-  }, [uid]);
+  }, [uid, toast]);
 
   const syncStreak = useCallback(async () => {
-    if (!uid) return false;
-    return syncStreakAction();
-  }, [uid]);
+    if (!uid) return null;
+    try {
+      return await syncStreakFirestore();
+    } catch (error) {
+      console.error("Error syncing streak:", error);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      return null;
+    }
+  }, [uid, toast]);
 
   const signedOut = !authLoading && !uid;
   const displayActiveDays = signedOut ? EMPTY_DAYS : activeDays;

@@ -6,7 +6,9 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       // Next.js внедряет инлайновые bootstrap-скрипты и стили.
-      "script-src 'self' 'unsafe-inline'",
+      // В dev-режиме React требует eval() для отладочных возможностей.
+      "script-src 'self' 'unsafe-inline'" +
+        (process.env.NODE_ENV !== "production" ? " 'unsafe-eval'" : ""),
       "style-src 'self' 'unsafe-inline'",
       // Firebase web SDK: REST + вебсокеты Firestore, Auth.
       "connect-src 'self' https://*.googleapis.com wss://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://apis.google.com",
@@ -17,13 +19,17 @@ const securityHeaders = [
       "base-uri 'self'",
       "form-action 'self'",
       "object-src 'none'",
-      "upgrade-insecure-requests",
+      ...(process.env.NODE_ENV === "production" ? ["upgrade-insecure-requests"] : []),
     ].join("; "),
   },
-  {
-    key: "Strict-Transport-Security",
-    value: "max-age=63072000; includeSubDomains; preload",
-  },
+  ...(process.env.NODE_ENV === "production"
+    ? [
+        {
+          key: "Strict-Transport-Security",
+          value: "max-age=63072000; includeSubDomains; preload",
+        },
+      ]
+    : []),
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

@@ -2,10 +2,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useServices } from "@/composition/services-context";
+import { useToast } from "@/shared/lib/toast-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { buyItemAction } from "@/features/shop/actions";
-import { getFreezeCount, EMPTY_CURRENCY } from "@/core/domain/currency";
-import type { BuyResult } from "@/core/domain/currency";
+import { buyItem } from "@/adapters/firestore-client/currency-commands";
+import {
+  getFreezeCount,
+  EMPTY_CURRENCY,
+  type BuyResult,
+} from "@/core/domain/currency";
+import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
 import type { CurrencyData } from "@/types";
 
 interface CurrencyState {
@@ -20,6 +25,7 @@ export function useCurrency() {
   const [state, setState] = useState<CurrencyState>(INITIAL_STATE);
   const [buying, setBuying] = useState(false);
   const { uid, loading: authLoading } = useFirebaseAuth();
+  const toast = useToast();
 
   useEffect(() => {
     if (authLoading || !uid) return;
@@ -33,25 +39,27 @@ export function useCurrency() {
     });
   }, [uid, authLoading, repository]);
 
-  const buyFreeze = useCallback(
-    async (): Promise<BuyResult> => {
-      setBuying(true);
-      try {
-        return await buyItemAction("streak_freeze");
-      } finally {
-        setBuying(false);
-      }
-    },
-    [],
-  );
-
   const signedOut = !authLoading && !uid;
   const currency = signedOut ? EMPTY_CURRENCY : state.currency;
+  const loading = signedOut ? false : state.loading;
+
+  const buyFreeze = useCallback(async (): Promise<BuyResult> => {
+    setBuying(true);
+    try {
+      const result = await buyItem(STREAK_FREEZE_ITEM_ID);
+      if (result && (result as { reason?: string }).reason === "permission-denied") {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      return result;
+    } finally {
+      setBuying(false);
+    }
+  }, [toast]);
 
   return {
     balance: currency.balance,
     freezes: getFreezeCount(currency),
-    loading: signedOut ? false : state.loading,
+    loading,
     buying,
     buyFreeze,
   };

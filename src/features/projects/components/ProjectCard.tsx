@@ -2,13 +2,16 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Check } from "lucide-react";
-import { toggleProjectCompletionAction } from "@/features/projects/actions";
+import { toggleProjectCompletion } from "@/lib/firestore-actions";
+import { useToast } from "@/shared/lib/toast-context";
+import { isPermissionDenied } from "@/shared/lib/permission-denied";
 
 export default function ProjectCard({ projectId, name, description, requiredTechnologies, levelName, completed }: {
   projectId: string; name: string; description: string; requiredTechnologies: string[]; levelName: string; completed: boolean;
 }) {
   const [done, setDone] = useState(completed);
   const [saving, setSaving] = useState(false);
+  const toast = useToast();
 
   const handleToggle = async () => {
     if (saving) return;
@@ -16,9 +19,12 @@ export default function ProjectCard({ projectId, name, description, requiredTech
     const newVal = !done;
     setDone(newVal);
     try {
-      await toggleProjectCompletionAction(projectId, newVal);
-    } catch {
+      await toggleProjectCompletion(projectId, newVal);
+    } catch (error) {
       setDone(!newVal);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
     } finally {
       setSaving(false);
     }

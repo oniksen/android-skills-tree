@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { checkLevelUpAction } from "@/features/progress/actions";
+import { checkLevelUp } from "@/lib/firestore-actions";
 import CelebrationModal from "@/shared/ui/CelebrationModal";
 
 export default function LevelUpHandler() {
@@ -13,7 +13,7 @@ export default function LevelUpHandler() {
 
     const run = async () => {
       try {
-        const r = await checkLevelUpAction();
+        const r = await checkLevelUp();
         if (r) setResult(r);
       } catch {}
     };

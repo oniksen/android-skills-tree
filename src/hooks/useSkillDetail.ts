@@ -2,12 +2,21 @@
 
 import { useCallback, useState } from "react";
 import { getSkillById } from "@/data";
+import { checkLevelUp as checkLevelUpAction } from "@/lib/firestore-actions";
 import { calcSkillCompletionPercent } from "@/core/domain/scoring";
 import { useAssessments } from "./useAssessments";
-import type { LevelUpResult } from "@/adapters/firestore-admin/progress";
+import { useToast } from "@/shared/lib/toast-context";
+import { isPermissionDenied } from "@/shared/lib/permission-denied";
+
+export interface LevelUpResult {
+  fromLevel: string;
+  toLevel: string;
+  score: number;
+}
 
 export function useSkillDetail(skillId: string) {
   const { assessmentMap, toggleSubtopic, lastAwarded } = useAssessments();
+  const toast = useToast();
   const [levelUp, setLevelUp] = useState<LevelUpResult | null>(null);
 
   const skill = getSkillById(skillId);
@@ -20,10 +29,18 @@ export function useSkillDetail(skillId: string) {
   const toggle = useCallback(
     async (subtopicName: string) => {
       const result = await toggleSubtopic(skillId, subtopicName);
-      if (!result) return;
-      if (result.levelUp) setLevelUp(result.levelUp);
+      if (!result?.justCompleted) return;
+
+      try {
+        const levelResult = await checkLevelUpAction();
+        if (levelResult) setLevelUp(levelResult);
+      } catch (error) {
+        if (isPermissionDenied(error)) {
+          toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        }
+      }
     },
-    [skillId, toggleSubtopic],
+    [skillId, toggleSubtopic, toast],
   );
 
   const clearLevelUp = useCallback(() => setLevelUp(null), []);

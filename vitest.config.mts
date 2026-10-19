@@ -18,5 +18,23 @@ export default defineConfig({
       NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "000000000000",
       NEXT_PUBLIC_FIREBASE_APP_ID: "1:000000000000:web:test",
     },
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html"],
+      include: [
+        "src/core/**",
+        "src/lib/firestore.ts",
+        "src/lib/firestore-actions.ts",
+        "src/adapters/firestore-client/*-commands.ts",
+        "src/shared/lib/permission-denied.ts",
+        "src/shared/lib/toast-state.ts",
+      ],
+      thresholds: {
+        lines: 50,
+        functions: 50,
+        branches: 50,
+        statements: 50,
+      },
+    },
   },
 });

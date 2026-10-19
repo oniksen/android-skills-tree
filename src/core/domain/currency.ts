@@ -31,5 +31,5 @@ export type BuyResult =
   | { ok: true }
   | {
       ok: false;
-      reason: "not-found" | "not-enough" | "max-owned" | "signed-out" | "error";
+      reason: "not-found" | "not-enough" | "max-owned" | "signed-out" | "error" | "permission-denied";
     };
