@@ -10,7 +10,6 @@ import { usePathname } from "next/navigation";
 import StreakBadge from "@/shared/ui/StreakBadge";
 import CurrencyBadge from "@/shared/ui/CurrencyBadge";
 import BrandMark from "@/shared/ui/BrandMark";
-import ProfileModal from "@/features/profile/components/ProfileModal";
 import {
   DashboardSkeleton,
   TreeSkeleton,
@@ -104,15 +103,11 @@ function PendingIndicator({ className = "" }: { className?: string }) {
 function DesktopNavItem({
   item,
   active,
-  profileOpen,
   onNavigate,
-  onOpenProfile,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
-  profileOpen: boolean;
   onNavigate: (href: string) => void;
-  onOpenProfile: () => void;
 }) {
   const isProfile = item.href === "/profile";
   const className = `group relative flex items-center gap-2.5 rounded-md px-2.5 py-2 font-mono text-sm transition-colors duration-150 ${
@@ -148,21 +143,6 @@ function DesktopNavItem({
     </>
   );
 
-  if (isProfile) {
-    return (
-      <button
-        type="button"
-        data-profile-trigger
-        onClick={onOpenProfile}
-        aria-haspopup="dialog"
-        aria-expanded={profileOpen}
-        className={`${className} w-full text-left`}
-      >
-        {inner}
-      </button>
-    );
-  }
-
   return (
     <Link
       href={item.href}
@@ -177,15 +157,11 @@ function DesktopNavItem({
 function TabletNavItem({
   item,
   active,
-  profileOpen,
   onNavigate,
-  onOpenProfile,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
-  profileOpen: boolean;
   onNavigate: (href: string) => void;
-  onOpenProfile: () => void;
 }) {
   const isProfile = item.href === "/profile";
   const className = `relative flex flex-col items-center gap-1 rounded-md px-1.5 py-2 text-center font-mono text-[10px] leading-tight transition-colors duration-150 ${
@@ -209,21 +185,6 @@ function TabletNavItem({
       {!isProfile && <PendingIndicator className="right-1.5 top-1.5" />}
     </>
   );
-
-  if (isProfile) {
-    return (
-      <button
-        type="button"
-        data-profile-trigger
-        onClick={onOpenProfile}
-        aria-haspopup="dialog"
-        aria-expanded={profileOpen}
-        className={className}
-      >
-        {inner}
-      </button>
-    );
-  }
 
   return (
     <Link
@@ -281,8 +242,6 @@ export default function Header({
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState<PendingNav | null>(null);
   const [readyPending, setReadyPending] = useState<PendingNav | null>(null);
-  const [profileOpen, setProfileOpen] = useState(false);
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser ? { uid: firebaseUser.uid } : null);
@@ -306,7 +265,7 @@ export default function Header({
   const segment = (pathname ?? "").split("/")[1] || "";
   const activeHref = segment === "tree" ? "/tree/junior" : `/${segment}`;
   const isActive = (href: string) =>
-    href === "/profile" ? profileOpen || activeHref === "/profile" : href === activeHref;
+    href === "/profile" ? activeHref === "/profile" : href === activeHref;
   const showNav = !loading && user;
 
   return (
@@ -327,9 +286,7 @@ export default function Header({
                 <DesktopNavItem
                   item={item}
                   active={isActive(item.href)}
-                  profileOpen={profileOpen}
                   onNavigate={handleNavigate}
-                  onOpenProfile={() => setProfileOpen(true)}
                 />
               </div>
             ))}
@@ -350,9 +307,7 @@ export default function Header({
               key={item.href}
               item={item}
               active={isActive(item.href)}
-              profileOpen={profileOpen}
               onNavigate={handleNavigate}
-              onOpenProfile={() => setProfileOpen(true)}
             />
           ))}
         </nav>
@@ -418,8 +373,7 @@ export default function Header({
           </div>
         </nav>
       )}
-
-      <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} />
     </div>
+
   );
 }
