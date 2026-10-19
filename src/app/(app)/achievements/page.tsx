@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
-import AchievementsClient from "@/components/achievements/AchievementsClient";
+import { getCurrentUser } from "@/adapters/auth/session";
+import AchievementsClient from "@/features/achievements/components/AchievementsClient";
 
 export default async function AchievementsPage() {
   const uid = await getCurrentUser();

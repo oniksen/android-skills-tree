@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
-import { calcTotalScore } from "@/lib/scoring";
-import { type AssessmentMap } from "@/lib/achievement-conditions";
+import { calcTotalScore } from "@/core/domain/scoring";
+import { type AssessmentMap } from "@/core/domain/achievement-conditions";
 import {
   backfillTotalScore,
   checkAchievements,
@@ -174,5 +174,26 @@ describe("backfillTotalScore", () => {
     expect(
       awards.filter((award) => award.type === "category_perfect"),
     ).toHaveLength(juniorCategoryIds.length);
+  });
+});
+
+describe("toggleProjectCompletion", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.collection.mockImplementation(
+      (...segments: unknown[]) => ({ path: segments.slice(1).join("/") }),
+    );
+    mocks.doc.mockReturnValue({ name: "doc-ref" });
+    mocks.setDoc.mockResolvedValue(undefined);
+    mocks.runTransaction.mockImplementation(async (_db: unknown, cb: (tx: unknown) => unknown) =>
+      cb({ get: vi.fn().mockResolvedValue({ exists: () => false }), set: vi.fn() }),
+    );
+  });
+
+  it("пишет документ проекта", async () => {
+    const { toggleProjectCompletion } = await import("./firestore-actions");
+    await toggleProjectCompletion("proj-1", true);
+
+    expect(mocks.setDoc).toHaveBeenCalled();
   });
 });

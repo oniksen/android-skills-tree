@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { checkLevelUp } from "@/lib/firestore-actions";
-import CelebrationModal from "@/components/shared/CelebrationModal";
+import CelebrationModal from "@/shared/ui/CelebrationModal";
 
 export default function LevelUpHandler() {
   const [result, setResult] = useState<{ fromLevel: string; toLevel: string; score: number } | null>(null);

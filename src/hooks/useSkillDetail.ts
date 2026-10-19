@@ -3,8 +3,10 @@
 import { useCallback, useState } from "react";
 import { getSkillById } from "@/data";
 import { checkLevelUp as checkLevelUpAction } from "@/lib/firestore-actions";
-import { calcSkillCompletionPercent } from "@/lib/scoring";
+import { calcSkillCompletionPercent } from "@/core/domain/scoring";
 import { useAssessments } from "./useAssessments";
+import { useToast } from "@/shared/lib/toast-context";
+import { isPermissionDenied } from "@/shared/lib/permission-denied";
 
 export interface LevelUpResult {
   fromLevel: string;
@@ -14,6 +16,7 @@ export interface LevelUpResult {
 
 export function useSkillDetail(skillId: string) {
   const { assessmentMap, toggleSubtopic, lastAwarded } = useAssessments();
+  const toast = useToast();
   const [levelUp, setLevelUp] = useState<LevelUpResult | null>(null);
 
   const skill = getSkillById(skillId);
@@ -31,11 +34,13 @@ export function useSkillDetail(skillId: string) {
       try {
         const levelResult = await checkLevelUpAction();
         if (levelResult) setLevelUp(levelResult);
-      } catch {
-        // ignore level-up errors
+      } catch (error) {
+        if (isPermissionDenied(error)) {
+          toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        }
       }
     },
-    [skillId, toggleSubtopic],
+    [skillId, toggleSubtopic, toast],
   );
 
   const clearLevelUp = useCallback(() => setLevelUp(null), []);

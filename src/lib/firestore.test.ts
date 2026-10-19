@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
-import { evaluateAchievements, achievementKey, type AssessmentMap } from "@/lib/achievement-conditions";
+import { evaluateAchievements, achievementKey, type AssessmentMap } from "@/core/domain/achievement-conditions";
 import {
   addAchievementsIfNotExists,
   deleteAchievementsByLevel,
@@ -342,5 +342,74 @@ describe("deleteCategoryPerfectAchievement", () => {
 
     expect(mocks.getDocs).toHaveBeenCalledWith(ACHIEVEMENTS_REF);
     expect(mocks.deleteDoc).not.toHaveBeenCalled();
+  });
+});
+
+describe("getUserProgress", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.doc.mockReturnValue({ name: "progress-ref" });
+    mocks.setDoc.mockResolvedValue(undefined);
+    mocks.getDoc.mockResolvedValue({ exists: () => false });
+  });
+
+  it("создаёт дефолт при отсутствии", async () => {
+    const { getUserProgress } = await import("./firestore");
+    const res = await getUserProgress(UID);
+    expect(mocks.setDoc).toHaveBeenCalled();
+    expect(res.currentLevelId).toBe("junior");
+  });
+
+  it("возвращает данные при наличии", async () => {
+    mocks.getDoc.mockResolvedValue({
+      exists: () => true,
+      data: () => ({ currentLevelId: "middle", unlockedLevelIds: ["junior", "middle"], totalScore: 10 }),
+    });
+    const { getUserProgress } = await import("./firestore");
+    const res = await getUserProgress(UID);
+    expect(res.currentLevelId).toBe("middle");
+    expect(res.totalScore).toBe(10);
+  });
+});
+
+describe("updateUserProgress", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.doc.mockReturnValue({ name: "progress-ref" });
+    mocks.setDoc.mockResolvedValue(undefined);
+    mocks.updateDoc.mockResolvedValue(undefined);
+    mocks.getDoc.mockResolvedValue({ exists: () => true });
+  });
+
+  it("updateDoc при наличии документа", async () => {
+    const { updateUserProgress } = await import("./firestore");
+    await updateUserProgress(UID, { totalScore: 5 });
+    expect(mocks.updateDoc).toHaveBeenCalled();
+  });
+
+  it("setDoc при отсутствии документа", async () => {
+    mocks.getDoc.mockResolvedValue({ exists: () => false });
+    const { updateUserProgress } = await import("./firestore");
+    await updateUserProgress(UID, { totalScore: 5 });
+    expect(mocks.setDoc).toHaveBeenCalled();
+  });
+});
+
+describe("getProjectProgressMap", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.collection.mockReturnValue({ name: "projects-ref" });
+    mocks.getDocs.mockResolvedValue({
+      forEach: (cb: (d: { id: string; data: () => { completed: boolean } }) => void) => {
+        cb({ id: "p1", data: () => ({ completed: true }) });
+        cb({ id: "p2", data: () => ({ completed: false }) });
+      },
+    });
+  });
+
+  it("маппит id → completed", async () => {
+    const { getProjectProgressMap } = await import("./firestore");
+    const res = await getProjectProgressMap(UID);
+    expect(res).toEqual({ p1: true, p2: false });
   });
 });

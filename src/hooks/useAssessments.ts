@@ -2,21 +2,23 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "@/lib/firebase";
-import {
-  collection,
-  doc,
-  setDoc,
-  onSnapshot,
-  runTransaction,
-} from "firebase/firestore";
-import { syncStreak } from "@/lib/streak";
+import { doc, setDoc, runTransaction } from "firebase/firestore";
+import { syncStreak } from "@/adapters/firestore-client/streak-commands";
+import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-import { calcSkillScore, calcTotalScore, isSkillComplete } from "@/lib/scoring";
-import { getCrystalRewardForSkill } from "@/lib/currency";
+import { calcSkillScore, calcTotalScore } from "@/core/domain/scoring";
+import { computeAssessmentToggle } from "@/core/use-cases/compute-assessment-toggle";
 import { checkAchievements } from "@/lib/firestore-actions";
 import { deleteCategoryPerfectAchievement } from "@/lib/firestore";
-import { isCategoryPerfect } from "@/lib/achievement-conditions";
+import { isCategoryPerfect } from "@/core/domain/achievement-conditions";
+import { useToast } from "@/shared/lib/toast-context";
+import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { skills } from "@/data/skills";
+import {
+  userAssessmentPath,
+  userCurrencyPath,
+  userProgressPath,
+} from "@/adapters/firestore-client/paths";
 import type { AssessmentData, CurrencyData } from "@/types";
 
 export interface CrystalAward {
@@ -25,50 +27,41 @@ export interface CrystalAward {
   id: number;
 }
 
+const EMPTY_ASSESSMENT_MAP: Record<string, AssessmentData> = {};
+
 export function useAssessments() {
+  const { assessments: repository } = useServices();
   const [assessmentMap, setAssessmentMap] = useState<
     Record<string, AssessmentData>
   >({});
   const [loading, setLoading] = useState(true);
   const [lastAwarded, setLastAwarded] = useState<CrystalAward | null>(null);
   const { uid, loading: authLoading } = useFirebaseAuth();
+  const toast = useToast();
   const mapRef = useRef<Record<string, AssessmentData>>({});
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!uid) {
-      mapRef.current = {};
-      setAssessmentMap({});
-      setLoading(false);
-      return;
-    }
+    if (authLoading || !uid) return;
 
-    const assessmentsRef = collection(db, "users", uid, "assessments");
-
-    const unsubscribe = onSnapshot(assessmentsRef, (snapshot) => {
-      const map: Record<string, AssessmentData> = {};
-      snapshot.forEach((d) => {
-        const data = d.data();
-        const subtopics = data.subtopics;
-        map[d.id] = {
-          score: subtopics ? calcSkillScore(d.id, subtopics) : data.score || 0,
-          subtopics,
-        };
-      });
-      mapRef.current = map;
-      setAssessmentMap(map);
-      setLoading(false);
+    return repository.subscribe(uid, {
+      next: (map) => {
+        mapRef.current = map;
+        setAssessmentMap(map);
+        setLoading(false);
+      },
+      error: (error) => {
+        console.error("Error listening to assessments:", error);
+        setLoading(false);
+      },
     });
-
-    return () => unsubscribe();
-  }, [uid, authLoading]);
+  }, [uid, authLoading, repository]);
 
   const toggleSubtopic = useCallback(
     async (skillId: string, subtopicName: string) => {
       if (!uid) return null;
 
-      const assessmentRef = doc(db, "users", uid, "assessments", skillId);
-      const currencyRef = doc(db, "users", uid, "currency", "current");
+      const assessmentRef = doc(db, ...userAssessmentPath(uid, skillId));
+      const currencyRef = doc(db, ...userCurrencyPath(uid));
 
       try {
         const result = await runTransaction(db, async (tx) => {
@@ -79,25 +72,23 @@ export function useAssessments() {
 
           const storedSubtopics =
             (assessmentSnap.data()?.subtopics as Record<string, boolean> | undefined) ?? {};
-          const nextSubtopics = {
-            ...storedSubtopics,
-            [subtopicName]: !storedSubtopics[subtopicName],
-          };
-          const nextValue = nextSubtopics[subtopicName] === true;
-          const complete = isSkillComplete(skillId, nextSubtopics);
-          const newScore = calcSkillScore(skillId, nextSubtopics);
-
           const currency = currencySnap.exists()
             ? (currencySnap.data() as Partial<CurrencyData>)
             : {};
           const balance = typeof currency.balance === "number" ? currency.balance : 0;
           const claimedSkills =
             currency.claimedSkills && typeof currency.claimedSkills === "object"
-              ? currency.claimedSkills
+              ? (currency.claimedSkills as Record<string, string>)
               : {};
 
-          const alreadyClaimed = typeof claimedSkills[skillId] === "string";
-          const awarded = complete && !alreadyClaimed ? getCrystalRewardForSkill(skillId) : 0;
+          const { nextSubtopics, nextValue, complete, justCompleted, awarded } =
+            computeAssessmentToggle({
+              skillId,
+              subtopicName,
+              storedSubtopics,
+              claimedSkills,
+            });
+          const newScore = calcSkillScore(skillId, nextSubtopics);
 
           tx.set(
             assessmentRef,
@@ -121,14 +112,7 @@ export function useAssessments() {
             );
           }
 
-          return {
-            nextValue,
-            nextSubtopics,
-            newScore,
-            complete,
-            awarded,
-            justCompleted: complete && !isSkillComplete(skillId, storedSubtopics),
-          };
+          return { nextValue, nextSubtopics, newScore, complete, awarded, justCompleted };
         });
 
         const { nextValue, nextSubtopics, newScore, awarded, justCompleted } = result;
@@ -141,7 +125,7 @@ export function useAssessments() {
         setAssessmentMap(nextMap);
 
         const totalScore = calcTotalScore(nextMap);
-        const progressRef = doc(db, "users", uid, "progress", "current");
+        const progressRef = doc(db, ...userProgressPath(uid));
         await setDoc(progressRef, { totalScore }, { merge: true });
 
         const categoryId = skills.find((s) => s.id === skillId)?.categoryId;
@@ -149,12 +133,18 @@ export function useAssessments() {
         if (justCompleted) {
           void checkAchievements(uid, nextMap).catch((error) => {
             console.error("Error checking achievements:", error);
+            if (isPermissionDenied(error)) {
+              toast.show("Для отслеживания прогресса обратитесь к администратору.");
+            }
           });
         }
 
         if (categoryId && nextValue === false && !isCategoryPerfect(categoryId, nextMap)) {
           await deleteCategoryPerfectAchievement(uid, categoryId).catch((error) => {
             console.error("Error revoking achievement:", error);
+            if (isPermissionDenied(error)) {
+              toast.show("Для отслеживания прогресса обратитесь к администратору.");
+            }
           });
         }
 
@@ -163,21 +153,33 @@ export function useAssessments() {
         }
 
         if (nextValue) {
-          void syncStreak();
+          void syncStreak().then((res) => {
+            if (res === null) return;
+          }).catch((error) => {
+            console.error("Error syncing streak:", error);
+            if (isPermissionDenied(error)) {
+              toast.show("Для отслеживания прогресса обратитесь к администратору.");
+            }
+          });
         }
 
         return { justCompleted };
       } catch (error) {
         console.error("Error saving assessment:", error);
+        if (isPermissionDenied(error)) {
+          toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        }
         return null;
       }
     },
-    [uid],
+    [uid, toast],
   );
 
+  const signedOut = !authLoading && !uid;
+
   return {
-    assessmentMap,
-    loading,
+    assessmentMap: signedOut ? EMPTY_ASSESSMENT_MAP : assessmentMap,
+    loading: signedOut ? false : loading,
     toggleSubtopic,
     lastAwarded,
   };

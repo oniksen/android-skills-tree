@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { useServices } from "@/composition/services-context";
+import { useToast } from "@/shared/lib/toast-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { buyItem } from "@/adapters/firestore-client/currency-commands";
 import {
-  buyItem,
   getFreezeCount,
   EMPTY_CURRENCY,
   type BuyResult,
-} from "@/lib/currency";
+} from "@/core/domain/currency";
 import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
 import type { CurrencyData } from "@/types";
 
@@ -21,33 +21,23 @@ interface CurrencyState {
 const INITIAL_STATE: CurrencyState = { currency: EMPTY_CURRENCY, loading: true };
 
 export function useCurrency() {
+  const { currency: repository } = useServices();
   const [state, setState] = useState<CurrencyState>(INITIAL_STATE);
   const [buying, setBuying] = useState(false);
   const { uid, loading: authLoading } = useFirebaseAuth();
+  const toast = useToast();
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!uid) return;
+    if (authLoading || !uid) return;
 
-    const currencyRef = doc(db, "users", uid, "currency", "current");
-    const unsubscribe = onSnapshot(currencyRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const raw = snapshot.data();
-        setState({
-          currency: {
-            balance: typeof raw.balance === "number" ? raw.balance : 0,
-            items: (raw.items as Record<string, number>) ?? {},
-            updatedAt: (raw.updatedAt as Date) ?? new Date(),
-          },
-          loading: false,
-        });
-      } else {
-        setState({ currency: EMPTY_CURRENCY, loading: false });
-      }
+    return repository.subscribe(uid, {
+      next: (currency) => setState({ currency, loading: false }),
+      error: (error) => {
+        console.error("Error listening to currency:", error);
+        setState((prev) => ({ ...prev, loading: false }));
+      },
     });
-
-    return () => unsubscribe();
-  }, [uid, authLoading]);
+  }, [uid, authLoading, repository]);
 
   const signedOut = !authLoading && !uid;
   const currency = signedOut ? EMPTY_CURRENCY : state.currency;
@@ -56,11 +46,15 @@ export function useCurrency() {
   const buyFreeze = useCallback(async (): Promise<BuyResult> => {
     setBuying(true);
     try {
-      return await buyItem(STREAK_FREEZE_ITEM_ID);
+      const result = await buyItem(STREAK_FREEZE_ITEM_ID);
+      if (result && (result as { reason?: string }).reason === "permission-denied") {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      return result;
     } finally {
       setBuying(false);
     }
-  }, []);
+  }, [toast]);
 
   return {
     balance: currency.balance,

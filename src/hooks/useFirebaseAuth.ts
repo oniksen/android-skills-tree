@@ -1,22 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { useServices } from "@/composition/services-context";
+import type { AuthState } from "@/ports/auth-state-provider";
 
-export function useFirebaseAuth() {
-  const [uid, setUid] = useState<string | null>(null);
-  const [email, setEmail] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+const INITIAL_STATE: AuthState = { uid: null, email: null, loading: true };
+
+export function useFirebaseAuth(): AuthState {
+  const { auth } = useServices();
+  const [state, setState] = useState<AuthState>(INITIAL_STATE);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUid(user?.uid ?? null);
-      setEmail(user?.email ?? null);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
+    return auth.subscribe({ next: setState });
+  }, [auth]);
 
-  return { uid, email, loading };
+  return state;
 }

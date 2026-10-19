@@ -1,17 +1,20 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
+import { useServices } from "@/composition/services-context";
+import { useToast } from "@/shared/lib/toast-context";
+import { isPermissionDenied } from "@/shared/lib/permission-denied";
+import { useFirebaseAuth } from "./useFirebaseAuth";
 import {
   applyAutoFreezesOnce,
+  syncStreak as syncStreakFirestore,
+} from "@/adapters/firestore-client/streak-commands";
+import {
   computeStreaks,
   getLocalDayString,
   shiftDay,
-  syncStreak as syncStreakFirestore,
   type AutoFreezeReport,
-} from "@/lib/streak";
+} from "@/core/domain/streak";
 
 export interface StreakDay {
   date: string;
@@ -20,7 +23,10 @@ export interface StreakDay {
   isToday: boolean;
 }
 
+const EMPTY_DAYS: string[] = [];
+
 export function useStreak() {
+  const { streak: repository } = useServices();
   const [currentStreak, setCurrentStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
   const [lastActiveDate, setLastActiveDate] = useState<string | null>(null);
@@ -28,53 +34,41 @@ export function useStreak() {
   const [frozenDays, setFrozenDays] = useState<string[]>([]);
   const [autoFreeze, setAutoFreeze] = useState<AutoFreezeReport | null>(null);
   const [loading, setLoading] = useState(true);
-  const [uid, setUid] = useState<string | null>(null);
+  const { uid, loading: authLoading } = useFirebaseAuth();
+  const toast = useToast();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUid(user?.uid ?? null);
-      if (!user) {
-        setCurrentStreak(0);
-        setLongestStreak(0);
-        setLastActiveDate(null);
-        setActiveDays([]);
-        setFrozenDays([]);
-        setAutoFreeze(null);
+    if (authLoading || !uid) return;
+
+    return repository.subscribe(uid, {
+      next: (snapshot) => {
+        if (!snapshot) {
+          setCurrentStreak(0);
+          setLongestStreak(0);
+          setLastActiveDate(null);
+          setActiveDays([]);
+          setFrozenDays([]);
+        } else {
+          const today = getLocalDayString();
+          const streaks = computeStreaks(
+            snapshot.activeDays,
+            snapshot.frozenDays,
+            today,
+          );
+          setCurrentStreak(streaks.currentStreak);
+          setLongestStreak(streaks.longestStreak);
+          setLastActiveDate(snapshot.lastActiveDate);
+          setActiveDays(snapshot.activeDays);
+          setFrozenDays(snapshot.frozenDays);
+        }
         setLoading(false);
-      }
+      },
+      error: (error) => {
+        console.error("Error listening to streak:", error);
+        setLoading(false);
+      },
     });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!uid) return;
-
-    const streakRef = doc(db, "users", uid, "streaks", "current");
-
-    const unsubscribe = onSnapshot(streakRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.data();
-        const days = Array.isArray(data.activeDays) ? data.activeDays : [];
-        const frozen = Array.isArray(data.frozenDays) ? data.frozenDays : [];
-        const today = getLocalDayString();
-        const streaks = computeStreaks(days, frozen, today);
-        setCurrentStreak(streaks.currentStreak);
-        setLongestStreak(streaks.longestStreak);
-        setLastActiveDate(data.lastActiveDate ?? null);
-        setActiveDays(days);
-        setFrozenDays(frozen);
-      } else {
-        setCurrentStreak(0);
-        setLongestStreak(0);
-        setLastActiveDate(null);
-        setActiveDays([]);
-        setFrozenDays([]);
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [uid]);
+  }, [uid, authLoading, repository]);
 
   useEffect(() => {
     if (!uid) return;
@@ -82,23 +76,40 @@ export function useStreak() {
     let cancelled = false;
     void applyAutoFreezesOnce().then((report) => {
       if (!cancelled && report) setAutoFreeze(report);
+    }).catch((error) => {
+      console.error("Error applying auto freezes:", error);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
     });
 
     return () => {
       cancelled = true;
     };
-  }, [uid]);
+  }, [uid, toast]);
 
   const syncStreak = useCallback(async () => {
     if (!uid) return null;
-    return syncStreakFirestore();
-  }, [uid]);
+    try {
+      return await syncStreakFirestore();
+    } catch (error) {
+      console.error("Error syncing streak:", error);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      return null;
+    }
+  }, [uid, toast]);
+
+  const signedOut = !authLoading && !uid;
+  const displayActiveDays = signedOut ? EMPTY_DAYS : activeDays;
+  const displayFrozenDays = signedOut ? EMPTY_DAYS : frozenDays;
 
   const today = getLocalDayString();
 
   const week: StreakDay[] = useMemo(() => {
-    const daysSet = new Set(activeDays);
-    const frozenSet = new Set(frozenDays);
+    const daysSet = new Set(displayActiveDays);
+    const frozenSet = new Set(displayFrozenDays);
     const result: StreakDay[] = [];
     for (let i = 6; i >= 0; i -= 1) {
       const date = shiftDay(today, -i);
@@ -110,17 +121,17 @@ export function useStreak() {
       });
     }
     return result;
-  }, [activeDays, frozenDays, today]);
+  }, [displayActiveDays, displayFrozenDays, today]);
 
   return {
-    currentStreak,
-    longestStreak,
-    lastActiveDate,
-    activeDays,
-    frozenDays,
-    autoFreeze,
+    currentStreak: signedOut ? 0 : currentStreak,
+    longestStreak: signedOut ? 0 : longestStreak,
+    lastActiveDate: signedOut ? null : lastActiveDate,
+    activeDays: displayActiveDays,
+    frozenDays: displayFrozenDays,
+    autoFreeze: signedOut ? null : autoFreeze,
     week,
-    loading,
+    loading: signedOut ? false : loading,
     syncStreak,
   };
 }

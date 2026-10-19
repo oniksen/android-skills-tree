@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { verifySessionToken } from "@/adapters/auth/session";
 
 const protectedRoutes = ["/dashboard", "/projects", "/roadmap", "/shop"];
-const SESSION_COOKIE_NAME = "firebase-session";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -14,9 +14,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const session = request.cookies.get(SESSION_COOKIE_NAME);
+  const session = request.cookies.get("firebase-session");
+  const valid = session?.value
+    ? verifySessionToken(session.value)
+    : Promise.resolve(null);
 
-  if (!session?.value) {
+  if (!(await valid)) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("redirect", pathname);

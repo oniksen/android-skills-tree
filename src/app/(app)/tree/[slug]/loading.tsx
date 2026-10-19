@@ -1,4 +1,4 @@
-import TreeSkeleton from "@/components/shared/skeletons/TreeSkeleton";
+import TreeSkeleton from "@/shared/ui/skeletons/TreeSkeleton";
 
 export default function Loading() {
   return <TreeSkeleton />;
