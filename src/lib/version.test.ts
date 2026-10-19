@@ -4,7 +4,7 @@ import { getLatestReleaseVersion } from "./version";
 describe("getLatestReleaseVersion", () => {
   beforeEach(() => vi.restoreAllMocks());
 
-  it("returns tag_name from latest release", async () => {
+  it("returns tag_name from latest stable release", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
@@ -15,7 +15,7 @@ describe("getLatestReleaseVersion", () => {
     expect(await getLatestReleaseVersion()).toBe("v1.2.3");
   });
 
-  it("falls back to tags when release is unavailable", async () => {
+  it("falls back to tags when stable release is unavailable", async () => {
     const fetchMock = vi
       .fn()
       .mockResolvedValueOnce({ ok: false, json: async () => ({}) })
@@ -33,5 +33,28 @@ describe("getLatestReleaseVersion", () => {
       vi.fn().mockResolvedValue({ ok: false, json: async () => ({}) })
     );
     expect(await getLatestReleaseVersion()).toBeNull();
+  });
+
+  it("returns the latest prerelease when requested", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [
+        { tag_name: "v1.3.0", prerelease: false },
+        { tag_name: "v1.3.0-preview.1", prerelease: true },
+      ],
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    expect(await getLatestReleaseVersion({ prerelease: true })).toBe(
+      "v1.3.0-preview.1"
+    );
+  });
+
+  it("falls back to stable release when no prerelease exists", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [{ tag_name: "v1.2.3", prerelease: false }],
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    expect(await getLatestReleaseVersion({ prerelease: true })).toBe("v1.2.3");
   });
 });
