@@ -78,14 +78,14 @@ export default function ProjectCard({ projectId, name, description, requiredTech
           disabled={saving}
           aria-label={done ? "Отметить проект как невыполненный" : "Отметить проект как выполненный"}
           aria-pressed={done}
-          className={`relative ml-4 w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${
+          className={`absolute right-3 top-3 z-10 flex h-5 w-5 items-center justify-center rounded border transition-all ${
             done
               ? "bg-emerald-500 border-emerald-500 text-[#faf9f5]"
               : "border-slate-600 hover:border-slate-400 hover:bg-emerald-500/10"
           }`}
         >
           {saving ? (
-            <span className="text-xs text-slate-400">...</span>
+            <span className="text-[10px] text-slate-400">...</span>
           ) : (
             <AnimatePresence>
               {done && (
@@ -97,7 +97,7 @@ export default function ProjectCard({ projectId, name, description, requiredTech
                   transition={{ type: "spring", stiffness: 600, damping: 22 }}
                   className="inline-flex"
                 >
-                  <Check className="w-4 h-4" strokeWidth={3.5} />
+                  <Check className="h-3 w-3" strokeWidth={3.5} />
                 </motion.span>
               )}
             </AnimatePresence>
