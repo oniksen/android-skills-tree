@@ -213,19 +213,18 @@ function MobileNavItem({
       onClick={() => onNavigate(item.href)}
       aria-label={item.label}
       title={item.label}
-      className={`relative flex flex-col items-center justify-center py-2.5 transition-colors duration-150 ${
-        active ? "text-blue-600" : "text-slate-400 hover:text-white"
+      className={`relative flex min-h-[52px] min-w-[44px] flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 transition-colors duration-150 ${
+        active
+          ? "bg-blue-500/10 text-blue-600"
+          : "text-slate-400 hover:bg-white/[0.04] hover:text-white"
       }`}
     >
+      <item.icon className="relative h-7 w-7" />
       {active && (
-        <motion.span
-          layoutId="nav-active-mobile"
-          className="absolute top-1 h-0.5 w-6 bg-blue-600"
-          transition={{ type: "spring", stiffness: 380, damping: 30 }}
-          initial={false}
-        />
+        <span className="font-mono text-[10px] font-medium leading-none">
+          {item.shortLabel ?? item.label}
+        </span>
       )}
-      <item.icon className="relative h-6 w-6" />
       <PendingIndicator className="right-1.5 top-1.5" />
     </Link>
   );
@@ -358,8 +357,8 @@ export default function Header({
           className="nav-md:hidden fixed inset-x-0 bottom-0 z-50 px-4 pb-[max(env(safe-area-inset-bottom),0.875rem)] pl-[max(env(safe-area-inset-left),1rem)] pr-[max(env(safe-area-inset-right),1rem)]"
           aria-label="Основная навигация"
         >
-          <div className="mx-auto max-w-md overflow-hidden rounded-lg border border-slate-700/70 bg-slate-950/95 shadow-[0_10px_30px_rgba(26,25,21,0.18)] backdrop-blur-xl">
-            <ul className="grid grid-cols-6">
+          <div className="mx-auto max-w-sm rounded-2xl border border-slate-700/70 bg-slate-950/95 px-2 py-2 shadow-[0_18px_40px_rgba(26,25,21,0.28)] backdrop-blur-xl">
+            <ul className="grid grid-cols-6 gap-1">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <MobileNavItem
