@@ -122,22 +122,49 @@ export default function TreeClient({ slug }: TreeClientProps) {
       <Legend isAuthenticated={true} />
 
       {!isCurrentOrPast && (
-        <LevelGate
-          isUnlocked={false}
-          isCompleted={false}
-          requiredScore={getLevelMaxScore(levels[levelIndex - 1]?.id ?? "")}
-          currentScore={currentScore}
-          levelName={currentLevel.name}
-        />
+        <>
+          <LevelGate
+            isUnlocked={false}
+            isCompleted={false}
+            requiredScore={getLevelMaxScore(levels[levelIndex - 1]?.id ?? "")}
+            currentScore={currentScore}
+            levelName={currentLevel.name}
+          />
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {levelCategories.map((cat, index) => (
+              <CategoryCard
+                key={cat.id}
+                categoryId={cat.id}
+                name={cat.name}
+                skills={cat.skills}
+                assessments={assessmentMap}
+                isLocked={true}
+                index={index}
+              />
+            ))}
+          </div>
+        </>
       )}
       {isCompleted && (
-        <LevelGate
-          isUnlocked={false}
-          isCompleted={true}
-          requiredScore={0}
-          currentScore={currentScore}
-          levelName={currentLevel.name}
-        />
+        <>
+          <LevelGate
+            isUnlocked={false}
+            isCompleted={true}
+            requiredScore={0}
+            currentScore={currentScore}
+            levelName={currentLevel.name}
+          />
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {levelCategories.map((cat) => (
+              <CategoryCardReadonly
+                key={cat.id}
+                categoryId={cat.id}
+                name={cat.name}
+                skills={cat.skills}
+              />
+            ))}
+          </div>
+        </>
       )}
       {isCurrentOrPast && !isCompleted && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
