@@ -55,3 +55,4 @@ opencode.json
 # git worktrees used for isolated feature work
 .worktrees/
 coverage/
+.playwright-mcp/
