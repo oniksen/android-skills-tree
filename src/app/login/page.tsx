@@ -85,16 +85,6 @@ export default function LoginPage() {
                 <span className="text-blue-600">$</span> login
                 <span className="text-slate-600"> --android-skill-tree</span>
               </p>
-              <h1 className="mt-3 text-xl font-bold tracking-tight text-white">
-                <span className="text-blue-600">{">_"}</span>{" "}
-                <span className="text-gradient">android</span>
-                <span className="text-slate-600">/</span>skill-tree
-              </h1>
-              <p className="mt-1.5 text-xs text-slate-500">
-                {isSignUp
-                  ? "// создайте аккаунт для отслеживания прогресса"
-                  : "// войдите для продолжения"}
-              </p>
             </motion.div>
 
             {error && (
