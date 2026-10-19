@@ -78,11 +78,11 @@ function Brand() {
 function Prompt({ path }: { path: string }) {
   const clean = path && path !== "/" ? path : "/tree/junior";
   return (
-    <span className="flex min-w-0 items-center gap-1 font-mono text-xs">
-      <span className="shrink-0 text-blue-600">user@skill-tree</span>
-      <span className="shrink-0 text-slate-600">:</span>
+    <span className="min-w-0 flex items-center gap-1 font-mono text-xs">
+      <span className="hidden shrink-0 text-blue-600 nav-md:inline">user@skill-tree</span>
+      <span className="hidden shrink-0 text-slate-600 nav-md:inline">:</span>
       <span className="truncate text-slate-400">~{clean}</span>
-      <span className="shrink-0 text-blue-600">$</span>
+      <span className="shrink-0 text-blue-600"> $</span>
       <span className="ml-0.5 inline-block h-3.5 w-1.5 shrink-0 animate-caret-blink bg-blue-600 align-middle" />
     </span>
   );
