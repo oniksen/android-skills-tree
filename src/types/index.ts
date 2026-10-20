@@ -44,3 +44,11 @@ export interface CurrencyData {
   claimedSkills?: Record<string, string>;
   updatedAt: Date;
 }
+
+export interface UserSettings {
+  groqApiKey?: string;
+  groqKeyLast4?: string;
+  maxDailyQuestions?: number;
+  dailyCounts?: Record<string, number>;
+  updatedAt: Date;
+}
