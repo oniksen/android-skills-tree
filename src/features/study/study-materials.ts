@@ -12,6 +12,7 @@ import KotlinSyntaxStudy from "./materials/kotlin-syntax";
 import KotlinNullSafetyStudy from "./materials/kotlin-null-safety";
 import KotlinDataClassStudy from "./materials/kotlin-data-class";
 import KotlinExtensionFunctionsStudy from "./materials/kotlin-extension-functions";
+import KotlinLambdaStudy from "./materials/kotlin-lambda";
 
 export interface StudyMaterial {
   id: string;
@@ -84,6 +85,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-extension-functions",
     title: "Extension Functions в Kotlin",
     component: KotlinExtensionFunctionsStudy,
+  },
+  "kotlin-lambda": {
+    id: "kotlin-lambda",
+    title: "Лямбды в Kotlin",
+    component: KotlinLambdaStudy,
   },
 };
 

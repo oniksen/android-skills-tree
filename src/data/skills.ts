@@ -111,6 +111,7 @@ export const skills: Skill[] = [
     description: "Анонимные функции (лямбды). Синтаксис, замыкания, короткие замыкания (it), возврат значений.",
     subtopics: ["Синтаксис лямбд", "it (короткое замыкание)", "Последняя лямбда (trailing lambda)", "Замыкания (closures)", "Лямбды с возвратом", "Тип лямбды (Function1, Function2)"],
     difficulty: "medium", sortOrder: 5, requiredForLevelUp: false,
+    studyMaterial: "kotlin-lambda",
   },
   {
     id: "junior-kotlin-hof", categoryId: "junior-kotlin", name: "Higher Order Functions",
