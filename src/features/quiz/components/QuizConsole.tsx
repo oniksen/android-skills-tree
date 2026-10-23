@@ -123,6 +123,16 @@ export default function QuizConsole() {
 
   return (
     <div className="flex h-full w-full flex-1 flex-col font-mono text-sm">
+      <div className="flex items-center justify-between px-4 pt-3 text-[10px] text-slate-500">
+        <button
+          type="button"
+          onClick={() => router.push("/tree/junior")}
+          className="min-h-[32px] cursor-pointer text-blue-600 transition-colors hover:text-blue-500"
+        >
+          [exit]
+        </button>
+        <span>сегодня: {used}/{limit}</span>
+      </div>
       <div ref={scrollRef} className="flex flex-1 flex-col justify-end space-y-2 overflow-y-auto px-4 py-3">
         {messages.map((m) => (
           <div key={m.id} className="whitespace-pre-wrap break-words">
@@ -173,34 +183,24 @@ export default function QuizConsole() {
             type="button"
             onClick={handleSend}
             disabled={status !== "idle" || !input.trim() || limitReached}
-            className="cursor-pointer py-0.5 text-blue-600 transition-colors hover:text-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-[32px] cursor-pointer px-2 py-0.5 text-blue-600 transition-colors hover:text-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
           >
             [send]
           </button>
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-4 pb-3 text-[10px] text-slate-500">
-        <button
-          type="button"
-          onClick={() => router.push("/tree/junior")}
-          className="cursor-pointer text-blue-600 transition-colors hover:text-blue-500"
-        >
-          [exit]
-        </button>
-        <div className="flex items-center gap-3">
-          <span>сегодня: {used}/{limit}</span>
-          {limits && <span>{limits}</span>}
-          {status === "done" && !limitReached && (
-            <button
-              type="button"
-              onClick={handleNewQuestion}
-              className="cursor-pointer text-blue-600 transition-colors hover:text-blue-500"
-            >
-              [new]
-            </button>
-          )}
-        </div>
+      <div className="flex flex-wrap items-center justify-end gap-2 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] text-[10px] text-slate-500">
+        {limits && <span className="break-all">{limits}</span>}
+        {status === "done" && !limitReached && (
+          <button
+            type="button"
+            onClick={handleNewQuestion}
+            className="min-h-[32px] cursor-pointer text-blue-600 transition-colors hover:text-blue-500"
+          >
+            [new]
+          </button>
+        )}
       </div>
     </div>
   );
