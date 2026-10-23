@@ -30,6 +30,7 @@ export const skills: Skill[] = [
     description: "Примитивные и ссылочные типы данных в Kotlin. Number, String, Boolean, Array, nullable-типы.",
     subtopics: ["Number (Int, Double, Float)", "String", "Boolean", "Array", "Null safety basics", "Type inference"],
     difficulty: "easy", sortOrder: 2, requiredForLevelUp: false,
+    studyMaterial: "kotlin-types",
   },
   {
     id: "junior-osnovy-uslov", categoryId: "junior-osnovy", name: "Условные конструкции",

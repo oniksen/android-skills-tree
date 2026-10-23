@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import AndroidProjectStructureStudy from "./materials/android-project-structure";
 import KotlinVariablesStudy from "./materials/kotlin-variables";
 import KotlinConditionalsStudy from "./materials/kotlin-conditionals";
+import KotlinTypesStudy from "./materials/kotlin-types";
 
 export interface StudyMaterial {
   id: string;
@@ -24,6 +25,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-conditionals",
     title: "Условные конструкции в Kotlin",
     component: KotlinConditionalsStudy,
+  },
+  "kotlin-types": {
+    id: "kotlin-types",
+    title: "Типы данных в Kotlin",
+    component: KotlinTypesStudy,
   },
 };
 
