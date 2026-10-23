@@ -171,6 +171,7 @@ export const skills: Skill[] = [
     description: "Система сборки Gradle. build.gradle, зависимости, плагины, product flavors и build types.",
     subtopics: ["build.gradle (project vs module)", "Зависимости (implementation, api)", "Плагины Android", "Product Flavors", "Build Types (debug/release)", "Gradle tasks"],
     difficulty: "medium", sortOrder: 3, requiredForLevelUp: true,
+    studyMaterial: "android-gradle",
   },
   {
     id: "junior-android-manifest", categoryId: "junior-android", name: "AndroidManifest",
