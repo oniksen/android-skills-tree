@@ -23,6 +23,7 @@ import AndroidGradleStudy from "./materials/android-gradle";
 import AndroidManifestStudy from "./materials/android-manifest";
 import AndroidResourcesStudy from "./materials/android-resources";
 import AndroidLayoutsXmlStudy from "./materials/android-layouts-xml";
+import AndroidViewViewGroupStudy from "./materials/android-view-viewgroup";
 
 export interface StudyMaterial {
   id: string;
@@ -150,6 +151,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "android-layouts-xml",
     title: "Layouts XML в Android",
     component: AndroidLayoutsXmlStudy,
+  },
+  "android-view-viewgroup": {
+    id: "android-view-viewgroup",
+    title: "View и ViewGroup в Android",
+    component: AndroidViewViewGroupStudy,
   },
 };
 

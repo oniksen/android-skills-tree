@@ -199,6 +199,7 @@ export const skills: Skill[] = [
     description: "Базовые компоненты UI: View и ViewGroup. Кастомизация через XML-атрибуты и программно.",
     subtopics: ["View hierarchy", "XML атрибуты (layout_width, height)", "Programmatic view creation", "View ID и findViewById", "View visibility", "Padding vs Margin"],
     difficulty: "medium", sortOrder: 7, requiredForLevelUp: false,
+    studyMaterial: "android-view-viewgroup",
   },
   {
     id: "junior-android-lifecycle", categoryId: "junior-android", name: "Activity Lifecycle",
