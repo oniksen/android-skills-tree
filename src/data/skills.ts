@@ -23,6 +23,7 @@ export const skills: Skill[] = [
     description: "Хранение данных в переменных. Типы переменных (val, var), область видимости и правила именования.",
     subtopics: ["val vs var", "Типы переменных", "Инициализация", "Константы"],
     difficulty: "easy", sortOrder: 1, requiredForLevelUp: false,
+    studyMaterial: "kotlin-variables",
   },
   {
     id: "junior-osnovy-tipy", categoryId: "junior-osnovy", name: "Типы данных",
