@@ -185,6 +185,7 @@ export const skills: Skill[] = [
     description: "Ресурсы приложения: строки, цвета, размеры, изображения, drawable, layouts и многоязычность.",
     subtopics: ["strings.xml", "colors.xml и themes", "dimens.xml", "Drawables и mipmap", "Ресурсы для разных конфигураций (layout-land)", "Многоязычность (strings.xml)"],
     difficulty: "easy", sortOrder: 5, requiredForLevelUp: true,
+    studyMaterial: "android-resources",
   },
   {
     id: "junior-android-layouts", categoryId: "junior-android", name: "Layouts XML",

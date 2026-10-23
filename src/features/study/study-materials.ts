@@ -21,6 +21,7 @@ import KotlinPackagesStudy from "./materials/kotlin-packages";
 import AndroidProjectModulesStudy from "./materials/android-project-modules";
 import AndroidGradleStudy from "./materials/android-gradle";
 import AndroidManifestStudy from "./materials/android-manifest";
+import AndroidResourcesStudy from "./materials/android-resources";
 
 export interface StudyMaterial {
   id: string;
@@ -138,6 +139,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "android-manifest",
     title: "AndroidManifest",
     component: AndroidManifestStudy,
+  },
+  "android-resources": {
+    id: "android-resources",
+    title: "Resources в Android",
+    component: AndroidResourcesStudy,
   },
 };
 
