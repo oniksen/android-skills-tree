@@ -9,6 +9,7 @@ import KotlinOopBasicsStudy from "./materials/kotlin-oop-basics";
 import KotlinCollectionsStudy from "./materials/kotlin-collections";
 import KotlinErrorHandlingStudy from "./materials/kotlin-error-handling";
 import KotlinSyntaxStudy from "./materials/kotlin-syntax";
+import KotlinNullSafetyStudy from "./materials/kotlin-null-safety";
 
 export interface StudyMaterial {
   id: string;
@@ -66,6 +67,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-syntax",
     title: "Синтаксис Kotlin",
     component: KotlinSyntaxStudy,
+  },
+  "kotlin-null-safety": {
+    id: "kotlin-null-safety",
+    title: "Null Safety в Kotlin",
+    component: KotlinNullSafetyStudy,
   },
 };
 

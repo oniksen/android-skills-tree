@@ -90,6 +90,7 @@ export const skills: Skill[] = [
     description: "Система безопасной работы с null-значениями. Операторы ?, ?:, !!, safe casts и let.",
     subtopics: ["Nullable типы (? operator)", "Elvis operator (?:)", "Not-null assertion (!!)", "Safe casts (as?)", "let, also для null-check", "Платформенные типы"],
     difficulty: "easy", sortOrder: 2, requiredForLevelUp: true,
+    studyMaterial: "kotlin-null-safety",
   },
   {
     id: "junior-kotlin-data", categoryId: "junior-kotlin", name: "Data Class",
