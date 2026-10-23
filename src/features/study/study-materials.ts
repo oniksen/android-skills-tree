@@ -18,6 +18,7 @@ import KotlinScopeFunctionsStudy from "./materials/kotlin-scope-functions";
 import KotlinEnumStudy from "./materials/kotlin-enum";
 import KotlinSealedClassStudy from "./materials/kotlin-sealed-class";
 import KotlinPackagesStudy from "./materials/kotlin-packages";
+import AndroidProjectModulesStudy from "./materials/android-project-modules";
 
 export interface StudyMaterial {
   id: string;
@@ -120,6 +121,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-packages",
     title: "Пакеты в Kotlin",
     component: KotlinPackagesStudy,
+  },
+  "android-project-modules": {
+    id: "android-project-modules",
+    title: "Проект и модули Android",
+    component: AndroidProjectModulesStudy,
   },
 };
 

@@ -164,6 +164,7 @@ export const skills: Skill[] = [
     description: "Структура Android-проекта: модули, src-директории, ресурсы, манифест, build-файлы.",
     subtopics: ["Структура директорий", "Модули (app, library)", "src/main, src/test", "Ресурсы (res)", "Build configuration", "Сборка APK/AAB"],
     difficulty: "easy", sortOrder: 2, requiredForLevelUp: true,
+    studyMaterial: "android-project-modules",
   },
   {
     id: "junior-android-gradle", categoryId: "junior-android", name: "Gradle",
