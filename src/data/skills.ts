@@ -104,6 +104,7 @@ export const skills: Skill[] = [
     description: "Расширение функциональности существующих классов без наследования. Определяются как обычные функции с принимающим объектом (receiver).",
     subtopics: ["Синтаксис extension функций", "Extension properties", "nullable-приёмники", "Конвенции вызова", "Внутренние extension функции"],
     difficulty: "easy", sortOrder: 4, requiredForLevelUp: false,
+    studyMaterial: "kotlin-extension-functions",
   },
   {
     id: "junior-kotlin-lambda", categoryId: "junior-kotlin", name: "Lambda",

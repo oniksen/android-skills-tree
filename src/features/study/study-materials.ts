@@ -11,6 +11,7 @@ import KotlinErrorHandlingStudy from "./materials/kotlin-error-handling";
 import KotlinSyntaxStudy from "./materials/kotlin-syntax";
 import KotlinNullSafetyStudy from "./materials/kotlin-null-safety";
 import KotlinDataClassStudy from "./materials/kotlin-data-class";
+import KotlinExtensionFunctionsStudy from "./materials/kotlin-extension-functions";
 
 export interface StudyMaterial {
   id: string;
@@ -78,6 +79,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-data-class",
     title: "Data Class в Kotlin",
     component: KotlinDataClassStudy,
+  },
+  "kotlin-extension-functions": {
+    id: "kotlin-extension-functions",
+    title: "Extension Functions в Kotlin",
+    component: KotlinExtensionFunctionsStudy,
   },
 };
 
