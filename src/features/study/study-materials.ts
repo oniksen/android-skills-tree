@@ -24,6 +24,7 @@ import AndroidManifestStudy from "./materials/android-manifest";
 import AndroidResourcesStudy from "./materials/android-resources";
 import AndroidLayoutsXmlStudy from "./materials/android-layouts-xml";
 import AndroidViewViewGroupStudy from "./materials/android-view-viewgroup";
+import AndroidActivityLifecycleStudy from "./materials/android-activity-lifecycle";
 
 export interface StudyMaterial {
   id: string;
@@ -156,6 +157,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "android-view-viewgroup",
     title: "View и ViewGroup в Android",
     component: AndroidViewViewGroupStudy,
+  },
+  "android-activity-lifecycle": {
+    id: "android-activity-lifecycle",
+    title: "Activity Lifecycle в Android",
+    component: AndroidActivityLifecycleStudy,
   },
 };
 

@@ -206,6 +206,7 @@ export const skills: Skill[] = [
     description: "Жизненный цикл Activity: onCreate, onStart, onResume, onPause, onStop, onDestroy. Управление состоянием.",
     subtopics: ["onCreate → onStart → onResume", "onPause → onStop → onDestroy", "onSaveInstanceState", "onRestoreInstanceState", "Перезапуск при повороте", "Process Death"],
     difficulty: "medium", sortOrder: 8, requiredForLevelUp: true,
+    studyMaterial: "android-activity-lifecycle",
   },
   {
     id: "junior-android-intent", categoryId: "junior-android", name: "Intent",
