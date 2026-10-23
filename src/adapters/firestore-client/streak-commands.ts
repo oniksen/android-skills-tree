@@ -31,6 +31,7 @@ import type { CurrencyData } from "@/types";
 export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
   const user = auth.currentUser;
   if (!user) return null;
+  if (autoFreezePermissionDenied) return null;
 
   const today = getLocalDayString();
   const streakRef = doc(db, ...userStreakPath(user.uid));
@@ -105,13 +106,15 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
   } catch (error) {
     console.error("Error applying automatic freezes:", error);
     if (error && typeof error === "object" && (error as { code?: string }).code === "permission-denied") {
-      throw error;
+      autoFreezePermissionDenied = true;
+      return null;
     }
     return null;
   }
 }
 
 let autoFreezeInFlight: Promise<AutoFreezeReport | null> | null = null;
+let autoFreezePermissionDenied = false;
 
 export function applyAutoFreezesOnce(): Promise<AutoFreezeReport | null> {
   if (!autoFreezeInFlight) {

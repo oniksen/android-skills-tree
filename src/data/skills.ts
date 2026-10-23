@@ -11,6 +11,7 @@ export interface Skill {
   difficulty: Difficulty;
   sortOrder: number;
   requiredForLevelUp: boolean;
+  studyMaterial?: string;
 }
 
 export const skills: Skill[] = [

@@ -453,6 +453,359 @@
   }
 }
 
+/* Study material pages */
+:root {
+  --study-shadow: 0 4px 18px rgba(24, 39, 75, 0.06);
+  --study-code-bg: #1f1e1a;
+  --study-code-ink: #e5edf8;
+  --study-accent-bg: #f7ddd1;
+  --study-accent-text: #c15f3c;
+}
+
+:root[data-theme="dark"] {
+  --study-shadow: none;
+  --study-code-bg: #0b0e14;
+  --study-code-ink: #e5edf8;
+  --study-accent-bg: rgba(224, 137, 104, 0.14);
+  --study-accent-text: #e08968;
+}
+
+.study-page {
+  width: 100%;
+  margin: 0;
+  padding: 12px 16px 32px;
+}
+
+.study-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+}
+
+.study-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: var(--color-slate-400);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.study-back:hover {
+  color: var(--color-blue-600);
+}
+
+.study-article {
+  display: block;
+}
+
+.study-hero {
+  padding: 18px 20px;
+  border: 1px solid var(--surface-border);
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--surface), var(--study-accent-bg));
+  box-shadow: var(--study-shadow);
+}
+
+.study-eyebrow {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-blue-600);
+  font-weight: 800;
+}
+
+.study-title,
+.study-hero-title {
+  font-size: clamp(1.35rem, 3.6vw, 2rem);
+  line-height: 1.15;
+  margin: 0.3rem 0 0.6rem;
+  letter-spacing: -0.025em;
+  color: var(--fg);
+}
+
+.study-lead {
+  margin: 0;
+  color: var(--color-slate-500);
+  max-width: 70ch;
+}
+
+.study-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 14px 0 20px;
+}
+
+.study-nav-link {
+  font-size: 0.84rem;
+  text-decoration: none;
+  color: var(--fg);
+  border: 1px solid var(--surface-border);
+  background: var(--surface);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.study-section {
+  margin: 16px 0;
+  padding: 18px;
+  border: 1px solid var(--surface-border);
+  border-radius: 15px;
+  background: var(--surface);
+  box-shadow: var(--study-shadow);
+  scroll-margin-top: 12px;
+}
+
+.study-section-title {
+  font-size: 1.24rem;
+  line-height: 1.25;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+}
+
+.study-subtitle {
+  font-size: 1rem;
+  margin: 14px 0 6px;
+}
+
+.study-section p {
+  margin: 7px 0;
+}
+
+.study-section ul,
+.study-section ol {
+  padding-left: 1.2rem;
+  margin: 7px 0;
+}
+
+.study-section li {
+  margin: 3px 0;
+}
+
+.study-muted {
+  color: var(--color-slate-400);
+}
+
+.study-small {
+  font-size: 0.88rem;
+}
+
+.study-tag {
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--study-accent-bg);
+  color: var(--study-accent-text);
+}
+
+.study-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.study-mini {
+  border: 1px solid var(--surface-border);
+  border-radius: 11px;
+  padding: 11px;
+  min-width: 0;
+}
+
+.study-mini-title {
+  display: block;
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.study-code-wrap {
+  position: relative;
+  margin: 9px 0;
+}
+
+.study-copy {
+  float: right;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border: 1px solid var(--surface-border);
+  background: var(--surface);
+  color: var(--fg);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.study-code {
+  background: var(--study-code-bg);
+  color: var(--study-code-ink);
+  border-radius: 11px;
+  padding: 13px;
+  overflow: auto;
+  font: 0.83rem / 1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+  white-space: pre;
+  tab-size: 2;
+  margin: 0;
+}
+
+.study-tree {
+  font: 0.82rem / 1.55 ui-monospace, SFMono-Regular, Consolas, monospace;
+  white-space: pre;
+  overflow: auto;
+  background: var(--study-code-bg);
+  color: var(--study-code-ink);
+  padding: 13px;
+  border-radius: 11px;
+  margin: 9px 0;
+}
+
+.study-diagram {
+  border: 1px solid var(--surface-border);
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 10px 0;
+}
+
+.study-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.study-node {
+  flex: 1 1 125px;
+  min-width: 0;
+  padding: 10px 8px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 10px;
+  font-size: 0.86rem;
+}
+
+.study-arrow {
+  align-self: center;
+  color: var(--color-blue-600);
+  font-weight: 900;
+}
+
+.study-note {
+  border-left: 3px solid var(--color-blue-600);
+  background: var(--study-accent-bg);
+  color: var(--fg);
+  padding: 9px 11px;
+  border-radius: 0 9px 9px 0;
+  margin: 10px 0;
+}
+
+.study-note.study-warn {
+  border-left-color: var(--color-amber-600);
+}
+
+.study-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+  margin: 8px 0;
+}
+
+.study-table th,
+.study-table td {
+  border-bottom: 1px solid var(--surface-border);
+  padding: 8px 7px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.study-table th {
+  color: var(--color-slate-400);
+  font-weight: 700;
+}
+
+.study-pill {
+  display: inline-block;
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.study-checklist {
+  margin: 0;
+}
+
+.study-checklist label {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 5px 0;
+}
+
+.study-checklist input {
+  margin-top: 5px;
+  accent-color: var(--color-blue-600);
+}
+
+.study-footer {
+  color: var(--color-slate-500);
+  font-size: 0.82rem;
+  text-align: center;
+  padding: 16px 0 0;
+}
+
+@media (max-width: 600px) {
+  .study-page {
+    padding: 10px 12px 24px;
+  }
+
+  .study-hero {
+    padding: 18px 15px;
+    border-radius: 14px;
+  }
+
+  .study-section {
+    padding: 14px;
+    border-radius: 13px;
+  }
+
+  .study-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .study-flow {
+    gap: 5px;
+  }
+
+  .study-node {
+    flex-basis: 100px;
+    padding: 8px 6px;
+    font-size: 0.8rem;
+  }
+
+  .study-arrow {
+    font-size: 0.85rem;
+  }
+
+  .study-table {
+    font-size: 0.82rem;
+  }
+
+  .study-table th,
+  .study-table td {
+    padding: 7px 5px;
+  }
+
+  .study-code,
+  .study-tree {
+    font-size: 0.76rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

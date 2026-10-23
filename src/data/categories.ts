@@ -3,13 +3,14 @@ export interface Category {
   levelId: string;
   name: string;
   sortOrder: number;
+  studyMaterial?: string;
 }
 
 export const categories: Category[] = [
   // Junior
   { id: "junior-osnovy", levelId: "junior", name: "Основы программирования", sortOrder: 1 },
   { id: "junior-kotlin", levelId: "junior", name: "Kotlin Basics", sortOrder: 2 },
-  { id: "junior-android", levelId: "junior", name: "Android Basics", sortOrder: 3 },
+  { id: "junior-android", levelId: "junior", name: "Android Basics", sortOrder: 3, studyMaterial: "android-project-structure" },
   { id: "junior-ui", levelId: "junior", name: "UI Basics (XML)", sortOrder: 4 },
   { id: "junior-data", levelId: "junior", name: "Data & Storage Basics", sortOrder: 5 },
   { id: "junior-async", levelId: "junior", name: "Асинхронность", sortOrder: 6 },

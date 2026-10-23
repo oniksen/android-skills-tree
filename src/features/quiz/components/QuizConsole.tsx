@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gradeAnswer } from "@/features/quiz/actions/grade-answer";
-import { juniorProgrammingBasicsQuestions } from "@/data/quiz-questions";
+import { allQuizQuestions, getGradeLevelOrder } from "@/data/quiz-questions";
+import { useUserProgress } from "@/hooks/useUserProgress";
+import { levels } from "@/data/levels";
 import { useUserSettings } from "@/hooks/useUserSettings";
 import { useAssessments } from "@/hooks/useAssessments";
 import { useRouter } from "next/navigation";
@@ -11,16 +13,29 @@ type ChatMessage = {
   id: number;
   role: "system" | "user" | "assistant";
   text: string;
+  grade?: string;
   score?: number;
   reason?: string;
 };
 
 export default function QuizConsole() {
+  const router = useRouter();
+  const { settings, loading: settingsLoading, getTodayCount, incrementDailyCount } = useUserSettings();
+  const { assessmentMap, loading: assessmentsLoading } = useAssessments();
+  const { progress } = useUserProgress();
+
+  const userLevelOrder =
+    levels.find((l) => l.id === (progress?.currentLevelId ?? "junior"))?.levelOrder ?? 1;
+  const allowedQuestions = allQuizQuestions.filter(
+    (q) => getGradeLevelOrder(q.grade) <= userLevelOrder,
+  );
+  const questionPool = allowedQuestions.length > 0 ? allowedQuestions : allQuizQuestions;
+
   const [question, setQuestion] = useState(
-    () => juniorProgrammingBasicsQuestions[Math.floor(Math.random() * juniorProgrammingBasicsQuestions.length)],
+    () => questionPool[Math.floor(Math.random() * questionPool.length)],
   );
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
-    { id: 1, role: "system", text: question.question },
+    { id: 1, role: "system", text: question.question, grade: question.grade },
   ]);
   const [input, setInput] = useState("");
   const [apiKey, setApiKey] = useState("");
@@ -28,9 +43,6 @@ export default function QuizConsole() {
   const [error, setError] = useState<string | null>(null);
   const [limits, setLimits] = useState("");
 
-  const router = useRouter();
-  const { settings, loading: settingsLoading, getTodayCount, incrementDailyCount } = useUserSettings();
-  const { assessmentMap, loading: assessmentsLoading } = useAssessments();
   const savedKey = settings?.groqApiKey;
   const savedLast4 = settings?.groqKeyLast4;
   const limit = settings?.maxDailyQuestions ?? 5;
@@ -92,9 +104,9 @@ export default function QuizConsole() {
 
   function handleNewQuestion() {
     const next =
-      juniorProgrammingBasicsQuestions[Math.floor(Math.random() * juniorProgrammingBasicsQuestions.length)];
+      questionPool[Math.floor(Math.random() * questionPool.length)];
     setQuestion(next);
-    setMessages([{ id: Date.now(), role: "system", text: next.question }]);
+    setMessages([{ id: Date.now(), role: "system", text: next.question, grade: next.grade }]);
     setInput("");
     setStatus("idle");
     setError(null);
@@ -124,19 +136,39 @@ export default function QuizConsole() {
   return (
     <div className="flex h-full w-full flex-1 flex-col font-mono text-sm">
       <div className="flex items-center justify-between px-4 pt-3 text-[10px] text-slate-500">
-        <button
-          type="button"
-          onClick={() => router.push("/tree/junior")}
-          className="min-h-[32px] cursor-pointer text-blue-600 transition-colors hover:text-blue-500"
-        >
-          [exit]
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => router.push("/tree/junior")}
+            className="min-h-[32px] cursor-pointer text-blue-600 transition-colors hover:text-blue-500"
+          >
+            [exit]
+          </button>
+          {status === "done" && !limitReached && (
+            <button
+              type="button"
+              onClick={handleNewQuestion}
+              className="min-h-[32px] cursor-pointer text-blue-600 transition-colors hover:text-blue-500"
+            >
+              [new]
+            </button>
+          )}
+        </div>
         <span>сегодня: {used}/{limit}</span>
       </div>
       <div ref={scrollRef} className="flex flex-1 flex-col justify-end space-y-2 overflow-y-auto px-4 py-3">
         {messages.map((m) => (
           <div key={m.id} className="whitespace-pre-wrap break-words">
-            {m.role === "system" && <span className="text-slate-300">{m.text}</span>}
+            {m.role === "system" && (
+              <div className="space-y-1">
+                {m.grade && (
+                  <span className="mr-2 inline-block align-middle rounded border border-blue-500/40 bg-blue-500/10 px-1.5 py-0.5 font-mono text-xs text-blue-600">
+                    {m.grade}
+                  </span>
+                )}
+                <span className="text-slate-300">{m.text}</span>
+              </div>
+            )}
             {m.role === "user" && (
               <span className="text-slate-200">
                 <span className="text-blue-600">&gt; </span>
@@ -192,15 +224,6 @@ export default function QuizConsole() {
 
       <div className="flex flex-wrap items-center justify-end gap-2 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] text-[10px] text-slate-500">
         {limits && <span className="break-all">{limits}</span>}
-        {status === "done" && !limitReached && (
-          <button
-            type="button"
-            onClick={handleNewQuestion}
-            className="min-h-[32px] cursor-pointer text-blue-600 transition-colors hover:text-blue-500"
-          >
-            [new]
-          </button>
-        )}
       </div>
     </div>
   );

@@ -81,6 +81,7 @@ export default function SkillDetailPageClient({ slug, skillId }: SkillDetailPage
             disabled={disabled}
             award={award}
             onToggleSubtopic={toggle}
+            studyHref={skill.studyMaterial ? `/tree/${slug}/skill/${skillId}/study` : undefined}
           />
         )}
       </div>
