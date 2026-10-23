@@ -44,6 +44,7 @@ export const skills: Skill[] = [
     description: "Повторяющиеся конструкции: for, while, do-while. Работа с диапазонами и коллекциями.",
     subtopics: ["for (until, downTo, step)", "while", "do-while", "break/continue", "Вложенные циклы"],
     difficulty: "easy", sortOrder: 4, requiredForLevelUp: false,
+    studyMaterial: "kotlin-loops",
   },
   {
     id: "junior-osnovy-funkc", categoryId: "junior-osnovy", name: "Функции",
