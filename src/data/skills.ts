@@ -36,6 +36,7 @@ export const skills: Skill[] = [
     description: "Управление потоком выполнения через if/else, when и тернарные выражения.",
     subtopics: ["if/else", "when (expression)", "when с произвольными аргументами", "Вложенность условий"],
     difficulty: "easy", sortOrder: 3, requiredForLevelUp: false,
+    studyMaterial: "kotlin-conditionals",
   },
   {
     id: "junior-osnovy-cikly", categoryId: "junior-osnovy", name: "Циклы",
