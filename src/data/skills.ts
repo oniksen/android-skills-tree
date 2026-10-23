@@ -65,6 +65,7 @@ export const skills: Skill[] = [
     description: "Структуры данных: List, Set, Map. Неизменяемые (immutable) и изменяемые (mutable) коллекции, основные операции.",
     subtopics: ["List / MutableList", "Set / MutableSet", "Map / MutableMap", "Итерирование", "Основные операции (filter, map, find)", "Spread operator"],
     difficulty: "medium", sortOrder: 7, requiredForLevelUp: false,
+    studyMaterial: "kotlin-collections",
   },
   {
     id: "junior-osnovy-oshibki", categoryId: "junior-osnovy", name: "Обработка ошибок",
