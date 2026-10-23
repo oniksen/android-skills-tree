@@ -139,6 +139,7 @@ export const skills: Skill[] = [
     description: "Запечатанные классы для ограничения иерархии наследования. Полезны для representing ограниченных наборов состояний.",
     subtopics: ["Синтаксис sealed class", "sealed interface", "when exhaustive", "Сравнение с enum", "Паттерн «ограниченные подтипы»"],
     difficulty: "medium", sortOrder: 9, requiredForLevelUp: false,
+    studyMaterial: "kotlin-sealed-class",
   },
   {
     id: "junior-kotlin-packages", categoryId: "junior-kotlin", name: "Packages",
