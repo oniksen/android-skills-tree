@@ -15,6 +15,7 @@ import KotlinExtensionFunctionsStudy from "./materials/kotlin-extension-function
 import KotlinLambdaStudy from "./materials/kotlin-lambda";
 import KotlinHigherOrderFunctionsStudy from "./materials/kotlin-higher-order-functions";
 import KotlinScopeFunctionsStudy from "./materials/kotlin-scope-functions";
+import KotlinEnumStudy from "./materials/kotlin-enum";
 
 export interface StudyMaterial {
   id: string;
@@ -102,6 +103,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-scope-functions",
     title: "Scope Functions в Kotlin",
     component: KotlinScopeFunctionsStudy,
+  },
+  "kotlin-enum": {
+    id: "kotlin-enum",
+    title: "Enum в Kotlin",
+    component: KotlinEnumStudy,
   },
 };
 

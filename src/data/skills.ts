@@ -132,6 +132,7 @@ export const skills: Skill[] = [
     description: "Перечисления (enum classes). Свойства, методы, реализация интерфейсов в enum.",
     subtopics: ["Базовый синтаксис", "Свойства enum", "Методы enum", "Реализация интерфейсов", "ordinal и name", "Перечисления с параметрами"],
     difficulty: "easy", sortOrder: 8, requiredForLevelUp: false,
+    studyMaterial: "kotlin-enum",
   },
   {
     id: "junior-kotlin-sealed", categoryId: "junior-kotlin", name: "Sealed Class",
