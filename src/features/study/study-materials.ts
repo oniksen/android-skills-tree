@@ -13,6 +13,7 @@ import KotlinNullSafetyStudy from "./materials/kotlin-null-safety";
 import KotlinDataClassStudy from "./materials/kotlin-data-class";
 import KotlinExtensionFunctionsStudy from "./materials/kotlin-extension-functions";
 import KotlinLambdaStudy from "./materials/kotlin-lambda";
+import KotlinHigherOrderFunctionsStudy from "./materials/kotlin-higher-order-functions";
 
 export interface StudyMaterial {
   id: string;
@@ -90,6 +91,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-lambda",
     title: "Лямбды в Kotlin",
     component: KotlinLambdaStudy,
+  },
+  "kotlin-higher-order-functions": {
+    id: "kotlin-higher-order-functions",
+    title: "Функции высшего порядка в Kotlin",
+    component: KotlinHigherOrderFunctionsStudy,
   },
 };
 

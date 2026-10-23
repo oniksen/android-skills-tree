@@ -118,6 +118,7 @@ export const skills: Skill[] = [
     description: "Функции, принимающие или возвращающие другие функции. Основы функционального программирования в Kotlin.",
     subtopics: ["Функция как параметр", "Функция как возврат", "inline функции", "Функции типа (Function)", "Передача функций"],
     difficulty: "medium", sortOrder: 6, requiredForLevelUp: false,
+    studyMaterial: "kotlin-higher-order-functions",
   },
   {
     id: "junior-kotlin-scope", categoryId: "junior-kotlin", name: "Scope Functions",
