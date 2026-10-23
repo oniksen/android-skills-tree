@@ -5,6 +5,7 @@ import KotlinConditionalsStudy from "./materials/kotlin-conditionals";
 import KotlinTypesStudy from "./materials/kotlin-types";
 import KotlinLoopsStudy from "./materials/kotlin-loops";
 import KotlinFunctionsStudy from "./materials/kotlin-functions";
+import KotlinOopBasicsStudy from "./materials/kotlin-oop-basics";
 
 export interface StudyMaterial {
   id: string;
@@ -42,6 +43,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-functions",
     title: "Функции в Kotlin",
     component: KotlinFunctionsStudy,
+  },
+  "kotlin-oop-basics": {
+    id: "kotlin-oop-basics",
+    title: "ООП основы в Kotlin",
+    component: KotlinOopBasicsStudy,
   },
 };
 

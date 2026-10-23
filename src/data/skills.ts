@@ -58,6 +58,7 @@ export const skills: Skill[] = [
     description: "Классы, объекты, наследование, интерфейсы и инкапсуляция. Основы объектно-ориентированного программирования.",
     subtopics: ["Классы и объекты", "Конструкторы", "Наследование", "Интерфейсы", "Инкапсуляция (private, protected)", "Абстрактные классы"],
     difficulty: "medium", sortOrder: 6, requiredForLevelUp: false,
+    studyMaterial: "kotlin-oop-basics",
   },
   {
     id: "junior-osnovy-coll", categoryId: "junior-osnovy", name: "Коллекции",
