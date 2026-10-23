@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import DifficultyBadge from "@/shared/ui/DifficultyBadge";
 
@@ -18,10 +19,13 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export default function GapList({
   gaps,
   emptyMessage = "Нет навыков для текущего грейда",
+  levelSlug,
 }: {
   gaps: Gap[];
   emptyMessage?: string;
+  levelSlug?: string;
 }) {
+  const router = useRouter();
   if (gaps.length === 0) {
     return (
       <motion.div
@@ -45,13 +49,30 @@ export default function GapList({
         return (
           <motion.div
             key={`${gap.skillName}-${i}`}
+            role={levelSlug ? "link" : undefined}
+            tabIndex={levelSlug ? 0 : undefined}
+            onClick={
+              levelSlug
+                ? () => router.push(`/tree/${levelSlug}/skill/${gap.skillId}`)
+                : undefined
+            }
+            onKeyDown={
+              levelSlug
+                ? (e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      router.push(`/tree/${levelSlug}/skill/${gap.skillId}`);
+                    }
+                  }
+                : undefined
+            }
             variants={{
               hidden: { opacity: 0, y: 14 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
             }}
             whileHover={{ x: 4 }}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
-            className={`group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 transition-colors nav-md:flex-row nav-md:items-center nav-md:justify-between ${
+            className={`group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 transition-colors nav-md:flex-row nav-md:items-center nav-md:justify-between ${levelSlug ? "cursor-pointer " : ""}${
               done
                 ? "hover:border-emerald-400/40"
                 : critical

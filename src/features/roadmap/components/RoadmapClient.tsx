@@ -142,7 +142,7 @@ export default function RoadmapClient() {
         animate="visible"
         variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
       >
-        <GapList gaps={visibleItems} emptyMessage={emptyMessage} />
+        <GapList gaps={visibleItems} emptyMessage={emptyMessage} levelSlug={currentLevel.slug} />
       </motion.div>
     </div>
   );

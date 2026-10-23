@@ -2,6 +2,8 @@ import { z } from "zod";
 
 const serverEnvSchema = z.object({
   AUTH_SECRET: z.string().min(32, "AUTH_SECRET must be at least 32 characters"),
+  GROQ_API_KEY: z.string().optional(),
+  GROQ_MODEL: z.string().optional(),
 });
 
 const parsed = serverEnvSchema.safeParse({

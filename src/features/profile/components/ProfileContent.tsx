@@ -16,6 +16,7 @@ import {
   useUserProgress,
 } from "@/hooks";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
+import { useUserSettings } from "@/hooks/useUserSettings";
 import { levels } from "@/data/levels";
 import { skills } from "@/data/skills";
 import { projects } from "@/data/projects";
@@ -26,6 +27,8 @@ import ProfileStats from "@/features/profile/components/ProfileStats";
 import ProfileAchievements from "@/features/profile/components/ProfileAchievements";
 import ProfileLinks from "@/features/profile/components/ProfileLinks";
 import ThemeSetting from "@/features/profile/components/ThemeSetting";
+import GroqKeySetting from "@/features/profile/components/GroqKeySetting";
+import DailyQuestionLimitSetting from "@/features/profile/components/DailyQuestionLimitSetting";
 import ThemeIcon from "@/shared/ui/ThemeIcon";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -47,6 +50,7 @@ export default function ProfileContent({
   const { balance, loading: currencyLoading } = useCurrency();
   const { currentStreak, longestStreak, loading: streakLoading } = useStreak();
   const { achievements, loading: achievementsLoading } = useAchievements();
+  const { settings: userSettings, getTodayCount } = useUserSettings();
   const [loggingOut, setLoggingOut] = useState(false);
 
   const loading =
@@ -143,6 +147,22 @@ export default function ProfileContent({
       />
 
       <ProfileLinks onNavigate={onClose} />
+
+      <section className="card-surface rounded-lg p-5">
+        <h2 className="mb-4 flex items-center gap-2 font-mono text-sm font-semibold text-slate-300">
+          <span className="text-slate-600">##</span> ИИ (Groq)
+        </h2>
+        <GroqKeySetting />
+        <p className="mt-3 font-mono text-xs text-slate-500">
+          сегодня: {getTodayCount()}/{userSettings?.maxDailyQuestions ?? 5}
+        </p>
+        <div className="mt-4">
+          <p className="mb-2 font-mono text-xs text-slate-400">
+            макс. вопросов в день
+          </p>
+          <DailyQuestionLimitSetting />
+        </div>
+      </section>
 
       <section className="card-surface rounded-lg p-5">
         <h2 className="mb-4 flex items-center gap-2 font-mono text-sm font-semibold text-slate-300">

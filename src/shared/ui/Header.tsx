@@ -27,6 +27,7 @@ import {
   Trophy,
   CircleUser,
   LogIn,
+  Terminal,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -35,8 +36,11 @@ const NAV_ITEMS = [
   { href: "/projects", label: "projects", icon: FolderGit2 },
   { href: "/roadmap", label: "roadmap", icon: Map },
   { href: "/achievements", label: "achievements", icon: Trophy },
+  { href: "/quiz", label: "quiz", icon: Terminal },
   { href: "/profile", label: "профиль", icon: CircleUser },
 ];
+
+const MOBILE_NAV_ITEMS = NAV_ITEMS.filter((item) => item.href !== "/quiz");
 
 const ROUTE_SKELETONS: Record<string, React.ComponentType> = {
   "/dashboard": DashboardSkeleton,
@@ -258,6 +262,7 @@ export default function Header({
 
   const segment = (pathname ?? "").split("/")[1] || "";
   const activeHref = segment === "tree" ? "/tree/junior" : `/${segment}`;
+  const isQuiz = (pathname ?? "").startsWith("/quiz");
   const isActive = (href: string) =>
     href === "/profile" ? activeHref === "/profile" : href === activeHref;
   const showNav = !loading && user;
@@ -322,6 +327,15 @@ export default function Header({
             <div className="ml-auto flex shrink-0 items-center gap-2">
               {!loading && user && <StreakBadge />}
               {!loading && user && <CurrencyBadge />}
+              {!loading && user && (
+                <Link
+                  href="/quiz"
+                  className="nav-md:hidden flex items-center justify-center rounded-md p-1.5 text-slate-400 transition-colors hover:bg-blue-500/10 hover:text-blue-600"
+                  aria-label="quiz"
+                >
+                  <Terminal className="h-4 w-4" />
+                </Link>
+              )}
               {!loading &&
                 !user &&
                 pathname !== "/login" && (
@@ -338,7 +352,13 @@ export default function Header({
           <div className="pointer-events-none h-px w-full bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
         </header>
 
-        <main className={`w-full max-w-6xl mx-auto flex-1 ${mainClassName}`}>
+        <main
+          className={
+            isQuiz
+              ? "flex w-full flex-1 flex-col"
+              : `w-full max-w-6xl mx-auto flex-1 ${mainClassName}`
+          }
+        >
           {isNavigating && pending && readyPending === pending ? (
             <RoutePlaceholder href={pending.href} />
           ) : (
@@ -348,13 +368,17 @@ export default function Header({
       </div>
 
       {showNav && (
-        <nav
+        <motion.nav
+          initial={false}
+          animate={{ y: isQuiz ? 120 : 0, opacity: isQuiz ? 0 : 1 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          style={{ pointerEvents: isQuiz ? "none" : "auto" }}
           className="nav-md:hidden fixed inset-x-0 bottom-0 z-50 px-4 pb-[max(env(safe-area-inset-bottom),0.875rem)] pl-[max(env(safe-area-inset-left),1rem)] pr-[max(env(safe-area-inset-right),1rem)]"
           aria-label="Основная навигация"
         >
           <div className="mx-auto max-w-sm rounded-2xl border border-slate-700/70 bg-slate-950/95 px-2 py-2 shadow-[0_18px_40px_rgba(26,25,21,0.28)] backdrop-blur-xl">
             <ul className="grid grid-cols-6 gap-1">
-              {NAV_ITEMS.map((item) => (
+              {MOBILE_NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <MobileNavItem
                     item={item}
@@ -365,7 +389,7 @@ export default function Header({
               ))}
             </ul>
           </div>
-        </nav>
+        </motion.nav>
       )}
     </div>
 
