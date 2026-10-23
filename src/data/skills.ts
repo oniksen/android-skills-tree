@@ -72,6 +72,7 @@ export const skills: Skill[] = [
     description: "Механизмы обработки исключений: try/catch/finally, опциональные значения (nullable) как способ избежания ошибок.",
     subtopics: ["try/catch/finally", "Типы исключений", "Работа с null (?., ?:, !!)", "runCatching", "Паттерн «Success/Failure»"],
     difficulty: "medium", sortOrder: 8, requiredForLevelUp: false,
+    studyMaterial: "kotlin-error-handling",
   },
 
   // ============================

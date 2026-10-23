@@ -7,6 +7,7 @@ import KotlinLoopsStudy from "./materials/kotlin-loops";
 import KotlinFunctionsStudy from "./materials/kotlin-functions";
 import KotlinOopBasicsStudy from "./materials/kotlin-oop-basics";
 import KotlinCollectionsStudy from "./materials/kotlin-collections";
+import KotlinErrorHandlingStudy from "./materials/kotlin-error-handling";
 
 export interface StudyMaterial {
   id: string;
@@ -54,6 +55,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-collections",
     title: "Коллекции в Kotlin",
     component: KotlinCollectionsStudy,
+  },
+  "kotlin-error-handling": {
+    id: "kotlin-error-handling",
+    title: "Обработка ошибок в Kotlin",
+    component: KotlinErrorHandlingStudy,
   },
 };
 
