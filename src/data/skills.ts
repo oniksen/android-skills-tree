@@ -139,6 +139,7 @@ export const skills: Skill[] = [
     description: "Основы работы с Android Studio. Настройка среды, запуск эмулятора, отладка приложений.",
     subtopics: ["Установка и настройка", "Создание проекта", "Запуск на эмуляторе", "Logcat и отладка", "Layout Inspector", "Структура проекта в IDE"],
     difficulty: "easy", sortOrder: 1, requiredForLevelUp: true,
+    studyMaterial: "android-project-structure",
   },
   {
     id: "junior-android-project", categoryId: "junior-android", name: "Проект и модули",

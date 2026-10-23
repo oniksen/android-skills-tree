@@ -25,8 +25,8 @@ export default async function StudyMaterialRoute({
 
   return (
     <StudyMaterialPage
-      backHref={`/tree/${slug}/skill/${skillId}`}
-      backLabel="Назад к навыку"
+      backHref={`/tree/${slug}`}
+      backLabel="Назад к дереву"
     >
       <Material />
     </StudyMaterialPage>
