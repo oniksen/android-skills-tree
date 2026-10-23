@@ -125,6 +125,7 @@ export const skills: Skill[] = [
     description: "Функции области видимости: let, run, with, apply, also. Краткая запись типичных операций с объектами.",
     subtopics: ["let", "run", "apply", "also", "with", "Когда использовать каждую", "Различия возвращаемых значений"],
     difficulty: "medium", sortOrder: 7, requiredForLevelUp: false,
+    studyMaterial: "kotlin-scope-functions",
   },
   {
     id: "junior-kotlin-enum", categoryId: "junior-kotlin", name: "Enum",

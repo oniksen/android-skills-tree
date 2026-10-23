@@ -14,6 +14,7 @@ import KotlinDataClassStudy from "./materials/kotlin-data-class";
 import KotlinExtensionFunctionsStudy from "./materials/kotlin-extension-functions";
 import KotlinLambdaStudy from "./materials/kotlin-lambda";
 import KotlinHigherOrderFunctionsStudy from "./materials/kotlin-higher-order-functions";
+import KotlinScopeFunctionsStudy from "./materials/kotlin-scope-functions";
 
 export interface StudyMaterial {
   id: string;
@@ -96,6 +97,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-higher-order-functions",
     title: "Функции высшего порядка в Kotlin",
     component: KotlinHigherOrderFunctionsStudy,
+  },
+  "kotlin-scope-functions": {
+    id: "kotlin-scope-functions",
+    title: "Scope Functions в Kotlin",
+    component: KotlinScopeFunctionsStudy,
   },
 };
 
