@@ -97,6 +97,7 @@ export const skills: Skill[] = [
     description: "Классы данных с автоматической генерацией equals(), hashCode(), toString(), copy() и компонентными функциями.",
     subtopics: ["Синтаксис data class", "copy() функция", "Деструктуризация (componentN)", "Равенство (equals)", "hashCode и toString", "Ограничения (val параметры)"],
     difficulty: "easy", sortOrder: 3, requiredForLevelUp: true,
+    studyMaterial: "kotlin-data-class",
   },
   {
     id: "junior-kotlin-ext", categoryId: "junior-kotlin", name: "Extension Functions",

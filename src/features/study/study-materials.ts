@@ -10,6 +10,7 @@ import KotlinCollectionsStudy from "./materials/kotlin-collections";
 import KotlinErrorHandlingStudy from "./materials/kotlin-error-handling";
 import KotlinSyntaxStudy from "./materials/kotlin-syntax";
 import KotlinNullSafetyStudy from "./materials/kotlin-null-safety";
+import KotlinDataClassStudy from "./materials/kotlin-data-class";
 
 export interface StudyMaterial {
   id: string;
@@ -72,6 +73,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-null-safety",
     title: "Null Safety в Kotlin",
     component: KotlinNullSafetyStudy,
+  },
+  "kotlin-data-class": {
+    id: "kotlin-data-class",
+    title: "Data Class в Kotlin",
+    component: KotlinDataClassStudy,
   },
 };
 
