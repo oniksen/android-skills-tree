@@ -20,6 +20,7 @@ import KotlinSealedClassStudy from "./materials/kotlin-sealed-class";
 import KotlinPackagesStudy from "./materials/kotlin-packages";
 import AndroidProjectModulesStudy from "./materials/android-project-modules";
 import AndroidGradleStudy from "./materials/android-gradle";
+import AndroidManifestStudy from "./materials/android-manifest";
 
 export interface StudyMaterial {
   id: string;
@@ -132,6 +133,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "android-gradle",
     title: "Gradle в Android-проекте",
     component: AndroidGradleStudy,
+  },
+  "android-manifest": {
+    id: "android-manifest",
+    title: "AndroidManifest",
+    component: AndroidManifestStudy,
   },
 };
 

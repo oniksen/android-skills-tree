@@ -178,6 +178,7 @@ export const skills: Skill[] = [
     description: "Манифест приложения: компоненты, разрешения, интент-фильтры, минимальная и целевая версии SDK.",
     subtopics: ["Структура манифеста", "Регистрация Activity", "Разрешения (uses-permission)", "Интент-фильтры", "minSdkVersion / targetSdkVersion", "App-level vs System-level"],
     difficulty: "easy", sortOrder: 4, requiredForLevelUp: true,
+    studyMaterial: "android-manifest",
   },
   {
     id: "junior-android-resources", categoryId: "junior-android", name: "Resources",
