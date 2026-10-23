@@ -17,6 +17,7 @@ import KotlinHigherOrderFunctionsStudy from "./materials/kotlin-higher-order-fun
 import KotlinScopeFunctionsStudy from "./materials/kotlin-scope-functions";
 import KotlinEnumStudy from "./materials/kotlin-enum";
 import KotlinSealedClassStudy from "./materials/kotlin-sealed-class";
+import KotlinPackagesStudy from "./materials/kotlin-packages";
 
 export interface StudyMaterial {
   id: string;
@@ -114,6 +115,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-sealed-class",
     title: "Sealed Class в Kotlin",
     component: KotlinSealedClassStudy,
+  },
+  "kotlin-packages": {
+    id: "kotlin-packages",
+    title: "Пакеты в Kotlin",
+    component: KotlinPackagesStudy,
   },
 };
 

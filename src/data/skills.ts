@@ -146,6 +146,7 @@ export const skills: Skill[] = [
     description: "Организация кода в пакеты. Импорт, видимость по умолчанию (public), internal модификатор.",
     subtopics: ["Объявление пакета", "Импорт (import)", "Пакетные функции", "Видимость (public, internal)", "Алиасы импорта"],
     difficulty: "easy", sortOrder: 10, requiredForLevelUp: false,
+    studyMaterial: "kotlin-packages",
   },
 
   // ============================
