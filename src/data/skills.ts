@@ -83,6 +83,7 @@ export const skills: Skill[] = [
     description: "Базовый синтаксис языка Kotlin. Строки, шаблоны,�ри строки, комментарии, пакеты и импорты.",
     subtopics: ["Строки и шаблонные строки", "Комментарии", "Пакеты и импорты", "Точка с запятой", "when vs if", "Функции расширения (базово)"],
     difficulty: "easy", sortOrder: 1, requiredForLevelUp: true,
+    studyMaterial: "kotlin-syntax",
   },
   {
     id: "junior-kotlin-null", categoryId: "junior-kotlin", name: "Null Safety",

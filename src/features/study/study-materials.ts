@@ -8,6 +8,7 @@ import KotlinFunctionsStudy from "./materials/kotlin-functions";
 import KotlinOopBasicsStudy from "./materials/kotlin-oop-basics";
 import KotlinCollectionsStudy from "./materials/kotlin-collections";
 import KotlinErrorHandlingStudy from "./materials/kotlin-error-handling";
+import KotlinSyntaxStudy from "./materials/kotlin-syntax";
 
 export interface StudyMaterial {
   id: string;
@@ -60,6 +61,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-error-handling",
     title: "Обработка ошибок в Kotlin",
     component: KotlinErrorHandlingStudy,
+  },
+  "kotlin-syntax": {
+    id: "kotlin-syntax",
+    title: "Синтаксис Kotlin",
+    component: KotlinSyntaxStudy,
   },
 };
 
