@@ -51,6 +51,7 @@ export const skills: Skill[] = [
     description: "Объявление и вызов функций. Параметры, возвращаемые значения, параметры по умолчанию, именованные аргументы.",
     subtopics: ["Объявление функции", "Параметры и аргументы", "Параметры по умолчанию", "Именованные аргументы", "Unit и expression body", "Single-expression functions"],
     difficulty: "easy", sortOrder: 5, requiredForLevelUp: false,
+    studyMaterial: "kotlin-functions",
   },
   {
     id: "junior-osnovy-oop", categoryId: "junior-osnovy", name: "ООП основы",

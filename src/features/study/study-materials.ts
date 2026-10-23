@@ -4,6 +4,7 @@ import KotlinVariablesStudy from "./materials/kotlin-variables";
 import KotlinConditionalsStudy from "./materials/kotlin-conditionals";
 import KotlinTypesStudy from "./materials/kotlin-types";
 import KotlinLoopsStudy from "./materials/kotlin-loops";
+import KotlinFunctionsStudy from "./materials/kotlin-functions";
 
 export interface StudyMaterial {
   id: string;
@@ -36,6 +37,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "kotlin-loops",
     title: "Циклы в Kotlin",
     component: KotlinLoopsStudy,
+  },
+  "kotlin-functions": {
+    id: "kotlin-functions",
+    title: "Функции в Kotlin",
+    component: KotlinFunctionsStudy,
   },
 };
 
