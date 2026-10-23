@@ -213,6 +213,7 @@ export const skills: Skill[] = [
     description: "Межкомпонентное взаимодействие через Intent: явные и неявные интенты, передача данных между Activity.",
     subtopics: ["Явные интенты (explicit)", "Неявные интенты (implicit)", "putExtra / getExtra", "Bundle для передачи данных", "startActivityForResult", "PendingIntent"],
     difficulty: "medium", sortOrder: 9, requiredForLevelUp: false,
+    studyMaterial: "android-intent",
   },
   {
     id: "junior-android-toast", categoryId: "junior-android", name: "Toast/Dialog/Snackbar",

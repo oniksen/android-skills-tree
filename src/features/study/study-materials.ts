@@ -25,6 +25,7 @@ import AndroidResourcesStudy from "./materials/android-resources";
 import AndroidLayoutsXmlStudy from "./materials/android-layouts-xml";
 import AndroidViewViewGroupStudy from "./materials/android-view-viewgroup";
 import AndroidActivityLifecycleStudy from "./materials/android-activity-lifecycle";
+import AndroidIntentStudy from "./materials/android-intent";
 
 export interface StudyMaterial {
   id: string;
@@ -162,6 +163,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "android-activity-lifecycle",
     title: "Activity Lifecycle в Android",
     component: AndroidActivityLifecycleStudy,
+  },
+  "android-intent": {
+    id: "android-intent",
+    title: "Intent в Android",
+    component: AndroidIntentStudy,
   },
 };
 
