@@ -192,6 +192,7 @@ export const skills: Skill[] = [
     description: "Создание пользовательского интерфейса с помощью XML-layouts. Типы layout-контейнеров и их особенности.",
     subtopics: ["XML разметка", "FrameLayout", "LinearLayout", "ConstraintLayout", "RelativeLayout", "ViewGroup vs View"],
     difficulty: "easy", sortOrder: 6, requiredForLevelUp: true,
+    studyMaterial: "android-layouts-xml",
   },
   {
     id: "junior-android-view", categoryId: "junior-android", name: "View/ViewGroup",

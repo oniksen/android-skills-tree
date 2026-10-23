@@ -22,6 +22,7 @@ import AndroidProjectModulesStudy from "./materials/android-project-modules";
 import AndroidGradleStudy from "./materials/android-gradle";
 import AndroidManifestStudy from "./materials/android-manifest";
 import AndroidResourcesStudy from "./materials/android-resources";
+import AndroidLayoutsXmlStudy from "./materials/android-layouts-xml";
 
 export interface StudyMaterial {
   id: string;
@@ -144,6 +145,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "android-resources",
     title: "Resources в Android",
     component: AndroidResourcesStudy,
+  },
+  "android-layouts-xml": {
+    id: "android-layouts-xml",
+    title: "Layouts XML в Android",
+    component: AndroidLayoutsXmlStudy,
   },
 };
 
