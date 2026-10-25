@@ -26,6 +26,7 @@ import AndroidLayoutsXmlStudy from "./materials/android-layouts-xml";
 import AndroidViewViewGroupStudy from "./materials/android-view-viewgroup";
 import AndroidActivityLifecycleStudy from "./materials/android-activity-lifecycle";
 import AndroidIntentStudy from "./materials/android-intent";
+import AndroidToastDialogSnackbarStudy from "./materials/android-toast-dialog-snackbar";
 
 export interface StudyMaterial {
   id: string;
@@ -168,6 +169,11 @@ export const studyMaterials: Record<string, StudyMaterial> = {
     id: "android-intent",
     title: "Intent в Android",
     component: AndroidIntentStudy,
+  },
+  "android-toast-dialog-snackbar": {
+    id: "android-toast-dialog-snackbar",
+    title: "Toast, Dialog и Snackbar в Android",
+    component: AndroidToastDialogSnackbarStudy,
   },
 };
 

@@ -220,6 +220,7 @@ export const skills: Skill[] = [
     description: "Вспомогательные UI-компоненты: всплывающие уведомления, диалоги и снэкбары с действиями.",
     subtopics: ["Toast.makeText", "AlertDialog", "DialogFragment", "Snackbar", "Custom Dialog", "Material Dialog"],
     difficulty: "easy", sortOrder: 10, requiredForLevelUp: false,
+    studyMaterial: "android-toast-dialog-snackbar",
   },
 
   // ============================
