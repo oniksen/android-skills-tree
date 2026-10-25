@@ -9,7 +9,11 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "icons": "node scripts/generate-icons.mjs"
+    "icons": "node scripts/generate-icons.mjs",
+    "new:feat": "node scripts/start-work.mjs --type=feat",
+    "new:fix": "node scripts/start-work.mjs --type=fix",
+    "rc": "node scripts/create-rc.mjs",
+    "promote": "node scripts/promote.mjs"
   },
   "dependencies": {
     "firebase": "^12.18.0",

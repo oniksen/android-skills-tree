@@ -2,8 +2,8 @@
   "branches": [
     "main",
     {
-      "name": "preview",
-      "prerelease": "preview"
+      "name": "rc/*",
+      "prerelease": "rc"
     }
   ],
   "plugins": [

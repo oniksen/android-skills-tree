@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import packageJson from "../../package.json";
 
 const REPO = process.env.GITHUB_REPOSITORY ?? "oniksen/android-skills-tree";
@@ -10,7 +11,22 @@ export const VERSION = DEVELOPMENT_VERSION;
 export const LOCAL_DEV_VERSION = DEVELOPMENT_VERSION;
 
 export function getDevelopmentVersion(): string {
-  return `v${DEVELOPMENT_VERSION}-dev`;
+  let sha = "local";
+  try {
+    sha = execSync("git rev-parse --short HEAD", {
+      stdio: ["ignore", "pipe", "ignore"],
+    })
+      .toString()
+      .trim();
+  } catch {
+    // ignore; fall back to env or "local"
+  }
+  if (process.env.VERCEL_GIT_COMMIT_SHA) {
+    sha = process.env.VERCEL_GIT_COMMIT_SHA.slice(0, 7);
+  } else if (process.env.GIT_COMMIT_SHA) {
+    sha = process.env.GIT_COMMIT_SHA.slice(0, 7);
+  }
+  return `v${DEVELOPMENT_VERSION}-dev+${sha}`;
 }
 
 export const getLocalVersion = getDevelopmentVersion;
@@ -101,6 +117,6 @@ export async function getLatestReleaseVersion(
 
 export function normalizeReleaseVersion(tag: string | null | undefined): string {
   if (!tag) return "unknown";
-  const match = tag.match(/v?(\d+\.\d+\.\d+(?:-dev)?)/);
+  const match = tag.match(/v?(\d+\.\d+\.\d+(?:-dev(?:\.\d+)?)?(?:\+[0-9a-f]{7,})?)/);
   return match ? `v${match[1]}` : tag;
 }
