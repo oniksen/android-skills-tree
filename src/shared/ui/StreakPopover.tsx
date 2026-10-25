@@ -21,7 +21,7 @@ export default function StreakPopover({ onClose }: { onClose: () => void }) {
 
   return (
     <div
-      className="absolute right-0 top-full mt-2 w-72 card-surface rounded-xl p-4 shadow-2xl z-50"
+      className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-1rem)] card-surface rounded-xl p-4 shadow-2xl z-50"
       role="dialog"
       onClick={(e) => e.stopPropagation()}
     >

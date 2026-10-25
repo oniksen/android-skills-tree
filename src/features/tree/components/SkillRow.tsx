@@ -80,14 +80,14 @@ export default function SkillRow({
               {subtopicPercent === 100 ? "+" : subtopicPercent > 0 ? "·" : "-"}
             </span>
             <span className="text-base text-slate-300 nav-md:truncate">{name}</span>
-            <QuizInfoIcon skillId={skillId} />
             {required && (
               <span className="shrink-0 rounded border border-blue-500/40 bg-blue-500/10 px-1.5 py-0.5 font-mono text-xs text-blue-600">
                 required
               </span>
             )}
           </div>
-          <div className="flex shrink-0 items-center gap-2 pl-5 nav-md:pl-0">
+            <div className="flex shrink-0 items-center gap-2 pl-5 nav-md:pl-0">
+
             <AnimatePresence>
               {award && (
                 <motion.span
@@ -120,6 +120,7 @@ export default function SkillRow({
               </motion.span>
             )}
             <DifficultyBadge skillId={skillId} />
+            <QuizInfoIcon skillId={skillId} />
           </div>
         </button>
       </div>
