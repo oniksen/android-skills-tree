@@ -22,11 +22,12 @@ interface CategoryCardProps {
   skills: SkillItem[];
   assessments: Record<string, { subtopics?: Record<string, boolean> }>;
   isLocked?: boolean;
+  disabled?: boolean;
   index?: number;
   studyHref?: string;
 }
 
-export default function CategoryCard({ categoryId, name, skills, assessments, isLocked = false, index = 0, studyHref }: CategoryCardProps) {
+export default function CategoryCard({ categoryId, name, skills, assessments, isLocked = false, disabled = false, index = 0, studyHref }: CategoryCardProps) {
   const sorted = [...skills].sort((a, b) => a.sortOrder - b.sortOrder);
   const maxScore = getCategoryMaxScore(categoryId);
   const catScore = calcCategoryScore(categoryId, assessments);
@@ -63,7 +64,7 @@ export default function CategoryCard({ categoryId, name, skills, assessments, is
           )}
         </div>
         <span className="flex items-center gap-2">
-          {isLocked && (
+          {isLocked && catScore >= maxScore && (
             <span className="text-xs bg-yellow-600/20 text-yellow-500 px-2 py-0.5 rounded-full font-medium">макс</span>
           )}
           <span className="font-mono text-sm text-slate-500">{catScore}/{maxScore} XP</span>
@@ -79,7 +80,7 @@ export default function CategoryCard({ categoryId, name, skills, assessments, is
             description={skill.description}
             subtopics={skill.subtopics}
             required={skill.requiredForLevelUp}
-            disabled={isLocked}
+            disabled={disabled || isLocked}
           />
         ))}
       </div>

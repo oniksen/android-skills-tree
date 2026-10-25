@@ -1,12 +1,36 @@
+import packageJson from "../../package.json";
+
 const REPO = process.env.GITHUB_REPOSITORY ?? "oniksen/android-skills-tree";
+
+export const DEVELOPMENT_VERSION = packageJson.version;
+export const LOCAL_VERSION = DEVELOPMENT_VERSION;
+export const APP_VERSION = DEVELOPMENT_VERSION;
+export const DEV_VERSION = DEVELOPMENT_VERSION;
+export const VERSION = DEVELOPMENT_VERSION;
+export const LOCAL_DEV_VERSION = DEVELOPMENT_VERSION;
+
+export function getDevelopmentVersion(): string {
+  return `v${DEVELOPMENT_VERSION}-dev`;
+}
+
+export const getLocalVersion = getDevelopmentVersion;
+export const getDevVersion = getDevelopmentVersion;
+export const getVersion = getDevelopmentVersion;
 
 interface GetLatestReleaseVersionOptions {
   prerelease?: boolean;
+  local?: boolean;
+  development?: boolean;
+  dev?: boolean;
 }
 
 export async function getLatestReleaseVersion(
   options: GetLatestReleaseVersionOptions = {}
 ): Promise<string | null> {
+  if (options.local || options.development || options.dev) {
+    return getDevelopmentVersion();
+  }
+
   const token = process.env.GITHUB_TOKEN;
   const headers: Record<string, string> = {
     Accept: "application/vnd.github+json",
@@ -77,6 +101,6 @@ export async function getLatestReleaseVersion(
 
 export function normalizeReleaseVersion(tag: string | null | undefined): string {
   if (!tag) return "unknown";
-  const match = tag.match(/v?(\d+\.\d+\.\d+)/);
+  const match = tag.match(/v?(\d+\.\d+\.\d+(?:-dev)?)/);
   return match ? `v${match[1]}` : tag;
 }

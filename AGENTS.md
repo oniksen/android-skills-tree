@@ -47,10 +47,14 @@ server-rendered Next.js with client components talking to Firestore via hooks.
 
 ## Release workflow (GitHub)
 
+- Номер версии, над которой идёт работа, хранится в `package.json` (`version`).
+  Локальный UI показывает `vX.Y.Z-dev` на основе этой версии.
 - Локальная разработка ведётся обычными коммитами без релизов.
-- Когда фича готова к preview: коммит/пуш в `preview`; GitHub Actions запускает
-  semantic-release и создаёт prerelease (`vX.Y.Z-preview.N`).
-- После проверки на preview: merge/пуш в `main`; semantic-release создаёт обычный
-  релиз (`vX.Y.Z`), ссылаясь на предыдущие pre-релизы и описывая дельту.
+- Когда фича готова к preview: обновить `version` в `package.json` на целевую
+  `X.Y.Z`, затем коммит/пуш в `preview`; GitHub Actions запускает semantic-release
+  и создаёт prerelease на основе версии из `package.json` (`vX.Y.Z-preview.N`).
+- После проверки на preview: использовать ту же версию из `package.json`;
+  merge/пуш в `main`; semantic-release создаёт обычный релиз `vX.Y.Z`,
+  ссылаясь на предыдущие pre-релизы и описывая дельту.
 - В UI отображается только базовый `vX.Y.Z`; prerelease/build-суффикс скрывается.
 - Релизы создаются только на push, локально их не создавать.
