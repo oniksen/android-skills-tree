@@ -3,6 +3,7 @@ export interface Category {
   levelId: string;
   name: string;
   sortOrder: number;
+  studyMaterial?: string;
 }
 
 export const categories: Category[] = [

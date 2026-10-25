@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import { Check } from "lucide-react";
+import { Check, BookOpen } from "lucide-react";
+import Link from "next/link";
 import { useToast } from "@/shared/lib/toast-context";
 import DifficultyBadge from "@/shared/ui/DifficultyBadge";
 import { getCrystalRewardForSkill } from "@/core/domain/currency";
@@ -19,6 +20,7 @@ export interface SkillDetailContentProps {
   readonly?: boolean;
   award?: { amount: number } | null;
   onToggleSubtopic?: (subtopicName: string) => void;
+  studyHref?: string;
 }
 
 export default function SkillDetailContent({
@@ -33,6 +35,7 @@ export default function SkillDetailContent({
   readonly = false,
   award = null,
   onToggleSubtopic,
+  studyHref,
 }: SkillDetailContentProps) {
   const toast = useToast();
   const categoryName = getCategoryById(getSkillById(skillId)?.categoryId ?? "")?.name;
@@ -50,7 +53,18 @@ export default function SkillDetailContent({
           </p>
         )}
         <div className="flex items-start justify-between gap-3">
-          <h2 className="text-xl font-semibold leading-snug text-white">{name}</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-semibold leading-snug text-white">{name}</h2>
+            {studyHref && (
+              <Link
+                href={studyHref}
+                aria-label="Учебный материал"
+                className="inline-flex items-center justify-center rounded-md p-1 text-blue-600 transition-colors hover:text-blue-500"
+              >
+                <BookOpen className="h-5 w-5" />
+              </Link>
+            )}
+          </div>
           <div className="flex shrink-0 items-center gap-2 pt-0.5">
             <AnimatePresence>
               {award && (

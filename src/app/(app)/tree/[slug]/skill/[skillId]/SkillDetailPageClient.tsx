@@ -4,8 +4,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getSkillById } from "@/data";
+import { getLevelBySlug, levels } from "@/data/levels";
 import { useUserProgress } from "@/hooks";
+import { useAssessments } from "@/hooks/useAssessments";
 import { useSkillDetail } from "@/hooks/useSkillDetail";
+import { calcCategoryScore } from "@/core/domain/scoring";
+import { getCategoryMaxScore } from "@/core/domain/weights";
 import SkillDetailContent from "@/features/tree/components/SkillDetailContent";
 import CelebrationModal from "@/shared/ui/CelebrationModal";
 import { SkillDetailSkeleton } from "@/shared/ui/skeletons";
@@ -18,6 +22,7 @@ interface SkillDetailPageClientProps {
 export default function SkillDetailPageClient({ slug, skillId }: SkillDetailPageClientProps) {
   const router = useRouter();
   const { progress, loading } = useUserProgress();
+  const { assessmentMap } = useAssessments();
   const {
     subtopicState,
     subtopicPercent,
@@ -30,7 +35,24 @@ export default function SkillDetailPageClient({ slug, skillId }: SkillDetailPage
   const skill = getSkillById(skillId);
   if (!skill) return null;
 
-  const readonly = !progress;
+  const level = getLevelBySlug(slug);
+  const currentLevelId = progress?.currentLevelId;
+  const currentLevelIndex = levels.findIndex((l) => l.id === currentLevelId);
+  const viewingLevelIndex = levels.findIndex((l) => l.id === level?.id);
+
+  const isFuture = !!progress && viewingLevelIndex > currentLevelIndex;
+  const isPast = !!progress && viewingLevelIndex < currentLevelIndex;
+
+  const categoryScore = progress ? calcCategoryScore(skill.categoryId, assessmentMap) : 0;
+  const categoryMax = getCategoryMaxScore(skill.categoryId);
+  const categoryLocked =
+    !!progress &&
+    viewingLevelIndex === currentLevelIndex &&
+    categoryMax > 0 &&
+    categoryScore >= categoryMax;
+
+  const disabled = isFuture || categoryLocked;
+  const readonly = !progress || isPast;
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-4">
@@ -56,8 +78,10 @@ export default function SkillDetailPageClient({ slug, skillId }: SkillDetailPage
             subtopicPercent={subtopicPercent}
             required={skill.requiredForLevelUp}
             readonly={readonly}
+            disabled={disabled}
             award={award}
             onToggleSubtopic={toggle}
+            studyHref={skill.studyMaterial ? `/tree/${slug}/skill/${skillId}/study` : undefined}
           />
         )}
       </div>

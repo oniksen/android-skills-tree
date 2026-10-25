@@ -11,6 +11,7 @@ export interface Skill {
   difficulty: Difficulty;
   sortOrder: number;
   requiredForLevelUp: boolean;
+  studyMaterial?: string;
 }
 
 export const skills: Skill[] = [
@@ -22,48 +23,56 @@ export const skills: Skill[] = [
     description: "Хранение данных в переменных. Типы переменных (val, var), область видимости и правила именования.",
     subtopics: ["val vs var", "Типы переменных", "Инициализация", "Константы"],
     difficulty: "easy", sortOrder: 1, requiredForLevelUp: false,
+    studyMaterial: "kotlin-variables",
   },
   {
     id: "junior-osnovy-tipy", categoryId: "junior-osnovy", name: "Типы данных",
     description: "Примитивные и ссылочные типы данных в Kotlin. Number, String, Boolean, Array, nullable-типы.",
     subtopics: ["Number (Int, Double, Float)", "String", "Boolean", "Array", "Null safety basics", "Type inference"],
     difficulty: "easy", sortOrder: 2, requiredForLevelUp: false,
+    studyMaterial: "kotlin-types",
   },
   {
     id: "junior-osnovy-uslov", categoryId: "junior-osnovy", name: "Условные конструкции",
     description: "Управление потоком выполнения через if/else, when и тернарные выражения.",
     subtopics: ["if/else", "when (expression)", "when с произвольными аргументами", "Вложенность условий"],
     difficulty: "easy", sortOrder: 3, requiredForLevelUp: false,
+    studyMaterial: "kotlin-conditionals",
   },
   {
     id: "junior-osnovy-cikly", categoryId: "junior-osnovy", name: "Циклы",
     description: "Повторяющиеся конструкции: for, while, do-while. Работа с диапазонами и коллекциями.",
     subtopics: ["for (until, downTo, step)", "while", "do-while", "break/continue", "Вложенные циклы"],
     difficulty: "easy", sortOrder: 4, requiredForLevelUp: false,
+    studyMaterial: "kotlin-loops",
   },
   {
     id: "junior-osnovy-funkc", categoryId: "junior-osnovy", name: "Функции",
     description: "Объявление и вызов функций. Параметры, возвращаемые значения, параметры по умолчанию, именованные аргументы.",
     subtopics: ["Объявление функции", "Параметры и аргументы", "Параметры по умолчанию", "Именованные аргументы", "Unit и expression body", "Single-expression functions"],
     difficulty: "easy", sortOrder: 5, requiredForLevelUp: false,
+    studyMaterial: "kotlin-functions",
   },
   {
     id: "junior-osnovy-oop", categoryId: "junior-osnovy", name: "ООП основы",
     description: "Классы, объекты, наследование, интерфейсы и инкапсуляция. Основы объектно-ориентированного программирования.",
     subtopics: ["Классы и объекты", "Конструкторы", "Наследование", "Интерфейсы", "Инкапсуляция (private, protected)", "Абстрактные классы"],
     difficulty: "medium", sortOrder: 6, requiredForLevelUp: false,
+    studyMaterial: "kotlin-oop-basics",
   },
   {
     id: "junior-osnovy-coll", categoryId: "junior-osnovy", name: "Коллекции",
     description: "Структуры данных: List, Set, Map. Неизменяемые (immutable) и изменяемые (mutable) коллекции, основные операции.",
     subtopics: ["List / MutableList", "Set / MutableSet", "Map / MutableMap", "Итерирование", "Основные операции (filter, map, find)", "Spread operator"],
     difficulty: "medium", sortOrder: 7, requiredForLevelUp: false,
+    studyMaterial: "kotlin-collections",
   },
   {
     id: "junior-osnovy-oshibki", categoryId: "junior-osnovy", name: "Обработка ошибок",
     description: "Механизмы обработки исключений: try/catch/finally, опциональные значения (nullable) как способ избежания ошибок.",
     subtopics: ["try/catch/finally", "Типы исключений", "Работа с null (?., ?:, !!)", "runCatching", "Паттерн «Success/Failure»"],
     difficulty: "medium", sortOrder: 8, requiredForLevelUp: false,
+    studyMaterial: "kotlin-error-handling",
   },
 
   // ============================
@@ -74,60 +83,70 @@ export const skills: Skill[] = [
     description: "Базовый синтаксис языка Kotlin. Строки, шаблоны,�ри строки, комментарии, пакеты и импорты.",
     subtopics: ["Строки и шаблонные строки", "Комментарии", "Пакеты и импорты", "Точка с запятой", "when vs if", "Функции расширения (базово)"],
     difficulty: "easy", sortOrder: 1, requiredForLevelUp: true,
+    studyMaterial: "kotlin-syntax",
   },
   {
     id: "junior-kotlin-null", categoryId: "junior-kotlin", name: "Null Safety",
     description: "Система безопасной работы с null-значениями. Операторы ?, ?:, !!, safe casts и let.",
     subtopics: ["Nullable типы (? operator)", "Elvis operator (?:)", "Not-null assertion (!!)", "Safe casts (as?)", "let, also для null-check", "Платформенные типы"],
     difficulty: "easy", sortOrder: 2, requiredForLevelUp: true,
+    studyMaterial: "kotlin-null-safety",
   },
   {
     id: "junior-kotlin-data", categoryId: "junior-kotlin", name: "Data Class",
     description: "Классы данных с автоматической генерацией equals(), hashCode(), toString(), copy() и компонентными функциями.",
     subtopics: ["Синтаксис data class", "copy() функция", "Деструктуризация (componentN)", "Равенство (equals)", "hashCode и toString", "Ограничения (val параметры)"],
     difficulty: "easy", sortOrder: 3, requiredForLevelUp: true,
+    studyMaterial: "kotlin-data-class",
   },
   {
     id: "junior-kotlin-ext", categoryId: "junior-kotlin", name: "Extension Functions",
     description: "Расширение функциональности существующих классов без наследования. Определяются как обычные функции с принимающим объектом (receiver).",
     subtopics: ["Синтаксис extension функций", "Extension properties", "nullable-приёмники", "Конвенции вызова", "Внутренние extension функции"],
     difficulty: "easy", sortOrder: 4, requiredForLevelUp: false,
+    studyMaterial: "kotlin-extension-functions",
   },
   {
     id: "junior-kotlin-lambda", categoryId: "junior-kotlin", name: "Lambda",
     description: "Анонимные функции (лямбды). Синтаксис, замыкания, короткие замыкания (it), возврат значений.",
     subtopics: ["Синтаксис лямбд", "it (короткое замыкание)", "Последняя лямбда (trailing lambda)", "Замыкания (closures)", "Лямбды с возвратом", "Тип лямбды (Function1, Function2)"],
     difficulty: "medium", sortOrder: 5, requiredForLevelUp: false,
+    studyMaterial: "kotlin-lambda",
   },
   {
     id: "junior-kotlin-hof", categoryId: "junior-kotlin", name: "Higher Order Functions",
     description: "Функции, принимающие или возвращающие другие функции. Основы функционального программирования в Kotlin.",
     subtopics: ["Функция как параметр", "Функция как возврат", "inline функции", "Функции типа (Function)", "Передача функций"],
     difficulty: "medium", sortOrder: 6, requiredForLevelUp: false,
+    studyMaterial: "kotlin-higher-order-functions",
   },
   {
     id: "junior-kotlin-scope", categoryId: "junior-kotlin", name: "Scope Functions",
     description: "Функции области видимости: let, run, with, apply, also. Краткая запись типичных операций с объектами.",
     subtopics: ["let", "run", "apply", "also", "with", "Когда использовать каждую", "Различия возвращаемых значений"],
     difficulty: "medium", sortOrder: 7, requiredForLevelUp: false,
+    studyMaterial: "kotlin-scope-functions",
   },
   {
     id: "junior-kotlin-enum", categoryId: "junior-kotlin", name: "Enum",
     description: "Перечисления (enum classes). Свойства, методы, реализация интерфейсов в enum.",
     subtopics: ["Базовый синтаксис", "Свойства enum", "Методы enum", "Реализация интерфейсов", "ordinal и name", "Перечисления с параметрами"],
     difficulty: "easy", sortOrder: 8, requiredForLevelUp: false,
+    studyMaterial: "kotlin-enum",
   },
   {
     id: "junior-kotlin-sealed", categoryId: "junior-kotlin", name: "Sealed Class",
     description: "Запечатанные классы для ограничения иерархии наследования. Полезны для representing ограниченных наборов состояний.",
     subtopics: ["Синтаксис sealed class", "sealed interface", "when exhaustive", "Сравнение с enum", "Паттерн «ограниченные подтипы»"],
     difficulty: "medium", sortOrder: 9, requiredForLevelUp: false,
+    studyMaterial: "kotlin-sealed-class",
   },
   {
     id: "junior-kotlin-packages", categoryId: "junior-kotlin", name: "Packages",
     description: "Организация кода в пакеты. Импорт, видимость по умолчанию (public), internal модификатор.",
     subtopics: ["Объявление пакета", "Импорт (import)", "Пакетные функции", "Видимость (public, internal)", "Алиасы импорта"],
     difficulty: "easy", sortOrder: 10, requiredForLevelUp: false,
+    studyMaterial: "kotlin-packages",
   },
 
   // ============================
@@ -138,60 +157,70 @@ export const skills: Skill[] = [
     description: "Основы работы с Android Studio. Настройка среды, запуск эмулятора, отладка приложений.",
     subtopics: ["Установка и настройка", "Создание проекта", "Запуск на эмуляторе", "Logcat и отладка", "Layout Inspector", "Структура проекта в IDE"],
     difficulty: "easy", sortOrder: 1, requiredForLevelUp: true,
+    studyMaterial: "android-project-structure",
   },
   {
     id: "junior-android-project", categoryId: "junior-android", name: "Проект и модули",
     description: "Структура Android-проекта: модули, src-директории, ресурсы, манифест, build-файлы.",
     subtopics: ["Структура директорий", "Модули (app, library)", "src/main, src/test", "Ресурсы (res)", "Build configuration", "Сборка APK/AAB"],
     difficulty: "easy", sortOrder: 2, requiredForLevelUp: true,
+    studyMaterial: "android-project-modules",
   },
   {
     id: "junior-android-gradle", categoryId: "junior-android", name: "Gradle",
     description: "Система сборки Gradle. build.gradle, зависимости, плагины, product flavors и build types.",
     subtopics: ["build.gradle (project vs module)", "Зависимости (implementation, api)", "Плагины Android", "Product Flavors", "Build Types (debug/release)", "Gradle tasks"],
     difficulty: "medium", sortOrder: 3, requiredForLevelUp: true,
+    studyMaterial: "android-gradle",
   },
   {
     id: "junior-android-manifest", categoryId: "junior-android", name: "AndroidManifest",
     description: "Манифест приложения: компоненты, разрешения, интент-фильтры, минимальная и целевая версии SDK.",
     subtopics: ["Структура манифеста", "Регистрация Activity", "Разрешения (uses-permission)", "Интент-фильтры", "minSdkVersion / targetSdkVersion", "App-level vs System-level"],
     difficulty: "easy", sortOrder: 4, requiredForLevelUp: true,
+    studyMaterial: "android-manifest",
   },
   {
     id: "junior-android-resources", categoryId: "junior-android", name: "Resources",
     description: "Ресурсы приложения: строки, цвета, размеры, изображения, drawable, layouts и многоязычность.",
     subtopics: ["strings.xml", "colors.xml и themes", "dimens.xml", "Drawables и mipmap", "Ресурсы для разных конфигураций (layout-land)", "Многоязычность (strings.xml)"],
     difficulty: "easy", sortOrder: 5, requiredForLevelUp: true,
+    studyMaterial: "android-resources",
   },
   {
     id: "junior-android-layouts", categoryId: "junior-android", name: "Layouts XML",
     description: "Создание пользовательского интерфейса с помощью XML-layouts. Типы layout-контейнеров и их особенности.",
     subtopics: ["XML разметка", "FrameLayout", "LinearLayout", "ConstraintLayout", "RelativeLayout", "ViewGroup vs View"],
     difficulty: "easy", sortOrder: 6, requiredForLevelUp: true,
+    studyMaterial: "android-layouts-xml",
   },
   {
     id: "junior-android-view", categoryId: "junior-android", name: "View/ViewGroup",
     description: "Базовые компоненты UI: View и ViewGroup. Кастомизация через XML-атрибуты и программно.",
     subtopics: ["View hierarchy", "XML атрибуты (layout_width, height)", "Programmatic view creation", "View ID и findViewById", "View visibility", "Padding vs Margin"],
     difficulty: "medium", sortOrder: 7, requiredForLevelUp: false,
+    studyMaterial: "android-view-viewgroup",
   },
   {
     id: "junior-android-lifecycle", categoryId: "junior-android", name: "Activity Lifecycle",
     description: "Жизненный цикл Activity: onCreate, onStart, onResume, onPause, onStop, onDestroy. Управление состоянием.",
     subtopics: ["onCreate → onStart → onResume", "onPause → onStop → onDestroy", "onSaveInstanceState", "onRestoreInstanceState", "Перезапуск при повороте", "Process Death"],
     difficulty: "medium", sortOrder: 8, requiredForLevelUp: true,
+    studyMaterial: "android-activity-lifecycle",
   },
   {
     id: "junior-android-intent", categoryId: "junior-android", name: "Intent",
     description: "Межкомпонентное взаимодействие через Intent: явные и неявные интенты, передача данных между Activity.",
     subtopics: ["Явные интенты (explicit)", "Неявные интенты (implicit)", "putExtra / getExtra", "Bundle для передачи данных", "startActivityForResult", "PendingIntent"],
     difficulty: "medium", sortOrder: 9, requiredForLevelUp: false,
+    studyMaterial: "android-intent",
   },
   {
     id: "junior-android-toast", categoryId: "junior-android", name: "Toast/Dialog/Snackbar",
     description: "Вспомогательные UI-компоненты: всплывающие уведомления, диалоги и снэкбары с действиями.",
     subtopics: ["Toast.makeText", "AlertDialog", "DialogFragment", "Snackbar", "Custom Dialog", "Material Dialog"],
     difficulty: "easy", sortOrder: 10, requiredForLevelUp: false,
+    studyMaterial: "android-toast-dialog-snackbar",
   },
 
   // ============================

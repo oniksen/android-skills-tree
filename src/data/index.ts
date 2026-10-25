@@ -10,6 +10,13 @@ export type { Skill, Difficulty } from "./skills";
 export { projects, getProjectsByLevelId, getProjectById } from "./projects";
 export type { Project } from "./projects";
 
+export {
+  quizQuestionsBySkill,
+  allQuizQuestions,
+  getQuizQuestionsBySkill,
+} from "./quiz-questions";
+export type { QuizQuestion } from "./quiz-questions";
+
 import { levels } from "./levels";
 import { categories } from "./categories";
 import { skills } from "./skills";

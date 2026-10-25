@@ -68,6 +68,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
               categoryId={cat.id}
               name={cat.name}
               skills={cat.skills}
+              studyHref={cat.studyMaterial ? `/tree/${slug}/category/${cat.id}/study` : undefined}
             />
           ))}
         </div>
@@ -140,6 +141,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
                 assessments={assessmentMap}
                 isLocked={true}
                 index={index}
+                studyHref={cat.studyMaterial ? `/tree/${slug}/category/${cat.id}/study` : undefined}
               />
             ))}
           </div>
@@ -161,6 +163,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
                 categoryId={cat.id}
                 name={cat.name}
                 skills={cat.skills}
+                studyHref={cat.studyMaterial ? `/tree/${slug}/category/${cat.id}/study` : undefined}
               />
             ))}
           </div>
@@ -180,6 +183,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
                 assessments={assessmentMap}
                 isLocked={catScore >= catMax}
                 index={index}
+                studyHref={cat.studyMaterial ? `/tree/${slug}/category/${cat.id}/study` : undefined}
               />
             );
           })}

@@ -1,5 +1,7 @@
 "use client";
 import { motion } from "motion/react";
+import Link from "next/link";
+import { BookOpen } from "lucide-react";
 import SkillRow from "./SkillRow";
 import ProgressBar from "@/shared/ui/ProgressBar";
 import { calcCategoryScore } from "@/core/domain/scoring";
@@ -21,9 +23,10 @@ interface CategoryCardProps {
   assessments: Record<string, { subtopics?: Record<string, boolean> }>;
   isLocked?: boolean;
   index?: number;
+  studyHref?: string;
 }
 
-export default function CategoryCard({ categoryId, name, skills, assessments, isLocked = false, index = 0 }: CategoryCardProps) {
+export default function CategoryCard({ categoryId, name, skills, assessments, isLocked = false, index = 0, studyHref }: CategoryCardProps) {
   const sorted = [...skills].sort((a, b) => a.sortOrder - b.sortOrder);
   const maxScore = getCategoryMaxScore(categoryId);
   const catScore = calcCategoryScore(categoryId, assessments);
@@ -47,7 +50,18 @@ export default function CategoryCard({ categoryId, name, skills, assessments, is
         } to-transparent`}
       />
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-semibold text-lg text-white">{name}</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="font-semibold text-lg text-white">{name}</h3>
+          {studyHref && (
+            <Link
+              href={studyHref}
+              aria-label="Учебный материал"
+              className="inline-flex items-center justify-center rounded-md p-1 text-blue-600 transition-colors hover:text-blue-500"
+            >
+              <BookOpen className="h-5 w-5" />
+            </Link>
+          )}
+        </div>
         <span className="flex items-center gap-2">
           {isLocked && (
             <span className="text-xs bg-yellow-600/20 text-yellow-500 px-2 py-0.5 rounded-full font-medium">макс</span>

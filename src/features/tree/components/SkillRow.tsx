@@ -7,6 +7,7 @@ import CelebrationModal from "@/shared/ui/CelebrationModal";
 import DifficultyBadge from "@/shared/ui/DifficultyBadge";
 import { useSkillDetail } from "@/hooks/useSkillDetail";
 import { isDesktopViewport, skillDetailHref } from "@/lib/viewport";
+import { getSkillById } from "@/data";
 import SkillDetailModal from "./SkillDetailModal";
 
 interface SkillRowProps {
@@ -42,6 +43,9 @@ export default function SkillRow({
   } = useSkillDetail(skillId);
 
   const hasContent = !!description || subtopics.length > 0;
+  const studyHref = getSkillById(skillId)?.studyMaterial
+    ? `/tree/${slug}/skill/${skillId}/study`
+    : undefined;
 
   const handleOpen = () => {
     if (!hasContent) return;
@@ -131,6 +135,7 @@ export default function SkillRow({
         disabled={disabled}
         award={award}
         onToggleSubtopic={toggle}
+        studyHref={studyHref}
       />
 
       {levelUp && (
