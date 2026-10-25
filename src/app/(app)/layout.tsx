@@ -1,5 +1,6 @@
 import Header from "@/shared/ui/Header";
-import { getDevelopmentVersion, getLatestReleaseVersion } from "@/lib/version";
+import { getDevelopmentVersion } from "@/lib/version.server";
+import { getLatestReleaseVersion } from "@/lib/version";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const isPreview = process.env.VERCEL_ENV === "preview";

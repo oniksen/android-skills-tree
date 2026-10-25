@@ -1,4 +1,3 @@
-import { execSync } from "node:child_process";
 import packageJson from "../../package.json";
 
 const REPO = process.env.GITHUB_REPOSITORY ?? "oniksen/android-skills-tree";
@@ -11,21 +10,10 @@ export const VERSION = DEVELOPMENT_VERSION;
 export const LOCAL_DEV_VERSION = DEVELOPMENT_VERSION;
 
 export function getDevelopmentVersion(): string {
-  let sha = "local";
-  try {
-    sha = execSync("git rev-parse --short HEAD", {
-      stdio: ["ignore", "pipe", "ignore"],
-    })
-      .toString()
-      .trim();
-  } catch {
-    // ignore; fall back to env or "local"
-  }
-  if (process.env.VERCEL_GIT_COMMIT_SHA) {
-    sha = process.env.VERCEL_GIT_COMMIT_SHA.slice(0, 7);
-  } else if (process.env.GIT_COMMIT_SHA) {
-    sha = process.env.GIT_COMMIT_SHA.slice(0, 7);
-  }
+  const sha =
+    process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ||
+    process.env.GIT_COMMIT_SHA?.slice(0, 7) ||
+    "local";
   return `v${DEVELOPMENT_VERSION}-dev+${sha}`;
 }
 
