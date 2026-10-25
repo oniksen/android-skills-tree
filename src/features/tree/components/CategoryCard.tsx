@@ -80,7 +80,7 @@ export default function CategoryCard({ categoryId, name, skills, assessments, is
             description={skill.description}
             subtopics={skill.subtopics}
             required={skill.requiredForLevelUp}
-            disabled={disabled || isLocked}
+            disabled={disabled}
           />
         ))}
       </div>

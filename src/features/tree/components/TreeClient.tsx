@@ -183,7 +183,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
                 skills={cat.skills}
                 assessments={assessmentMap}
                 isLocked={catScore >= catMax}
-                disabled={catScore >= catMax}
+                disabled={false}
                 index={index}
                 studyHref={cat.studyMaterial ? `/tree/${slug}/category/${cat.id}/study` : undefined}
               />

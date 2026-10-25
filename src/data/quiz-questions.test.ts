@@ -7,6 +7,8 @@ import {
   getQuizQuestionsBySkill,
   QUIZ_GRADES,
   getGradeLevelOrder,
+  getQuizGradeCounts,
+  getTotalQuizQuestions,
 } from "@/data/quiz-questions";
 
 describe("quiz questions", () => {
@@ -65,6 +67,21 @@ describe("quiz questions", () => {
   it("maps grades to level order", () => {
     expect(getGradeLevelOrder("junior")).toBeLessThan(getGradeLevelOrder("senior"));
     expect(levels.map((l) => l.id)).toContain("junior");
+  });
+
+  it("counts quiz questions per grade for a skill", () => {
+    const counts = getQuizGradeCounts("junior-osnovy-perem");
+    expect(getTotalQuizQuestions("junior-osnovy-perem")).toBe(4);
+    expect(counts.junior).toBe(1);
+    expect(counts.middle).toBe(1);
+    expect(counts["strong-middle"]).toBe(1);
+    expect(counts.senior).toBe(1);
+  });
+
+  it("returns zero counts for unknown skill", () => {
+    const counts = getQuizGradeCounts("non-existent-skill");
+    expect(getTotalQuizQuestions("non-existent-skill")).toBe(0);
+    for (const grade of QUIZ_GRADES) expect(counts[grade]).toBe(0);
   });
 
   it("includes lower grades when filtering for a higher grade", () => {

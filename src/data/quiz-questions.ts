@@ -418,5 +418,18 @@ export function getGradeLevelOrder(grade: QuizGrade): number {
   }
 }
 
+export function getQuizGradeCounts(skillId: string): Record<QuizGrade, number> {
+  const counts = QUIZ_GRADES.reduce((acc, grade) => {
+    acc[grade] = 0;
+    return acc;
+  }, {} as Record<QuizGrade, number>);
+  for (const q of getQuizQuestionsBySkill(skillId)) counts[q.grade] += 1;
+  return counts;
+}
+
+export function getTotalQuizQuestions(skillId: string): number {
+  return getQuizQuestionsBySkill(skillId).length;
+}
+
 /** @deprecated Use allQuizQuestions */
 export const juniorProgrammingBasicsQuestions = allQuizQuestions;

@@ -6,10 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { getSkillById } from "@/data";
 import { getLevelBySlug, levels } from "@/data/levels";
 import { useUserProgress } from "@/hooks";
-import { useAssessments } from "@/hooks/useAssessments";
 import { useSkillDetail } from "@/hooks/useSkillDetail";
-import { calcCategoryScore } from "@/core/domain/scoring";
-import { getCategoryMaxScore } from "@/core/domain/weights";
 import SkillDetailContent from "@/features/tree/components/SkillDetailContent";
 import CelebrationModal from "@/shared/ui/CelebrationModal";
 import { SkillDetailSkeleton } from "@/shared/ui/skeletons";
@@ -22,7 +19,6 @@ interface SkillDetailPageClientProps {
 export default function SkillDetailPageClient({ slug, skillId }: SkillDetailPageClientProps) {
   const router = useRouter();
   const { progress, loading } = useUserProgress();
-  const { assessmentMap } = useAssessments();
   const {
     subtopicState,
     subtopicPercent,
@@ -43,15 +39,7 @@ export default function SkillDetailPageClient({ slug, skillId }: SkillDetailPage
   const isFuture = !!progress && viewingLevelIndex > currentLevelIndex;
   const isPast = !!progress && viewingLevelIndex < currentLevelIndex;
 
-  const categoryScore = progress ? calcCategoryScore(skill.categoryId, assessmentMap) : 0;
-  const categoryMax = getCategoryMaxScore(skill.categoryId);
-  const categoryLocked =
-    !!progress &&
-    viewingLevelIndex === currentLevelIndex &&
-    categoryMax > 0 &&
-    categoryScore >= categoryMax;
-
-  const disabled = isFuture || categoryLocked;
+  const disabled = isFuture;
   const readonly = !progress || isPast;
 
   return (

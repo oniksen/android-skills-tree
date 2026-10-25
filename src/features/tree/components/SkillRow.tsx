@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import CelebrationModal from "@/shared/ui/CelebrationModal";
 import DifficultyBadge from "@/shared/ui/DifficultyBadge";
+import QuizInfoIcon from "@/shared/ui/QuizInfoIcon";
 import { useSkillDetail } from "@/hooks/useSkillDetail";
 import { isDesktopViewport, skillDetailHref } from "@/lib/viewport";
 import { getSkillById } from "@/data";
@@ -79,6 +80,7 @@ export default function SkillRow({
               {subtopicPercent === 100 ? "+" : subtopicPercent > 0 ? "·" : "-"}
             </span>
             <span className="text-base text-slate-300 nav-md:truncate">{name}</span>
+            <QuizInfoIcon skillId={skillId} />
             {required && (
               <span className="shrink-0 rounded border border-blue-500/40 bg-blue-500/10 px-1.5 py-0.5 font-mono text-xs text-blue-600">
                 required

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import DifficultyBadge from "@/shared/ui/DifficultyBadge";
+import QuizInfoIcon from "@/shared/ui/QuizInfoIcon";
 import { isDesktopViewport, skillDetailHref } from "@/lib/viewport";
 import SkillDetailModal from "./SkillDetailModal";
 
@@ -43,6 +44,7 @@ export default function SkillRowReadonly({ skillId, name, description, subtopics
           <div className="flex min-w-0 items-center gap-2">
             <span className="w-3 shrink-0 text-center font-mono text-slate-600">·</span>
             <span className="text-base text-slate-300 nav-md:truncate">{name}</span>
+            <QuizInfoIcon skillId={skillId} />
           </div>
           <div className="pl-5 nav-md:pl-0">
             <DifficultyBadge skillId={skillId} />
