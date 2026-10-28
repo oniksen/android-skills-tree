@@ -1,6 +1,4 @@
 import SkillRowReadonly from "./SkillRowReadonly";
-import Link from "next/link";
-import { BookOpen } from "lucide-react";
 import ProgressBar from "@/shared/ui/ProgressBar";
 import { calcCategoryScore } from "@/core/domain/scoring";
 import { getCategoryMaxScore } from "@/core/domain/weights";
@@ -13,12 +11,11 @@ interface SkillItem {
   sortOrder: number;
 }
 
-export default function CategoryCardReadonly({ categoryId, name, skills, assessments = {}, studyHref }: {
+export default function CategoryCardReadonly({ categoryId, name, skills, assessments = {} }: {
   categoryId: string;
   name: string;
   skills: SkillItem[];
   assessments?: Record<string, { subtopics?: Record<string, boolean> }>;
-  studyHref?: string;
 }) {
   const sorted = [...skills].sort((a, b) => a.sortOrder - b.sortOrder);
   const maxScore = getCategoryMaxScore(categoryId);
@@ -30,15 +27,6 @@ export default function CategoryCardReadonly({ categoryId, name, skills, assessm
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
           <h3 className="font-semibold text-lg text-white">{name}</h3>
-          {studyHref && (
-            <Link
-              href={studyHref}
-              aria-label="Учебный материал"
-              className="inline-flex items-center justify-center rounded-md p-1 text-blue-600 transition-colors hover:text-blue-500"
-            >
-              <BookOpen className="h-5 w-5" />
-            </Link>
-          )}
         </div>
         <span className="font-mono text-sm text-slate-500">{catScore}/{maxScore} XP</span>
       </div>

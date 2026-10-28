@@ -7,6 +7,7 @@ import ThemeProvider from "@/shared/ui/ThemeProvider";
 import { ServicesProvider } from "@/composition/services-context";
 import { ToastProvider } from "@/shared/lib/toast-context";
 import Toast from "@/shared/ui/Toast";
+import QueryProvider from "@/shared/ui/QueryProvider";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin", "cyrillic"],
@@ -58,12 +59,13 @@ export default function RootLayout({
         <ThemeProvider>
           <ServicesProvider>
             <ToastProvider>
-              {children}
-              <Toast />
+              <QueryProvider>
+                {children}
+                <Toast />
+              </QueryProvider>
             </ToastProvider>
           </ServicesProvider>
-        </ThemeProvider>
-      </body>
+        </ThemeProvider>      </body>
     </html>
   );
 }

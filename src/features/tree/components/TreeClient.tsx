@@ -13,7 +13,7 @@ import Legend from "@/features/tree/components/Legend";
 import AnimatedNumber from "@/shared/ui/AnimatedNumber";
 import { TreeSkeleton } from "@/shared/ui/skeletons";
 import { calcCategoryScore } from "@/core/domain/scoring";
-import { getCategoryMaxScore, getLevelMaxScore, getLevelMinScore } from "@/core/domain/weights";
+import { getCategoryMaxScore, getLevelMinScore } from "@/core/domain/weights";
 
 const LEVEL_ACCENT: Record<string, string> = {
   junior: "text-green-400",
@@ -68,7 +68,6 @@ export default function TreeClient({ slug }: TreeClientProps) {
               categoryId={cat.id}
               name={cat.name}
               skills={cat.skills}
-              studyHref={cat.studyMaterial ? `/tree/${slug}/category/${cat.id}/study` : undefined}
             />
           ))}
         </div>
@@ -127,7 +126,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
           <LevelGate
             isUnlocked={false}
             isCompleted={false}
-            requiredScore={getLevelMaxScore(levels[levelIndex - 1]?.id ?? "")}
+            requiredScore={getLevelMinScore(currentLevel.id)}
             currentScore={currentScore}
             levelName={currentLevel.name}
           />
@@ -142,7 +141,6 @@ export default function TreeClient({ slug }: TreeClientProps) {
                 isLocked={false}
                 disabled={true}
                 index={index}
-                studyHref={cat.studyMaterial ? `/tree/${slug}/category/${cat.id}/study` : undefined}
               />
             ))}
           </div>
@@ -164,7 +162,6 @@ export default function TreeClient({ slug }: TreeClientProps) {
                 categoryId={cat.id}
                 name={cat.name}
                 skills={cat.skills}
-                studyHref={cat.studyMaterial ? `/tree/${slug}/category/${cat.id}/study` : undefined}
               />
             ))}
           </div>
@@ -185,7 +182,6 @@ export default function TreeClient({ slug }: TreeClientProps) {
                 isLocked={catScore >= catMax}
                 disabled={false}
                 index={index}
-                studyHref={cat.studyMaterial ? `/tree/${slug}/category/${cat.id}/study` : undefined}
               />
             );
           })}

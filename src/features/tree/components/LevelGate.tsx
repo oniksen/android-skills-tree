@@ -13,7 +13,7 @@ export default function LevelGate({ isUnlocked, isCompleted, requiredScore, curr
           <div className="mb-3 font-mono text-sm font-semibold text-amber-600">[ LOCKED ]</div>
           <h3 className="mb-2 text-lg font-semibold text-white">{levelName} заблокирован</h3>
           <p className="mb-5 font-mono text-sm text-slate-400">
-            Набери {requiredScore} XP для разблокировки
+            Осталось {Math.max(0, requiredScore - currentScore)} XP для разблокировки
           </p>
           <div className="inline-flex items-center gap-2 font-mono text-xs">
             <span className="text-slate-600">[</span>

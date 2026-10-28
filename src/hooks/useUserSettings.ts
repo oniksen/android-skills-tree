@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { db } from "@/lib/firebase";
 import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { useToast } from "@/shared/lib/toast-context";
+import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { userSettingsPath } from "@/adapters/firestore-client/paths";
 import type { UserSettings } from "@/types";
 
@@ -14,6 +16,7 @@ const DEFAULT_SETTINGS: UserSettings = {
 
 export function useUserSettings() {
   const { uid, loading: authLoading } = useFirebaseAuth();
+  const toast = useToast();
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,10 +36,13 @@ export function useUserSettings() {
       (error) => {
         console.error("Error listening to settings:", error);
         setLoading(false);
+        if (isPermissionDenied(error)) {
+          toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        }
       },
     );
     return () => unsub();
-  }, [uid, authLoading]);
+  }, [uid, authLoading, toast]);
 
   const todayKey = new Date().toISOString().slice(0, 10);
 

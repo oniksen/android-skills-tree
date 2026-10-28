@@ -39,9 +39,12 @@ export function useUserProgress() {
       error: (error) => {
         console.error("Error listening to progress:", error);
         setLoading(false);
+        if (isPermissionDenied(error)) {
+          toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        }
       },
     });
-  }, [uid, authLoading, repository]);
+  }, [uid, authLoading, repository, toast]);
 
   useEffect(() => {
     if (!uid) return;

@@ -56,3 +56,7 @@ opencode.json
 .worktrees/
 coverage/
 .playwright-mcp/
+
+# Firebase service account key (never commit)
+android-dev-skill-tree-firebase-adminsdk-fbsvc-b79087e906.json
+serviceAccountKey.json

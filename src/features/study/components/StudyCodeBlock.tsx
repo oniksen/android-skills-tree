@@ -1,8 +1,15 @@
 "use client";
 
+import { Copy, Check } from "lucide-react";
 import { useState } from "react";
 
-export default function StudyCodeBlock({ code }: { code: string }) {
+export default function StudyCodeBlock({
+  code,
+  children,
+}: {
+  code: string;
+  children?: React.ReactNode;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
@@ -17,11 +24,17 @@ export default function StudyCodeBlock({ code }: { code: string }) {
 
   return (
     <div className="study-code-wrap">
-      <button type="button" className="study-copy" onClick={handleCopy}>
-        {copied ? "Скопировано" : "Копировать"}
+      <button
+        type="button"
+        className={`study-copy ${copied ? "study-copy--copied" : ""}`}
+        onClick={handleCopy}
+        aria-label={copied ? "Скопировано" : "Копировать код"}
+        title={copied ? "Скопировано" : "Копировать"}
+      >
+        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
       </button>
       <pre className="study-code">
-        <code>{code}</code>
+        <code>{children ?? code}</code>
       </pre>
     </div>
   );

@@ -65,10 +65,13 @@ export function useStreak() {
       },
       error: (error) => {
         console.error("Error listening to streak:", error);
+        if (isPermissionDenied(error)) {
+          toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        }
         setLoading(false);
       },
     });
-  }, [uid, authLoading, repository]);
+  }, [uid, authLoading, repository, toast]);
 
   useEffect(() => {
     if (!uid) return;

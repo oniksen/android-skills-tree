@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getCategoriesByLevelId, getLevelBySlug, getSkillById } from "@/data";
-import { getStudyMaterial } from "@/features/study/study-materials";
 import StudyMaterialPage from "@/features/study/components/StudyMaterialPage";
+import StudyMaterialContent from "@/features/study/components/StudyMaterialContent";
 
 export default async function StudyMaterialRoute({
   params,
@@ -18,17 +18,14 @@ export default async function StudyMaterialRoute({
   );
   if (!belongsToLevel) return notFound();
 
-  const material = getStudyMaterial(skill.studyMaterial);
-  if (!material) return notFound();
-
-  const Material = material.component;
+  if (!skill.studyMaterial) return notFound();
 
   return (
     <StudyMaterialPage
       backHref={`/tree/${slug}`}
       backLabel="Назад к дереву"
     >
-      <Material />
+      <StudyMaterialContent materialId={skill.studyMaterial} />
     </StudyMaterialPage>
   );
 }

@@ -1,7 +1,5 @@
 "use client";
 import { motion } from "motion/react";
-import Link from "next/link";
-import { BookOpen } from "lucide-react";
 import SkillRow from "./SkillRow";
 import ProgressBar from "@/shared/ui/ProgressBar";
 import { calcCategoryScore } from "@/core/domain/scoring";
@@ -24,10 +22,9 @@ interface CategoryCardProps {
   isLocked?: boolean;
   disabled?: boolean;
   index?: number;
-  studyHref?: string;
 }
 
-export default function CategoryCard({ categoryId, name, skills, assessments, isLocked = false, disabled = false, index = 0, studyHref }: CategoryCardProps) {
+export default function CategoryCard({ categoryId, name, skills, assessments, isLocked = false, disabled = false, index = 0 }: CategoryCardProps) {
   const sorted = [...skills].sort((a, b) => a.sortOrder - b.sortOrder);
   const maxScore = getCategoryMaxScore(categoryId);
   const catScore = calcCategoryScore(categoryId, assessments);
@@ -53,15 +50,6 @@ export default function CategoryCard({ categoryId, name, skills, assessments, is
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
           <h3 className="font-semibold text-lg text-white">{name}</h3>
-          {studyHref && (
-            <Link
-              href={studyHref}
-              aria-label="Учебный материал"
-              className="inline-flex items-center justify-center rounded-md p-1 text-blue-600 transition-colors hover:text-blue-500"
-            >
-              <BookOpen className="h-5 w-5" />
-            </Link>
-          )}
         </div>
         <span className="flex items-center gap-2">
           {isLocked && catScore >= maxScore && (

@@ -7,9 +7,10 @@ const securityHeaders = [
       "default-src 'self'",
       // Next.js внедряет инлайновые bootstrap-скрипты и стили.
       // В dev-режиме React требует eval() для отладочных возможностей.
-      "script-src 'self' 'unsafe-inline'" +
+      "script-src 'self' 'unsafe-inline' https://apis.google.com https://www.gstatic.com" +
         (process.env.NODE_ENV !== "production" ? " 'unsafe-eval'" : ""),
       "style-src 'self' 'unsafe-inline'",
+      "frame-src 'self' https://accounts.google.com https://*.firebaseapp.com https://*.google.com",
       // Firebase web SDK: REST + вебсокеты Firestore, Auth.
       "connect-src 'self' https://*.googleapis.com wss://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://apis.google.com",
       "img-src 'self' data: https://*.googleapis.com",

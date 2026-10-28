@@ -28,10 +28,13 @@ export function useProjectProgress() {
       },
       error: (error) => {
         console.error("Error listening to projects:", error);
+        if (isPermissionDenied(error)) {
+          toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        }
         setLoading(false);
       },
     });
-  }, [uid, authLoading, repository]);
+  }, [uid, authLoading, repository, toast]);
 
   const toggleProjectCompletion = async (
     projectId: string,

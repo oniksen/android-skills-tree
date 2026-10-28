@@ -628,14 +628,41 @@
 }
 
 .study-copy {
-  float: right;
-  font-size: 0.75rem;
-  padding: 4px 8px;
-  border: 1px solid var(--surface-border);
-  background: var(--surface);
-  color: var(--fg);
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.35);
+  color: #e5edf8;
   border-radius: 7px;
   cursor: pointer;
+  transition: transform 120ms ease, background 120ms ease, color 120ms ease;
+}
+
+.study-copy:hover {
+  transform: translateY(-1px);
+}
+
+.study-copy:active {
+  transform: scale(0.92);
+}
+
+.study-copy--copied {
+  color: #3f8f5f;
+  animation: study-copy-pop 240ms ease;
+}
+
+@keyframes study-copy-pop {
+  0% { transform: scale(0.85); }
+  60% { transform: scale(1.12); }
+  100% { transform: scale(1); }
 }
 
 .study-code {
@@ -643,6 +670,7 @@
   color: var(--study-code-ink);
   border-radius: 11px;
   padding: 13px;
+  padding-right: 46px;
   overflow: auto;
   font: 0.83rem / 1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
   white-space: pre;

@@ -13,9 +13,11 @@
     "new:feat": "node scripts/start-work.mjs --type=feat",
     "new:fix": "node scripts/start-work.mjs --type=fix",
     "rc": "node scripts/create-rc.mjs",
-    "promote": "node scripts/promote.mjs"
+    "promote": "node scripts/promote.mjs",
+    "upload:study": "node scripts/upload-study-materials.mjs"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.105.0",
     "firebase": "^12.18.0",
     "jose": "^6.2.12",
     "lucide-react": "^1.45.0",
@@ -23,6 +25,10 @@
     "next": "16.2.10",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1",
     "zod": "^4.6.7"
   },
   "devDependencies": {
@@ -33,6 +39,7 @@
     "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "firebase-admin": "^14.5.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.11"
