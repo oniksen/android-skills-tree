@@ -7,15 +7,16 @@
 </header>
 
 <nav class="study-nav" aria-label="Навигация">
-<a class="study-nav-link" href="#structure">Структура</a>
-<a class="study-nav-link" href="#modules">Модули</a>
-<a class="study-nav-link" href="#tests">Тесты</a>
-<a class="study-nav-link" href="#resources">Ресурсы</a>
-<a class="study-nav-link" href="#gradle">Gradle и SDK</a>
-<a class="study-nav-link" href="#variants">Варианты сборки</a>
-<a class="study-nav-link" href="#packages">APK/AAB</a>
-<a class="study-nav-link" href="#release">Release</a>
-<a class="study-nav-link" href="#check">Проверка знаний</a>
+<a class="study-nav-link" href="#structure">1. Структура проекта</a>
+<a class="study-nav-link" href="#modules">2. Модули и зависимости</a>
+<a class="study-nav-link" href="#tests">3. Тесты и test-зависимости</a>
+<a class="study-nav-link" href="#resources">4. Ресурсы и qualifiers</a>
+<a class="study-nav-link" href="#gradle">5. Gradle, настройки и версии SDK</a>
+<a class="study-nav-link" href="#variants">6. Build types, product flavors и build variants</a>
+<a class="study-nav-link" href="#packages">7. APK и AAB: что собирает Android-проект</a>
+<a class="study-nav-link" href="#release">8. Подпись, R8 и Gradle Wrapper</a>
+<a class="study-nav-link" href="#sec-1">Android Studio: основы работы</a>
+<a class="study-nav-link" href="#check">9. Самопроверка</a>
 </nav>
 
 <section id="structure" class="study-section">
@@ -354,7 +355,7 @@ buildTypes {
 <p>Это помогает разработчикам и CI собирать проект на согласованной версии Gradle. Но сборка всё равно зависит от совместимости Gradle, Android Gradle Plugin, JDK и установленных SDK.</p>
 </section>
 
-<section class="study-section">
+<section id="sec-1" class="study-section">
 <h2 class="study-section-title">Android Studio: основы работы</h2>
 
 <h3 class="study-subtitle">Установка и настройка</h3>
