@@ -184,6 +184,27 @@ val length = nickname?.length ?: 0
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Инициализация переменных</h2>
+<p>Переменную можно инициализировать сразу при объявлении или отложить. Для отложенной инициализации ссылочных свойств в классах используют <code>lateinit var</code>, а для ленивого вычисления значения — делегат <code>by lazy</code>.</p>
+
+```kotlin
+class User {
+    lateinit var name: String
+
+    val fullName: String by lazy {
+        "$name Smith"
+    }
+}
+
+fun main() {
+    val user = User()
+    user.name = "Ada"
+    println(user.fullName)
+}
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">7. Самопроверка</h2>
 <div class="study-checklist">

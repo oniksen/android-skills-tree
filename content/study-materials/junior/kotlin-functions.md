@@ -157,6 +157,19 @@ connect(
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Single-expression functions</h2>
+<p>Если функция состоит из одного выражения, её можно записать в одну строку со знаком <code>=</code>. Тип результата можно указать явно или дать компилятору вывести его автоматически.</p>
+
+```kotlin
+fun double(x: Int) = x * 2
+
+fun isAdult(age: Int): Boolean = age >= 18
+
+fun greet(name: String) = "Привет, $name"
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">6. Самопроверка</h2>
 <div class="study-checklist">

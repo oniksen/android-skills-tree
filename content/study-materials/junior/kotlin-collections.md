@@ -195,6 +195,25 @@ mutableList.add(4)
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Spread-оператор (*)</h2>
+<p>Spread-оператор распаковывает коллекцию в аргументы <code>vararg</code>. Это удобно при объединении списков или передаче элементов в функцию с переменным числом параметров.</p>
+
+```kotlin
+fun printAll(vararg values: Int) {
+    println(values.joinToString())
+}
+
+fun main() {
+    val numbers = listOf(1, 2, 3)
+    printAll(*numbers.toIntArray())
+
+    val combined = listOf(0, *numbers.toIntArray(), 4)
+    println(combined)
+}
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">7. Самопроверка</h2>
 <div class="study-checklist">

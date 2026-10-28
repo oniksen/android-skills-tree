@@ -134,6 +134,44 @@ fun divide(a: Int, b: Int): Result<Int> {
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Типы исключений</h2>
+<p>Kotlin использует иерархию исключений JVM. Можно перехватывать конкретные типы, чтобы реагировать по-разному. Часто встречаются <code>NumberFormatException</code>, <code>NullPointerException</code>, <code>IllegalArgumentException</code>, <code>IllegalStateException</code>, <code>IOException</code>.</p>
+
+```kotlin
+try {
+    val number = "abc".toInt()
+} catch (e: NumberFormatException) {
+    println("Неверный формат числа")
+} catch (e: Exception) {
+    println("Другая ошибка: ${e.message}")
+}
+```
+</section>
+
+<section class="study-section">
+<h2 class="study-section-title">Паттерн Success/Failure</h2>
+<p>Вместо исключений можно возвращать результат с явным состоянием успеха или ошибки. Это делает обработку предсказуемой и заставляет вызывающий код учесть оба варианта.</p>
+
+```kotlin
+sealed interface Result<out T> {
+    data class Success<T>(val value: T) : Result<T>
+    data class Failure(val error: Throwable) : Result<Nothing>
+}
+
+fun divide(a: Int, b: Int): Result<Int> =
+    if (b == 0) Result.Failure(ArithmeticException("Деление на ноль"))
+    else Result.Success(a / b)
+
+fun main() {
+    when (val result = divide(10, 2)) {
+        is Result.Success -> println(result.value)
+        is Result.Failure -> println(result.error.message)
+    }
+}
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">5. Самопроверка</h2>
 <div class="study-checklist">
