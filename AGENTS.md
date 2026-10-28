@@ -66,3 +66,12 @@ server-rendered Next.js with client components talking to Firestore via hooks.
 - Develop locally; push the feature branch only if you need to save progress.
 - Create release candidate: `npm run rc` (creates/pushes `rc/X.Y.Z`; CI creates `vX.Y.Z-rc.N`).
 - Promote to stable: `npm run promote` (opens PR) or `npm run promote -- --merge` (merges; CI creates `vX.Y.Z`).
+
+## Study material authoring
+
+- Each study topic must cover **all** subtopics listed in `src/data/skills.ts` for that skill.
+- Target volume: **at least 700 words of clean information per topic** (excluding code blocks and HTML tags). If a topic requires more to be fully covered at Junior level, exceed this — completeness takes priority over the number.
+- Include concrete examples, real-world cases, and common mistakes/errors for each concept.
+- Every topic page must have **anchor links (study-nav) for each subtopic section** so users can jump quickly.
+- Keep the existing `study-*` CSS classes and structure; add new sections before the self-check section.
+- After editing materials, run `npm run lint`, `npm run typecheck`, `npm test`, then `node scripts/upload-study-materials.mjs` to sync to Firebase.
