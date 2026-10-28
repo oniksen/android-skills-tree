@@ -8,6 +8,10 @@ export function useStudyMaterial(id: string | null | undefined) {
     queryKey: ["studyMaterial", id],
     queryFn: () => fetchStudyMaterial(id as string),
     enabled: !!id,
-    staleTime: 1000 * 60 * 60,
+    staleTime: 1000 * 60 * 60 * 24,
+    gcTime: 1000 * 60 * 60 * 24,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: 1,
   });
 }
