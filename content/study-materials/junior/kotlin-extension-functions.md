@@ -21,10 +21,11 @@ Extension function объявляется как обычная функция, 
 </p>
 
 ```kotlin
-fun String.addExclamation(): String 
+fun String.addExclamation(): String {
+    return this + "!"
+}
 
 val result = "Hello".addExclamation()
-
 ```
 
 <div class="study-grid">
@@ -58,7 +59,6 @@ val String.lastChar: Char
     get() = this[length - 1]
 
 println("Kotlin".lastChar)
-
 ```
 
 </section>
@@ -70,10 +70,11 @@ Extension function может быть объявлена для nullable-тип
 </p>
 
 ```kotlin
-fun String?.safeLength(): Int 
+fun String?.safeLength(): Int {
+    return this?.length ?: 0
+}
 
 val length = null.safeLength()
-
 ```
 
 <div class="study-note">
@@ -88,12 +89,13 @@ val length = null.safeLength()
 </p>
 
 ```kotlin
-class User(val name: String) 
+class User(val name: String) {
+    fun printName() = println("member: $name")
+}
 
 fun User.printName() = println("extension: $name")
 
 User("Ada").printName() // member: Ada
-
 ```
 
 </section>
@@ -105,9 +107,9 @@ Extension functions часто используют для утилит над �
 </p>
 
 ```kotlin
-fun List<Int>.sumEven(): Int .sum()
+fun List<Int>.sumEven(): Int {
+    return this.filter { it % 2 == 0 }.sum()
 }
-
 ```
 
 </section>

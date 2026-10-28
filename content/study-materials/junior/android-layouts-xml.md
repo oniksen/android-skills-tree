@@ -32,7 +32,6 @@ XML-layouts описывают интерфейс Android-приложения. 
         android:layout_height="wrap_content"
         android:text="Hello" />
 </LinearLayout>
-
 ```
 
 <div class="study-grid">
@@ -69,7 +68,6 @@ FrameLayout помещает дочерние элементы друг над �
     <ImageView ... />
     <TextView ... />
 </FrameLayout>
-
 ```
 
 </section>
@@ -89,7 +87,6 @@ LinearLayout располагает элементы в строку или ст
     <Button android:layout_width="0dp" android:layout_weight="1" ... />
     <Button android:layout_width="0dp" android:layout_weight="1" ... />
 </LinearLayout>
-
 ```
 
 </section>
@@ -107,7 +104,6 @@ ConstraintLayout позволяет создавать сложные интер
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
-
 ```
 
 <div class="study-note">

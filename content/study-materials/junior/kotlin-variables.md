@@ -29,7 +29,6 @@ count = count + 1
 
 println(name)
 println(count)
-
 ```
 
 <div class="study-grid">
@@ -66,7 +65,6 @@ count = count + 1
 
 println(name)
 println(count)
-
 ```
 
 <div class="study-note">
@@ -106,7 +104,6 @@ val age: Int = 25
 val title = "Android" // тип выводится как String
 
 val pi: Double = 3.14
-
 ```
 
 <div class="study-grid">
@@ -139,10 +136,12 @@ val pi: Double = 3.14
 </p>
 
 ```kotlin
-fun printUser() 
+fun printUser() {
+    val localName = "Ada"
+    println(localName)
+}
 
 // localName здесь недоступна
-
 ```
 
 <div class="study-note study-warn">
@@ -159,8 +158,9 @@ fun printUser()
 ```kotlin
 const val APP_NAME = "Skill Tree"
 
-object Config 
-
+object Config {
+    const val MAX_ATTEMPTS = 3
+}
 ```
 
 <p class="study-small study-muted">
@@ -177,7 +177,6 @@ object Config
 ```kotlin
 val nickname: String? = null
 val length = nickname?.length ?: 0
-
 ```
 
 <div class="study-note">

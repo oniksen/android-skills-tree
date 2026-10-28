@@ -23,12 +23,14 @@
 </p>
 
 ```kotlin
-class User(val name: String, var age: Int) 
+class User(val name: String, var age: Int) {
+    fun printInfo() {
+        println("$name, $age")
+    }
 }
 
 val user = User("Ada", 25)
 user.printInfo()
-
 ```
 
 <div class="study-grid">
@@ -58,11 +60,13 @@ user.printInfo()
 </p>
 
 ```kotlin
-class Book(val title: String) 
+class Book(val title: String) {
+    init {
+        println("Создана книга: $title")
+    }
 }
 
 class Point(val x: Int, val y: Int)
-
 ```
 
 <div class="study-note">
@@ -77,10 +81,13 @@ class Point(val x: Int, val y: Int)
 </p>
 
 ```kotlin
-open class Animal(val name: String) 
+open class Animal(val name: String) {
+    open fun sound() = println("...")
+}
 
-class Dog(name: String) : Animal(name) 
-
+class Dog(name: String) : Animal(name) {
+    override fun sound() = println("Гав")
+}
 ```
 
 <div class="study-grid">
@@ -110,11 +117,15 @@ class Dog(name: String) : Animal(name)
 </p>
 
 ```kotlin
-interface Clickable 
-
-class Button : Clickable 
+interface Clickable {
+    fun click()
 }
 
+class Button : Clickable {
+    override fun click() {
+        println("Кнопка нажата")
+    }
+}
 ```
 
 <div class="study-note">
@@ -129,11 +140,13 @@ class Button : Clickable
 </p>
 
 ```kotlin
-class BankAccount(private var balance: Int) 
+class BankAccount(private var balance: Int) {
+    fun deposit(amount: Int) {
+        if (amount > 0) balance += amount
+    }
 
     fun getBalance(): Int = balance
 }
-
 ```
 
 <div class="study-grid">
@@ -163,10 +176,15 @@ class BankAccount(private var balance: Int)
 </p>
 
 ```kotlin
-abstract class Shape 
+abstract class Shape {
+    abstract fun area(): Double
 
-class Circle(val radius: Double) : Shape() 
+    fun describe() = println("Это фигура")
+}
 
+class Circle(val radius: Double) : Shape() {
+    override fun area(): Double = Math.PI * radius * radius
+}
 ```
 
 <div class="study-note study-warn">

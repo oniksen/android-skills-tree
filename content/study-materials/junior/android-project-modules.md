@@ -32,7 +32,6 @@ MyAndroidProject/
 ├── build.gradle.kts
 ├── settings.gradle.kts
 └── gradle.properties
-
 ```
 
 </section>
@@ -49,7 +48,6 @@ src/main/res      # ресурсы
 src/main/AndroidManifest.xml
 src/test          # unit-тесты JVM
 src/androidTest   # инструментальные тесты
-
 ```
 
 <div class="study-grid">
@@ -83,8 +81,10 @@ src/androidTest   # инструментальные тесты
 include(":app", ":core", ":feature")
 
 // app/build.gradle.kts
-dependencies 
-
+dependencies {
+    implementation(project(":core"))
+    implementation(project(":feature"))
+}
 ```
 
 <div class="study-note">
@@ -102,7 +102,6 @@ dependencies
 // Корневой build.gradle.kts — общие плагины
 // app/build.gradle.kts — настройки модуля
 // gradle/libs.versions.toml — версии зависимостей
-
 ```
 
 <table class="study-table">

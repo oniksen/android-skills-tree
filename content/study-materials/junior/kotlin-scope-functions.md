@@ -24,8 +24,9 @@ Scope functions — <code>let</code>, <code>run</code>, <code>with</code>, <code
 ```kotlin
 val name: String? = "Kotlin"
 
-name?.let 
-
+name?.let {
+    println(it.length)
+}
 ```
 
 </section>
@@ -37,8 +38,9 @@ name?.let
 </p>
 
 ```kotlin
-val result = "Kotlin".run 
-
+val result = "Kotlin".run {
+    length * 2
+}
 ```
 
 </section>
@@ -52,10 +54,13 @@ val result = "Kotlin".run
 ```kotlin
 val builder = StringBuilder()
 
-with(builder) 
+with(builder) {
+    append("Hello")
+    append(" ")
+    append("Kotlin")
+}
 
 println(builder.toString())
-
 ```
 
 </section>
@@ -67,8 +72,10 @@ println(builder.toString())
 </p>
 
 ```kotlin
-val user = User().apply 
-
+val user = User().apply {
+    name = "Ada"
+    age = 25
+}
 ```
 
 </section>
@@ -82,8 +89,9 @@ val user = User().apply
 ```kotlin
 val numbers = mutableListOf(1, 2, 3)
 
-val sameList = numbers.also 
-
+val sameList = numbers.also {
+    println("Список: $it")
+}
 ```
 
 </section>
@@ -93,20 +101,19 @@ val sameList = numbers.also
 
 ```kotlin
 // let: преобразовать nullable
-nullable?.let 
+nullable?.let { ... }
 
 // run: вычислить результат из объекта
-obj.run 
+obj.run { ... }
 
 // apply: настроить объект
-obj.apply 
+obj.apply { ... }
 
 // also: выполнить побочное действие
-obj.also 
+obj.also { ... }
 
 // with: сгруппировать вызовы
-with(obj) 
-
+with(obj) { ... }
 ```
 
 <div class="study-grid">

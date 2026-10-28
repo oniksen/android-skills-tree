@@ -21,8 +21,11 @@ Sealed-класс позволяет описать закрытый набор 
 </p>
 
 ```kotlin
-sealed class Result 
-
+sealed class Result {
+    data class Success(val value: String) : Result()
+    data class Error(val message: String) : Result()
+    object Loading : Result()
+}
 ```
 
 <div class="study-grid">
@@ -52,21 +55,28 @@ sealed class Result
 </p>
 
 ```kotlin
-fun handle(result: Result): String "
-        is Result.Error -> "Ошибка: $"
+fun handle(result: Result): String {
+    return when (result) {
+        is Result.Success -> "Успех: ${'$'}{result.value}"
+        is Result.Error -> "Ошибка: ${'$'}{result.message}"
         Result.Loading -> "Загрузка..."
     }
 }
-
 ```
 
 
 ```kotlin
-sealed class Status 
-
-fun label(status: Status): String 
+sealed class Status {
+    object New : Status()
+    object Done : Status()
 }
 
+fun label(status: Status): String {
+    return when (status) {
+        Status.New -> "Новый"
+        Status.Done -> "Готово"
+    }
+}
 ```
 
 </section>
@@ -78,8 +88,11 @@ fun label(status: Status): String
 </p>
 
 ```kotlin
-sealed interface UiState 
-
+sealed interface UiState {
+    data class Content(val text: String) : UiState
+    object Empty : UiState
+    object Loading : UiState
+}
 ```
 
 </section>

@@ -23,14 +23,16 @@
 ```kotlin
 val score = 85
 
-if (score >= 60)  else 
-
+if (score >= 60) {
+    println("Зачёт")
+} else {
+    println("Не зачёт")
+}
 ```
 
 
 ```kotlin
 val result = if (score >= 60) "Зачёт" else "Не зачёт"
-
 ```
 
 <div class="study-grid">
@@ -62,14 +64,22 @@ val result = if (score >= 60) "Зачёт" else "Не зачёт"
 ```kotlin
 val day = 3
 
-when (day) 
-
+when (day) {
+    1 -> println("Понедельник")
+    2 -> println("Вторник")
+    3 -> println("Среда")
+    else -> println("Другой день")
+}
 ```
 
 
 ```kotlin
-val type = when (score) 
-
+val type = when (score) {
+    in 90..100 -> "Отлично"
+    in 70..89 -> "Хорошо"
+    in 60..69 -> "Удовлетворительно"
+    else -> "Не зачёт"
+}
 ```
 
 <div class="study-note">
@@ -87,10 +97,13 @@ val type = when (score)
 val hasInternet = true
 val isLoggedIn = false
 
-if (hasInternet && isLoggedIn) 
+if (hasInternet && isLoggedIn) {
+    println("Можно загрузить данные")
+}
 
-if (!isLoggedIn) 
-
+if (!isLoggedIn) {
+    println("Нужно войти")
+}
 ```
 
 <table class="study-table">
@@ -119,9 +132,15 @@ if (!isLoggedIn)
 </p>
 
 ```kotlin
-if (hasInternet)  else 
-} else 
-
+if (hasInternet) {
+    if (isLoggedIn) {
+        println("Загружаем профиль")
+    } else {
+        println("Показываем экран входа")
+    }
+} else {
+    println("Нет сети")
+}
 ```
 
 <div class="study-grid">

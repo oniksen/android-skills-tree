@@ -25,7 +25,6 @@
 package com.example.app
 
 fun greet() = println("Hello")
-
 ```
 
 </section>
@@ -40,8 +39,10 @@ fun greet() = println("Hello")
 import kotlin.math.sqrt
 import kotlin.math.PI
 
-fun main() 
-
+fun main() {
+    println(sqrt(16.0))
+    println(PI)
+}
 ```
 
 </section>
@@ -55,8 +56,9 @@ fun main()
 ```kotlin
 import kotlin.math.PI as PiNumber
 
-fun main() 
-
+fun main() {
+    println(PiNumber)
+}
 ```
 
 </section>
@@ -72,7 +74,6 @@ fun main()
 package com.example.utils
 
 fun formatName(name: String): String = name.trim().lowercase()
-
 ```
 
 </section>
@@ -88,7 +89,6 @@ internal fun helper() = println("Только в модуле")
 
 public fun api() = println("Доступно всем")
 private fun secret() = println("Только в файле")
-
 ```
 
 <div class="study-grid">

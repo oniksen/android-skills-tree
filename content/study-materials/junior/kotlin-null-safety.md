@@ -25,7 +25,6 @@
 ```kotlin
 val name: String = "Kotlin"
 val nickname: String? = null
-
 ```
 
 <div class="study-grid">
@@ -49,7 +48,6 @@ val nickname: String? = null
 ```kotlin
 val length = nickname?.length
 val upper = nickname?.uppercase()
-
 ```
 
 <div class="study-note">
@@ -66,7 +64,6 @@ val upper = nickname?.uppercase()
 ```kotlin
 val displayName = nickname ?: "Гость"
 val length = nickname?.length ?: 0
-
 ```
 
 </section>
@@ -79,7 +76,6 @@ val length = nickname?.length ?: 0
 
 ```kotlin
 val forcedLength = nickname!!.length // опасно
-
 ```
 
 <div class="study-note study-warn">
@@ -94,8 +90,9 @@ val forcedLength = nickname!!.length // опасно
 </p>
 
 ```kotlin
-nickname?.let 
-
+nickname?.let { value ->
+    println("Ник: $value")
+}
 ```
 
 </section>
@@ -110,7 +107,6 @@ nickname?.let
 val value: Any = "Kotlin"
 val text = value as? String
 val number = value as? Int
-
 ```
 
 </section>
@@ -124,7 +120,6 @@ val number = value as? Int
 ```kotlin
 // Java-метод может вернуть тип платформы
 val javaName = javaObject.name // String!
-
 ```
 
 <div class="study-note study-warn">

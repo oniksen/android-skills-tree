@@ -21,9 +21,16 @@
 </p>
 
 ```kotlin
-fun parseNumber(text: String): Int?  catch (e: NumberFormatException)  finally 
+fun parseNumber(text: String): Int? {
+    return try {
+        text.toInt()
+    } catch (e: NumberFormatException) {
+        println("Это не число: $text")
+        null
+    } finally {
+        println("Попытка завершена")
+    }
 }
-
 ```
 
 <div class="study-grid">
@@ -58,7 +65,6 @@ val nickname: String? = null
 val length = nickname?.length ?: 0
 
 val forced = nickname!! // опасно: может бросить исключение
-
 ```
 
 <div class="study-note study-warn">
@@ -73,18 +79,23 @@ val forced = nickname!! // опасно: может бросить исключ�
 </p>
 
 ```kotlin
-val result = runCatching 
+val result = runCatching {
+    "42".toInt()
+}
 
 val value = result.getOrNull()
 val error = result.exceptionOrNull()
-
 ```
 
 
 ```kotlin
-fun divide(a: Int, b: Int): Result<Int>  else 
+fun divide(a: Int, b: Int): Result<Int> {
+    return if (b == 0) {
+        Result.failure(IllegalArgumentException("Деление на ноль"))
+    } else {
+        Result.success(a / b)
+    }
 }
-
 ```
 
 <div class="study-grid">

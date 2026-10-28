@@ -21,11 +21,12 @@
 </p>
 
 ```kotlin
-fun calculate(a: Int, b: Int, operation: (Int, Int) -> Int): Int 
+fun calculate(a: Int, b: Int, operation: (Int, Int) -> Int): Int {
+    return operation(a, b)
+}
 
-val sum = calculate(2, 3) 
-val product = calculate(2, 3) 
-
+val sum = calculate(2, 3) { x, y -> x + y }
+val product = calculate(2, 3) { x, y -> x * y }
 ```
 
 <div class="study-grid">
@@ -55,12 +56,13 @@ val product = calculate(2, 3)
 </p>
 
 ```kotlin
-fun getOperation(type: String): (Int, Int) -> Int 
-        "multiply" -> 
-        else -> 
+fun getOperation(type: String): (Int, Int) -> Int {
+    return when (type) {
+        "sum" -> { a, b -> a + b }
+        "multiply" -> { a, b -> a * b }
+        else -> { _, _ -> 0 }
     }
 }
-
 ```
 
 </section>
@@ -72,9 +74,11 @@ fun getOperation(type: String): (Int, Int) -> Int
 </p>
 
 ```kotlin
-inline fun measureTime(block: () -> Unit)  ms")
+inline fun measureTime(block: () -> Unit) {
+    val start = System.currentTimeMillis()
+    block()
+    println("Время: ${'$'}{System.currentTimeMillis() - start} ms")
 }
-
 ```
 
 <div class="study-note study-warn">
@@ -91,10 +95,9 @@ inline fun measureTime(block: () -> Unit)  ms")
 ```kotlin
 val numbers = listOf(1, 2, 3, 4)
 
-val even = numbers.filter 
-val doubled = numbers.map 
-val total = numbers.reduce 
-
+val even = numbers.filter { it % 2 == 0 }
+val doubled = numbers.map { it * 2 }
+val total = numbers.reduce { acc, value -> acc + value }
 ```
 
 <table class="study-table">

@@ -22,10 +22,11 @@ Enum создаёт набор именованных констант. Кажд
 </p>
 
 ```kotlin
-enum class Direction 
+enum class Direction {
+    NORTH, SOUTH, EAST, WEST
+}
 
 val direction = Direction.NORTH
-
 ```
 
 <div class="study-grid">
@@ -55,10 +56,13 @@ Enum может хранить данные. Каждой константе п�
 </p>
 
 ```kotlin
-enum class Color(val hex: String) 
+enum class Color(val hex: String) {
+    RED("#FF0000"),
+    GREEN("#00FF00"),
+    BLUE("#0000FF")
+}
 
 println(Color.RED.hex)
-
 ```
 
 </section>
@@ -70,10 +74,13 @@ println(Color.RED.hex)
 </p>
 
 ```kotlin
-enum class Status 
+enum class Status {
+    NEW, IN_PROGRESS, DONE;
+
+    fun isFinished(): Boolean = this == DONE
+}
 
 println(Status.DONE.isFinished())
-
 ```
 
 </section>
@@ -85,9 +92,14 @@ println(Status.DONE.isFinished())
 </p>
 
 ```kotlin
-fun describe(direction: Direction): String 
+fun describe(direction: Direction): String {
+    return when (direction) {
+        Direction.NORTH -> "Север"
+        Direction.SOUTH -> "Юг"
+        Direction.EAST -> "Восток"
+        Direction.WEST -> "Запад"
+    }
 }
-
 ```
 
 <div class="study-note">
@@ -102,10 +114,15 @@ Enum может реализовывать интерфейс, как обычн
 </p>
 
 ```kotlin
-interface Printable 
+interface Printable {
+    fun print()
+}
 
-enum class Level : Printable 
+enum class Level : Printable {
+    JUNIOR, MIDDLE, SENIOR;
 
+    override fun print() = println(name)
+}
 ```
 
 </section>

@@ -21,10 +21,13 @@
 </p>
 
 ```kotlin
-fun greet(name: String) 
+fun greet(name: String) {
+    println("Привет, $name")
+}
 
-fun main() 
-
+fun main() {
+    greet("Ada")
+}
 ```
 
 <div class="study-grid">
@@ -54,18 +57,22 @@ fun main()
 </p>
 
 ```kotlin
-fun sum(a: Int, b: Int): Int 
+fun sum(a: Int, b: Int): Int {
+    return a + b
+}
 
 val result = sum(2, 3)
-
 ```
 
 
 ```kotlin
-fun printMessage(text: String): Unit 
+fun printMessage(text: String): Unit {
+    println(text)
+}
 
-fun log(text: String) 
-
+fun log(text: String) {
+    println(text)
+}
 ```
 
 <div class="study-note">
@@ -83,7 +90,6 @@ fun log(text: String)
 fun double(x: Int): Int = x * 2
 
 fun isEven(x: Int): Boolean = x % 2 == 0
-
 ```
 
 <div class="study-grid">
@@ -105,23 +111,23 @@ fun isEven(x: Int): Boolean = x % 2 == 0
 </p>
 
 ```kotlin
-fun createUser(name: String, isAdmin: Boolean = false) 
+fun createUser(name: String, isAdmin: Boolean = false) {
+    println("$name, admin=$isAdmin")
+}
 
 createUser("Ada")
 createUser("Grace", true)
-
 ```
 
 
 ```kotlin
-fun connect(host: String, port: Int, useTls: Boolean) 
+fun connect(host: String, port: Int, useTls: Boolean) { ... }
 
 connect(
     host = "example.com",
     port = 443,
     useTls = true,
 )
-
 ```
 
 <div class="study-note study-warn">

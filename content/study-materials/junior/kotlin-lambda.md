@@ -24,8 +24,9 @@
 ```kotlin
 val numbers = listOf(1, 2, 3)
 
-numbers.forEach 
-
+numbers.forEach { number ->
+    println(number)
+}
 ```
 
 <div class="study-grid">
@@ -55,10 +56,15 @@ numbers.forEach
 </p>
 
 ```kotlin
-fun perform(action: () -> Unit) 
+fun perform(action: () -> Unit) {
+    println("До действия")
+    action()
+    println("После действия")
+}
 
-perform 
-
+perform {
+    println("Выполняем действие")
+}
 ```
 
 </section>
@@ -72,8 +78,9 @@ perform
 ```kotlin
 val names = listOf("Ada", "Grace")
 
-names.forEach 
-
+names.forEach {
+    println(it.uppercase())
+}
 ```
 
 <div class="study-note study-warn">
@@ -88,10 +95,9 @@ names.forEach
 </p>
 
 ```kotlin
-val sum: (Int, Int) -> Int = 
+val sum: (Int, Int) -> Int = { a, b -> a + b }
 
 val result = sum(2, 3)
-
 ```
 
 </section>
@@ -103,13 +109,14 @@ val result = sum(2, 3)
 </p>
 
 ```kotlin
-fun makeCounter(): () -> Int 
+fun makeCounter(): () -> Int {
+    var count = 0
+    return { count++ }
 }
 
 val counter = makeCounter()
 println(counter()) // 0
 println(counter()) // 1
-
 ```
 
 <div class="study-note">

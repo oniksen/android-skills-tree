@@ -30,7 +30,6 @@ mutableNames.remove("Ada")
 
 println(names[0])
 println(mutableNames.size)
-
 ```
 
 <div class="study-grid">
@@ -65,7 +64,6 @@ println(unique) // [1, 2, 3]
 
 val mutableSet = mutableSetOf("a", "b")
 mutableSet.add("a")
-
 ```
 
 <div class="study-note">
@@ -85,7 +83,6 @@ println(ages["Ada"])
 
 val mutableAges = mutableMapOf<String, Int>()
 mutableAges["Linus"] = 40
-
 ```
 
 <div class="study-grid">
@@ -117,11 +114,10 @@ mutableAges["Linus"] = 40
 ```kotlin
 val numbers = listOf(1, 2, 3, 4, 5)
 
-val even = numbers.filter 
-val doubled = numbers.map 
-val found = numbers.find 
-val hasEven = numbers.any 
-
+val even = numbers.filter { it % 2 == 0 }
+val doubled = numbers.map { it * 2 }
+val found = numbers.find { it > 3 }
+val hasEven = numbers.any { it % 2 == 0 }
 ```
 
 <table class="study-table">
@@ -148,10 +144,13 @@ val hasEven = numbers.any
 </p>
 
 ```kotlin
-for (name in names) 
+for (name in names) {
+    println(name)
+}
 
-names.forEach 
-
+names.forEach { name ->
+    println(name)
+}
 ```
 
 <div class="study-note">
@@ -171,7 +170,6 @@ val list = listOf(1, 2, 3)
 
 val mutableList = mutableListOf(1, 2, 3)
 mutableList.add(4)
-
 ```
 
 <div class="study-grid">

@@ -27,8 +27,9 @@ package com.example.app
 
 import kotlin.math.sqrt
 
-fun main() 
-
+fun main() {
+    println("Hello, Kotlin")
+}
 ```
 
 <div class="study-grid">
@@ -62,8 +63,9 @@ package com.example.app
 
 import kotlin.math.sqrt
 
-fun main() 
-
+fun main() {
+    println("Hello, Kotlin")
+}
 ```
 
 <div class="study-note">
@@ -83,7 +85,6 @@ val age = 25
 
 // Точка с запятой обычно не нужна
 val title = "Kotlin"; val count = 3 // можно, но не принято
-
 ```
 
 <div class="study-note study-warn">
@@ -106,7 +107,6 @@ val multiline = """
     Первая строка
     Вторая строка
 """.trimIndent()
-
 ```
 
 <div class="study-grid">
@@ -146,7 +146,6 @@ val multiline = """
 /**
  * Документация для функции
  */
-
 ```
 
 </section>
@@ -164,7 +163,6 @@ val binary = 0b1010
 
 val double = 3.14
 val float = 3.14f
-
 ```
 
 </section>
@@ -179,8 +177,9 @@ val float = 3.14f
 val userName = "Ada"
 val maxRetryCount = 3
 
-fun calculateTotal(price: Int, quantity: Int): Int 
-
+fun calculateTotal(price: Int, quantity: Int): Int {
+    return price * quantity
+}
 ```
 
 <div class="study-grid">

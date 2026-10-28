@@ -22,22 +22,25 @@
 </p>
 
 ```kotlin
-for (i in 1..5) 
-
+for (i in 1..5) {
+    println(i)
+}
 ```
 
 
 ```kotlin
-for (i in 5 downTo 1 step 2) 
-
+for (i in 5 downTo 1 step 2) {
+    println(i)
+}
 ```
 
 
 ```kotlin
 val names = listOf("Ada", "Grace", "Linus")
 
-for (name in names) 
-
+for (name in names) {
+    println(name)
+}
 ```
 
 <div class="study-grid">
@@ -69,8 +72,10 @@ for (name in names)
 ```kotlin
 var count = 0
 
-while (count < 3) 
-
+while (count < 3) {
+    println(count)
+    count++
+}
 ```
 
 <div class="study-note study-warn">
@@ -87,8 +92,10 @@ while (count < 3)
 ```kotlin
 var input: String
 
-do  while (input != "exit")
-
+do {
+    print("Введите команду: ")
+    input = readLine() ?: ""
+} while (input != "exit")
 ```
 
 <div class="study-grid">
@@ -110,8 +117,11 @@ do  while (input != "exit")
 </p>
 
 ```kotlin
-for (i in 1..10) 
-
+for (i in 1..10) {
+    if (i == 3) continue
+    if (i == 7) break
+    println(i)
+}
 ```
 
 <div class="study-note">
@@ -126,10 +136,12 @@ for (i in 1..10)
 </p>
 
 ```kotlin
-for (row in 1..3) 
+for (row in 1..3) {
+    for (col in 1..3) {
+        print("$row,$col ")
+    }
     println()
 }
-
 ```
 
 <div class="study-note study-warn">

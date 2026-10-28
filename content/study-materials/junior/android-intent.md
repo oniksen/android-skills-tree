@@ -24,7 +24,6 @@ Intent — механизм взаимодействия компонентов 
 val intent = Intent(this, DetailActivity::class.java)
 intent.putExtra("userId", 42)
 startActivity(intent)
-
 ```
 
 </section>
@@ -38,7 +37,6 @@ startActivity(intent)
 ```kotlin
 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://example.com"))
 startActivity(intent)
-
 ```
 
 <div class="study-note">
@@ -53,10 +51,12 @@ startActivity(intent)
 </p>
 
 ```kotlin
-val bundle = Bundle().apply 
+val bundle = Bundle().apply {
+    putString("name", "Ada")
+    putInt("age", 25)
+}
 
 intent.putExtras(bundle)
-
 ```
 
 <div class="study-grid">
@@ -88,11 +88,13 @@ intent.putExtras(bundle)
 ```kotlin
 val launcher = registerForActivityResult(
     ActivityResultContracts.StartActivityForResult()
-) 
+) { result ->
+    if (result.resultCode == RESULT_OK) {
+        val data = result.data?.getStringExtra("result")
+    }
 }
 
 launcher.launch(intent)
-
 ```
 
 </section>

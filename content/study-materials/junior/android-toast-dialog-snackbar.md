@@ -26,7 +26,6 @@ Toast.makeText(
     "Сохранено",
     Toast.LENGTH_SHORT
 ).show()
-
 ```
 
 <div class="study-note">
@@ -44,10 +43,9 @@ Dialog блокирует взаимодействие до выбора пол�
 AlertDialog.Builder(context)
     .setTitle("Удалить?")
     .setMessage("Действие нельзя отменить")
-    .setPositiveButton("Удалить") 
+    .setPositiveButton("Удалить") { _, _ -> deleteItem() }
     .setNegativeButton("Отмена", null)
     .show()
-
 ```
 
 </section>
@@ -63,8 +61,9 @@ Snackbar.make(
     rootView,
     "Изменения сохранены",
     Snackbar.LENGTH_LONG
-).setAction("Отменить") .show()
-
+).setAction("Отменить") {
+    undo()
+}.show()
 ```
 
 </section>
@@ -76,9 +75,16 @@ DialogFragment сохраняет диалог при повороте экра�
 </p>
 
 ```kotlin
-class ConfirmDialog : DialogFragment() 
+class ConfirmDialog : DialogFragment() {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return AlertDialog.Builder(requireContext())
+            .setTitle("Подтверждение")
+            .setMessage("Продолжить?")
+            .setPositiveButton("Да", null)
+            .setNegativeButton("Нет", null)
+            .create()
+    }
 }
-
 ```
 
 </section>

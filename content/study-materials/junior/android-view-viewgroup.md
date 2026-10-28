@@ -26,7 +26,6 @@ View — отдельный элемент интерфейса: текст, к�
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="Hello" />
-
 ```
 
 <div class="study-grid">
@@ -64,7 +63,6 @@ ViewGroup содержит другие View и определяет их рас
     <TextView ... />
     <Button ... />
 </LinearLayout>
-
 ```
 
 <div class="study-note">
@@ -79,10 +77,12 @@ View можно создавать в коде, а не только в XML. Э�
 </p>
 
 ```kotlin
-val textView = TextView(context).apply 
+val textView = TextView(context).apply {
+    text = "Hello"
+    textSize = 16f
+}
 
 parent.addView(textView)
-
 ```
 
 </section>
@@ -98,7 +98,6 @@ android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:visibility="gone"
 android:padding="16dp"
-
 ```
 
 </section>

@@ -67,8 +67,9 @@ MyAndroidProject/
 include(":app", ":core")
 
 // app/build.gradle.kts
-dependencies 
-
+dependencies {
+    implementation(project(":core"))
+}
 ```
 
 <p>Зависимость может быть внешней библиотекой (например, JUnit) или другим модулем проекта. <code>implementation</code> — обычный способ подключить то, что нужно внутри текущего модуля. <code>api</code> используют в библиотечном модуле, когда типы зависимости должны быть видны потребителям этой библиотеки; без такой необходимости выбирайте <code>implementation</code>.</p>
@@ -90,17 +91,23 @@ dependencies
 <p><strong>JUnit</strong> — библиотека для написания и запуска тестов. Она предоставляет аннотацию <code>@Test</code> и проверки вроде <code>assertEquals</code>.</p>
 
 ```kotlin
-dependencies 
-
+dependencies {
+    testImplementation("junit:junit:4.13.2")
+}
 ```
 
 
 ```kotlin
-class Calculator 
-
-class CalculatorTest 
+class Calculator {
+    fun sum(a: Int, b: Int) = a + b
 }
 
+class CalculatorTest {
+    @Test
+    fun sum_returnsTotal() {
+        assertEquals(5, Calculator().sum(2, 3))
+    }
+}
 ```
 
 <p>Почему не <code>implementation</code>? Потому что JUnit здесь нужен только для тестов. Он не должен становиться обычной зависимостью кода приложения.</p>
@@ -121,7 +128,6 @@ class CalculatorTest
 ```kotlin
 ./gradlew testDebugUnitTest
 ./gradlew connectedDebugAndroidTest
-
 ```
 
 <p class="study-small study-muted">Вторая команда требует подключённого устройства или запущенного эмулятора. В конкретном проекте названия задач могут зависеть от вариантов сборки.</p>
@@ -154,7 +160,6 @@ res/
 ├── layout-land/            # альбомная ориентация
 ├── drawable-hdpi/          # графика для плотности hdpi
 └── values-sw600dp/         # устройства с smallest width от 600 dp
-
 ```
 
 
@@ -167,7 +172,6 @@ res/
 
 // Kotlin
 val title = getString(R.string.welcome)
-
 ```
 
 <p>Код обращается к одному ID — <code>R.string.welcome</code>. Android подставляет подходящий ресурс, например перевод для русского языка. Для каждого альтернативного ресурса желательно иметь корректный вариант по умолчанию.</p>
@@ -193,11 +197,23 @@ val title = getString(R.string.welcome)
 </table>
 
 ```kotlin
-plugins 
-
-android 
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
 }
 
+android {
+    namespace = "com.example.notes"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.example.notes"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+    }
+}
 ```
 
 <p>Это иллюстрация конфигурации: конкретные версии SDK и набор плагинов зависят от проекта и версии Android Gradle Plugin.</p>
@@ -213,8 +229,9 @@ android
 <p>При <code>compileSdk = 35</code> компилятор получает описания Android API уровня 35 и может распознавать соответствующие классы и методы. Это <strong>не</strong> означает, что приложение запускается только на Android 15. Минимальная ОС определяется прежде всего <code>minSdk</code>, а новые API при необходимости проверяют во время выполнения.</p>
 
 ```kotlin
-if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) 
-
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+    // API 34+: вызов API, требующего Android 14 или новее
+}
 ```
 
 <p class="study-small study-muted">Константа и пример здесь показывают общий принцип: используйте проверку той версии API, которая требуется конкретному вызову, и учитывайте доступность библиотек.</p>
@@ -252,15 +269,28 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 </div>
 
 ```kotlin
-android 
-        create("production") 
+android {
+    flavorDimensions += "environment"
+
+    productFlavors {
+        create("demo") {
+            dimension = "environment"
+            applicationIdSuffix = ".demo"
+        }
+        create("production") {
+            dimension = "environment"
+        }
     }
 
-    buildTypes 
-        getByName("release") 
+    buildTypes {
+        getByName("debug") {
+            isDebuggable = true
+        }
+        getByName("release") {
+            isMinifyEnabled = true
+        }
     }
 }
-
 ```
 
 <p>Фрагмент — пример идеи, а не готовая универсальная конфигурация. В реальном проекте проверьте совместимость с используемой версией AGP. <code>applicationIdSuffix</code> позволяет установить demo-версию рядом с основной, если у них разные идентификаторы.</p>
@@ -286,7 +316,6 @@ android
 ./gradlew assembleDebug
 ./gradlew assembleRelease
 ./gradlew bundleRelease
-
 ```
 
 <p>Обычно результаты находятся в <code>app/build/outputs/apk/</code> и <code>app/build/outputs/bundle/</code>. Точный путь зависит от модуля и варианта сборки.</p>
@@ -304,9 +333,12 @@ android
 <p>R8 может уменьшать размер приложения, оптимизировать код и переименовывать классы/методы (обфускация). В release-сборке его часто включают настройкой <code>isMinifyEnabled = true</code>; ресурсы также могут сокращаться отдельной настройкой.</p>
 
 ```kotlin
-buildTypes 
+buildTypes {
+    release {
+        isMinifyEnabled = true
+        // При необходимости подключают правила keep.
+    }
 }
-
 ```
 
 <p>Если приложение работает в debug, но ломается в release, проверьте правила R8, особенно при использовании reflection, сериализации или библиотек, которым нужны сохраняемые имена классов. Обфускация не защищает секреты, встроенные в приложение.</p>
@@ -317,7 +349,6 @@ buildTypes
 ./gradlew assembleDebug
 ./gradlew testDebugUnitTest
 ./gradlew tasks
-
 ```
 
 <p>Это помогает разработчикам и CI собирать проект на согласованной версии Gradle. Но сборка всё равно зависит от совместимости Gradle, Android Gradle Plugin, JDK и установленных SDK.</p>

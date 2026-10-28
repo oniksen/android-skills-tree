@@ -25,7 +25,6 @@ settings.gradle.kts        # состав проекта
 build.gradle.kts          # корневой: плагины и общие настройки
 app/build.gradle.kts      # настройки модуля
 gradle/libs.versions.toml # каталог версий
-
 ```
 
 <table class="study-table">
@@ -51,11 +50,23 @@ gradle/libs.versions.toml # каталог версий
 </p>
 
 ```kotlin
-plugins 
-
-android 
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
 }
 
+android {
+    namespace = "com.example.app"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.example.app"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+    }
+}
 ```
 
 <div class="study-grid">
@@ -85,8 +96,12 @@ API, против которого компилируется код.
 </p>
 
 ```kotlin
-dependencies 
-
+dependencies {
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation(project(":core"))
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+}
 ```
 
 
@@ -95,7 +110,6 @@ implementation("lib")        // нужна текущему модулю
 api("lib")                 // нужна и потребителям библиотеки
 testImplementation("lib")  // только для unit-тестов
 androidTestImplementation("lib") // только для инструментальных тестов
-
 ```
 
 <div class="study-note">
@@ -114,7 +128,6 @@ androidTestImplementation("lib") // только для инструментал
 ./gradlew testDebugUnitTest
 ./gradlew connectedDebugAndroidTest
 ./gradlew tasks
-
 ```
 
 <table class="study-table">

@@ -26,7 +26,6 @@ val age: Int = 25
 val price: Double = 19.99
 val title: String = "Kotlin"
 val isActive: Boolean = true
-
 ```
 
 
@@ -38,7 +37,6 @@ val longValue: Long = 9_000_000_000L
 
 val floatValue: Float = 3.14f
 val doubleValue: Double = 3.14159
-
 ```
 
 <div class="study-grid">
@@ -74,7 +72,6 @@ val multiline = """
     Первая строка
     Вторая строка
 """.trimIndent()
-
 ```
 
 <div class="study-note">
@@ -93,7 +90,6 @@ val age: Int = 25
 val price: Double = 19.99
 val title: String = "Kotlin"
 val isActive: Boolean = true
-
 ```
 
 <div class="study-grid">
@@ -120,7 +116,6 @@ val names = arrayOf("Ada", "Grace")
 
 val first = numbers[0]
 numbers[1] = 10
-
 ```
 
 <div class="study-note study-warn">
@@ -139,7 +134,6 @@ val nickname: String? = null
 val length = nickname?.length ?: 0
 
 val nonNullName: String = "Kotlin"
-
 ```
 
 <div class="study-grid">
@@ -172,7 +166,6 @@ val nonNullName: String = "Kotlin"
 val count = 10 // Int
 val message = "Hello" // String
 val enabled = true // Boolean
-
 ```
 
 <div class="study-note">

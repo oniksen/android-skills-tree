@@ -26,7 +26,6 @@ data class User(val name: String, val age: Int)
 
 val user = User("Ada", 25)
 println(user) // User(name=Ada, age=25)
-
 ```
 
 <div class="study-grid">
@@ -61,7 +60,6 @@ val b = User("Ada", 25)
 
 println(a == b) // true
 println(a.hashCode() == b.hashCode()) // true
-
 ```
 
 <div class="study-note">
@@ -81,7 +79,6 @@ val updated = original.copy(age = 26)
 
 println(original) // User(name=Ada, age=25)
 println(updated)  // User(name=Ada, age=26)
-
 ```
 
 <div class="study-note study-warn">
@@ -100,7 +97,6 @@ val (name, age) = User("Ada", 25)
 
 println(name) // Ada
 println(age)  // 25
-
 ```
 
 
@@ -109,7 +105,6 @@ val user = User("Ada", 25)
 
 println(user.component1()) // Ada
 println(user.component2()) // 25
-
 ```
 
 </section>
@@ -125,7 +120,6 @@ data class Point(val x: Int, val y: Int)
 
 // data class должен иметь хотя бы один параметр в основном конструкторе
 // параметры должны быть val или var
-
 ```
 
 <div class="study-grid">

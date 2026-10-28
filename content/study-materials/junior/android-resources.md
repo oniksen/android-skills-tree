@@ -29,7 +29,6 @@ res/
 ├── values-ru/
 ├── values-night/
 └── xml/
-
 ```
 
 <div class="study-grid">
@@ -63,7 +62,6 @@ XML-разметка экранов.
     <string name="app_name">Skill Tree</string>
     <string name="welcome">Добро пожаловать</string>
 </resources>
-
 ```
 
 </section>
@@ -81,7 +79,6 @@ res/
 ├── values-night/themes.xml
 ├── layout/
 └── layout-land/
-
 ```
 
 <div class="study-grid">
@@ -113,7 +110,6 @@ res/
 ```kotlin
 val title = getString(R.string.welcome)
 val color = getColor(R.color.primary)
-
 ```
 
 <div class="study-note">

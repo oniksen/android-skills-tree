@@ -37,7 +37,6 @@
         </activity>
     </application>
 </manifest>
-
 ```
 
 </section>
@@ -87,7 +86,6 @@
         </activity>
     </application>
 </manifest>
-
 ```
 
 <div class="study-note">
@@ -118,7 +116,6 @@ Intent-фильтр показывает системе, какие интент
         </activity>
     </application>
 </manifest>
-
 ```
 
 </section>
@@ -130,15 +127,19 @@ Intent-фильтр показывает системе, какие интент
 </p>
 
 ```kotlin
-android 
+android {
+    defaultConfig {
+        minSdk = 24
+        targetSdk = 35
+    }
 }
-
 ```
 
 
 ```kotlin
-if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) 
-
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    // API 33+
+}
 ```
 
 <div class="study-note">
