@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { useServices } from "@/composition/services-context";
 import { useToast } from "@/shared/lib/toast-context";
-import type { StreakSnapshot } from "@/ports/streak-repository";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import {
   applyAutoFreezesOnce,
+  getStreak as getStreakFirestore,
   syncStreak as syncStreakFirestore,
 } from "@/adapters/firestore-client/streak-commands";
 import {
@@ -26,19 +25,7 @@ export interface StreakDay {
 
 const EMPTY_DAYS: string[] = [];
 
-const streakCache = new Map<
-  string,
-  {
-    value: StreakSnapshot | null;
-    loading: boolean;
-    listeners: Set<(v: StreakSnapshot | null) => void>;
-    errorListeners: Set<(e: unknown) => void>;
-    unsub: (() => void) | null;
-  }
->();
-
 export function useStreak() {
-  const { streak: repository } = useServices();
   const [currentStreak, setCurrentStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
   const [lastActiveDate, setLastActiveDate] = useState<string | null>(null);
@@ -49,27 +36,10 @@ export function useStreak() {
   const { uid, loading: authLoading } = useFirebaseAuth();
   const toast = useToast();
 
-  useEffect(() => {
-    if (authLoading || !uid) return;
-
-    let entry = streakCache.get(uid);
-    if (!entry) {
-      entry = { value: null, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
-      streakCache.set(uid, entry);
-      entry.unsub = repository.subscribe(uid, {
-        next: (snapshot) => {
-          entry!.value = snapshot;
-          entry!.loading = false;
-          entry!.listeners.forEach((l) => l(snapshot));
-        },
-        error: (error) => {
-          entry!.loading = false;
-          entry!.errorListeners.forEach((l) => l(error));
-        },
-      });
-    }
-
-    const listener = (snapshot: StreakSnapshot | null) => {
+  const refreshStreak = useCallback(async () => {
+    if (!uid) return;
+    try {
+      const snapshot = await getStreakFirestore(uid);
       if (!snapshot) {
         setCurrentStreak(0);
         setLongestStreak(0);
@@ -89,35 +59,30 @@ export function useStreak() {
         setActiveDays(snapshot.activeDays);
         setFrozenDays(snapshot.frozenDays);
       }
-      setLoading(false);
-    };
-    const errorListener = (error: unknown) => {
-      console.error("Error listening to streak:", error);
+    } catch (error) {
+      console.error("Error loading streak:", error);
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
       }
+    } finally {
       setLoading(false);
-    };
-
-    entry.listeners.add(listener);
-    entry.errorListeners.add(errorListener);
-
-    if (!entry.loading) {
-      listener(entry.value);
     }
-
-    return () => {
-      entry!.listeners.delete(listener);
-      entry!.errorListeners.delete(errorListener);
-      if (entry!.listeners.size === 0) {
-        entry!.unsub?.();
-        streakCache.delete(uid);
-      }
-    };
-  }, [uid, authLoading, repository, toast]);
+  }, [uid, toast]);
 
   useEffect(() => {
+    if (authLoading || !uid) return;
+    const timer = setTimeout(() => {
+      void refreshStreak();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [uid, authLoading, refreshStreak]);
+
+  // Auto-freeze once per session to avoid repeated reads/writes.
+  useEffect(() => {
     if (!uid) return;
+    const key = `autoFreezeDone:${uid}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
 
     let cancelled = false;
     void applyAutoFreezesOnce().then((report) => {
@@ -134,10 +99,14 @@ export function useStreak() {
     };
   }, [uid, toast]);
 
+
+
   const syncStreak = useCallback(async () => {
     if (!uid) return null;
     try {
-      return await syncStreakFirestore();
+      const result = await syncStreakFirestore();
+      void refreshStreak();
+      return result;
     } catch (error) {
       console.error("Error syncing streak:", error);
       if (isPermissionDenied(error)) {
@@ -145,7 +114,7 @@ export function useStreak() {
       }
       return null;
     }
-  }, [uid, toast]);
+  }, [uid, toast, refreshStreak]);
 
   const signedOut = !authLoading && !uid;
   const displayActiveDays = signedOut ? EMPTY_DAYS : activeDays;
