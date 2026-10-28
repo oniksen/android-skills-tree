@@ -173,6 +173,23 @@ val enabled = true // Boolean
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Преобразование типов и частые ошибки</h2>
+<p>В Kotlin нет неявного преобразования чисел: <code>Int</code> не превращается в <code>Long</code> автоматически. Для преобразования используют методы <code>toInt()</code>, <code>toLong()</code>, <code>toDouble()</code>. Строки можно превращать в числа через <code>toIntOrNull()</code>, чтобы избежать исключений.</p>
+
+```kotlin
+val number: Int = 10
+val longNumber: Long = number.toLong()
+
+val text = "42"
+val parsed = text.toIntOrNull() ?: 0
+```
+
+<div class="study-note study-warn">
+<strong>Частая ошибка:</strong> сравнение <code>Int</code> и <code>Long</code> без преобразования или вызов <code>toInt()</code> для некорректной строки. Используйте безопасные варианты и проверяйте входные данные.
+</div>
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">7. Самопроверка</h2>
 <div class="study-checklist">

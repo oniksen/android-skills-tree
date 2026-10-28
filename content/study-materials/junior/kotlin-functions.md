@@ -170,6 +170,21 @@ fun greet(name: String) = "Привет, $name"
 ```
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Перегрузка функций</h2>
+<p>Функции можно перегружать: давать одинаковое имя при разных параметрах. Компилятор выбирает подходящий вариант по типам аргументов.</p>
+
+```kotlin
+fun print(value: Int) = println("Int: $value")
+fun print(value: String) = println("String: $value")
+```
+</section>
+
+<section class="study-section">
+<h2 class="study-section-title">Рекомендации</h2>
+<p>Делайте функции короткими и понятными, избегайте побочных эффектов без необходимости. Если функция становится длинной, разделите её на несколько небольших функций с понятными именами.</p>
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">6. Самопроверка</h2>
 <div class="study-checklist">

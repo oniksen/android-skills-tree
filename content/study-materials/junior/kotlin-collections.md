@@ -214,6 +214,11 @@ fun main() {
 ```
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Выбор коллекции</h2>
+<p>Используйте <code>List</code> для упорядоченных данных, <code>Set</code> — для уникальных значений, <code>Map</code> — для пар «ключ-значение». По умолчанию выбирайте неизменяемые коллекции и переходите к изменяемым только при необходимости.</p>
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">7. Самопроверка</h2>
 <div class="study-checklist">

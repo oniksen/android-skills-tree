@@ -149,6 +149,41 @@ for (row in 1..3) {
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Полезные приёмы обхода</h2>
+<p>Кроме базовых диапазонов, часто используют <code>until</code> (полуоткрытый диапазон), <code>indices</code> и <code>withIndex()</code>. Это помогает избежать ошибок с границами и получить индекс элемента.</p>
+
+```kotlin
+val items = listOf("a", "b", "c")
+
+for (i in 0 until items.size) {
+    println(items[i])
+}
+
+for ((index, value) in items.withIndex()) {
+    println("$index -> $value")
+}
+```
+
+<div class="study-note">
+<strong>Запомнить:</strong> <code>1..5</code> включает 5, а <code>1 until 5</code> — нет. Для индексов удобнее <code>indices</code> или <code>withIndex()</code>.
+</div>
+</section>
+
+<section class="study-section">
+<h2 class="study-section-title">Частые ошибки</h2>
+<p>Ошибка «off by one» возникает из-за неправильной границы диапазона. Ещё одна частая проблема — изменение коллекции во время обхода, что может привести к исключению.</p>
+</section>
+
+<section class="study-section">
+<h2 class="study-section-title">Рекомендации</h2>
+<p>Для обхода коллекций часто удобнее использовать функции <code>forEach</code>, <code>map</code> и <code>filter</code>. Явные циклы оставляйте для случаев, где нужен контроль индекса, ранний выход или сложная логика.</p>
+
+```kotlin
+items.forEach { println(it) }
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">6. Самопроверка</h2>
 <div class="study-checklist">

@@ -179,6 +179,31 @@ if (hasInternet) {
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">when с произвольными аргументами</h2>
+<p><code>when</code> можно использовать без аргумента, проверяя произвольные условия. Это удобно для сложных ветвлений, где каждая ветка содержит своё условие.</p>
+
+```kotlin
+val score = 85
+
+val grade = when {
+    score >= 90 -> "Отлично"
+    score >= 70 -> "Хорошо"
+    score >= 60 -> "Удовлетворительно"
+    else -> "Не зачёт"
+}
+```
+
+<div class="study-note">
+<strong>Запомнить:</strong> <code>when</code> без аргумента читается как цепочка условий. Если есть один проверяемый объект, используйте <code>when (value)</code>.
+</div>
+</section>
+
+<section class="study-section">
+<h2 class="study-section-title">Рекомендации по читаемости</h2>
+<p>Избегайте глубокой вложенности: выносите условия в отдельные функции или используйте ранние возвраты. Для проверки диапазонов и типов <code>when</code> обычно читается лучше длинной цепочки <code>if/else</code>.</p>
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">6. Самопроверка</h2>
 <div class="study-checklist">

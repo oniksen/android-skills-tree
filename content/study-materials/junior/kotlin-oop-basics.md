@@ -192,6 +192,11 @@ class Circle(val radius: Double) : Shape() {
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Частые ошибки</h2>
+<p>Наследование используют там, где есть отношение «является». Если нужен только общий код без жёсткой связи, лучше композиция. Интерфейсы помогают описывать контракты без привязки к реализации.</p>
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">7. Самопроверка</h2>
 <div class="study-checklist">

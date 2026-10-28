@@ -172,6 +172,11 @@ fun main() {
 ```
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Рекомендации</h2>
+<p>Не глотайте ошибки молча: логируйте или пробрасывайте их. Используйте <code>runCatching</code> и <code>Result</code> для предсказуемой обработки, а <code>!!</code> — только когда уверены в не-null значении.</p>
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">5. Самопроверка</h2>
 <div class="study-checklist">
