@@ -7,13 +7,19 @@
 </header>
 
 <nav class="study-nav" aria-label="Навигация">
-<a class="study-nav-link" href="#structure">Структура</a>
-<a class="study-nav-link" href="#packages">Пакеты</a>
-<a class="study-nav-link" href="#strings">Строки</a>
-<a class="study-nav-link" href="#comments">Комментарии</a>
-<a class="study-nav-link" href="#numbers">Числа</a>
-<a class="study-nav-link" href="#naming">Именование</a>
-<a class="study-nav-link" href="#check">Проверка</a>
+<a class="study-nav-link" href="#structure">1. Структура файла</a>
+<a class="study-nav-link" href="#packages">2. Пакеты и импорты</a>
+<a class="study-nav-link" href="#semicolons">3. Точка с запятой</a>
+<a class="study-nav-link" href="#strings">4. Строки и шаблоны</a>
+<a class="study-nav-link" href="#comments">5. Комментарии</a>
+<a class="study-nav-link" href="#numbers">6. Числа и базовые литералы</a>
+<a class="study-nav-link" href="#naming">7. Именование</a>
+<a class="study-nav-link" href="#when-vs-if">when vs if</a>
+<a class="study-nav-link" href="#sec-1">Практика и частые ошибки</a>
+<a class="study-nav-link" href="#sec-2">Именование и стиль</a>
+<a class="study-nav-link" href="#sec-3">Типичные ошибки новичков</a>
+<a class="study-nav-link" href="#sec-4">Резюме</a>
+<a class="study-nav-link" href="#check">8. Самопроверка</a>
 </nav>
 
 <section id="structure" class="study-section">
@@ -202,7 +208,7 @@ PascalCase: <code>UserProfile</code>.
 </div>
 </section>
 
-<section class="study-section">
+<section id="when-vs-if" class="study-section">
 <h2 class="study-section-title">when vs if</h2>
 <p><code>when</code> и <code>if</code> оба могут быть выражениями и инструкциями. <code>if</code> лучше подходит для одного условия или простого булева выбора, а <code>when</code> — для сравнения одного значения с несколькими вариантами. Для диапазонов, типов и нескольких веток <code>when</code> читается лучше.</p>
 
@@ -217,6 +223,57 @@ val gradeWhen = when (score) {
     else -> "C"
 }
 ```
+</section>
+
+<section id="sec-1" class="study-section">
+<h2 class="study-section-title">Практика и частые ошибки</h2>
+<p>Синтаксис Kotlin минималистичен: точка с запятой не нужна, типы часто выводятся автоматически, а строки поддерживают шаблоны. На практике важно следить за читаемостью: не злоупотреблять длинными строками, давать понятные имена и использовать пакеты для организации кода.</p>
+
+<div class="study-grid">
+<div class="study-mini">
+<strong class="study-mini-title">Читаемость</strong>
+Короткие функции и понятные имена делают код самодокументированным.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Безопасность</strong>
+Избегайте платформенных типов и проверяйте null на границах с Java.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Стиль</strong>
+Следуйте соглашениям Kotlin: camelCase для функций и свойств, PascalCase для классов.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Импорты</strong>
+Импортируйте только нужное; используйте алиасы при конфликтах имён.
+</div>
+</div>
+
+```kotlin
+package com.example.app
+
+import kotlin.math.PI
+
+fun circleArea(radius: Double): Double = PI * radius * radius
+
+fun main() {
+    println(circleArea(5.0))
+}
+```
+</section>
+
+<section id="sec-2" class="study-section">
+<h2 class="study-section-title">Именование и стиль</h2>
+<p>Имена должны отражать назначение. Функции и свойства пишут в camelCase, классы и интерфейсы — в PascalCase, константы — в UPPER_SNAKE_CASE. Хороший стиль уменьшает количество комментариев и упрощает чтение кода.</p>
+</section>
+
+<section id="sec-3" class="study-section">
+<h2 class="study-section-title">Типичные ошибки новичков</h2>
+<p>Новички часто забывают про nullability, используют платформенные типы без проверки и пишут слишком длинные функции. Проверяйте границы с Java-кодом и разбивайте логику на небольшие функции.</p>
+</section>
+
+<section id="sec-4" class="study-section">
+<h2 class="study-section-title">Резюме</h2>
+<p>Синтаксис Kotlin прост и выразителен. Следуйте соглашениям, используйте вывод типов и держите функции небольшими — это основа читаемого кода.</p>
 </section>
 
 <section id="check" class="study-section">

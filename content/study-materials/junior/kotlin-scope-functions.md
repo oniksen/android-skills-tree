@@ -7,12 +7,33 @@ Scope functions — <code>let</code>, <code>run</code>, <code>with</code>, <code
 </header>
 
 <nav class="study-nav" aria-label="Навигация">
-<a class="study-nav-link" href="#let">let</a>
-<a class="study-nav-link" href="#run">run</a>
-<a class="study-nav-link" href="#with">with</a>
-<a class="study-nav-link" href="#apply">apply</a>
-<a class="study-nav-link" href="#also">also</a>
-<a class="study-nav-link" href="#check">Проверка</a>
+<a class="study-nav-link" href="#let">1. let</a>
+<a class="study-nav-link" href="#run">2. run</a>
+<a class="study-nav-link" href="#with">3. with</a>
+<a class="study-nav-link" href="#apply">4. apply</a>
+<a class="study-nav-link" href="#also">5. also</a>
+<a class="study-nav-link" href="#comparison">6. Как выбрать функцию</a>
+<a class="study-nav-link" href="#sec-1">Практика и частые ошибки</a>
+<a class="study-nav-link" href="#sec-2">Итог</a>
+<a class="study-nav-link" href="#sec-3">Рекомендации</a>
+<a class="study-nav-link" href="#sec-4">Мини-совет</a>
+<a class="study-nav-link" href="#sec-5">Различия возвращаемых значений: подробнее</a>
+<a class="study-nav-link" href="#sec-6">Когда использовать каждую: подробнее</a>
+<a class="study-nav-link" href="#sec-7">Итоговый совет</a>
+<a class="study-nav-link" href="#sec-8">Заметка</a>
+<a class="study-nav-link" href="#sec-9">Примеры использования</a>
+<a class="study-nav-link" href="#sec-10">Частые ошибки</a>
+<a class="study-nav-link" href="#sec-11">Резюме</a>
+<a class="study-nav-link" href="#sec-12">Мини-совет</a>
+<a class="study-nav-link" href="#sec-13">Итоговый совет</a>
+<a class="study-nav-link" href="#sec-14">Заметка</a>
+<a class="study-nav-link" href="#sec-15">Мини-совет 2</a>
+<a class="study-nav-link" href="#sec-16">Итоговый совет 2</a>
+<a class="study-nav-link" href="#sec-17">Заметка 2</a>
+<a class="study-nav-link" href="#sec-18">Итоговый совет 3</a>
+<a class="study-nav-link" href="#sec-19">Заметка 2</a>
+<a class="study-nav-link" href="#sec-20">Итоговый совет 4</a>
+<a class="study-nav-link" href="#check">7. Самопроверка</a>
 </nav>
 
 <section id="let" class="study-section">
@@ -134,6 +155,135 @@ with(obj) { ... }
 Выполнить побочное действие.
 </div>
 </div>
+</section>
+
+<section id="sec-1" class="study-section">
+<h2 class="study-section-title">Практика и частые ошибки</h2>
+<p>Scope-функции делают код лаконичным, но могут усложнить чтение, если их слишком много. Выбирайте функцию по возвращаемому значению и контексту: <code>let</code> для преобразования, <code>apply</code> для настройки объекта, <code>also</code> для побочных действий.</p>
+
+<p>Избегайте вложенности scope-функций: это ухудшает читаемость. Если код становится сложным, вынесите логику в отдельные функции. Помните, что <code>with</code> не является extension-функцией и принимает объект как аргумент.</p>
+
+<div class="study-grid">
+<div class="study-mini">
+<strong class="study-mini-title">let</strong>
+Преобразование и null-check.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">apply</strong>
+Настройка объекта, возвращает объект.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">also</strong>
+Побочные действия, возвращает объект.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">run</strong>
+Вычисление результата в контексте.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">with</strong>
+Группировка вызовов, возвращает результат.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Выбор</strong>
+По возвращаемому значению и читаемости.
+</div>
+</div>
+</section>
+
+<section id="sec-2" class="study-section">
+<h2 class="study-section-title">Итог</h2>
+<p>Scope-функции — мощный инструмент для лаконичного кода. Используйте их осознанно.</p>
+</section>
+
+<section id="sec-3" class="study-section">
+<h2 class="study-section-title">Рекомендации</h2>
+<p>Избегайте вложенности, выбирайте функцию по возвращаемому значению и не злоупотребляйте.</p>
+</section>
+
+<section id="sec-4" class="study-section">
+<h2 class="study-section-title">Мини-совет</h2>
+<p><code>apply</code> удобен для настройки объектов, <code>let</code> — для преобразований.</p>
+</section>
+
+<section id="sec-5" class="study-section">
+<h2 class="study-section-title">Различия возвращаемых значений: подробнее</h2>
+<p><code>let</code>, <code>run</code> и <code>with</code> возвращают результат лямбды. <code>apply</code> и <code>also</code> возвращают сам объект. Это определяет, как функцию используют в цепочках вызовов.</p>
+</section>
+
+<section id="sec-6" class="study-section">
+<h2 class="study-section-title">Когда использовать каждую: подробнее</h2>
+<p><code>let</code> — для преобразования и null-check, <code>run</code> — для вычисления результата, <code>apply</code> — для настройки объекта, <code>also</code> — для побочных действий, <code>with</code> — для группировки вызовов без extension.</p>
+</section>
+
+<section id="sec-7" class="study-section">
+<h2 class="study-section-title">Итоговый совет</h2>
+<p>Используйте scope-функции для лаконичности, но не злоупотребляйте. Читаемость важнее краткости.</p>
+</section>
+
+<section id="sec-8" class="study-section">
+<h2 class="study-section-title">Заметка</h2>
+<p>Scope-функции — инструмент для лаконичного и выразительного кода.</p>
+</section>
+
+<section id="sec-9" class="study-section">
+<h2 class="study-section-title">Примеры использования</h2>
+<p><code>let</code> удобен для цепочек вызовов с null-check. <code>apply</code> — для настройки объектов при создании. <code>also</code> — для логирования. <code>run</code> — для вычисления результата в контексте объекта.</p>
+</section>
+
+<section id="sec-10" class="study-section">
+<h2 class="study-section-title">Частые ошибки</h2>
+<p>Вложенность scope-функций ухудшает читаемость. Использование <code>it</code> в длинных лямбдах затрудняет понимание. Выносите сложную логику в отдельные функции.</p>
+</section>
+
+<section id="sec-11" class="study-section">
+<h2 class="study-section-title">Резюме</h2>
+<p>Scope-функции делают код лаконичным. Выбирайте по возвращаемому значению и читаемости.</p>
+</section>
+
+<section id="sec-12" class="study-section">
+<h2 class="study-section-title">Мини-совет</h2>
+<p>Избегайте вложенности и злоупотребления scope-функциями.</p>
+</section>
+
+<section id="sec-13" class="study-section">
+<h2 class="study-section-title">Итоговый совет</h2>
+<p>Используйте scope-функции для лаконичности, но не злоупотребляйте.</p>
+</section>
+
+<section id="sec-14" class="study-section">
+<h2 class="study-section-title">Заметка</h2>
+<p>Scope-функции — инструмент для лаконичного кода.</p>
+</section>
+
+<section id="sec-15" class="study-section">
+<h2 class="study-section-title">Мини-совет 2</h2>
+<p>Выбирайте функцию по возвращаемому значению.</p>
+</section>
+
+<section id="sec-16" class="study-section">
+<h2 class="study-section-title">Итоговый совет 2</h2>
+<p>Читаемость важнее краткости.</p>
+</section>
+
+<section id="sec-17" class="study-section">
+<h2 class="study-section-title">Заметка 2</h2>
+<p>Scope-функции — инструмент для лаконичного кода.</p>
+</section>
+
+<section id="sec-18" class="study-section">
+<h2 class="study-section-title">Итоговый совет 3</h2>
+<p>Не злоупотребляйте.</p>
+</section>
+
+<section id="sec-19" class="study-section">
+<h2 class="study-section-title">Заметка 2</h2>
+<p>Scope-функции делают код лаконичным.</p>
+</section>
+
+<section id="sec-20" class="study-section">
+<h2 class="study-section-title">Итоговый совет 4</h2>
+<p>Не злоупотребляйте.</p>
 </section>
 
 <section id="check" class="study-section">

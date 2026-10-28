@@ -7,13 +7,22 @@
 </header>
 
 <nav class="study-nav" aria-label="Навигация">
-<a class="study-nav-link" href="#nullable">Nullable-типы</a>
-<a class="study-nav-link" href="#safe-call">Безопасный вызов</a>
-<a class="study-nav-link" href="#elvis">Оператор Элвиса</a>
-<a class="study-nav-link" href="#assertion">!!</a>
-<a class="study-nav-link" href="#let">let</a>
-<a class="study-nav-link" href="#cast">Безопасное приведение</a>
-<a class="study-nav-link" href="#check">Проверка</a>
+<a class="study-nav-link" href="#nullable">1. Nullable и non-null типы</a>
+<a class="study-nav-link" href="#safe-call">2. Безопасный вызов ?.</a>
+<a class="study-nav-link" href="#elvis">3. Оператор Элвиса ?:</a>
+<a class="study-nav-link" href="#assertion">4. Оператор !!</a>
+<a class="study-nav-link" href="#let">5. let для nullable-значений</a>
+<a class="study-nav-link" href="#cast">6. Безопасное приведение типов</a>
+<a class="study-nav-link" href="#platform">7. Платформенные типы</a>
+<a class="study-nav-link" href="#sec-1">Практика и частые ошибки</a>
+<a class="study-nav-link" href="#sec-2">Резюме</a>
+<a class="study-nav-link" href="#sec-3">Платформенные типы: подробнее</a>
+<a class="study-nav-link" href="#sec-4">Smart cast и проверки</a>
+<a class="study-nav-link" href="#sec-5">Рекомендации</a>
+<a class="study-nav-link" href="#sec-6">Null в коллекциях</a>
+<a class="study-nav-link" href="#sec-7">Итог</a>
+<a class="study-nav-link" href="#sec-8">Мини-совет</a>
+<a class="study-nav-link" href="#check">8. Самопроверка</a>
 </nav>
 
 <section id="nullable" class="study-section">
@@ -125,6 +134,73 @@ val javaName = javaObject.name // String!
 <div class="study-note study-warn">
 <strong>Частая ошибка:</strong> считать платформенный тип безопасным. Если Java-метод может вернуть null, лучше явно обработать его через <code>?:</code> или проверку.
 </div>
+</section>
+
+<section id="sec-1" class="study-section">
+<h2 class="study-section-title">Практика и частые ошибки</h2>
+<p>Работа с null — одна из главных причин ошибок в Android-приложениях. Используйте безопасные вызовы и оператор Элвиса, избегайте <code>!!</code> без проверки. На границах с Java-кодом всегда учитывайте, что типы могут быть платформенными.</p>
+
+<div class="study-grid">
+<div class="study-mini">
+<strong class="study-mini-title">Безопасный вызов</strong>
+<code>user?.name</code> вернёт null, если user null.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Элвис</strong>
+<code>user?.name ?: "Гость"</code> подставит значение по умолчанию.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Проверка</strong>
+Используйте <code>if (value != null)</code> для smart cast.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Опасность</strong>
+<code>!!</code> может привести к NullPointerException.
+</div>
+</div>
+</section>
+
+<section id="sec-2" class="study-section">
+<h2 class="study-section-title">Резюме</h2>
+<p>Null safety в Kotlin помогает избежать NullPointerException. Используйте nullable-типы осознанно и проверяйте значения на границах с Java.</p>
+</section>
+
+<section id="sec-3" class="study-section">
+<h2 class="study-section-title">Платформенные типы: подробнее</h2>
+<p>При вызове Java-кода Kotlin не знает, может ли значение быть null. Такие типы называют платформенными и обозначают как <code>T!</code>. Их нужно проверять явно или приводить к nullable/non-null типу при передаче в Kotlin-код.</p>
+</section>
+
+<section id="sec-4" class="study-section">
+<h2 class="study-section-title">Smart cast и проверки</h2>
+<p>После проверки на null компилятор автоматически приводит тип к non-null. Это позволяет обращаться к свойствам без безопасного вызова внутри блока.</p>
+
+```kotlin
+fun printLength(text: String?) {
+    if (text != null) {
+        println(text.length) // smart cast к String
+    }
+}
+```
+</section>
+
+<section id="sec-5" class="study-section">
+<h2 class="study-section-title">Рекомендации</h2>
+<p>Используйте <code>let</code> для цепочек вызовов, <code>also</code> для побочных действий и избегайте <code>!!</code>. На границах с Java проверяйте null явно.</p>
+</section>
+
+<section id="sec-6" class="study-section">
+<h2 class="study-section-title">Null в коллекциях</h2>
+<p>Коллекции могут содержать nullable-элементы. Используйте <code>filterNotNull()</code> для удаления null и <code>mapNotNull()</code> для преобразования с пропуском null.</p>
+</section>
+
+<section id="sec-7" class="study-section">
+<h2 class="study-section-title">Итог</h2>
+<p>Null safety — одна из сильных сторон Kotlin. Используйте nullable-типы осознанно, проверяйте границы с Java и избегайте <code>!!</code> без необходимости.</p>
+</section>
+
+<section id="sec-8" class="study-section">
+<h2 class="study-section-title">Мини-совет</h2>
+<p>При работе с Java-библиотеками всегда проверяйте, может ли значение быть null, и преобразуйте платформенные типы явно.</p>
 </section>
 
 <section id="check" class="study-section">

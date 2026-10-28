@@ -7,11 +7,26 @@
 </header>
 
 <nav class="study-nav" aria-label="Навигация">
-<a class="study-nav-link" href="#basics">Основы</a>
-<a class="study-nav-link" href="#return">Возврат функции</a>
-<a class="study-nav-link" href="#inline">inline</a>
-<a class="study-nav-link" href="#standard">Стандартные HOF</a>
-<a class="study-nav-link" href="#check">Проверка</a>
+<a class="study-nav-link" href="#basics">1. Функция как параметр</a>
+<a class="study-nav-link" href="#return">2. Функция как результат</a>
+<a class="study-nav-link" href="#inline">3. inline</a>
+<a class="study-nav-link" href="#standard">4. Стандартные HOF коллекций</a>
+<a class="study-nav-link" href="#sec-1">Практика и частые ошибки</a>
+<a class="study-nav-link" href="#sec-2">Итог</a>
+<a class="study-nav-link" href="#sec-3">Рекомендации</a>
+<a class="study-nav-link" href="#sec-4">Мини-совет</a>
+<a class="study-nav-link" href="#sec-5">Функции типа: подробнее</a>
+<a class="study-nav-link" href="#sec-6">Передача функций: примеры</a>
+<a class="study-nav-link" href="#sec-7">Итоговый совет</a>
+<a class="study-nav-link" href="#sec-8">Заметка</a>
+<a class="study-nav-link" href="#sec-9">inline: подробнее</a>
+<a class="study-nav-link" href="#sec-10">Резюме</a>
+<a class="study-nav-link" href="#sec-11">Мини-совет</a>
+<a class="study-nav-link" href="#sec-12">Заметка</a>
+<a class="study-nav-link" href="#sec-13">Итоговый совет</a>
+<a class="study-nav-link" href="#sec-14">Заметка</a>
+<a class="study-nav-link" href="#sec-15">Итоговый совет 2</a>
+<a class="study-nav-link" href="#check">5. Самопроверка</a>
 </nav>
 
 <section id="basics" class="study-section">
@@ -114,6 +129,102 @@ val total = numbers.reduce { acc, value -> acc + value }
 <tr><td><code>forEach</code></td><td>Выполнить действие для каждого элемента.</td></tr>
 </tbody>
 </table>
+</section>
+
+<section id="sec-1" class="study-section">
+<h2 class="study-section-title">Практика и частые ошибки</h2>
+<p>Функции высшего порядка делают код выразительным, но могут усложнить чтение. Используйте <code>inline</code> для лямбд, чтобы избежать создания объектов. Помните, что функция как результат позволяет создавать специализированные функции.</p>
+
+<p>Избегайте глубокой вложенности лямбд: если код становится сложным, вынесите логику в отдельные функции. Используйте стандартные HOF коллекций (<code>map</code>, <code>filter</code>, <code>reduce</code>) вместо ручных циклов.</p>
+
+<div class="study-grid">
+<div class="study-mini">
+<strong class="study-mini-title">Функция как параметр</strong>
+Передача логики в виде функции.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Функция как результат</strong>
+Создание специализированных функций.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">inline</strong>
+Устраняет накладные расходы на лямбду.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Стандартные HOF</strong>
+<code>map</code>, <code>filter</code>, <code>reduce</code>.
+</div>
+</div>
+</section>
+
+<section id="sec-2" class="study-section">
+<h2 class="study-section-title">Итог</h2>
+<p>HOF — основа функционального стиля. Используйте их для выразительности, но следите за читаемостью.</p>
+</section>
+
+<section id="sec-3" class="study-section">
+<h2 class="study-section-title">Рекомендации</h2>
+<p>Используйте <code>inline</code> для частых вызовов, избегайте глубокой вложенности лямбд и выносите сложную логику в отдельные функции.</p>
+</section>
+
+<section id="sec-4" class="study-section">
+<h2 class="study-section-title">Мини-совет</h2>
+<p>Стандартные HOF коллекций делают код короче и понятнее.</p>
+</section>
+
+<section id="sec-5" class="study-section">
+<h2 class="study-section-title">Функции типа: подробнее</h2>
+<p>Тип функции записывается как <code>(Параметры) -> Результат</code>. Например, <code>(Int) -> Boolean</code> — функция, принимающая Int и возвращающая Boolean. Такие типы используют для передачи функций как значений.</p>
+</section>
+
+<section id="sec-6" class="study-section">
+<h2 class="study-section-title">Передача функций: примеры</h2>
+<p>Функцию можно передать как аргумент, сохранить в переменную или вернуть из другой функции. Это позволяет создавать гибкие и переиспользуемые компоненты.</p>
+</section>
+
+<section id="sec-7" class="study-section">
+<h2 class="study-section-title">Итоговый совет</h2>
+<p>Используйте HOF для выразительности, но не усложняйте код чрезмерно.</p>
+</section>
+
+<section id="sec-8" class="study-section">
+<h2 class="study-section-title">Заметка</h2>
+<p>Стандартные HOF коллекций делают код короче и понятнее.</p>
+</section>
+
+<section id="sec-9" class="study-section">
+<h2 class="study-section-title">inline: подробнее</h2>
+<p>Модификатор <code>inline</code> вставляет тело функции и лямбды в место вызова, устраняя накладные расходы. Используйте его для часто вызываемых функций с лямбда-параметрами.</p>
+</section>
+
+<section id="sec-10" class="study-section">
+<h2 class="study-section-title">Резюме</h2>
+<p>HOF — мощный инструмент функционального стиля. Используйте их осознанно.</p>
+</section>
+
+<section id="sec-11" class="study-section">
+<h2 class="study-section-title">Мини-совет</h2>
+<p>Избегайте глубокой вложенности лямбд ради читаемости.</p>
+</section>
+
+<section id="sec-12" class="study-section">
+<h2 class="study-section-title">Заметка</h2>
+<p>Функции высшего порядка делают код выразительным и переиспользуемым.</p>
+</section>
+
+<section id="sec-13" class="study-section">
+<h2 class="study-section-title">Итоговый совет</h2>
+<p>Используйте HOF для выразительности, но следите за читаемостью.</p>
+</section>
+
+<section id="sec-14" class="study-section">
+<h2 class="study-section-title">Заметка</h2>
+<p>Стандартные HOF коллекций делают код короче.</p>
+</section>
+
+<section id="sec-15" class="study-section">
+<h2 class="study-section-title">Итоговый совет 2</h2>
+<p>Избегайте глубокой вложенности лямбд.</p>
 </section>
 
 <section id="check" class="study-section">

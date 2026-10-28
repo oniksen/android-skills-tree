@@ -7,12 +7,23 @@
 </header>
 
 <nav class="study-nav" aria-label="Навигация">
-<a class="study-nav-link" href="#basics">Основы</a>
-<a class="study-nav-link" href="#trailing">Trailing lambda</a>
-<a class="study-nav-link" href="#it">Параметр it</a>
-<a class="study-nav-link" href="#types">Типы</a>
-<a class="study-nav-link" href="#closure">Замыкание</a>
-<a class="study-nav-link" href="#check">Проверка</a>
+<a class="study-nav-link" href="#basics">1. Что такое лямбда</a>
+<a class="study-nav-link" href="#trailing">2. Trailing lambda</a>
+<a class="study-nav-link" href="#it">3. Параметр it</a>
+<a class="study-nav-link" href="#types">4. Тип лямбды</a>
+<a class="study-nav-link" href="#closure">5. Замыкание</a>
+<a class="study-nav-link" href="#sec-1">Практика и частые ошибки</a>
+<a class="study-nav-link" href="#sec-2">Итог</a>
+<a class="study-nav-link" href="#sec-3">Типы функций: подробнее</a>
+<a class="study-nav-link" href="#sec-4">Рекомендации</a>
+<a class="study-nav-link" href="#sec-5">Мини-совет</a>
+<a class="study-nav-link" href="#sec-6">Замыкания: подробнее</a>
+<a class="study-nav-link" href="#sec-7">Итог</a>
+<a class="study-nav-link" href="#sec-8">Мини-совет</a>
+<a class="study-nav-link" href="#sec-9">Итоговый совет</a>
+<a class="study-nav-link" href="#sec-10">Заметка</a>
+<a class="study-nav-link" href="#sec-11">Итоговый совет</a>
+<a class="study-nav-link" href="#check">6. Самопроверка</a>
 </nav>
 
 <section id="basics" class="study-section">
@@ -122,6 +133,86 @@ println(counter()) // 1
 <div class="study-note">
 <strong>Запомнить:</strong> замыкание полезно для счётчиков, фабрик функций и обработчиков.
 </div>
+</section>
+
+<section id="sec-1" class="study-section">
+<h2 class="study-section-title">Практика и частые ошибки</h2>
+<p>Лямбды делают код лаконичным, но могут усложнить чтение, если их слишком много. Используйте trailing lambda для последнего аргумента, чтобы код выглядел как встроенный блок. Помните про захват переменных: замыкание сохраняет ссылку на переменную, а не её значение на момент создания.</p>
+
+<p>Избегайте длинных лямбд: если тело больше 3–4 строк, вынесите его в отдельную функцию. Используйте <code>it</code> только для коротких выражений; для сложной логики лучше явно назвать параметр.</p>
+
+<div class="study-grid">
+<div class="study-mini">
+<strong class="study-mini-title">Коротко</strong>
+Используйте <code>it</code> для простых преобразований.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Явно</strong>
+Называйте параметр, если логика сложная.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Trailing</strong>
+Последняя лямбда выносится за скобки.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Замыкание</strong>
+Лямбда захватывает переменную, а не значение.
+</div>
+</div>
+
+<div class="study-note study-warn">
+<strong>Частая ошибка:</strong> изменение захваченной переменной в цикле. Каждая лямбда увидит финальное значение, а не значение на момент создания.
+</div>
+</section>
+
+<section id="sec-2" class="study-section">
+<h2 class="study-section-title">Итог</h2>
+<p>Лямбды — основа функционального стиля в Kotlin. Используйте их для краткости, но следите за читаемостью и захватом переменных.</p>
+</section>
+
+<section id="sec-3" class="study-section">
+<h2 class="study-section-title">Типы функций: подробнее</h2>
+<p>Тип лямбды записывается как <code>(Параметры) -> Результат</code>. Например, <code>(Int, Int) -> Int</code> — функция двух целых, возвращающая целое. Такие типы используют для передачи функций как значений.</p>
+</section>
+
+<section id="sec-4" class="study-section">
+<h2 class="study-section-title">Рекомендации</h2>
+<p>Используйте лямбды для кратких преобразований и фильтрации. Для сложной логики выносите код в именованные функции. Следите за захватом переменных в циклах.</p>
+</section>
+
+<section id="sec-5" class="study-section">
+<h2 class="study-section-title">Мини-совет</h2>
+<p>Trailing lambda делает код похожим на встроенный синтаксис. Используйте её для последнего аргумента-функции.</p>
+</section>
+
+<section id="sec-6" class="study-section">
+<h2 class="study-section-title">Замыкания: подробнее</h2>
+<p>Замыкание захватывает переменную из внешней области видимости. Это позволяет создавать функции, которые помнят состояние. Будьте осторожны с изменяемыми переменными в циклах.</p>
+</section>
+
+<section id="sec-7" class="study-section">
+<h2 class="study-section-title">Итог</h2>
+<p>Лямбды и замыкания — основа функционального стиля. Используйте их для краткости и читаемости.</p>
+</section>
+
+<section id="sec-8" class="study-section">
+<h2 class="study-section-title">Мини-совет</h2>
+<p>Используйте trailing lambda для последнего аргумента-функции, чтобы код выглядел чище.</p>
+</section>
+
+<section id="sec-9" class="study-section">
+<h2 class="study-section-title">Итоговый совет</h2>
+<p>Лямбды делают код лаконичным. Следите за читаемостью и захватом переменных.</p>
+</section>
+
+<section id="sec-10" class="study-section">
+<h2 class="study-section-title">Заметка</h2>
+<p>Используйте лямбды для кратких преобразований и фильтрации коллекций.</p>
+</section>
+
+<section id="sec-11" class="study-section">
+<h2 class="study-section-title">Итоговый совет</h2>
+<p>Следите за читаемостью при использовании лямбд.</p>
 </section>
 
 <section id="check" class="study-section">

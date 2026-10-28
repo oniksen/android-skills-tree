@@ -7,12 +7,21 @@
 </header>
 
 <nav class="study-nav" aria-label="Навигация">
-<a class="study-nav-link" href="#basics">Основы</a>
-<a class="study-nav-link" href="#equals">Равенство</a>
-<a class="study-nav-link" href="#copy">copy</a>
-<a class="study-nav-link" href="#destructure">Деструктуризация</a>
-<a class="study-nav-link" href="#limits">Ограничения</a>
-<a class="study-nav-link" href="#check">Проверка</a>
+<a class="study-nav-link" href="#basics">1. Зачем нужен data class</a>
+<a class="study-nav-link" href="#equals">2. Равенство и hashCode</a>
+<a class="study-nav-link" href="#copy">3. copy()</a>
+<a class="study-nav-link" href="#destructure">4. Деструктуризация</a>
+<a class="study-nav-link" href="#limits">5. Ограничения</a>
+<a class="study-nav-link" href="#sec-1">Сравнение с обычным классом</a>
+<a class="study-nav-link" href="#sec-2">Практика и частые ошибки</a>
+<a class="study-nav-link" href="#sec-3">Итог</a>
+<a class="study-nav-link" href="#sec-4">Деструктуризация: подробнее</a>
+<a class="study-nav-link" href="#sec-5">Ограничения val параметров</a>
+<a class="study-nav-link" href="#sec-6">Мини-совет</a>
+<a class="study-nav-link" href="#sec-7">Равенство: подробнее</a>
+<a class="study-nav-link" href="#sec-8">Итог</a>
+<a class="study-nav-link" href="#sec-9">Мини-совет</a>
+<a class="study-nav-link" href="#check">6. Самопроверка</a>
 </nav>
 
 <section id="basics" class="study-section">
@@ -140,6 +149,70 @@ Data class не может быть abstract, open, sealed или inner.
 Может наследовать другие классы, но с ограничениями.
 </div>
 </div>
+</section>
+
+<section id="sec-1" class="study-section">
+<h2 class="study-section-title">Сравнение с обычным классом</h2>
+<p>Обычный класс не генерирует <code>equals</code>, <code>hashCode</code> и <code>toString</code> автоматически. Data class делает это за вас, что экономит время и снижает количество ошибок. Если нужна только хранение данных, data class — лучший выбор.</p>
+</section>
+
+<section id="sec-2" class="study-section">
+<h2 class="study-section-title">Практика и частые ошибки</h2>
+<p>Не используйте data class для классов с изменяемым состоянием или сложной логикой. Помните, что <code>copy()</code> создаёт поверхностную копию: вложенные объекты не копируются глубоко. Проверяйте равенство через <code>==</code>, а не <code>===</code>.</p>
+
+<div class="study-grid">
+<div class="study-mini">
+<strong class="study-mini-title">Когда использовать</strong>
+DTO, модели данных, результаты запросов.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Когда не использовать</strong>
+Классы с бизнес-логикой или изменяемым состоянием.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Осторожно</strong>
+<code>copy()</code> не делает глубокую копию вложенных объектов.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Равенство</strong>
+<code>==</code> сравнивает содержимое, <code>===</code> — ссылку.
+</div>
+</div>
+</section>
+
+<section id="sec-3" class="study-section">
+<h2 class="study-section-title">Итог</h2>
+<p>Data class — удобный инструмент для моделей данных. Используйте его для простых структур и избегайте в сложной логике.</p>
+</section>
+
+<section id="sec-4" class="study-section">
+<h2 class="study-section-title">Деструктуризация: подробнее</h2>
+<p>Деструктуризация позволяет извлекать свойства в отдельные переменные. Под капотом генерируются функции <code>component1()</code>, <code>component2()</code> и т.д. Порядок свойств важен.</p>
+</section>
+
+<section id="sec-5" class="study-section">
+<h2 class="study-section-title">Ограничения val параметров</h2>
+<p>Параметры data class по умолчанию <code>val</code>. Если нужна изменяемость, используйте <code>var</code>, но это усложняет равенство и hashCode. Для моделей данных лучше оставлять <code>val</code>.</p>
+</section>
+
+<section id="sec-6" class="study-section">
+<h2 class="study-section-title">Мини-совет</h2>
+<p>Используйте data class для простых моделей и избегайте вложенных изменяемых объектов без необходимости.</p>
+</section>
+
+<section id="sec-7" class="study-section">
+<h2 class="study-section-title">Равенство: подробнее</h2>
+<p>Сгенерированный <code>equals</code> сравнивает все свойства. Если нужно частичное сравнение, реализуйте <code>equals</code> вручную или используйте обычный класс.</p>
+</section>
+
+<section id="sec-8" class="study-section">
+<h2 class="study-section-title">Итог</h2>
+<p>Data class экономит время и снижает ошибки. Используйте его для простых моделей и избегайте сложной логики внутри.</p>
+</section>
+
+<section id="sec-9" class="study-section">
+<h2 class="study-section-title">Мини-совет</h2>
+<p>Для DTO и моделей ответов API data class — отличный выбор. Для сущностей с бизнес-логикой используйте обычные классы.</p>
 </section>
 
 <section id="check" class="study-section">

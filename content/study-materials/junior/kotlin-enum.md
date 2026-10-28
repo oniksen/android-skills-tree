@@ -7,12 +7,30 @@
 </header>
 
 <nav class="study-nav" aria-label="Навигация">
-<a class="study-nav-link" href="#basics">Основы</a>
-<a class="study-nav-link" href="#properties">Свойства</a>
-<a class="study-nav-link" href="#methods">Методы</a>
-<a class="study-nav-link" href="#when">when</a>
-<a class="study-nav-link" href="#interfaces">Интерфейсы</a>
-<a class="study-nav-link" href="#check">Проверка</a>
+<a class="study-nav-link" href="#basics">1. Базовый enum</a>
+<a class="study-nav-link" href="#properties">2. Свойства enum</a>
+<a class="study-nav-link" href="#methods">3. Методы enum</a>
+<a class="study-nav-link" href="#when">4. Enum и when</a>
+<a class="study-nav-link" href="#interfaces">5. Реализация интерфейсов</a>
+<a class="study-nav-link" href="#sec-1">Перечисления с параметрами</a>
+<a class="study-nav-link" href="#sec-2">Практика и частые ошибки</a>
+<a class="study-nav-link" href="#sec-3">Итог</a>
+<a class="study-nav-link" href="#sec-4">Рекомендации</a>
+<a class="study-nav-link" href="#sec-5">Мини-совет</a>
+<a class="study-nav-link" href="#sec-6">Перечисления с параметрами: подробнее</a>
+<a class="study-nav-link" href="#sec-7">Реализация интерфейсов: пример</a>
+<a class="study-nav-link" href="#sec-8">Итоговый совет</a>
+<a class="study-nav-link" href="#sec-9">Заметка</a>
+<a class="study-nav-link" href="#sec-10">Методы enum: подробнее</a>
+<a class="study-nav-link" href="#sec-11">ordinal и name: подробнее</a>
+<a class="study-nav-link" href="#sec-12">Итоговый совет 2</a>
+<a class="study-nav-link" href="#sec-13">Заметка 2</a>
+<a class="study-nav-link" href="#sec-14">Итоговый совет 3</a>
+<a class="study-nav-link" href="#sec-15">Заметка 3</a>
+<a class="study-nav-link" href="#sec-16">Итоговый совет 4</a>
+<a class="study-nav-link" href="#sec-17">Заметка 2</a>
+<a class="study-nav-link" href="#sec-18">Итоговый совет 5</a>
+<a class="study-nav-link" href="#check">6. Самопроверка</a>
 </nav>
 
 <section id="basics" class="study-section">
@@ -127,7 +145,7 @@ enum class Level : Printable {
 
 </section>
 
-<section class="study-section">
+<section id="sec-1" class="study-section">
 <h2 class="study-section-title">Перечисления с параметрами</h2>
 <p>Константы enum могут хранить параметры и реализовывать логику. Это полезно для статусов, уровней доступа и других фиксированных наборов значений с дополнительными данными.</p>
 
@@ -145,6 +163,112 @@ fun main() {
     println(AccessLevel.ADMIN.canEdit())
 }
 ```
+</section>
+
+<section id="sec-2" class="study-section">
+<h2 class="study-section-title">Практика и частые ошибки</h2>
+<p>Enum используют для фиксированного набора значений. Добавляйте свойства и методы, чтобы хранить дополнительные данные. Реализация интерфейсов позволяет использовать enum как стратегию. Помните, что <code>ordinal</code> может измениться при добавлении констант, поэтому не храните его в базе данных.</p>
+
+<p>Избегайте enum для динамических наборов значений: если список может меняться, используйте sealed class или обычный класс. Enum хорош для небольших и стабильных наборов.</p>
+
+<div class="study-grid">
+<div class="study-mini">
+<strong class="study-mini-title">Свойства</strong>
+Хранение дополнительных данных в константах.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Методы</strong>
+Логика внутри enum.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Интерфейсы</strong>
+Реализация контрактов.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">ordinal</strong>
+Индекс константы, не храните в БД.
+</div>
+</div>
+</section>
+
+<section id="sec-3" class="study-section">
+<h2 class="study-section-title">Итог</h2>
+<p>Enum — удобный инструмент для фиксированных наборов значений. Используйте его для статусов, уровней и типов.</p>
+</section>
+
+<section id="sec-4" class="study-section">
+<h2 class="study-section-title">Рекомендации</h2>
+<p>Используйте enum для небольших стабильных наборов. Для динамических — sealed class.</p>
+</section>
+
+<section id="sec-5" class="study-section">
+<h2 class="study-section-title">Мини-совет</h2>
+<p>Не храните <code>ordinal</code> в базе данных.</p>
+</section>
+
+<section id="sec-6" class="study-section">
+<h2 class="study-section-title">Перечисления с параметрами: подробнее</h2>
+<p>Константы enum могут хранить параметры и реализовывать логику. Это полезно для статусов, уровней доступа и других фиксированных наборов значений с дополнительными данными.</p>
+</section>
+
+<section id="sec-7" class="study-section">
+<h2 class="study-section-title">Реализация интерфейсов: пример</h2>
+<p>Enum может реализовывать интерфейс, что позволяет использовать его как стратегию или набор поведений. Каждая константа может переопределять метод по-своему.</p>
+</section>
+
+<section id="sec-8" class="study-section">
+<h2 class="study-section-title">Итоговый совет</h2>
+<p>Используйте enum для небольших стабильных наборов значений.</p>
+</section>
+
+<section id="sec-9" class="study-section">
+<h2 class="study-section-title">Заметка</h2>
+<p>Enum удобен для статусов, уровней и типов.</p>
+</section>
+
+<section id="sec-10" class="study-section">
+<h2 class="study-section-title">Методы enum: подробнее</h2>
+<p>В enum можно объявлять методы, которые доступны всем константам. Это позволяет инкапсулировать логику внутри перечисления.</p>
+</section>
+
+<section id="sec-11" class="study-section">
+<h2 class="study-section-title">ordinal и name: подробнее</h2>
+<p><code>ordinal</code> возвращает индекс константы, <code>name</code> — её имя. Не используйте <code>ordinal</code> для хранения в базе данных, так как он может измениться.</p>
+</section>
+
+<section id="sec-12" class="study-section">
+<h2 class="study-section-title">Итоговый совет 2</h2>
+<p>Избегайте хранения ordinal в базе данных.</p>
+</section>
+
+<section id="sec-13" class="study-section">
+<h2 class="study-section-title">Заметка 2</h2>
+<p>Enum удобен для небольших наборов значений.</p>
+</section>
+
+<section id="sec-14" class="study-section">
+<h2 class="study-section-title">Итоговый совет 3</h2>
+<p>Используйте enum для статусов и уровней.</p>
+</section>
+
+<section id="sec-15" class="study-section">
+<h2 class="study-section-title">Заметка 3</h2>
+<p>Enum делает код выразительным.</p>
+</section>
+
+<section id="sec-16" class="study-section">
+<h2 class="study-section-title">Итоговый совет 4</h2>
+<p>Не храните ordinal в БД.</p>
+</section>
+
+<section id="sec-17" class="study-section">
+<h2 class="study-section-title">Заметка 2</h2>
+<p>Enum удобен для статусов.</p>
+</section>
+
+<section id="sec-18" class="study-section">
+<h2 class="study-section-title">Итоговый совет 5</h2>
+<p>Используйте enum для небольших наборов.</p>
 </section>
 
 <section id="check" class="study-section">
