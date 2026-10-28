@@ -29,6 +29,17 @@ export interface CrystalAward {
 
 const EMPTY_ASSESSMENT_MAP: Record<string, AssessmentData> = {};
 
+const assessmentCache = new Map<
+  string,
+  {
+    value: Record<string, AssessmentData>;
+    loading: boolean;
+    listeners: Set<(v: Record<string, AssessmentData>) => void>;
+    errorListeners: Set<(e: unknown) => void>;
+    unsub: (() => void) | null;
+  }
+>();
+
 export function useAssessments() {
   const { assessments: repository } = useServices();
   const [assessmentMap, setAssessmentMap] = useState<
@@ -43,20 +54,55 @@ export function useAssessments() {
   useEffect(() => {
     if (authLoading || !uid) return;
 
-    return repository.subscribe(uid, {
-      next: (map) => {
-        mapRef.current = map;
-        setAssessmentMap(map);
+    let entry = assessmentCache.get(uid);
+    if (!entry) {
+      entry = { value: {}, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
+      assessmentCache.set(uid, entry);
+      entry.unsub = repository.subscribe(uid, {
+        next: (map) => {
+          entry!.value = map;
+          entry!.loading = false;
+          entry!.listeners.forEach((l) => l(map));
+        },
+        error: (error) => {
+          entry!.loading = false;
+          entry!.errorListeners.forEach((l) => l(error));
+        },
+      });
+    }
+
+    const listener = (map: Record<string, AssessmentData>) => {
+      mapRef.current = map;
+      setAssessmentMap(map);
+      setLoading(false);
+    };
+    const errorListener = (error: unknown) => {
+      console.error("Error listening to assessments:", error);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      setLoading(false);
+    };
+
+    entry.listeners.add(listener);
+    entry.errorListeners.add(errorListener);
+
+    if (!entry.loading) {
+      mapRef.current = entry.value;
+      setTimeout(() => {
+        setAssessmentMap(entry.value);
         setLoading(false);
-      },
-      error: (error) => {
-        console.error("Error listening to assessments:", error);
-        if (isPermissionDenied(error)) {
-          toast.show("Для отслеживания прогресса обратитесь к администратору.");
-        }
-        setLoading(false);
-      },
-    });
+      }, 0);
+    }
+
+    return () => {
+      entry!.listeners.delete(listener);
+      entry!.errorListeners.delete(errorListener);
+      if (entry!.listeners.size === 0) {
+        entry!.unsub?.();
+        assessmentCache.delete(uid);
+      }
+    };
   }, [uid, authLoading, repository, toast]);
 
   const toggleSubtopic = useCallback(

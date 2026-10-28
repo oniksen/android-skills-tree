@@ -19,6 +19,17 @@ interface CurrencyState {
   loading: boolean;
 }
 
+const currencyCache = new Map<
+  string,
+  {
+    value: CurrencyData;
+    loading: boolean;
+    listeners: Set<(v: CurrencyData) => void>;
+    errorListeners: Set<(e: unknown) => void>;
+    unsub: (() => void) | null;
+  }
+>();
+
 const INITIAL_STATE: CurrencyState = { currency: EMPTY_CURRENCY, loading: true };
 
 export function useCurrency() {
@@ -31,16 +42,49 @@ export function useCurrency() {
   useEffect(() => {
     if (authLoading || !uid) return;
 
-    return repository.subscribe(uid, {
-      next: (currency) => setState({ currency, loading: false }),
-      error: (error) => {
-        console.error("Error listening to currency:", error);
-        if (isPermissionDenied(error)) {
-          toast.show("Для отслеживания прогресса обратитесь к администратору.");
-        }
-        setState((prev) => ({ ...prev, loading: false }));
-      },
-    });
+    let entry = currencyCache.get(uid);
+    if (!entry) {
+      entry = { value: EMPTY_CURRENCY, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
+      currencyCache.set(uid, entry);
+      entry.unsub = repository.subscribe(uid, {
+        next: (currency) => {
+          entry!.value = currency;
+          entry!.loading = false;
+          entry!.listeners.forEach((l) => l(currency));
+        },
+        error: (error) => {
+          entry!.loading = false;
+          entry!.errorListeners.forEach((l) => l(error));
+        },
+      });
+    }
+
+    const listener = (currency: CurrencyData) => setState({ currency, loading: false });
+    const errorListener = (error: unknown) => {
+      console.error("Error listening to currency:", error);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      setState((prev) => ({ ...prev, loading: false }));
+    };
+
+    entry.listeners.add(listener);
+    entry.errorListeners.add(errorListener);
+
+    if (!entry.loading) {
+      setTimeout(() => {
+        setState({ currency: entry.value, loading: false });
+      }, 0);
+    }
+
+    return () => {
+      entry!.listeners.delete(listener);
+      entry!.errorListeners.delete(errorListener);
+      if (entry!.listeners.size === 0) {
+        entry!.unsub?.();
+        currencyCache.delete(uid);
+      }
+    };
   }, [uid, authLoading, repository, toast]);
 
   const signedOut = !authLoading && !uid;

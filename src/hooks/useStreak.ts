@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useServices } from "@/composition/services-context";
 import { useToast } from "@/shared/lib/toast-context";
+import type { StreakSnapshot } from "@/ports/streak-repository";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import {
@@ -25,6 +26,17 @@ export interface StreakDay {
 
 const EMPTY_DAYS: string[] = [];
 
+const streakCache = new Map<
+  string,
+  {
+    value: StreakSnapshot | null;
+    loading: boolean;
+    listeners: Set<(v: StreakSnapshot | null) => void>;
+    errorListeners: Set<(e: unknown) => void>;
+    unsub: (() => void) | null;
+  }
+>();
+
 export function useStreak() {
   const { streak: repository } = useServices();
   const [currentStreak, setCurrentStreak] = useState(0);
@@ -40,37 +52,68 @@ export function useStreak() {
   useEffect(() => {
     if (authLoading || !uid) return;
 
-    return repository.subscribe(uid, {
-      next: (snapshot) => {
-        if (!snapshot) {
-          setCurrentStreak(0);
-          setLongestStreak(0);
-          setLastActiveDate(null);
-          setActiveDays([]);
-          setFrozenDays([]);
-        } else {
-          const today = getLocalDayString();
-          const streaks = computeStreaks(
-            snapshot.activeDays,
-            snapshot.frozenDays,
-            today,
-          );
-          setCurrentStreak(streaks.currentStreak);
-          setLongestStreak(streaks.longestStreak);
-          setLastActiveDate(snapshot.lastActiveDate);
-          setActiveDays(snapshot.activeDays);
-          setFrozenDays(snapshot.frozenDays);
-        }
-        setLoading(false);
-      },
-      error: (error) => {
-        console.error("Error listening to streak:", error);
-        if (isPermissionDenied(error)) {
-          toast.show("Для отслеживания прогресса обратитесь к администратору.");
-        }
-        setLoading(false);
-      },
-    });
+    let entry = streakCache.get(uid);
+    if (!entry) {
+      entry = { value: null, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
+      streakCache.set(uid, entry);
+      entry.unsub = repository.subscribe(uid, {
+        next: (snapshot) => {
+          entry!.value = snapshot;
+          entry!.loading = false;
+          entry!.listeners.forEach((l) => l(snapshot));
+        },
+        error: (error) => {
+          entry!.loading = false;
+          entry!.errorListeners.forEach((l) => l(error));
+        },
+      });
+    }
+
+    const listener = (snapshot: StreakSnapshot | null) => {
+      if (!snapshot) {
+        setCurrentStreak(0);
+        setLongestStreak(0);
+        setLastActiveDate(null);
+        setActiveDays([]);
+        setFrozenDays([]);
+      } else {
+        const today = getLocalDayString();
+        const streaks = computeStreaks(
+          snapshot.activeDays,
+          snapshot.frozenDays,
+          today,
+        );
+        setCurrentStreak(streaks.currentStreak);
+        setLongestStreak(streaks.longestStreak);
+        setLastActiveDate(snapshot.lastActiveDate);
+        setActiveDays(snapshot.activeDays);
+        setFrozenDays(snapshot.frozenDays);
+      }
+      setLoading(false);
+    };
+    const errorListener = (error: unknown) => {
+      console.error("Error listening to streak:", error);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      setLoading(false);
+    };
+
+    entry.listeners.add(listener);
+    entry.errorListeners.add(errorListener);
+
+    if (!entry.loading) {
+      listener(entry.value);
+    }
+
+    return () => {
+      entry!.listeners.delete(listener);
+      entry!.errorListeners.delete(errorListener);
+      if (entry!.listeners.size === 0) {
+        entry!.unsub?.();
+        streakCache.delete(uid);
+      }
+    };
   }, [uid, authLoading, repository, toast]);
 
   useEffect(() => {

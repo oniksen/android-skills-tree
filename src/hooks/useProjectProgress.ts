@@ -11,6 +11,17 @@ import { userProjectPath } from "@/adapters/firestore-client/paths";
 
 const EMPTY_PROJECT_MAP: Record<string, boolean> = {};
 
+const projectCache = new Map<
+  string,
+  {
+    value: Record<string, boolean>;
+    loading: boolean;
+    listeners: Set<(v: Record<string, boolean>) => void>;
+    errorListeners: Set<(e: unknown) => void>;
+    unsub: (() => void) | null;
+  }
+>();
+
 export function useProjectProgress() {
   const { projects: repository } = useServices();
   const [projectMap, setProjectMap] = useState<Record<string, boolean>>({});
@@ -21,19 +32,53 @@ export function useProjectProgress() {
   useEffect(() => {
     if (authLoading || !uid) return;
 
-    return repository.subscribe(uid, {
-      next: (map) => {
-        setProjectMap(map);
+    let entry = projectCache.get(uid);
+    if (!entry) {
+      entry = { value: {}, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
+      projectCache.set(uid, entry);
+      entry.unsub = repository.subscribe(uid, {
+        next: (map) => {
+          entry!.value = map;
+          entry!.loading = false;
+          entry!.listeners.forEach((l) => l(map));
+        },
+        error: (error) => {
+          entry!.loading = false;
+          entry!.errorListeners.forEach((l) => l(error));
+        },
+      });
+    }
+
+    const listener = (map: Record<string, boolean>) => {
+      setProjectMap(map);
+      setLoading(false);
+    };
+    const errorListener = (error: unknown) => {
+      console.error("Error listening to projects:", error);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      setLoading(false);
+    };
+
+    entry.listeners.add(listener);
+    entry.errorListeners.add(errorListener);
+
+    if (!entry.loading) {
+      setTimeout(() => {
+        setProjectMap(entry.value);
         setLoading(false);
-      },
-      error: (error) => {
-        console.error("Error listening to projects:", error);
-        if (isPermissionDenied(error)) {
-          toast.show("Для отслеживания прогресса обратитесь к администратору.");
-        }
-        setLoading(false);
-      },
-    });
+      }, 0);
+    }
+
+    return () => {
+      entry!.listeners.delete(listener);
+      entry!.errorListeners.delete(errorListener);
+      if (entry!.listeners.size === 0) {
+        entry!.unsub?.();
+        projectCache.delete(uid);
+      }
+    };
   }, [uid, authLoading, repository, toast]);
 
   const toggleProjectCompletion = async (

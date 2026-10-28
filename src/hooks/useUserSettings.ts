@@ -14,6 +14,17 @@ const DEFAULT_SETTINGS: UserSettings = {
   updatedAt: new Date(),
 };
 
+const settingsCache = new Map<
+  string,
+  {
+    value: UserSettings | null;
+    loading: boolean;
+    listeners: Set<(v: UserSettings | null) => void>;
+    errorListeners: Set<(e: unknown) => void>;
+    unsub: (() => void) | null;
+  }
+>();
+
 export function useUserSettings() {
   const { uid, loading: authLoading } = useFirebaseAuth();
   const toast = useToast();
@@ -22,26 +33,57 @@ export function useUserSettings() {
 
   useEffect(() => {
     if (authLoading || !uid) return;
-    const ref = doc(db, ...userSettingsPath(uid));
-    const unsub = onSnapshot(
-      ref,
-      (snap) => {
-        if (snap.exists()) {
-          setSettings(snap.data() as UserSettings);
-        } else {
-          setSettings(DEFAULT_SETTINGS);
-        }
+
+    let entry = settingsCache.get(uid);
+    if (!entry) {
+      entry = { value: null, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
+      settingsCache.set(uid, entry);
+      const ref = doc(db, ...userSettingsPath(uid));
+      entry.unsub = onSnapshot(
+        ref,
+        (snap) => {
+          const value = snap.exists() ? (snap.data() as UserSettings) : DEFAULT_SETTINGS;
+          entry!.value = value;
+          entry!.loading = false;
+          entry!.listeners.forEach((l) => l(value));
+        },
+        (error) => {
+          entry!.loading = false;
+          entry!.errorListeners.forEach((l) => l(error));
+        },
+      );
+    }
+
+    const listener = (value: UserSettings | null) => {
+      setSettings(value);
+      setLoading(false);
+    };
+    const errorListener = (error: unknown) => {
+      console.error("Error listening to settings:", error);
+      setLoading(false);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+    };
+
+    entry.listeners.add(listener);
+    entry.errorListeners.add(errorListener);
+
+    if (!entry.loading) {
+      setTimeout(() => {
+        setSettings(entry.value);
         setLoading(false);
-      },
-      (error) => {
-        console.error("Error listening to settings:", error);
-        setLoading(false);
-        if (isPermissionDenied(error)) {
-          toast.show("Для отслеживания прогресса обратитесь к администратору.");
-        }
-      },
-    );
-    return () => unsub();
+      }, 0);
+    }
+
+    return () => {
+      entry!.listeners.delete(listener);
+      entry!.errorListeners.delete(errorListener);
+      if (entry!.listeners.size === 0) {
+        entry!.unsub?.();
+        settingsCache.delete(uid);
+      }
+    };
   }, [uid, authLoading, toast]);
 
   const todayKey = new Date().toISOString().slice(0, 10);

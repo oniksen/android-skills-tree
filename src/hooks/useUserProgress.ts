@@ -21,6 +21,18 @@ const DEFAULT_PROGRESS: UserProgress = {
   totalScore: 0,
 };
 
+// Shared listener cache: one Firestore listener per uid across all hook instances.
+const progressCache = new Map<
+  string,
+  {
+    value: UserProgress | null;
+    loading: boolean;
+    listeners: Set<(v: UserProgress | null) => void>;
+    errorListeners: Set<(e: unknown) => void>;
+    unsub: (() => void) | null;
+  }
+>();
+
 export function useUserProgress() {
   const { progress: repository } = useServices();
   const [progress, setProgress] = useState<UserProgress | null>(null);
@@ -31,19 +43,53 @@ export function useUserProgress() {
   useEffect(() => {
     if (authLoading || !uid) return;
 
-    return repository.subscribe(uid, {
-      next: (value) => {
-        setProgress(value);
+    let entry = progressCache.get(uid);
+    if (!entry) {
+      entry = { value: null, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
+      progressCache.set(uid, entry);
+      entry.unsub = repository.subscribe(uid, {
+        next: (value) => {
+          entry!.value = value;
+          entry!.loading = false;
+          entry!.listeners.forEach((l) => l(value));
+        },
+        error: (error) => {
+          entry!.loading = false;
+          entry!.errorListeners.forEach((l) => l(error));
+        },
+      });
+    }
+
+    const listener = (value: UserProgress | null) => {
+      setProgress(value);
+      setLoading(false);
+    };
+    const errorListener = (error: unknown) => {
+      console.error("Error listening to progress:", error);
+      setLoading(false);
+      if (isPermissionDenied(error)) {
+        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+    };
+
+    entry.listeners.add(listener);
+    entry.errorListeners.add(errorListener);
+
+    if (!entry.loading) {
+      setTimeout(() => {
+        setProgress(entry.value);
         setLoading(false);
-      },
-      error: (error) => {
-        console.error("Error listening to progress:", error);
-        setLoading(false);
-        if (isPermissionDenied(error)) {
-          toast.show("Для отслеживания прогресса обратитесь к администратору.");
-        }
-      },
-    });
+      }, 0);
+    }
+
+    return () => {
+      entry!.listeners.delete(listener);
+      entry!.errorListeners.delete(errorListener);
+      if (entry!.listeners.size === 0) {
+        entry!.unsub?.();
+        progressCache.delete(uid);
+      }
+    };
   }, [uid, authLoading, repository, toast]);
 
   useEffect(() => {
