@@ -75,3 +75,13 @@ server-rendered Next.js with client components talking to Firestore via hooks.
 - Every topic page must have **anchor links (study-nav) for each subtopic section** so users can jump quickly.
 - Keep the existing `study-*` CSS classes and structure; add new sections before the self-check section.
 - After editing materials, run `npm run lint`, `npm run typecheck`, `npm test`, then `node scripts/upload-study-materials.mjs` to sync to Firebase.
+
+## Firestore listeners and quota
+
+- One listener per user per domain: use a shared listener cache instead of creating `onSnapshot` in every component.
+- Prefer `getDoc` + React Query with `staleTime`/`gcTime` for data where real-time is not critical.
+- Always unsubscribe from listeners on unmount; never create listeners in loops or on every render.
+- Run auto-sync (auto-freeze, backfill, checkAchievements) once per session (sessionStorage flag).
+- Handle `resource-exhausted`: show a toast, avoid console spam, use exponential backoff.
+- Cache static data (study materials, etc.) for 24h and disable `refetchOnWindowFocus`.
+- Before adding a new listener, check if the read can be merged with an existing one.
