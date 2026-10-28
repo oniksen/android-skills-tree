@@ -205,6 +205,34 @@ fun main() {
 ```
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Частые ошибки и лучшие практики</h2>
+<p>Имя переменной должно отражать смысл, а не тип. Избегайте однобуквенных имён вне коротких циклов и не используйте <code>var</code>, если значение не меняется.</p>
+
+<div class="study-grid">
+<div class="study-mini">
+<strong class="study-mini-title">Плохо</strong>
+<code>val d = 86400</code> — непонятно, что хранит переменная.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Хорошо</strong>
+<code>val secondsInDay = 86400</code> — имя объясняет значение.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Плохо</strong>
+<code>var name = "Ada"</code>, если имя не меняется.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Хорошо</strong>
+<code>val name = "Ada"</code> — неизменяемая ссылка по умолчанию.
+</div>
+</div>
+
+<div class="study-note">
+<strong>Запомнить:</strong> выбирайте <code>val</code> по умолчанию, давайте понятные имена и указывайте тип явно в публичном API.
+</div>
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">7. Самопроверка</h2>
 <div class="study-checklist">
