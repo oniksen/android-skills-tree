@@ -5,6 +5,7 @@ import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
+import { isQuotaExceeded } from "@/shared/lib/quota";
 import type { Achievement } from "@/types";
 
 const EMPTY_ACHIEVEMENTS: Achievement[] = [];
@@ -56,6 +57,9 @@ export function useAchievements() {
       setLoading(false);
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
       }
     };
 

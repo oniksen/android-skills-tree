@@ -7,6 +7,7 @@ import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
+import { isQuotaExceeded } from "@/shared/lib/quota";
 import { userProjectPath } from "@/adapters/firestore-client/paths";
 
 const EMPTY_PROJECT_MAP: Record<string, boolean> = {};
@@ -58,6 +59,9 @@ export function useProjectProgress() {
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
       }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
+      }
       setLoading(false);
     };
 
@@ -96,6 +100,9 @@ export function useProjectProgress() {
       console.error("Error toggling project:", error);
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
       }
       throw error;
     }

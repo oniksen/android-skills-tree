@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
+import { isQuotaExceeded } from "@/shared/lib/quota";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import {
   applyAutoFreezesOnce,
@@ -64,6 +65,9 @@ export function useStreak() {
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
       }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
+      }
     } finally {
       setLoading(false);
     }
@@ -92,6 +96,9 @@ export function useStreak() {
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
       }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
+      }
     });
 
     return () => {
@@ -111,6 +118,9 @@ export function useStreak() {
       console.error("Error syncing streak:", error);
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
       }
       return null;
     }

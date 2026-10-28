@@ -6,6 +6,7 @@ import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
+import { isQuotaExceeded } from "@/shared/lib/quota";
 import { userSettingsPath } from "@/adapters/firestore-client/paths";
 import type { UserSettings } from "@/types";
 
@@ -63,6 +64,9 @@ export function useUserSettings() {
       setLoading(false);
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
       }
     };
 

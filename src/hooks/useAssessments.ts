@@ -13,6 +13,7 @@ import { deleteCategoryPerfectAchievement } from "@/lib/firestore";
 import { isCategoryPerfect } from "@/core/domain/achievement-conditions";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
+import { isQuotaExceeded } from "@/shared/lib/quota";
 import { skills } from "@/data/skills";
 import {
   userAssessmentPath,
@@ -80,6 +81,9 @@ export function useAssessments() {
       console.error("Error listening to assessments:", error);
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
       }
       setLoading(false);
     };

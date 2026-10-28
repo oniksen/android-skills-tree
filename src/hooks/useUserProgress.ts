@@ -13,6 +13,7 @@ import {
 import { userProgressPath } from "@/adapters/firestore-client/paths";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
+import { isQuotaExceeded } from "@/shared/lib/quota";
 import type { UserProgress } from "@/types";
 
 const DEFAULT_PROGRESS: UserProgress = {
@@ -70,6 +71,9 @@ export function useUserProgress() {
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
       }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
+      }
     };
 
     entry.listeners.add(listener);
@@ -100,11 +104,17 @@ export function useUserProgress() {
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
       }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
+      }
     });
     void checkAchievements(uid, assessments).catch((error) => {
       console.error("Error checking achievements:", error);
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
       }
     });
   }, [uid, toast]);
@@ -124,6 +134,9 @@ export function useUserProgress() {
       console.error("Error updating progress:", error);
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
       }
       throw error;
     }

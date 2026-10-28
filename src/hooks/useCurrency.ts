@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useServices } from "@/composition/services-context";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
+import { isQuotaExceeded } from "@/shared/lib/quota";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { buyItem } from "@/adapters/firestore-client/currency-commands";
 import {
@@ -64,6 +65,9 @@ export function useCurrency() {
       console.error("Error listening to currency:", error);
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      if (isQuotaExceeded(error)) {
+        toast.show("Квота Firestore исчерпана. Повторите позже.");
       }
       setState((prev) => ({ ...prev, loading: false }));
     };
