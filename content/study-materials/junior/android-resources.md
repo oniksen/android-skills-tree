@@ -117,6 +117,35 @@ val color = getColor(R.color.primary)
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">colors, themes, dimens, drawables и mipmap</h2>
+<p>В <code>res/values/</code> хранят цвета (<code>colors.xml</code>), размеры (<code>dimens.xml</code>) и темы (<code>themes.xml</code>). Изображения и иконки кладут в <code>drawable/</code> и <code>mipmap/</code>. Это позволяет переиспользовать значения и поддерживать разные конфигурации.</p>
+
+```xml
+<!-- res/values/colors.xml -->
+<color name="primary">#6200EE</color>
+
+<!-- res/values/dimens.xml -->
+<dimen name="padding_small">8dp</dimen>
+
+<!-- res/values/themes.xml -->
+<style name="Theme.App" parent="Theme.Material3.DayNight.NoActionBar" />
+```
+</section>
+
+<section class="study-section">
+<h2 class="study-section-title">Многоязычность</h2>
+<p>Для локализации создают альтернативные папки ресурсов с квалификатором языка, например <code>values-ru/</code>. Android автоматически выберет подходящий перевод по языку устройства.</p>
+
+```xml
+<!-- res/values/strings.xml -->
+<string name="welcome">Welcome</string>
+
+<!-- res/values-ru/strings.xml -->
+<string name="welcome">Добро пожаловать</string>
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">5. Самопроверка</h2>
 <div class="study-checklist">

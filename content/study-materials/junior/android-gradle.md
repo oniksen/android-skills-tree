@@ -140,6 +140,27 @@ androidTestImplementation("lib") // только для инструментал
 </table>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Product Flavors</h2>
+<p>Product flavors позволяют собирать разные варианты одного приложения из одной кодовой базы: например, demo и production, или free и paid. Каждый flavor может иметь свой applicationId, ресурсы и настройки.</p>
+
+```kotlin
+android {
+    flavorDimensions += "version"
+
+    productFlavors {
+        create("demo") {
+            dimension = "version"
+            applicationIdSuffix = ".demo"
+        }
+        create("full") {
+            dimension = "version"
+        }
+    }
+}
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">5. Самопроверка</h2>
 <div class="study-checklist">

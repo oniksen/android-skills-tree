@@ -122,6 +122,11 @@ override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Process Death</h2>
+<p>Система может завершить процесс приложения в фоне при нехватке памяти. При следующем запуске состояние восстанавливают из сохранённых данных (saved state, база данных, DataStore), а не из оперативной памяти.</p>
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">5. Самопроверка</h2>
 <div class="study-checklist">

@@ -127,6 +127,26 @@ enum class Level : Printable {
 
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Перечисления с параметрами</h2>
+<p>Константы enum могут хранить параметры и реализовывать логику. Это полезно для статусов, уровней доступа и других фиксированных наборов значений с дополнительными данными.</p>
+
+```kotlin
+enum class AccessLevel(val code: Int, val description: String) {
+    GUEST(0, "Только просмотр"),
+    USER(1, "Базовый доступ"),
+    ADMIN(2, "Полный доступ");
+
+    fun canEdit(): Boolean = this == ADMIN
+}
+
+fun main() {
+    println(AccessLevel.ADMIN.description)
+    println(AccessLevel.ADMIN.canEdit())
+}
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">6. Самопроверка</h2>
 <div class="study-checklist">

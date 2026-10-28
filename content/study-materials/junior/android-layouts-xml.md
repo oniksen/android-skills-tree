@@ -111,6 +111,30 @@ ConstraintLayout позволяет создавать сложные интер
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">RelativeLayout</h2>
+<p>RelativeLayout располагает элементы относительно друг друга или родителя. Он гибок, но при сложных экранах может быть менее предсказуемым, чем ConstraintLayout.</p>
+
+```xml
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Кнопка" />
+</RelativeLayout>
+```
+</section>
+
+<section class="study-section">
+<h2 class="study-section-title">ViewGroup и View</h2>
+<p><code>View</code> — базовый элемент интерфейса, а <code>ViewGroup</code> — контейнер, который содержит другие View. Любой экран строится из дерева View и ViewGroup.</p>
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">5. Самопроверка</h2>
 <div class="study-checklist">

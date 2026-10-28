@@ -120,6 +120,17 @@ dependencies {
 </table>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Сборка APK и AAB</h2>
+<p>APK — устанавливаемый пакет, AAB — формат публикации для Google Play. Gradle-задачи <code>assemble</code> и <code>bundle</code> формируют эти артефакты. Для публикации обычно используют AAB.</p>
+
+```kotlin
+./gradlew assembleDebug
+./gradlew assembleRelease
+./gradlew bundleRelease
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">5. Самопроверка</h2>
 <div class="study-checklist">

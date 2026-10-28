@@ -114,6 +114,25 @@ sealed interface UiState {
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Паттерн «ограниченные подтипы»</h2>
+<p>Sealed-классы ограничивают набор возможных подтипов. Это удобно для моделирования состояний экрана, результатов операций и событий, когда нужно обработать все варианты в <code>when</code>.</p>
+
+```kotlin
+sealed interface ScreenState {
+    data object Loading : ScreenState
+    data class Content(val items: List<String>) : ScreenState
+    data class Error(val message: String) : ScreenState
+}
+
+fun render(state: ScreenState): String = when (state) {
+    ScreenState.Loading -> "Загрузка..."
+    is ScreenState.Content -> "Элементов: ${state.items.size}"
+    is ScreenState.Error -> "Ошибка: ${state.message}"
+}
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">5. Самопроверка</h2>
 <div class="study-checklist">

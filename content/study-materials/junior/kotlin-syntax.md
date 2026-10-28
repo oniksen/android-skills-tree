@@ -202,6 +202,23 @@ PascalCase: <code>UserProfile</code>.
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">when vs if</h2>
+<p><code>when</code> и <code>if</code> оба могут быть выражениями и инструкциями. <code>if</code> лучше подходит для одного условия или простого булева выбора, а <code>when</code> — для сравнения одного значения с несколькими вариантами. Для диапазонов, типов и нескольких веток <code>when</code> читается лучше.</p>
+
+```kotlin
+val score = 85
+
+val gradeIf = if (score >= 90) "A" else if (score >= 70) "B" else "C"
+
+val gradeWhen = when (score) {
+    in 90..100 -> "A"
+    in 70..89 -> "B"
+    else -> "C"
+}
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">8. Самопроверка</h2>
 <div class="study-checklist">

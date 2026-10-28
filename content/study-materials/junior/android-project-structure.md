@@ -354,6 +354,39 @@ buildTypes {
 <p>Это помогает разработчикам и CI собирать проект на согласованной версии Gradle. Но сборка всё равно зависит от совместимости Gradle, Android Gradle Plugin, JDK и установленных SDK.</p>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Android Studio: основы работы</h2>
+
+<h3 class="study-subtitle">Установка и настройка</h3>
+<p>Android Studio устанавливают с официального сайта вместе с Android SDK и инструментами. После первого запуска настраивают SDK, пути и при необходимости плагины. Для эмулятора нужен образ системы (system image) нужной версии Android.</p>
+
+<h3 class="study-subtitle">Создание проекта</h3>
+<p>Через <strong>New Project</strong> выбирают шаблон (Empty Views Activity, Compose и др.), указывают имя приложения, пакет, язык и минимальную версию SDK. Studio создаёт структуру модулей и базовые файлы.</p>
+
+<h3 class="study-subtitle">Запуск на эмуляторе</h3>
+<p>В <strong>Device Manager</strong> создают виртуальное устройство (AVD) с нужными параметрами экрана и версией Android. Запуск выполняется кнопкой Run; можно выбрать устройство из списка.</p>
+
+```kotlin
+// Запуск из терминала (Gradle Wrapper)
+./gradlew installDebug
+```
+
+<h3 class="study-subtitle">Logcat и отладка</h3>
+<p><strong>Logcat</strong> показывает логи приложения и системы. Фильтры по пакету, тегу и уровню (Verbose/Debug/Info/Warn/Error) помогают находить проблемы. Точки останова и пошаговая отладка позволяют проверять значения переменных.</p>
+
+```kotlin
+import android.util.Log
+
+Log.d("MainActivity", "onCreate called")
+```
+
+<h3 class="study-subtitle">Layout Inspector</h3>
+<p>Layout Inspector показывает дерево View в реальном времени: можно проверить размеры, отступы, свойства и иерархию. Это полезно при отладке разметки и поиске лишних контейнеров.</p>
+
+<h3 class="study-subtitle">Структура проекта в IDE</h3>
+<p>В Android Studio доступны режимы просмотра: <strong>Android</strong> (упрощённая структура) и <strong>Project</strong> (полная файловая система). Важно понимать расположение модулей, <code>src/main</code>, ресурсов и build-файлов.</p>
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">9. Самопроверка</h2>
 <p class="study-small study-muted">Отметьте пункты, которые уже можете объяснить без подсказки.</p>

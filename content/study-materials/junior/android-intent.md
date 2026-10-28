@@ -99,6 +99,21 @@ launcher.launch(intent)
 
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">PendingIntent</h2>
+<p>PendingIntent — это токен, который позволяет другому приложению или системе выполнить Intent от имени вашего приложения. Часто используется в уведомлениях, будильниках и виджетах.</p>
+
+```kotlin
+val intent = Intent(context, MainActivity::class.java)
+val pendingIntent = PendingIntent.getActivity(
+    context,
+    0,
+    intent,
+    PendingIntent.FLAG_IMMUTABLE
+)
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">5. Самопроверка</h2>
 <div class="study-checklist">

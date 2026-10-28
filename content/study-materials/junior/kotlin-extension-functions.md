@@ -114,6 +114,36 @@ fun List<Int>.sumEven(): Int {
 
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">Nullable-приёмники</h2>
+<p>Extension-функцию можно объявить для nullable-типа. Внутри такой функции <code>this</code> может быть null, поэтому вызовы нужно делать безопасно.</p>
+
+```kotlin
+fun String?.orEmptyCustom(): String = this ?: ""
+
+fun main() {
+    val text: String? = null
+    println(text.orEmptyCustom())
+}
+```
+</section>
+
+<section class="study-section">
+<h2 class="study-section-title">Конвенции вызова</h2>
+<p>Extension-функции вызывают как обычные методы объекта. Если есть конфликт с членом класса, приоритет у члена класса. Расширения не имеют доступа к приватным полям класса.</p>
+
+```kotlin
+class User(val name: String)
+
+fun User.displayName(): String = "Пользователь: $name"
+
+fun main() {
+    val user = User("Ada")
+    println(user.displayName())
+}
+```
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">6. Самопроверка</h2>
 <div class="study-checklist">

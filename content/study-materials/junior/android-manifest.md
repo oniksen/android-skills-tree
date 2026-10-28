@@ -147,6 +147,11 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 </div>
 </section>
 
+<section class="study-section">
+<h2 class="study-section-title">App-level и System-level</h2>
+<p>Манифест описывает свойства конкретного приложения: компоненты, разрешения, идентификатор пакета. System-level настройки (например, политики устройства или системные разрешения) задаются на уровне ОС или MDM и не объявляются в манифесте приложения.</p>
+</section>
+
 <section id="check" class="study-section">
 <h2 class="study-section-title">6. Самопроверка</h2>
 <div class="study-checklist">
