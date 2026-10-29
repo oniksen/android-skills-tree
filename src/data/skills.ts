@@ -231,36 +231,42 @@ export const skills: Skill[] = [
     description: "Отображение текста. Кастомизация шрифтов, цветов, размеров, выравнивания и обработки длинного текста.",
     subtopics: ["Текст и атрибуты", "Шрифты и textStyle", "Цвета и фон", "Автоподбор размера (autoSize)", "Clickable links (autoLink)", "Многострочный текст"],
     difficulty: "easy", sortOrder: 1, requiredForLevelUp: true,
+    studyMaterial: "ui-textview",
   },
   {
     id: "junior-ui-button", categoryId: "junior-ui", name: "Button",
     description: "Кнопки: Button, ImageButton, MaterialButton. Обработка нажатий, стилизация, состояния (enabled/disabled).",
     subtopics: ["Button", "ImageButton", "setOnClickListener", "Enabled/disabled state", "MaterialButton", "Кастомный фон кнопки"],
     difficulty: "easy", sortOrder: 2, requiredForLevelUp: true,
+    studyMaterial: "ui-button",
   },
   {
     id: "junior-ui-imageview", categoryId: "junior-ui", name: "ImageView",
     description: "Отображение изображений. Загрузка из ресурсов, scaleType, программное изменение.",
     subtopics: ["src (XML)", "scaleType (centerCrop, fitCenter)", "Загрузка из drawable", "Content description", "Programmatic image loading", "Shape Drawable"],
     difficulty: "easy", sortOrder: 3, requiredForLevelUp: true,
+    studyMaterial: "ui-imageview",
   },
   {
     id: "junior-ui-edittext", categoryId: "junior-ui", name: "EditText",
     description: "Поля ввода текста. Типы ввода, валидация, слушатели изменений, автозаполнение.",
     subtopics: ["Типы ввода (text, number, email)", "inputType атрибуты", "TextWatcher / addTextChangedListener", "Валидация", "imeOptions (actionDone, actionSearch)", "Text Input Layout (Material)"],
     difficulty: "easy", sortOrder: 4, requiredForLevelUp: true,
+    studyMaterial: "ui-edittext",
   },
   {
     id: "junior-ui-linear", categoryId: "junior-ui", name: "LinearLayout",
     description: "Линейное расположение элементов горизонтально или вертикально. Вес (weight), отступы, выравнивание.",
     subtopics: ["orientation (horizontal/vertical)", "layout_weight", "gravity vs layout_gravity", "Отступы (margin, padding)", "Baseline alignment", "Вложенность"],
     difficulty: "easy", sortOrder: 5, requiredForLevelUp: true,
+    studyMaterial: "ui-linearlayout",
   },
   {
     id: "junior-ui-constraint", categoryId: "junior-ui", name: "ConstraintLayout",
     description: "Гибкая разметка с ограничениями (constraints). Guidelines, chains, barriers для сложных UI-макетов.",
     subtopics: ["Базовые constraints", "Guidelines (horizontal, vertical)", "Chains (spread, packed)", "Barriers", "Позиционирование (constraintLeft_toRightOf)", "Bias"],
     difficulty: "medium", sortOrder: 6, requiredForLevelUp: true,
+    studyMaterial: "ui-constraintlayout",
   },
 
   // ============================
