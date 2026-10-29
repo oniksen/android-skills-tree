@@ -1,5 +1,4 @@
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { STUDY_MATERIALS } from "./study-materials.generated";
 
 export interface StudyMaterialContent {
   id: string;
@@ -12,8 +11,5 @@ export interface StudyMaterialContent {
 export async function fetchStudyMaterial(
   id: string,
 ): Promise<StudyMaterialContent | null> {
-  const snap = await getDoc(doc(db, "studyMaterials", id));
-  if (!snap.exists()) return null;
-  const data = snap.data() as Omit<StudyMaterialContent, "id">;
-  return { id: snap.id, ...data };
+  return STUDY_MATERIALS[id] ?? null;
 }

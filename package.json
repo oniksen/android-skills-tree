@@ -14,7 +14,9 @@
     "new:fix": "node scripts/start-work.mjs --type=fix",
     "rc": "node scripts/create-rc.mjs",
     "promote": "node scripts/promote.mjs",
-    "upload:study": "node scripts/upload-study-materials.mjs"
+    "upload:study": "node scripts/upload-study-materials.mjs",
+    "generate:materials": "node scripts/generate-study-materials-registry.mjs",
+    "prebuild": "npm run generate:materials"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.105.0",
