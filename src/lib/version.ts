@@ -45,7 +45,7 @@ export async function getLatestReleaseVersion(
   const fetchOpts = {
     headers,
     cache: "force-cache" as const,
-    next: { revalidate: 3600, tags: ["github-release"] },
+    next: { revalidate: 60, tags: ["github-release"] },
   };
 
   try {
