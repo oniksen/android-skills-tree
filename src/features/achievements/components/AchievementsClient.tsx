@@ -2,12 +2,15 @@
 
 import { motion } from "motion/react";
 import { useAchievements, useStreak } from "@/hooks";
+import { useAssessments } from "@/hooks/useAssessments";
 import AchievementCard from "@/features/achievements/components/AchievementCard";
 import { AchievementsSkeleton } from "@/shared/ui/skeletons";
 import {
   getAchievementCatalog,
+  ACHIEVEMENT_TIER_ICONS,
   type AchievementDef,
 } from "@/data/achievements";
+import { getAchievementProgress } from "@/core/domain/achievement-conditions";
 
 const GROUPS: { key: string; label: string }[] = [
   { key: "level_master", label: "Мастерство уровней" },
@@ -26,8 +29,9 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export default function AchievementsClient() {
   const { achievements, loading } = useAchievements();
   const { currentStreak } = useStreak();
+  const { assessmentMap, loading: assessmentsLoading } = useAssessments();
 
-  if (loading) {
+  if (loading || assessmentsLoading) {
     return <AchievementsSkeleton />;
   }
 
@@ -65,6 +69,8 @@ export default function AchievementsClient() {
               {items.map((def, index) => {
                 const earned = earnedIds.has(def.id);
                 const achievement = achievements.find((a) => def.matches(a));
+                const status = getAchievementProgress(def, { assessmentMap, streakDays: currentStreak });
+                const tierIcon = status.tier ? ACHIEVEMENT_TIER_ICONS[status.tier] : def.icon;
                 return (
                   <motion.div
                     key={def.id}
@@ -75,9 +81,11 @@ export default function AchievementsClient() {
                   >
                     <AchievementCard
                       title={def.title}
-                      icon={def.icon}
+                      icon={earned ? tierIcon : def.icon}
                       condition={def.condition}
                       achievedAt={achievement?.achievedAt ?? null}
+                      tier={status.tier}
+                      tierProgress={status.tierProgress}
                       hint={
                         group.key === "streak" &&
                         !earned &&

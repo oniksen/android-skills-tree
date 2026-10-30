@@ -115,6 +115,21 @@ export async function addAchievementsIfNotExists(
     return [achievementKey(data.type, data.metadata)];
   });
 
+  for (const award of awards) {
+    const key = achievementKey(award.type, award.metadata);
+    const ref = doc(achievementsRef, key);
+    const existing = snap.docs.find((d) => d.id === key);
+    if (existing) {
+      await updateDoc(ref, {
+        metadata: {
+          ...(existing.data().metadata ?? {}),
+          ...award.metadata,
+        },
+      });
+      continue;
+    }
+  }
+
   for (const award of selectMissingAwards(awards, existingKeys)) {
     await setDoc(doc(achievementsRef, achievementKey(award.type, award.metadata)), {
       type: award.type,

@@ -27,6 +27,8 @@ export interface Achievement {
   type: string;
   metadata: Record<string, unknown>;
   achievedAt: Date;
+  tier?: string | null;
+  tierProgress?: number;
 }
 
 export interface StreakData {

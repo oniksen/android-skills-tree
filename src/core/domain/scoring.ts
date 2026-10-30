@@ -60,3 +60,64 @@ export function calcLevelScore(
     .filter((c) => c.levelId === levelId)
     .reduce((sum, c) => sum + calcCategoryScore(c.id, assessmentMap), 0);
 }
+
+
+export function calcCategoryCompletionPercent(
+  categoryId: string,
+  assessmentMap: Record<string, { subtopics?: Record<string, boolean> }>,
+): number {
+  const categorySkills = skills.filter((s) => s.categoryId === categoryId);
+  const total = categorySkills.reduce((sum, s) => sum + s.subtopics.length, 0);
+  if (total === 0) return 0;
+
+  const completed = categorySkills.reduce((sum, s) => {
+    const subtopics = assessmentMap[s.id]?.subtopics;
+    return sum + s.subtopics.filter((st) => subtopics?.[st] === true).length;
+  }, 0);
+
+  return Math.round((completed / total) * 100);
+}
+
+export function calcLevelCompletionPercent(
+  levelId: string,
+  assessmentMap: Record<string, { subtopics?: Record<string, boolean> }>,
+): number {
+  const levelCategories = categories.filter((c) => c.levelId === levelId);
+  const total = levelCategories.reduce(
+    (sum, c) =>
+      sum +
+      skills
+        .filter((s) => s.categoryId === c.id)
+        .reduce((skillSum, s) => skillSum + s.subtopics.length, 0),
+    0,
+  );
+  if (total === 0) return 0;
+
+  const completed = levelCategories.reduce(
+    (sum, c) =>
+      sum +
+      skills
+        .filter((s) => s.categoryId === c.id)
+        .reduce((skillSum, s) => {
+          const subtopics = assessmentMap[s.id]?.subtopics;
+          return skillSum + s.subtopics.filter((st) => subtopics?.[st] === true).length;
+        }, 0),
+    0,
+  );
+
+  return Math.round((completed / total) * 100);
+}
+
+export function calcTotalCompletionPercent(
+  assessmentMap: Record<string, { subtopics?: Record<string, boolean> }>,
+): number {
+  const total = skills.reduce((sum, s) => sum + s.subtopics.length, 0);
+  if (total === 0) return 0;
+
+  const completed = skills.reduce((sum, s) => {
+    const subtopics = assessmentMap[s.id]?.subtopics;
+    return sum + s.subtopics.filter((st) => subtopics?.[st] === true).length;
+  }, 0);
+
+  return Math.round((completed / total) * 100);
+}

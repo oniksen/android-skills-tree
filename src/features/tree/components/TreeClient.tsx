@@ -10,7 +10,6 @@ import CategoryCard from "@/features/tree/components/CategoryCard";
 import CategoryCardReadonly from "@/features/tree/components/CategoryCardReadonly";
 import LevelGate from "@/features/tree/components/LevelGate";
 import Legend from "@/features/tree/components/Legend";
-import AnimatedNumber from "@/shared/ui/AnimatedNumber";
 import { TreeSkeleton } from "@/shared/ui/skeletons";
 import { calcCategoryScore } from "@/core/domain/scoring";
 import { getCategoryMaxScore, getLevelMinScore } from "@/core/domain/weights";
@@ -81,7 +80,6 @@ export default function TreeClient({ slug }: TreeClientProps) {
   const isCurrentOrPast = levelIndex <= currentLevelIndex;
   const isCompleted = levelIndex < currentLevelIndex;
   const currentScore = progress.totalScore || 0;
-  const nextLevel = levels[currentLevelIndex + 1] || null;
 
   return (
     <div className="space-y-6">
@@ -89,32 +87,13 @@ export default function TreeClient({ slug }: TreeClientProps) {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="flex flex-col gap-3 nav-lg:flex-row nav-lg:justify-between nav-lg:items-start nav-lg:gap-0"
+        className="min-w-0"
       >
         <div>
           <h1 className={`text-2xl font-bold tracking-tight mb-1 ${accent}`}>
             <span className="text-slate-600">##</span> {currentLevel.name}
           </h1>
           <p className="text-sm text-slate-400">{currentLevel.description}</p>
-        </div>
-        <div className="flex items-center gap-x-4 nav-lg:items-end nav-lg:flex-col nav-lg:gap-x-0 nav-lg:text-right text-sm text-slate-500">
-          <div className="flex items-center gap-1.5">
-            <span>Всего XP:</span>
-            <AnimatedNumber
-              value={currentScore}
-              className="font-mono font-semibold text-slate-200"
-            />
-          </div>
-          {nextLevel && (
-            <div>
-              До {nextLevel.name}:{" "}
-              <AnimatedNumber
-                value={Math.max(0, getLevelMinScore(nextLevel.id) - currentScore)}
-                className="font-mono font-semibold text-blue-300"
-              />{" "}
-              XP
-            </div>
-          )}
         </div>
       </motion.div>
 

@@ -8,6 +8,8 @@ interface AchievementCardProps {
   icon: string;
   condition: string;
   achievedAt: Date | null;
+  tier?: string | null;
+  tierProgress?: number;
   hint?: string;
 }
 
@@ -16,6 +18,8 @@ export default function AchievementCard({
   icon,
   condition,
   achievedAt,
+  tier,
+  tierProgress,
   hint,
 }: AchievementCardProps) {
   const earned = achievedAt !== null;
@@ -74,6 +78,12 @@ export default function AchievementCard({
         >
           {condition}
         </p>
+        {tier && (
+          <p className="font-mono text-xs text-slate-300 mt-1">
+            Тир: {tier}
+            {typeof tierProgress === "number" ? ` · ${Math.round(tierProgress)}% до следующего` : ""}
+          </p>
+        )}
         {earned ? (
           <p className="font-mono text-xs text-blue-600/80 mt-1">{formattedDate}</p>
         ) : (

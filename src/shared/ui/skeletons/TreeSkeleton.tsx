@@ -3,15 +3,9 @@ import { Skeleton } from "./Skeleton";
 export default function TreeSkeleton() {
   return (
     <div className="space-y-6" aria-busy>
-      <div className="flex flex-col gap-3 nav-lg:flex-row nav-lg:justify-between nav-lg:items-start nav-lg:gap-0">
-        <div>
-          <Skeleton className="h-9 w-40" />
-          <Skeleton className="mt-2 h-4 w-64" />
-        </div>
-        <div className="space-y-2 nav-lg:text-right">
-          <Skeleton className="h-5 w-28" />
-          <Skeleton className="h-5 w-32" />
-        </div>
+      <div className="space-y-2">
+        <Skeleton className="h-9 w-40" />
+        <Skeleton className="h-4 w-64" />
       </div>
 
       <div className="flex gap-2 border-b border-white/[0.06] pb-4">

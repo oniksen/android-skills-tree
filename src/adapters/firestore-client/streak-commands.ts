@@ -167,17 +167,31 @@ export async function syncStreak(): Promise<StreakData | null> {
   }
 }
 
-async function addStreakAchievementIfNotExists(uid: string, days: number) {
+async function addStreakAchievementIfNotExists(uid: string, days: number, currentStreak: number) {
   const achievementsRef = collection(db, ...userAchievementsPath(uid));
   const snap = await getDocs(query(achievementsRef));
   const type = `streak_${days}`;
-  const exists = snap.docs.some((d) => d.data().type === type);
-  if (exists) return;
+  const progress = days > 0 ? Math.min((currentStreak / days) * 100, 100) : 0;
+  const tier = getAchievementTier(progress);
+  const tierProgress = getTierProgress(progress);
+  const keyDoc = snap.docs.find((d) => d.data().type === type);
+
+  if (keyDoc) {
+    await updateDoc(keyDoc.ref, {
+      metadata: {
+        ...(keyDoc.data().metadata ?? {}),
+        days,
+        tier,
+        tierProgress,
+      },
+    });
+    return;
+  }
 
   const newRef = doc(achievementsRef);
   await setDoc(newRef, {
     type,
-    metadata: { days },
+    metadata: { days, tier, tierProgress },
     achievedAt: new Date(),
   });
 }
@@ -186,7 +200,7 @@ async function checkStreakAchievements(uid: string, currentStreak: number) {
   if (currentStreak < STREAK_ACHIEVEMENT_DAYS[0]) return;
   for (const days of STREAK_ACHIEVEMENT_DAYS) {
     if (currentStreak >= days) {
-      await addStreakAchievementIfNotExists(uid, days);
+      await addStreakAchievementIfNotExists(uid, days, currentStreak);
     }
   }
 }

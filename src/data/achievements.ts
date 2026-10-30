@@ -84,3 +84,4 @@ export function getAchievementCatalog(): AchievementDef[] {
 
   return defs;
 }
+export { ACHIEVEMENT_TIERS, ACHIEVEMENT_TIER_ICONS, getAchievementTier, getTierProgress } from "@/core/domain/achievement-tiers";
