@@ -3,6 +3,7 @@
 import { auth, db } from "@/lib/firebase";
 import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
 import { getFreezeCount } from "@/core/domain/currency";
+import { getAchievementTier, getTierProgress } from "@/core/domain/achievement-tiers";
 import {
   collection,
   doc,
@@ -11,6 +12,7 @@ import {
   query,
   runTransaction,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import {
   userAchievementsPath,
