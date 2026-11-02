@@ -8,8 +8,8 @@ export interface Category {
 
 export const categories: Category[] = [
   // Junior
-  { id: "junior-osnovy", levelId: "junior", name: "Основы программирования", sortOrder: 1 },
-  { id: "junior-kotlin", levelId: "junior", name: "Kotlin Basics", sortOrder: 2 },
+  { id: "junior-osnovy", levelId: "junior", name: "Основы программирования", sortOrder: 1, studyMaterial: "android-activity-lifecycle-improved" },
+  { id: "junior-kotlin", levelId: "junior", name: "Kotlin Basics", sortOrder: 2, studyMaterial: "kotlin-basics" },
   { id: "junior-android", levelId: "junior", name: "Android Basics", sortOrder: 3 },
   { id: "junior-ui", levelId: "junior", name: "UI Basics (XML)", sortOrder: 4 },
   { id: "junior-data", levelId: "junior", name: "Data & Storage Basics", sortOrder: 5 },

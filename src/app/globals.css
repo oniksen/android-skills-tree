@@ -847,3 +847,21 @@
     scroll-behavior: auto !important;
   }
 }
+
+.study-markdown {
+  display: block;
+}
+
+.study-markdown .study-list {
+  margin: 0.75rem 0;
+  padding-left: 1.35rem;
+}
+
+.study-markdown .study-list li {
+  margin: 0.3rem 0;
+  line-height: 1.6;
+}
+
+.study-markdown .study-table {
+  width: 100%;
+}

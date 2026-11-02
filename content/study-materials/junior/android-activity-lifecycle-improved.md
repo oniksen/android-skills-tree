@@ -2,7 +2,8 @@
 
 **Уровень:** Junior  
 **Категория:** Основы программирования  
-**Язык:** Kotlin
+**Язык:** Kotlin  
+**Кратко:** Комплексный учебный конспект по основам программирования на Kotlin для уровня Junior.
 
 ## Содержание
 
@@ -23,6 +24,29 @@
 Переменные позволяют хранить данные, обращаться к ним по имени и использовать в вычислениях. Практически любая программа работает с данными: получает их от пользователя, преобразует, сохраняет и передаёт другим частям приложения.
 
 В Kotlin переменные объявляются с помощью `val` и `var`. Разница между ними определяет, можно ли присвоить переменной новое значение после первоначального объявления.
+
+<div class="study-grid">
+<div class="study-mini">
+<strong class="study-mini-title">Имя</strong>
+Понятное имя описывает назначение переменной: <code>userName</code>, а не <code>x</code>.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Значение</strong>
+Значение можно вычислить, получить от пользователя, прочитать из ресурса или передать в функцию.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Изменяемость</strong>
+Нужно заранее решить, можно ли менять значение после создания переменной.
+</div>
+<div class="study-mini">
+<strong class="study-mini-title">Тип</strong>
+Kotlin знает тип переменной: число, строка, булево значение, список, объект и другие.
+</div>
+</div>
+
+<div class="study-note">
+<strong>Ключевая идея:</strong> выбирайте <code>val</code> по умолчанию. Переходите на <code>var</code> только тогда, когда значение действительно должно меняться.
+</div>
 
 ## 1.1. `val` и `var`
 
@@ -69,6 +93,32 @@ var age = 25
 ### Важное различие: неизменяемая ссылка и неизменяемый объект
 
 `val` запрещает повторное присваивание самой переменной, но не гарантирует неизменность объекта, на который она ссылается.
+
+<table class="study-table">
+<thead>
+<tr>
+<th>Ключевое слово</th>
+<th>Можно переприсвоить?</th>
+<th>Когда использовать</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>val</code></td>
+<td>Нет</td>
+<td>Большинство значений, результаты вычислений, параметры функций, свойства без изменения.</td>
+</tr>
+<tr>
+<td><code>var</code></td>
+<td>Да</td>
+<td>Счётчики, накопление результата, состояние, которое действительно меняется.</td>
+</tr>
+</tbody>
+</table>
+
+<div class="study-note study-warn">
+<strong>Частая ошибка:</strong> думать, что <code>val</code> делает объект неизменяемым. <code>val</code> фиксирует только ссылку; содержимое изменяемого объекта всё ещё можно менять.
+</div>
 
 ```kotlin
 val names = mutableListOf("Alex", "Maria")
@@ -626,6 +676,32 @@ val value by lazy(LazyThreadSafetyMode.NONE) {
 - [ ] Могу объяснить принцип работы `lazy`.
 - [ ] Знаю, когда использовать `lateinit`, а когда `lazy`.
 
+### Мини-шпаргалка
+
+<table class="study-table">
+<tbody>
+<tr><th>Нужно значение, которое не меняется</th><td><code>val x = 10</code></td></tr>
+<tr><th>Нужно значение, которое меняется</th><td><code>var x = 10</code></td></tr>
+<tr><th>Нужен тип явно</th><td><code>val x: Int = 10</code></td></tr>
+<tr><th>Нужна константа времени компиляции</th><td><code>const val X = 10</code></td></tr>
+<tr><th>Значение может быть null</th><td><code>val x: String? = null</code></td></tr>
+</tbody>
+</table>
+
+### Проверьте себя
+
+<div class="study-checklist">
+<label><input type="checkbox" /> Могу объяснить разницу между <code>val</code> и <code>var</code>.</label>
+<label><input type="checkbox" /> Понимаю вывод типа и случаи, когда тип указывают явно.</label>
+<label><input type="checkbox" /> Знаю, что такое область видимости переменной.</label>
+<label><input type="checkbox" /> Могу отличить <code>const val</code> от обычного <code>val</code>.</label>
+<label><input type="checkbox" /> Понимаю, как Kotlin работает с <code>null</code>.</label>
+</div>
+
+<div class="study-note">
+<strong>Запомнить:</strong> выбирайте <code>val</code> по умолчанию, давайте понятные имена и указывайте тип явно в публичном API.
+</div>
+
 ### Дополнительные официальные источники
 
 - [Properties](https://kotlinlang.org/docs/properties.html)
@@ -642,6 +718,10 @@ val value by lazy(LazyThreadSafetyMode.NONE) {
 Kotlin — статически типизированный язык. Это означает, что типы переменных и выражений проверяются компилятором.
 
 Например, нельзя без преобразования присвоить строку переменной типа `Int`.
+
+<div class="study-note">
+<strong>Ключевая идея:</strong> тип — это контракт значения. Компилятор проверяет его до запуска программы и помогает избежать ошибок.
+</div>
 
 ```kotlin
 val age: Int = 25
@@ -664,6 +744,10 @@ Kotlin предоставляет несколько типов для рабо�
 | `Long` | 64 бита | Большие целые числа |
 | `Float` | 32 бита | Числа с плавающей точкой |
 | `Double` | 64 бита | Числа с плавающей точкой повышенной точности |
+
+<div class="study-note">
+<strong>Практический совет:</strong> по умолчанию используйте <code>Int</code> и <code>Double</code>. Более узкие типы выбирайте только при реальных ограничениях памяти или совместимости.
+</div>
 
 ### Целочисленные типы
 
@@ -1331,6 +1415,25 @@ fun getUserName(name: String?): String {
 - [ ] Знаю разницу между `toInt()` и `toIntOrNull()`.
 - [ ] Понимаю назначение `Unit`, `Any` и `Nothing`.
 
+### Мини-шпаргалка
+
+<table class="study-table">
+<tbody>
+<tr><th>Обычный целый тип</th><td><code>Int</code></td></tr>
+<tr><th>Большие целые числа</th><td><code>Long</code></td></tr>
+<tr><th>Дробные числа</th><td><code>Double</code></td></tr>
+<tr><th>Текст</th><td><code>String</code></td></tr>
+<tr><th>Символ</th><td><code>Char</code></td></tr>
+<tr><th>Логическое значение</th><td><code>Boolean</code></td></tr>
+<tr><th>Массив</th><td><code>Array&lt;T&gt;</code> или <code>IntArray</code></td></tr>
+<tr><th>Отсутствие значения</th><td><code>Unit</code></td></tr>
+</tbody>
+</table>
+
+<div class="study-note">
+<strong>Запомнить:</strong> не используйте <code>Float</code> без причины, не забывайте про переполнение целых чисел и предпочитайте <code>toIntOrNull()</code> при работе с внешним вводом.
+</div>
+
 ### Дополнительные официальные источники
 
 - [Numbers](https://kotlinlang.org/docs/numbers.html)
@@ -1355,6 +1458,10 @@ fun getUserName(name: String?): String {
 - выполнить действие только при наличии необходимых условий.
 
 В Kotlin основные конструкции ветвления — `if` и `when`.
+
+<div class="study-note">
+<strong>Ключевая идея:</strong> условие должно быть булевым выражением. Если логика ветвления становится сложной, разбивайте её на функции и понятные переменные.
+</div>
 
 ## 3.1. `if / else`
 
@@ -1828,6 +1935,24 @@ Short-circuit evaluation полезен для безопасных провер
 - [ ] Понимаю назначение `&&`, `||` и `!`.
 - [ ] Понимаю short-circuit evaluation и его практическое значение.
 
+### Мини-шпаргалка
+
+<table class="study-table">
+<tbody>
+<tr><th>Два варианта поведения</th><td><code>if (cond) a else b</code></td></tr>
+<tr><th>Выбор среди нескольких вариантов</th><td><code>when (x) { ... }</code></td></tr>
+<tr><th>Условие без аргумента</th><td><code>when { cond1 -> ...; else -> ... }</code></td></tr>
+<tr><th>Проверка диапазона</th><td><code>x in 10..100</code></td></tr>
+<tr><th>Логическое И</th><td><code>&&</code></td></tr>
+<tr><th>Логическое ИЛИ</th><td><code>||</code></td></tr>
+<tr><th>Отрицание</th><td><code>!</code></td></tr>
+</tbody>
+</table>
+
+<div class="study-note study-warn">
+<strong>Частая ошибка:</strong> использовать слишком длинные условия в <code>if</code>. Если условие не помещается в одну строку, вынесите его в функцию с понятным именем.
+</div>
+
 ### Дополнительные официальные источники
 
 - [Conditions and loops](https://kotlinlang.org/docs/control-flow.html)
@@ -1853,6 +1978,10 @@ Short-circuit evaluation полезен для безопасных провер
 - `for`;
 - `while`;
 - `do-while`.
+
+<div class="study-note">
+<strong>Ключевая идея:</strong> выбирайте цикл по характеру задачи: перебор диапазона или коллекции — <code>for</code>, ожидание условия — <code>while</code>, гарантированное выполнение хотя бы один раз — <code>do-while</code>.
+</div>
 
 ## 4.1. Цикл `for`
 
@@ -2376,6 +2505,25 @@ println(numbers) // [1, 3, 5]
 - [ ] Понимаю, как работают вложенные циклы.
 - [ ] Могу безопасно итерироваться по коллекциям.
 
+### Мини-шпаргалка
+
+<table class="study-table">
+<tbody>
+<tr><th>Перебор диапазона</th><td><code>for (i in 1..5) { ... }</code></td></tr>
+<tr><th>Перебор без последнего значения</th><td><code>for (i in 1 until 5) { ... }</code></td></tr>
+<tr><th>Обратный перебор</th><td><code>for (i in 5 downTo 1) { ... }</code></td></tr>
+<tr><th>Шаг</th><td><code>for (i in 1..10 step 2) { ... }</code></td></tr>
+<tr><th>Цикл с условием</th><td><code>while (cond) { ... }</code></td></tr>
+<tr><th>Цикл минимум один раз</th><td><code>do { ... } while (cond)</code></td></tr>
+<tr><th>Выход из цикла</th><td><code>break</code></td></tr>
+<tr><th>Пропуск итерации</th><td><code>continue</code></td></tr>
+</tbody>
+</table>
+
+<div class="study-note study-warn">
+<strong>Частая ошибка:</strong> изменять коллекцию во время её перебора. Если нужно удалить элементы, сначала соберите их, а затем измените коллекцию отдельно.
+</div>
+
 ### Дополнительные официальные источники
 
 - [Conditions and loops](https://kotlinlang.org/docs/control-flow.html)
@@ -2391,6 +2539,10 @@ println(numbers) // [1, 3, 5]
 Функции позволяют разделять большую программу на небольшие логические части, повторно использовать код и уменьшать дублирование.
 
 Например, вместо того чтобы каждый раз самостоятельно вычислять итоговую цену заказа, можно вынести расчёт в отдельную функцию.
+
+<div class="study-note">
+<strong>Ключевая идея:</strong> хорошая функция делает одно понятное действие, имеет осмысленное имя и явный результат.
+</div>
 
 ## 5.1. Объявление и вызов функций
 
@@ -2879,6 +3031,24 @@ fun processUser(name: String) {
 - [ ] Умею передавать массив через spread operator.
 - [ ] Понимаю назначение локальных функций.
 
+### Мини-шпаргалка
+
+<table class="study-table">
+<tbody>
+<tr><th>Функция без результата</th><td><code>fun f() { ... }</code></td></tr>
+<tr><th>Функция с результатом</th><td><code>fun f(): Int { ... }</code></td></tr>
+<tr><th>Короткая форма</th><td><code>fun f(x: Int) = x + 1</code></td></tr>
+<tr><th>Параметр по умолчанию</th><td><code>fun f(x: Int = 0)</code></td></tr>
+<tr><th>Именованный аргумент</th><td><code>f(y = 10)</code></td></tr>
+<tr><th>Произвольное количество аргументов</th><td><code>fun f(vararg items: String)</code></td></tr>
+<tr><th>Передача массива</th><td><code>f(*array)</code></td></tr>
+</tbody>
+</table>
+
+<div class="study-note study-warn">
+<strong>Частая ошибка:</strong> делать функцию слишком длинной. Если функция не помещается на один экран, разбейте её на несколько функций с понятными именами.
+</div>
+
 ### Дополнительные официальные источники
 
 - [Functions](https://kotlinlang.org/docs/functions.html)
@@ -2901,6 +3071,10 @@ fun processUser(name: String) {
 - `Progress` — прогресс обучения.
 
 У каждой сущности есть данные и поведение.
+
+<div class="study-note">
+<strong>Ключевая идея:</strong> сначала моделируйте предметную область через классы и объекты, а затем распределяйте ответственность между ними.
+</div>
 
 Основные концепции ООП:
 
@@ -3770,6 +3944,24 @@ cashService.checkout(200.0)
 - [ ] Могу объяснить полиморфизм на примере.
 - [ ] Понимаю композицию и её отличие от наследования.
 
+### Мини-шпаргалка
+
+<table class="study-table">
+<tbody>
+<tr><th>Класс и объект</th><td>Шаблон и конкретный экземпляр</td></tr>
+<tr><th>Свойство</th><td>Данные объекта</td></tr>
+<tr><th>Метод</th><td>Поведение объекта</td></tr>
+<tr><th>Наследование</th><td>«является»</td></tr>
+<tr><th>Композиция</th><td>«имеет»</td></tr>
+<tr><th>Интерфейс</th><td>Контракт поведения</td></tr>
+<tr><th>Инкапсуляция</th><td>Скрытие внутреннего состояния</td></tr>
+</tbody>
+</table>
+
+<div class="study-note study-warn">
+<strong>Частая ошибка:</strong> использовать наследование там, где достаточно композиции. Наследование делает классы жёстко связанными и усложняет изменения.
+</div>
+
 ### Дополнительные официальные источники
 
 - [Classes](https://kotlinlang.org/docs/classes.html)
@@ -3802,6 +3994,10 @@ Kotlin предоставляет стандартную библиотеку к
 - `List`;
 - `Set`;
 - `Map`.
+
+<div class="study-note">
+<strong>Ключевая идея:</strong> выбирайте коллекцию по задаче: порядок — <code>List</code>, уникальность — <code>Set</code>, поиск по ключу — <code>Map</code>. По умолчанию предпочитайте read-only коллекции.
+</div>
 
 ## 7.1. `List` и `MutableList`
 
@@ -4522,6 +4718,25 @@ users.remove(2)
 - [Map-specific operations](https://kotlinlang.org/docs/map-operations.html)
 - [Arrays](https://kotlinlang.org/docs/arrays.html)
 
+### Мини-шпаргалка
+
+<table class="study-table">
+<tbody>
+<tr><th>Упорядоченная коллекция</th><td><code>List</code></td></tr>
+<tr><th>Уникальные элементы</th><td><code>Set</code></td></tr>
+<tr><th>Пара ключ-значение</th><td><code>Map</code></td></tr>
+<tr><th>Изменяемая версия</th><td>Префикс <code>Mutable</code></td></tr>
+<tr><th>Создание списка</th><td><code>listOf()</code> / <code>mutableListOf()</code></td></tr>
+<tr><th>Фильтрация</th><td><code>filter { ... }</code></td></tr>
+<tr><th>Преобразование</th><td><code>map { ... }</code></td></tr>
+<tr><th>Поиск</th><td><code>find { ... }</code> / <code>firstOrNull { ... }</code></td></tr>
+</tbody>
+</table>
+
+<div class="study-note study-warn">
+<strong>Частая ошибка:</strong> ожидать, что <code>filter</code> изменит исходный список. Методы коллекций обычно возвращают новую коллекцию, а исходная остаётся прежней.
+</div>
+
 ---
 
 # 8. Обработка ошибок
@@ -4549,6 +4764,10 @@ users.remove(2)
 - `runCatching`;
 - `Result`;
 - собственные типы результатов на основе `sealed class` или `sealed interface`.
+
+<div class="study-note">
+<strong>Ключевая идея:</strong> ошибка — это тоже ожидаемый сценарий. Обрабатывайте её на том уровне, где можно принять осмысленное решение: показать сообщение, повторить операцию или вернуть безопасный результат.
+</div>
 
 ## 8.1. Иерархия `Throwable`, `Exception` и `Error`
 
@@ -5253,6 +5472,24 @@ when (val result = login("Alex", "12345")) {
 - [ ] Знаю основные операции `Result`.
 - [ ] Понимаю разницу между `Result` и `sealed class`.
 
+### Мини-шпаргалка
+
+<table class="study-table">
+<tbody>
+<tr><th>Блок с возможной ошибкой</th><td><code>try { ... }</code></td></tr>
+<tr><th>Перехват ошибки</th><td><code>catch (e: Exception) { ... }</code></td></tr>
+<tr><th>Код, который выполнится всегда</th><td><code>finally { ... }</code></td></tr>
+<tr><th>Безопасный доступ</th><td><code>value?.property</code></td></tr>
+<tr><th>Значение по умолчанию</th><td><code>value ?: default</code></td></tr>
+<tr><th>Безопасное преобразование</th><td><code>text.toIntOrNull()</code></td></tr>
+<tr><th>Результат операции</th><td><code>Result&lt;T&gt;</code></td></tr>
+</tbody>
+</table>
+
+<div class="study-note study-warn">
+<strong>Частая ошибка:</strong> перехватывать <code>Throwable</code> или <code>Exception</code> слишком рано. Перехватывайте только те ошибки, которые действительно можете обработать.
+</div>
+
 ### Дополнительные официальные источники
 
 - [Exception and error handling](https://kotlinlang.org/docs/exceptions.html)
@@ -5280,6 +5517,10 @@ when (val result = login("Alex", "12345")) {
 Важно не просто написать код, который работает, а понимать, сколько ресурсов он потребляет и как ведёт себя при увеличении объёма данных.
 
 В этом разделе рассматриваются базовые операции над массивами и строками, линейный поиск, сортировка и временная сложность.
+
+<div class="study-note">
+<strong>Ключевая идея:</strong> сначала напишите понятный алгоритм, затем оцените его сложность и улучшайте только там, где это действительно нужно.
+</div>
 
 ## 9.1. Линейный поиск
 
@@ -6030,6 +6271,23 @@ val results = listOf(
 - [ ] Отличаю O(1), O(n) и O(n²).
 - [ ] Знаю, что Big O описывает рост количества операций, а не время в миллисекундах.
 - [ ] Умею применять `filter`, `map`, `find`, `any` и `all` для решения практических задач.
+
+### Мини-шпаргалка
+
+<table class="study-table">
+<tbody>
+<tr><th>Постоянное время</th><td><code>O(1)</code></td></tr>
+<tr><th>Линейный рост</th><td><code>O(n)</code></td></tr>
+<tr><th>Квадратичный рост</th><td><code>O(n²)</code></td></tr>
+<tr><th>Линейный поиск</th><td>Проверка каждого элемента по очереди</td></tr>
+<tr><th>Сортировка</th><td>Упорядочивание элементов</td></tr>
+<tr><th>Базовые операции</th><td><code>filter</code>, <code>map</code>, <code>find</code>, <code>any</code>, <code>all</code></td></tr>
+</tbody>
+</table>
+
+<div class="study-note study-warn">
+<strong>Частая ошибка:</strong> оптимизировать код до того, как измерили реальную проблему. Сначала сделайте решение понятным, затем улучшайте узкие места.
+</div>
 
 ### Дополнительные официальные источники
 

@@ -5,7 +5,7 @@ import { middleSkills } from "./middle";
 import { strongMiddleSkills } from "./strong-middle";
 import { seniorSkills } from "./senior";
 
-import type { Skill, Difficulty } from "./types";
+import type { Skill } from "./types";
 
 export type { Skill, Difficulty } from "./types";
 

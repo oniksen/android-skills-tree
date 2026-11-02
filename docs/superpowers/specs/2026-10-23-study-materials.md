@@ -1,127 +1,158 @@
 # Спецификация: учебные материалы для навыков
 
-Дата: 2026-10-23
+Дата: 2026-10-23  
+Обновлено: 2026-10-31 — Markdown-пайплайн, универсальный hero, pill-ссылки.
 
 ## Цель
 
-Добавить к навыкам (skills) учебные материалы, которые открываются по иконке рядом с названием навыка в карточке скила. Материал отображается на отдельной странице, стилизованной под проект и реагирующей на текущую тему (light/dark/system).
+Учебные материалы открываются по иконке `BookOpen` рядом с названием категории или навыка и показываются на отдельной странице. Материал хранится как Markdown в репозитории, автоматически превращается в React-страницу со стилями `study-*` и синхронизируется в Firestore.
 
-## Маршрут
+## Архитектура
 
-- Путь: `/tree/[slug]/skill/[skillId]/study`
-- Страница валидирует уровень, принадлежность скила уровню и наличие материала.
-- Если материала нет — `notFound()`.
+1. Источник: `content/study-materials/<grade>/<id>.md`.
+2. `scripts/generate-study-materials-registry.mjs` собирает `src/features/study/study-materials.generated.ts`.
+3. Клиентский хук `useStudyMaterial(id)` читает материал из generated registry.
+4. `StudyMarkdownRenderer` вызывает `applyStudyPattern(content, grade)`.
+5. `ReactMarkdown` + `rehypeRaw` + `rehypeHighlight` рендерит HTML, таблицы, списки и код.
+6. Страница: `/tree/[slug]/category/[categoryId]/study` или `/tree/[slug]/skill/[skillId]/study`.
 
-## Привязка материала к блоку (категории)
+## Данные
 
-В `src/data/categories.ts` у интерфейса `Category` есть поле:
+`StudyMaterialContent`:
+
+```ts
+export interface StudyMaterialContent {
+  id: string;
+  title: string;
+  grade: string;
+  categoryId: string;
+  content: string;
+}
+```
+
+`grade` используется как fallback для уровня в hero, если в Markdown нет `**Уровень:**`.
+
+## Привязка материала
+
+В `src/data/categories.ts`:
 
 ```ts
 studyMaterial?: string; // id материала в реестре
 ```
 
-У скила с материалом:
+В `src/data/skills/<grade>.ts`:
 
 ```ts
-{
-  id: "junior-android-studio",
-  ...
-  studyMaterial: "android-project-structure",
-}
+studyMaterial?: string;
 ```
 
-Материал также может быть привязан к отдельному навыку через `Skill.studyMaterial` (маршрут `/tree/[slug]/skill/[skillId]/study`).
+Иконка в карточках:
 
-## Реестр материалов
-
-Файл `src/features/study/study-materials.ts`:
-
-```ts
-export interface StudyMaterial {
-  id: string;
-  title: string;
-  component: ComponentType;
-}
-
-export const studyMaterials: Record<string, StudyMaterial> = { ... };
-export function getStudyMaterial(id?: string | null): StudyMaterial | undefined;
-```
-
-Каждый материал — отдельный компонент в `src/features/study/materials/<id>.tsx`, который регистрируется в реестре.
-
-## Компоненты
-
-- `src/features/study/components/StudyMaterialPage.tsx` — обёртка страницы: ссылка «Назад к навыку» и контейнер `study-article`.
-- `src/features/study/components/StudyCodeBlock.tsx` — блок кода с кнопкой копирования.
-- Материал — обычный React-компонент, использующий только `study-*` классы.
-
-## Обязательные CSS-классы
-
-Все цвета должны использовать CSS-переменные проекта (`--bg`, `--fg`, `--surface`, `--surface-border`, `--color-*`, `--study-*`), чтобы тема менялась автоматически. Запрещены жёстко заданные цвета вне `--study-code-*`.
-
-Основные классы:
-- `study-page`, `study-back`, `study-article`
-- `study-hero`, `study-eyebrow`, `study-title`, `study-lead`
-- `study-nav`, `study-nav-link`
-- `study-section`, `study-section-title`, `study-subtitle`
-- `study-grid`, `study-mini`, `study-mini-title`
-- `study-code-wrap`, `study-copy`, `study-code`, `study-tree`
-- `study-diagram`, `study-flow`, `study-node`, `study-arrow`
-- `study-note`, `study-warn`
-- `study-table`
-- `study-pill`
-- `study-checklist`
-- `study-footer`, `study-muted`, `study-small`, `study-tag`
-
-## Иконка в карточке блока/навыка
-
-В `CategoryCard` и `CategoryCardReadonly` иконка `BookOpen` показывается рядом с названием категории, если передан `studyHref`:
-
-```
+```tsx
 studyHref={category.studyMaterial ? `/tree/${slug}/category/${categoryId}/study` : undefined}
-```
-
-Аналогично для навыка в `SkillDetailContent`:
-
-```
 studyHref={skill.studyMaterial ? `/tree/${slug}/skill/${skillId}/study` : undefined}
 ```
 
-## Интеграция нового материала (шаги)
+## Markdown-контракт
 
-1. Создать `src/features/study/materials/<id>.tsx` с компонентом, использующим `study-*` классы.
-2. Добавить запись в `studyMaterials` в `src/features/study/study-materials.ts`.
-3. Добавить `studyMaterial: "<id>"` к нужной категории в `src/data/categories.ts` (или к навыку в `src/data/skills.ts`).
-4. Проверить `npm run lint`, `npm run typecheck`, `npm test`.
+- Требуется **не менее 2 H1**. Иначе `applyStudyPattern` возвращает исходный Markdown без преобразований.
+- Первый H1 становится `study-title`.
+- Метаданные в шапке между первым и вторым H1 парсятся для hero/lead/footer.
+- Остальные H1 становятся `study-section` с `study-nav`.
+- H2 становится `study-subtitle`.
+- H3 становится `study-small`.
+- H2 с `Источник` в названии и следующие строки `- [Title](url)` становятся кликабельными `study-pill`.
+- Необработанные HTML-блоки требуют пустых строк вокруг себя.
+- В заголовках код пишется только через backticks; renderer экранирует `<`, `>`, `&`.
 
-## Квиз-вопросы
+Метаданные:
 
-Вопросы хранятся в `src/data/quiz-questions.ts` сгруппированными по `skillId`:
-
-```ts
-export const quizQuestionsBySkill: Record<string, QuizQuestion[]> = { ... };
+```markdown
+**Уровень:** Junior
+**Категория:** Основы программирования
+**Язык:** Kotlin
+**Кратко:** <одно предложение для lead; optional>
+**Футер:** <текст footer; optional>
 ```
 
-Каждый вопрос содержит `skillId` и `grade: QuizGrade` (`junior`, `middle`, `strong-middle`, `senior`).
-Доступны `allQuizQuestions`, `getQuizQuestionsBySkill(skillId)`, `getGradeLevelOrder(grade)`.
+Hero собирается так:
+- Eyebrow: `Категория · Уровень`; если категории нет — `Язык · Уровень`; если нет ничего — `Учебный материал`.
+- Lead: `**Кратко:**` или генерируется по категории/теме и уровню.
+- Footer: `**Футер:**` или генерируется по уровню и языку.
 
-Правила показа:
-- Пользователю не показываются вопросы с грейдом выше его текущего уровня.
-- Вопросы с грейдом ниже или равного текущему показываются.
-- Грейд текущего вопроса отображается в интерфейсе квиза.
+## Поддерживаемые блоки
 
-## Правила макета страницы
+Использовать только эти классы и CSS-переменные проекта:
+`study-hero`, `study-eyebrow`, `study-title`, `study-lead`, `study-nav`, `study-nav-link`,
+`study-section`, `study-section-title`, `study-subtitle`, `study-grid`, `study-mini`,
+`study-mini-title`, `study-note`, `study-note study-warn`, `study-table`, `study-flow`,
+`study-node`, `study-arrow`, `study-pill`, `study-checklist`, `study-footer`, `study-muted`,
+`study-small`, `study-tag`, `study-code`, `study-tree`, `study-diagram`.
 
-- Страница материала занимает всю ширину контейнера, без `max-width`.
-- Горизонтальные отступы небольшие: `16px` на десктопе, `12px` на мобильных.
-- Кнопка «Назад» находится в верхней строке слева (`study-topbar`), в углу страницы и ведёт на страницу дерева.
-- Цвета только через переменные; для акцентных фонов (`hero`, `note`, `tag`) использовать `--study-accent-bg` и `--study-accent-text`, чтобы они адаптировались к теме.
-- Muted-текст использовать `--color-slate-400`, чтобы оставаться читаемым в тёмной теме.
-- Шапка (hero) компактная, без тяжёлой тени в тёмной теме.
+## Шаблон нового материала
 
-## Проверка
+```markdown
+# <Название темы>
 
-- `npm run lint`
-- `npm run typecheck`
-- `npm test`
-- Ручная проверка: светлая/тёмная/системная тема на странице материала, мобильная версия.
+**Уровень:** Junior
+**Категория:** <категория>
+**Язык:** Kotlin
+**Кратко:** <одно предложение для lead; optional>
+
+## Содержание
+
+1. [<Раздел>](#1-...)
+
+---
+
+# 1. <Раздел>
+
+... H2/H3, code fences, study-* HTML blocks ...
+
+# Итоговая самопроверка категории
+
+...
+
+## Источники и документация
+
+### <Группа>
+- [Title](https://...)
+```
+
+## Маршруты
+
+- Путь категории: `/tree/[slug]/category/[categoryId]/study`
+- Путь навыка: `/tree/[slug]/skill/[skillId]/study`
+- Страница валидирует уровень, принадлежность и наличие `studyMaterial`.
+- Если материала нет — `notFound()`.
+
+## Компоненты
+
+- `StudyMaterialPage` — обёртка страницы: ссылка «Назад» и контейнер `study-article`.
+- `StudyMaterialContent` — загрузка по `materialId` и рендер `StudyMarkdownRenderer`.
+- `StudyMarkdownRenderer` — применяет `applyStudyPattern` и рендерит Markdown.
+- `StudyCodeBlock` — блок кода с кнопкой копирования.
+
+## Правила страницы
+
+- Страница материала занимает всю ширину контейнера.
+- Цвета только через CSS-переменные.
+- Muted-текст использует `--color-slate-400`.
+- Hero компактный, без тяжёлой тени в тёмной теме.
+
+## Команды
+
+- Регенерация реестра: `npm run generate:materials`
+- Синхронизация в Firestore: `npm run upload:study`
+- Проверка: `npm run lint`, `npm run typecheck`, `npm test`
+
+## Known limitations
+
+- Legacy HTML-материалы обходят `applyStudyPattern`, если в них меньше 2 H1.
+- `categoryId` в registry повторяет `id`; для привязки используется `studyMaterial`, а не `categoryId`.
+- Чекбоксы в материалах только визуальные, без сохранения.
+- Не редактировать `study-materials.generated.ts` руками.
+- Имя файла `<id>.md` должно совпадать с `studyMaterial` в данных.
+- `npm run prebuild` регенерирует registry перед сборкой.
+filePath">
+/Users/oniksen/Documents/pet-projects/android-skills-tree/docs/superpowers/specs/2026-10-23-study-materials.md

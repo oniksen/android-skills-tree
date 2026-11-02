@@ -21,6 +21,8 @@ server-rendered Next.js with client components talking to Firestore via hooks.
 - `src/composition/` — DI (`services-context.tsx`).
 - `src/hooks/` — client Firestore hooks.
 - `src/data/` — static content (skills, categories, levels, projects, shop, achievements).
+- `content/` — study material Markdown sources (`content/study-materials/<grade>/<id>.md`).
+- `scripts/` — build/release/materials/upload helper scripts.
 - `src/lib/` — cross-cutting utils (`firebase`, `firestore`, `firestore-actions`, `version`, `viewport`, `theme`) + tests.
 - `src/types/` — shared TypeScript types.
 - Root: `next.config.ts`, `vitest.config.mts`, `eslint.config.mjs`, `tsconfig.json`.
@@ -67,14 +69,91 @@ server-rendered Next.js with client components talking to Firestore via hooks.
 - Create release candidate: `npm run rc` (creates/pushes `rc/X.Y.Z`; CI creates `vX.Y.Z-rc.N`).
 - Promote to stable: `npm run promote` (opens PR) or `npm run promote -- --merge` (merges; CI creates `vX.Y.Z`).
 
-## Study material authoring
+## Study material pipeline (Markdown → page)
 
-- Each study topic must cover **all** subtopics listed in `src/data/skills.ts` for that skill.
-- Target volume: **at least 700 words of clean information per topic** (excluding code blocks and HTML tags). If a topic requires more to be fully covered at Junior level, exceed this — completeness takes priority over the number.
-- Include concrete examples, real-world cases, and common mistakes/errors for each concept.
-- Every topic page must have **anchor links (study-nav) for each subtopic section** so users can jump quickly.
-- Keep the existing `study-*` CSS classes and structure; add new sections before the self-check section.
-- After editing materials, run `npm run lint`, `npm run typecheck`, `npm test`, then `node scripts/upload-study-materials.mjs` to sync to Firebase.
+Source of truth: `content/study-materials/<grade>/<id>.md`.
+The generated registry `src/features/study/study-materials.generated.ts` is auto-built by
+`scripts/generate-study-materials-registry.mjs` (`npm run generate:materials`; also runs in `prebuild`).
+Never edit the generated file by hand.
+
+### Required Markdown shape
+
+```markdown
+# <Название темы>
+
+**Уровень:** Junior
+**Категория:** <категория>
+**Язык:** Kotlin
+**Кратко:** <одно предложение для lead; optional>
+**Футер:** <текст footer; optional>
+
+## Содержание
+
+1. [<Раздел>](#1-...)
+
+---
+
+# 1. <Раздел>
+
+... H2/H3, code fences, study-* HTML blocks ...
+
+# Итоговая самопроверка категории
+
+...
+
+## Источники и документация
+
+### <Группа>
+- [Title](https://...)
+```
+
+### Rendering contract (`StudyMarkdownRenderer` / `applyStudyPattern`)
+
+- Requires **at least 2 H1**. If fewer, content is returned unchanged (legacy HTML materials).
+- First H1 becomes `study-title`; metadata in the header area is parsed for hero/lead/footer.
+- H1 sections after the first become `study-section` blocks with auto-generated `study-nav`.
+- H2 → `study-subtitle`; H3 → `study-small`.
+- H2 whose title contains `Источник` + following `- [Title](url)` lines → clickable `study-pill` links.
+- Blank lines are required around raw HTML blocks; otherwise Markdown stops parsing.
+- Inline code in headings must use backticks only; the renderer escapes `<`, `>`, `&`.
+
+### Supported visual blocks
+
+Use these exact class names and CSS variables only:
+`study-hero`, `study-eyebrow`, `study-title`, `study-lead`, `study-nav`, `study-nav-link`,
+`study-section`, `study-section-title`, `study-subtitle`, `study-grid`, `study-mini`,
+`study-mini-title`, `study-note`, `study-note study-warn`, `study-table`, `study-flow`,
+`study-node`, `study-arrow`, `study-pill`, `study-checklist`, `study-footer`, `study-muted`,
+`study-small`, `study-tag`, `study-code`, `study-tree`, `study-diagram`.
+
+### Authoring requirements
+
+- Each study topic must cover **all** subtopics listed in `src/data/skills/<grade>.ts` for that skill.
+- Target volume: **at least 700 words of clean information per topic** (excluding code blocks and HTML tags).
+- Include concrete examples, real-world cases, and common mistakes/errors.
+- Every topic page must have **anchor links (study-nav)** for each subtopic section.
+- Keep `study-*` classes and structure; add new sections before the self-check section.
+
+### Binding and routes
+
+- Category: `studyMaterial: "<id>"` in `src/data/categories.ts`.
+- Skill: `studyMaterial: "<id>"` in `src/data/skills/<grade>.ts`.
+- Routes: `/tree/[slug]/category/[categoryId]/study` and `/tree/[slug]/skill/[skillId]/study`.
+- Category/skill cards show `BookOpen` icon when `studyMaterial` is set.
+
+### Commands
+
+- Regenerate registry: `npm run generate:materials`
+- Sync to Firestore: `npm run upload:study`
+- Verify: `npm run lint`, `npm run typecheck`, `npm test`
+
+### Gotchas
+
+- `categoryId` in the registry mirrors the material `id`; it is not used for binding.
+- Study checkboxes are visual-only; there is no persistence.
+- Legacy HTML materials bypass `applyStudyPattern`.
+- Do not commit generated changes unless they came from `npm run generate:materials`.
+- `npm run prebuild` regenerates the registry before `npm run build`.
 
 ## Firestore listeners and quota
 

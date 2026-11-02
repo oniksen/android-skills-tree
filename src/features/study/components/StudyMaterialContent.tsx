@@ -12,5 +12,5 @@ export default function StudyMaterialContent({ materialId }: { materialId: strin
   if (isError || !data) {
     return <p className="study-muted">Материал не найден.</p>;
   }
-  return <StudyMarkdownRenderer content={data.content} />;
+  return <StudyMarkdownRenderer content={data.content} grade={data.grade} />;
 }

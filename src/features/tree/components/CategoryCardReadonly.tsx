@@ -1,7 +1,11 @@
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { BookOpen } from "lucide-react";
 import SkillRowReadonly from "./SkillRowReadonly";
 import ProgressBar from "@/shared/ui/ProgressBar";
 import { calcCategoryScore } from "@/core/domain/scoring";
 import { getCategoryMaxScore } from "@/core/domain/weights";
+import { getCategoryById } from "@/data/categories";
 
 interface SkillItem {
   id: string;
@@ -17,9 +21,14 @@ export default function CategoryCardReadonly({ categoryId, name, skills, assessm
   skills: SkillItem[];
   assessments?: Record<string, { subtopics?: Record<string, boolean> }>;
 }) {
+  const params = useParams();
+  const slug = (params?.slug as string) ?? "";
   const sorted = [...skills].sort((a, b) => a.sortOrder - b.sortOrder);
   const maxScore = getCategoryMaxScore(categoryId);
   const catScore = calcCategoryScore(categoryId, assessments);
+  const studyHref = getCategoryById(categoryId)?.studyMaterial
+    ? `/tree/${slug}/category/${categoryId}/study`
+    : undefined;
 
   return (
     <div className="group relative card-surface overflow-hidden rounded-lg p-5 transition-colors duration-200 hover:border-blue-500/40">
@@ -27,6 +36,15 @@ export default function CategoryCardReadonly({ categoryId, name, skills, assessm
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
           <h3 className="font-semibold text-lg text-white">{name}</h3>
+          {studyHref && (
+            <Link
+              href={studyHref}
+              aria-label="Учебный материал"
+              className="inline-flex items-center justify-center rounded-md p-1 text-blue-600 transition-colors hover:text-blue-500"
+            >
+              <BookOpen className="h-5 w-5" />
+            </Link>
+          )}
         </div>
         <span className="font-mono text-sm text-slate-500">{catScore}/{maxScore} XP</span>
       </div>
