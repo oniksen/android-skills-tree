@@ -1,12 +1,19 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "motion/react";
+import Link from "next/link";
+import { ACHIEVEMENT_TIER_ICONS } from "@/data/achievements";
 import type { AchievementDef } from "@/data/achievements";
+import type { Achievement } from "@/types";
+import AchievementCard from "@/features/achievements/components/AchievementCard";
+import { getAchievementProgress } from "@/core/domain/achievement-conditions";
 
 interface ProfileAchievementsProps {
   catalog: AchievementDef[];
   earnedIds: string[];
+  achievements: Achievement[];
+  assessmentMap: Record<string, { subtopics?: Record<string, boolean> }>;
+  longestStreak: number;
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -14,6 +21,9 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export default function ProfileAchievements({
   catalog,
   earnedIds,
+  achievements,
+  assessmentMap,
+  longestStreak,
 }: ProfileAchievementsProps) {
   const earned = new Set(earnedIds);
   const earnedDefs = catalog.filter((def) => earned.has(def.id));
@@ -40,24 +50,32 @@ export default function ProfileAchievements({
         </p>
       ) : (
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {earnedDefs.map((def, index) => (
-            <motion.li
-              key={def.id}
-              initial={{ opacity: 0, y: 8 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "0px 0px -20px 0px" }}
-              transition={{ duration: 0.3, delay: (index % 8) * 0.03, ease: EASE }}
-              className="flex items-start gap-3 rounded-lg border border-blue-500/40 bg-blue-500/10 p-3"
-            >
-              <span className="text-2xl" aria-hidden>
-                {def.icon}
-              </span>
-              <div className="min-w-0">
-                <p className="font-semibold text-white">{def.title}</p>
-                <p className="mt-1 text-xs text-slate-400">{def.condition}</p>
-              </div>
-            </motion.li>
-          ))}
+          {earnedDefs.map((def, index) => {
+            const achievement = achievements.find((a) => def.matches(a));
+            const status = getAchievementProgress(def, {
+              assessmentMap,
+              streakDays: longestStreak,
+            });
+            const tierIcon = status.tier ? ACHIEVEMENT_TIER_ICONS[status.tier] : def.icon;
+            return (
+              <motion.li
+                key={def.id}
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "0px 0px -20px 0px" }}
+                transition={{ duration: 0.3, delay: (index % 8) * 0.03, ease: EASE }}
+              >
+                <AchievementCard
+                  title={def.title}
+                  icon={tierIcon}
+                  condition={def.condition}
+                  achievedAt={achievement?.achievedAt ?? null}
+                  tier={status.tier}
+                  tierProgress={status.tierProgress}
+                />
+              </motion.li>
+            );
+          })}
         </ul>
       )}
     </section>

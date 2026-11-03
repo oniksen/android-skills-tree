@@ -144,6 +144,9 @@ export default function ProfileContent({
       <ProfileAchievements
         catalog={catalog}
         earnedIds={summary.earnedAchievementIds}
+        achievements={achievements}
+        assessmentMap={assessmentMap}
+        longestStreak={longestStreak}
       />
 
       <ProfileLinks onNavigate={onClose} />
