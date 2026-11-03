@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -43,6 +44,9 @@ next-env.d.ts
 # project-specific
 .mcp/database.db
 opencode.json
+
+# IDE / editor (local machine config, not shared)
+.idea/
 
 # agent memory (Serena index/memories, memory MCP graph)
 .serena/
