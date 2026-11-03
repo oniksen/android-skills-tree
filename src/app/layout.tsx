@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { NO_FLASH_SCRIPT } from "@/lib/theme";
 import ThemeProvider from "@/shared/ui/ThemeProvider";
@@ -53,9 +52,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased">
-        <Script id="theme-init" strategy="beforeInteractive">
-          {NO_FLASH_SCRIPT}
-        </Script>
+        <script
+          id="theme-init"
+          dangerouslySetInnerHTML={{ __html: NO_FLASH_SCRIPT }}
+        />
         <ThemeProvider>
           <ServicesProvider>
             <ToastProvider>
