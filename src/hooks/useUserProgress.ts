@@ -7,7 +7,7 @@ import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import {
   backfillTotalScore,
-  checkAchievements,
+  checkAchievementsOnce,
   readAssessmentMap,
 } from "@/lib/firestore-actions";
 import { userProgressPath } from "@/adapters/firestore-client/paths";
@@ -108,7 +108,7 @@ export function useUserProgress() {
         toast.show("Квота Firestore исчерпана. Повторите позже.");
       }
     });
-    void checkAchievements(uid, assessments).catch((error) => {
+    void checkAchievementsOnce(uid, assessments).catch((error) => {
       console.error("Error checking achievements:", error);
       if (isPermissionDenied(error)) {
         toast.show("Для отслеживания прогресса обратитесь к администратору.");

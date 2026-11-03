@@ -15,6 +15,8 @@ export interface AchievementDef {
   icon: string;
   condition: string;
   levelId?: string;
+  fromLevelId?: string;
+  toLevelId?: string;
   matches: (achievement: AchievementLike) => boolean;
 }
 
@@ -43,6 +45,8 @@ export function getAchievementCatalog(): AchievementDef[] {
       title: `Повышение до ${to.name}`,
       icon: "🚀",
       condition: `Переход с уровня "${from.name}" на "${to.name}"`,
+      fromLevelId: from.id,
+      toLevelId: to.id,
       matches: (a) =>
         a.type === "level_up" &&
         a.metadata?.from_level === from.name &&

@@ -9,12 +9,9 @@ import { useFirebaseAuth } from "./useFirebaseAuth";
 import { calcSkillScore, calcTotalScore } from "@/core/domain/scoring";
 import { computeAssessmentToggle } from "@/core/use-cases/compute-assessment-toggle";
 import { checkAchievements } from "@/lib/firestore-actions";
-import { deleteCategoryPerfectAchievement } from "@/lib/firestore";
-import { isCategoryPerfect } from "@/core/domain/achievement-conditions";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
-import { skills } from "@/data/skills";
 import {
   userAssessmentPath,
   userCurrencyPath,
@@ -181,25 +178,12 @@ export function useAssessments() {
         const progressRef = doc(db, ...userProgressPath(uid));
         await setDoc(progressRef, { totalScore }, { merge: true });
 
-        const categoryId = skills.find((s) => s.id === skillId)?.categoryId;
-
-        if (justCompleted) {
-          void checkAchievements(uid, nextMap).catch((error) => {
-            console.error("Error checking achievements:", error);
-            if (isPermissionDenied(error)) {
-              toast.show("Для отслеживания прогресса обратитесь к администратору.");
-            }
-          });
-        }
-
-        if (categoryId && nextValue === false && !isCategoryPerfect(categoryId, nextMap)) {
-          await deleteCategoryPerfectAchievement(uid, categoryId).catch((error) => {
-            console.error("Error revoking achievement:", error);
-            if (isPermissionDenied(error)) {
-              toast.show("Для отслеживания прогресса обратитесь к администратору.");
-            }
-          });
-        }
+        void checkAchievements(uid, nextMap).catch((error) => {
+          console.error("Error syncing achievements:", error);
+          if (isPermissionDenied(error)) {
+            toast.show("Для отслеживания прогресса обратитесь к администратору.");
+          }
+        });
 
         if (awarded > 0) {
           setLastAwarded({ skillId, amount: awarded, id: Date.now() });

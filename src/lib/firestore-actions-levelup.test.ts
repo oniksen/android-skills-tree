@@ -25,9 +25,11 @@ vi.mock("@/lib/firestore", () => ({
   getProjectProgressMap: vi.fn(),
   addAchievementIfNotExists: vi.fn(),
   addAchievementsIfNotExists: vi.fn(),
+  reconcileAchievements: vi.fn(),
 }));
 
 vi.mock("@/adapters/firestore-client/streak-commands", () => ({
+  getStreak: vi.fn().mockResolvedValue(null),
   syncStreak: vi.fn().mockResolvedValue(null),
 }));
 

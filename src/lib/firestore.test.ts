@@ -6,6 +6,7 @@ import {
   addAchievementsIfNotExists,
   deleteAchievementsByLevel,
   deleteCategoryPerfectAchievement,
+  reconcileAchievements,
 } from "@/lib/firestore";
 
 const mocks = vi.hoisted(() => ({
@@ -64,7 +65,9 @@ function categoryIdsOfLevel(levelId: string): string[] {
   return categories.filter((c) => c.levelId === levelId).map((c) => c.id);
 }
 
-const juniorAwards = evaluateAchievements(allCheckedMap(categoryIdsOfLevel("junior")));
+const juniorAwards = evaluateAchievements({
+  assessmentMap: allCheckedMap(categoryIdsOfLevel("junior")),
+});
 const categoryAward = juniorAwards.find((a) => a.type === "category_perfect")!;
 const levelAward = juniorAwards.find((a) => a.type === "level_master")!;
 
@@ -78,12 +81,14 @@ const CATEGORY_ID = categoryAward.metadata.category_id as string;
 const SIBLING_CATEGORY_ID = siblingCategoryAward.metadata.category_id as string;
 const LEGACY_AUTO_ID = "aBcDeFgHiJkLmNoPqRsT";
 
-const middleAwards = evaluateAchievements(allCheckedMap(categoryIdsOfLevel("middle")));
+const middleAwards = evaluateAchievements({
+  assessmentMap: allCheckedMap(categoryIdsOfLevel("middle")),
+});
 const middleCategoryAward = middleAwards.find((a) => a.type === "category_perfect")!;
 
-const fullPathAwards = evaluateAchievements(
-  allCheckedMap(categories.map((c) => c.id)),
-);
+const fullPathAwards = evaluateAchievements({
+  assessmentMap: allCheckedMap(categories.map((c) => c.id)),
+});
 const pathAward = fullPathAwards.find((a) => a.type === "path_complete")!;
 
 describe("addAchievementsIfNotExists", () => {
@@ -342,6 +347,180 @@ describe("deleteCategoryPerfectAchievement", () => {
 
     expect(mocks.getDocs).toHaveBeenCalledWith(ACHIEVEMENTS_REF);
     expect(mocks.deleteDoc).not.toHaveBeenCalled();
+  });
+});
+
+describe("reconcileAchievements", () => {
+  const storedOf = (
+    award: { type: string; metadata: Record<string, unknown> },
+    extra: Record<string, unknown> = {},
+  ) => ({
+    type: award.type,
+    metadata: award.metadata,
+    achievedAt: new Date("2026-10-06"),
+    ...extra,
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.collection.mockReturnValue(ACHIEVEMENTS_REF);
+    mocks.doc.mockImplementation((_ref: unknown, id?: string) => ({ id: id ?? "auto-id" }));
+    mocks.setDoc.mockResolvedValue(undefined);
+    mocks.deleteDoc.mockResolvedValue(undefined);
+  });
+
+  it("добавляет отсутствующее достижение под ключевым id", async () => {
+    mocks.getDocs.mockResolvedValue(snapshotOf([]));
+
+    const result = await reconcileAchievements(UID, [categoryAward]);
+
+    expect(result.added).toBe(1);
+    expect(result.removed).toBe(0);
+    expect(mocks.doc).toHaveBeenCalledWith(
+      ACHIEVEMENTS_REF,
+      achievementKey(categoryAward.type, categoryAward.metadata),
+    );
+    expect(mocks.setDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.setDoc).toHaveBeenCalledWith(
+      { id: achievementKey(categoryAward.type, categoryAward.metadata) },
+      {
+        type: categoryAward.type,
+        metadata: categoryAward.metadata,
+        achievedAt: expect.any(Date),
+      },
+    );
+  });
+
+  it("ничего не пишет, если документ совпадает по ключу и метаданным", async () => {
+    const key = achievementKey(categoryAward.type, categoryAward.metadata);
+    mocks.getDocs.mockResolvedValue(snapshotOf([storedOf(categoryAward)], [key]));
+
+    const result = await reconcileAchievements(UID, [categoryAward]);
+
+    expect(result).toEqual({ added: 0, removed: 0, updated: 0 });
+    expect(mocks.setDoc).not.toHaveBeenCalled();
+    expect(mocks.deleteDoc).not.toHaveBeenCalled();
+  });
+
+  it("удаляет документ, чей ключ не входит в желаемый набор", async () => {
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf([storedOf(levelAward), storedOf(categoryAward)], [
+        LEGACY_AUTO_ID,
+        achievementKey(categoryAward.type, categoryAward.metadata),
+      ]),
+    );
+
+    const result = await reconcileAchievements(UID, [categoryAward]);
+
+    expect(result.removed).toBe(1);
+    expect(mocks.deleteDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.deleteDoc).toHaveBeenCalledWith({ id: LEGACY_AUTO_ID });
+  });
+
+  it("удаляет дубликат с тем же ключом, оставляя один документ", async () => {
+    const key = achievementKey(categoryAward.type, categoryAward.metadata);
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf([storedOf(categoryAward), storedOf(categoryAward)], [key, "auto-2"]),
+    );
+
+    const result = await reconcileAchievements(UID, [categoryAward]);
+
+    expect(result.removed).toBe(1);
+    expect(result.updated).toBe(0);
+    expect(mocks.deleteDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.deleteDoc).toHaveBeenCalledWith({ id: "auto-2" });
+  });
+
+  it("переносит legacy-документ с auto-id на ключевой id, сохраняя achievedAt", async () => {
+    const key = achievementKey(categoryAward.type, categoryAward.metadata);
+    const achievedAt = new Date("2026-10-06");
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf(
+        [{ type: categoryAward.type, metadata: categoryAward.metadata, achievedAt }],
+        [LEGACY_AUTO_ID],
+      ),
+    );
+
+    const result = await reconcileAchievements(UID, [categoryAward]);
+
+    expect(result.updated).toBe(1);
+    expect(result.removed).toBe(1);
+    expect(mocks.setDoc).toHaveBeenCalledWith(
+      { id: key },
+      {
+        type: categoryAward.type,
+        metadata: categoryAward.metadata,
+        achievedAt,
+      },
+    );
+    expect(mocks.deleteDoc).toHaveBeenCalledWith({ id: LEGACY_AUTO_ID });
+  });
+
+  it("обновляет метаданные, если поле из награды отличается, и сохраняет achievedAt", async () => {
+    const key = achievementKey(categoryAward.type, categoryAward.metadata);
+    const achievedAt = new Date("2026-10-06");
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf(
+        [
+          {
+            type: categoryAward.type,
+            metadata: { ...categoryAward.metadata, category_name: "Старое имя" },
+            achievedAt,
+          },
+        ],
+        [key],
+      ),
+    );
+
+    const result = await reconcileAchievements(UID, [categoryAward]);
+
+    expect(result.updated).toBe(1);
+    expect(result.removed).toBe(0);
+    expect(mocks.setDoc).toHaveBeenCalledWith(
+      { id: key },
+      {
+        type: categoryAward.type,
+        metadata: categoryAward.metadata,
+        achievedAt,
+      },
+    );
+  });
+
+  it("не перезаписывает документ из-за старых tier, tierProgress и total_score", async () => {
+    const key = achievementKey(categoryAward.type, categoryAward.metadata);
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf(
+        [
+          storedOf(categoryAward, {
+            tier: "Оникс",
+            tierProgress: 42,
+            metadata: {
+              ...categoryAward.metadata,
+              tier: "Оникс",
+              tierProgress: 42,
+              total_score: 999,
+            },
+          }),
+        ],
+        [key],
+      ),
+    );
+
+    const result = await reconcileAchievements(UID, [categoryAward]);
+
+    expect(result).toEqual({ added: 0, removed: 0, updated: 0 });
+    expect(mocks.setDoc).not.toHaveBeenCalled();
+  });
+
+  it("удаляет документ без строкового type", async () => {
+    mocks.getDocs.mockResolvedValue(
+      snapshotOf([{ metadata: {}, achievedAt: new Date() }], ["broken-id"]),
+    );
+
+    const result = await reconcileAchievements(UID, []);
+
+    expect(result.removed).toBe(1);
+    expect(mocks.deleteDoc).toHaveBeenCalledWith({ id: "broken-id" });
   });
 });
 

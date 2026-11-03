@@ -28,7 +28,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function AchievementsClient() {
   const { achievements, loading } = useAchievements();
-  const { currentStreak } = useStreak();
+  const { currentStreak, longestStreak } = useStreak();
   const { assessmentMap, loading: assessmentsLoading } = useAssessments();
 
   if (loading || assessmentsLoading) {
@@ -69,7 +69,7 @@ export default function AchievementsClient() {
               {items.map((def, index) => {
                 const earned = earnedIds.has(def.id);
                 const achievement = achievements.find((a) => def.matches(a));
-                const status = getAchievementProgress(def, { assessmentMap, streakDays: currentStreak });
+                const status = getAchievementProgress(def, { assessmentMap, streakDays: longestStreak });
                 const tierIcon = status.tier ? ACHIEVEMENT_TIER_ICONS[status.tier] : def.icon;
                 return (
                   <motion.div

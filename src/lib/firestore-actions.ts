@@ -10,7 +10,7 @@ import {
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
-import { syncStreak } from "@/adapters/firestore-client/streak-commands";
+import { getStreak, syncStreak } from "@/adapters/firestore-client/streak-commands";
 import { calcCategoryScore, calcSkillScore, calcTotalScore } from "@/core/domain/scoring";
 import {
   getCategoryMaxScore,
@@ -18,10 +18,9 @@ import {
   LEVEL_UP_THRESHOLD,
 } from "@/core/domain/weights";
 import {
-  addAchievementIfNotExists,
-  addAchievementsIfNotExists,
   getProjectProgressMap,
   getUserProgress,
+  reconcileAchievements,
   updateUserProgress,
 } from "@/lib/firestore";
 import {
@@ -73,9 +72,36 @@ export async function checkAchievements(
   preloadedMap?: PreloadedAssessments,
 ) {
   const assessmentMap = await (preloadedMap ?? readAssessmentMap(uid));
-  const awards = evaluateAchievements(assessmentMap);
-  await addAchievementsIfNotExists(uid, awards);
+  const [progress, streak] = await Promise.all([
+    getUserProgress(uid),
+    getStreak(uid),
+  ]);
+
+  const awards = evaluateAchievements({
+    assessmentMap,
+    longestStreak: streak?.longestStreak ?? 0,
+    unlockedLevelIds:
+      progress.unlockedLevelIds ?? [progress.currentLevelId],
+  });
+
+  await reconcileAchievements(uid, awards);
   return awards;
+}
+
+const achievementsSynced = new Set<string>();
+
+export async function checkAchievementsOnce(
+  uid: string,
+  preloadedMap?: PreloadedAssessments,
+) {
+  if (achievementsSynced.has(uid)) return [];
+  achievementsSynced.add(uid);
+  try {
+    return await checkAchievements(uid, preloadedMap);
+  } catch (error) {
+    achievementsSynced.delete(uid);
+    throw error;
+  }
 }
 
 export async function checkLevelUp() {
@@ -134,11 +160,7 @@ export async function checkLevelUp() {
     totalScore,
   });
 
-  await addAchievementIfNotExists(uid, "level_up", {
-    from_level: levels[currentIndex].name,
-    to_level: nextLevel.name,
-    score: totalScore,
-  });
+  await checkAchievements(uid, assessmentMap);
 
   return {
     fromLevel: levels[currentIndex].name,

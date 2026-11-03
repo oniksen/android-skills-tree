@@ -3,7 +3,6 @@
 import { auth, db } from "@/lib/firebase";
 import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
 import { getFreezeCount } from "@/core/domain/currency";
-import { getAchievementTier, getTierProgress } from "@/core/domain/achievement-tiers";
 import {
   collection,
   doc,
@@ -12,7 +11,6 @@ import {
   query,
   runTransaction,
   setDoc,
-  updateDoc,
 } from "firebase/firestore";
 import {
   userAchievementsPath,
@@ -50,7 +48,7 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
 
       const missed = collectMissedDays(activeDays, frozenDays, today);
       if (missed.length === 0) {
-        return { frozen: [] as string[], unfundedMisses: 0, currentStreak: null };
+        return { frozen: [] as string[], unfundedMisses: 0, longestStreak: null };
       }
 
       const currencySnap = await tx.get(currencyRef);
@@ -63,7 +61,7 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
       // пропуск после последнего захода, каждая следующая — следующий за ним.
       const toFreeze = missed.slice(0, freezes);
       if (toFreeze.length === 0) {
-        return { frozen: [] as string[], unfundedMisses: missed.length, currentStreak: null };
+        return { frozen: [] as string[], unfundedMisses: missed.length, longestStreak: null };
       }
 
       const nextFrozenDays = [...frozenDays, ...toFreeze];
@@ -96,12 +94,12 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
       return {
         frozen: toFreeze,
         unfundedMisses: missed.length - toFreeze.length,
-        currentStreak,
+        longestStreak,
       };
     });
 
-    if (result.currentStreak !== null) {
-      await checkStreakAchievements(user.uid, result.currentStreak);
+    if (result.longestStreak !== null) {
+      await checkStreakAchievements(user.uid, result.longestStreak);
     }
 
     return { frozen: result.frozen, unfundedMisses: result.unfundedMisses };
@@ -158,7 +156,7 @@ export async function syncStreak(): Promise<StreakData | null> {
       return data;
     });
 
-    await checkStreakAchievements(user.uid, result.currentStreak);
+    await checkStreakAchievements(user.uid, result.longestStreak);
     return result;
   } catch (error) {
     console.error("Error syncing streak:", error);
@@ -169,40 +167,27 @@ export async function syncStreak(): Promise<StreakData | null> {
   }
 }
 
-async function addStreakAchievementIfNotExists(uid: string, days: number, currentStreak: number) {
+async function addStreakAchievementIfNotExists(uid: string, days: number) {
   const achievementsRef = collection(db, ...userAchievementsPath(uid));
   const snap = await getDocs(query(achievementsRef));
   const type = `streak_${days}`;
-  const progress = days > 0 ? Math.min((currentStreak / days) * 100, 100) : 0;
-  const tier = getAchievementTier(progress);
-  const tierProgress = getTierProgress(progress);
-  const keyDoc = snap.docs.find((d) => d.data().type === type);
 
-  if (keyDoc) {
-    await updateDoc(keyDoc.ref, {
-      metadata: {
-        ...(keyDoc.data().metadata ?? {}),
-        days,
-        tier,
-        tierProgress,
-      },
-    });
-    return;
-  }
+  const exists = snap.docs.some((d) => d.data().type === type);
+  if (exists) return;
 
   const newRef = doc(achievementsRef);
   await setDoc(newRef, {
     type,
-    metadata: { days, tier, tierProgress },
+    metadata: { days },
     achievedAt: new Date(),
   });
 }
 
-async function checkStreakAchievements(uid: string, currentStreak: number) {
-  if (currentStreak < STREAK_ACHIEVEMENT_DAYS[0]) return;
+async function checkStreakAchievements(uid: string, longestStreak: number) {
+  if (longestStreak < STREAK_ACHIEVEMENT_DAYS[0]) return;
   for (const days of STREAK_ACHIEVEMENT_DAYS) {
-    if (currentStreak >= days) {
-      await addStreakAchievementIfNotExists(uid, days, currentStreak);
+    if (longestStreak >= days) {
+      await addStreakAchievementIfNotExists(uid, days);
     }
   }
 }

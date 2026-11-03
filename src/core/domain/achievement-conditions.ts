@@ -3,9 +3,19 @@ import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import { calcTotalScore, isSkillComplete, calcCategoryCompletionPercent, calcLevelCompletionPercent, calcTotalCompletionPercent } from "@/core/domain/scoring";
 import { getLevelMinScore } from "@/core/domain/weights";
-import { getAchievementTier, getTierProgress } from "@/core/domain/achievement-tiers";
+import { ACHIEVEMENT_TIERS, getAchievementTier, getTierProgress } from "@/core/domain/achievement-tiers";
+import { STREAK_ACHIEVEMENT_DAYS } from "@/core/domain/streak";
 
 export type AssessmentMap = Record<string, { subtopics?: Record<string, boolean> }>;
+
+export const ACHIEVEMENT_UNLOCK_THRESHOLD = ACHIEVEMENT_TIERS[0].threshold;
+export const PATH_COMPLETE_UNLOCK_THRESHOLD = ACHIEVEMENT_UNLOCK_THRESHOLD;
+
+export interface AchievementContext {
+  assessmentMap: AssessmentMap;
+  longestStreak?: number;
+  unlockedLevelIds?: string[];
+}
 
 export interface AchievementProgressContext {
   assessmentMap: AssessmentMap;
@@ -17,14 +27,13 @@ export interface AchievementAward {
   metadata: Record<string, unknown>;
   matchKey?: string;
   matchValue?: unknown;
-  tier?: string | null;
-  tierProgress?: number;
 }
 
 // Типы без записи здесь дедуплицируются только по type.
 export const ACHIEVEMENT_MATCH_KEY: Record<string, string | undefined> = {
   category_perfect: "category_id",
   level_master: "level_id",
+  level_up: "to_level",
 };
 
 export function achievementKey(
@@ -59,65 +68,61 @@ export function isLevelMastered(
   return levelCategories.every((cat) => isCategoryPerfect(cat.id, assessmentMap));
 }
 
-export function evaluateAchievements(assessmentMap: AssessmentMap): AchievementAward[] {
+export function evaluateAchievements(context: AchievementContext): AchievementAward[] {
+  const { assessmentMap, longestStreak = 0, unlockedLevelIds = [] } = context;
   const awards: AchievementAward[] = [];
 
   for (const cat of categories) {
-    if (!isCategoryPerfect(cat.id, assessmentMap)) continue;
     const progress = calcCategoryCompletionPercent(cat.id, assessmentMap);
+    if (progress < ACHIEVEMENT_UNLOCK_THRESHOLD) continue;
     awards.push({
       type: "category_perfect",
       metadata: {
         category_id: cat.id,
         category_name: cat.name,
         level_id: cat.levelId,
-        tier: getAchievementTier(progress),
-        tierProgress: getTierProgress(progress),
       },
       matchKey: ACHIEVEMENT_MATCH_KEY.category_perfect,
       matchValue: cat.id,
-      tier: getAchievementTier(progress),
-      tierProgress: getTierProgress(progress),
     });
   }
 
-  const masteredLevelIds = new Set(
-    levels.filter((level) => isLevelMastered(level.id, assessmentMap)).map((level) => level.id),
-  );
-
   for (const level of levels) {
-    if (!masteredLevelIds.has(level.id)) continue;
     const progress = calcLevelCompletionPercent(level.id, assessmentMap);
+    if (progress < ACHIEVEMENT_UNLOCK_THRESHOLD) continue;
     awards.push({
       type: "level_master",
       metadata: {
         level_id: level.id,
         level_name: level.name,
         level_slug: level.slug,
-        tier: getAchievementTier(progress),
-        tierProgress: getTierProgress(progress),
       },
       matchKey: ACHIEVEMENT_MATCH_KEY.level_master,
       matchValue: level.id,
-      tier: getAchievementTier(progress),
-      tierProgress: getTierProgress(progress),
     });
   }
 
-  const allLevelsMastered =
-    levels.length > 0 && levels.every((level) => masteredLevelIds.has(level.id));
-  if (allLevelsMastered) {
-    const progress = calcTotalCompletionPercent(assessmentMap);
+  const totalProgress = calcTotalCompletionPercent(assessmentMap);
+  if (totalProgress >= PATH_COMPLETE_UNLOCK_THRESHOLD) {
+    awards.push({ type: "path_complete", metadata: {} });
+  }
+
+  const unlocked = new Set(unlockedLevelIds);
+  for (let i = 0; i < levels.length - 1; i += 1) {
+    const from = levels[i];
+    const to = levels[i + 1];
+    if (!unlocked.has(to.id)) continue;
     awards.push({
-      type: "path_complete",
-      metadata: {
-        total_score: calcTotalScore(assessmentMap),
-        tier: getAchievementTier(progress),
-        tierProgress: getTierProgress(progress),
-      },
-      tier: getAchievementTier(progress),
-      tierProgress: getTierProgress(progress),
+      type: "level_up",
+      metadata: { from_level: from.name, to_level: to.name },
+      matchKey: ACHIEVEMENT_MATCH_KEY.level_up,
+      matchValue: to.name,
     });
+  }
+
+  for (const days of STREAK_ACHIEVEMENT_DAYS) {
+    if (longestStreak < days) continue;
+    awards.push({ type: `streak_${days}`, metadata: { days } });
   }
 
   return awards;
@@ -142,7 +147,7 @@ export function selectMissingAwards(
 
 
 export function getAchievementProgress(
-  def: { type: string; id: string },
+  def: { type: string; id: string; toLevelId?: string },
   context: AchievementProgressContext,
 ): { progress: number; tier: string | null; tierProgress: number } {
   let progress = 0;
@@ -159,8 +164,9 @@ export function getAchievementProgress(
     const days = Number(def.id.split(":")[1]);
     progress = days > 0 ? Math.min(((context.streakDays ?? 0) / days) * 100, 100) : 0;
   } else if (def.type === "level_up") {
-    const toLevelId = def.id.split(":")[1]?.split("-")[1];
-    const nextLevel = toLevelId ? levels.find((level) => level.id === toLevelId) : undefined;
+    const nextLevel = def.toLevelId
+      ? levels.find((level) => level.id === def.toLevelId)
+      : undefined;
     const threshold = nextLevel ? getLevelMinScore(nextLevel.id) : 0;
     const totalScore = calcTotalScore(context.assessmentMap);
     progress = threshold > 0 ? Math.min((totalScore / threshold) * 100, 100) : 100;

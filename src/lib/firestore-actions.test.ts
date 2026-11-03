@@ -28,6 +28,11 @@ vi.mock("@/lib/firebase", () => ({
   db: { name: "mock-db" },
 }));
 
+vi.mock("@/adapters/firestore-client/streak-commands", () => ({
+  getStreak: vi.fn().mockResolvedValue({ longestStreak: 0 }),
+  syncStreak: vi.fn(),
+}));
+
 const UID = "user-1";
 const JUNIOR_ID = "junior";
 
@@ -84,7 +89,15 @@ describe("checkAchievements", () => {
           : snapshotOf([]),
       ),
     );
-    mocks.doc.mockReturnValue({ name: "doc-ref" });
+    mocks.doc.mockImplementation((_ref: unknown, id?: string) => ({ id: id ?? "auto-id" }));
+    mocks.getDoc.mockResolvedValue({
+      exists: () => true,
+      data: () => ({
+        currentLevelId: "junior",
+        unlockedLevelIds: ["junior"],
+        totalScore: 0,
+      }),
+    });
     mocks.setDoc.mockResolvedValue(undefined);
   });
 

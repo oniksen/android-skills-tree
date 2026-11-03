@@ -10,8 +10,6 @@ import {
   selectMissingAwards,
   type AssessmentMap,
 } from "@/core/domain/achievement-conditions";
-import { getTotalMaxScore } from "@/core/domain/weights";
-
 const OSNOVY = "junior-osnovy";
 
 function allCheckedMap(categoryIds: string[]): AssessmentMap {
@@ -97,11 +95,11 @@ describe("isLevelMastered", () => {
 
 describe("evaluateAchievements", () => {
   it("пустая карта не даёт ни одной ачивки", () => {
-    expect(evaluateAchievements({})).toEqual([]);
+    expect(evaluateAchievements({ assessmentMap: {} })).toEqual([]);
   });
 
   it("даёт category_perfect с category_id в matchValue", () => {
-    const award = evaluateAchievements(allCheckedMap([OSNOVY])).find(
+    const award = evaluateAchievements({ assessmentMap: allCheckedMap([OSNOVY]) }).find(
       (a) => a.type === "category_perfect",
     );
 
@@ -113,53 +111,140 @@ describe("evaluateAchievements", () => {
     expect(award!.matchValue).toBe(OSNOVY);
   });
 
-  it("даёт category_perfect для каждой закрытой категории, а не только для первой", () => {
+  it("даёт category_perfect для каждой категории на пороге первого тира", () => {
     const allCategoriesChecked = allCheckedMap(categories.map((c) => c.id));
 
     expect(
-      evaluateAchievements(allCategoriesChecked).filter((a) => a.type === "category_perfect"),
+      evaluateAchievements({ assessmentMap: allCategoriesChecked }).filter(
+        (a) => a.type === "category_perfect",
+      ),
     ).toHaveLength(categories.length);
   });
 
-  it("не даёт level_master при неполном уровне", () => {
-    const all = categoryIdsOfLevel("junior");
-    const awards = evaluateAchievements(allCheckedMap(all.slice(0, all.length - 1)));
+  it("не даёт category_perfect за одну подтему большой категории", () => {
+    const firstSkill = skills.filter((s) => s.categoryId === OSNOVY)[0];
+    const map: AssessmentMap = {
+      [firstSkill.id]: {
+        subtopics: { [firstSkill.subtopics[0]]: true },
+      },
+    };
 
-    expect(awards.some((a) => a.type === "level_master")).toBe(false);
+    const awards = evaluateAchievements({ assessmentMap: map });
+
+    expect(
+      awards.some(
+        (a) => a.type === "category_perfect" && a.metadata.category_id === OSNOVY,
+      ),
+    ).toBe(false);
   });
 
-  it("даёт level_master когда закрыт весь уровень", () => {
-    const award = evaluateAchievements(allCheckedMap(categoryIdsOfLevel("junior"))).find(
-      (a) => a.type === "level_master",
-    );
+  it("даёт level_master для уровня выше порога первого тира", () => {
+    const award = evaluateAchievements({
+      assessmentMap: allCheckedMap([OSNOVY]),
+    }).find((a) => a.type === "level_master" && a.metadata.level_id === "junior");
 
     expect(award).toBeDefined();
     expect(award!.metadata.level_id).toBe("junior");
+    expect(award!.metadata.level_name).toBe("Junior");
     expect(award!.matchKey).toBe("level_id");
     expect(award!.matchValue).toBe("junior");
   });
 
-  it("даёт level_master для каждого закрытого уровня, а не только для первого", () => {
-    const allLevelsChecked = allCheckedMap(categories.map((c) => c.id));
+  it("пустая карта не даёт level_master и path_complete", () => {
+    const awards = evaluateAchievements({ assessmentMap: {} });
 
-    expect(
-      evaluateAchievements(allLevelsChecked).filter((a) => a.type === "level_master"),
-    ).toHaveLength(levels.length);
-  });
-
-  it("не даёт path_complete пока закрыт не весь путь", () => {
-    const awards = evaluateAchievements(allCheckedMap(categoryIdsOfLevel("junior")));
-
+    expect(awards.some((a) => a.type === "level_master")).toBe(false);
     expect(awards.some((a) => a.type === "path_complete")).toBe(false);
   });
 
-  it("даёт path_complete с total_score когда закрыты все уровни", () => {
-    const award = evaluateAchievements(allCheckedMap(categories.map((c) => c.id))).find(
-      (a) => a.type === "path_complete",
-    );
+  it("даёт level_master для каждого уровня, прошедшего порог", () => {
+    const allLevelsChecked = allCheckedMap(categories.map((c) => c.id));
+
+    expect(
+      evaluateAchievements({ assessmentMap: allLevelsChecked }).filter(
+        (a) => a.type === "level_master",
+      ),
+    ).toHaveLength(levels.length);
+  });
+
+  it("даёт path_complete с пустыми метаданными когда путь выше порога", () => {
+    const award = evaluateAchievements({
+      assessmentMap: allCheckedMap(categories.map((c) => c.id)),
+    }).find((a) => a.type === "path_complete");
 
     expect(award).toBeDefined();
-    expect(award!.metadata.total_score).toBe(getTotalMaxScore());
+    expect(award!.metadata).toEqual({});
+  });
+
+  it("не пишет total_score в метаданные наград", () => {
+    const awards = evaluateAchievements({
+      assessmentMap: allCheckedMap(categories.map((c) => c.id)),
+    });
+
+    for (const award of awards) {
+      expect(award.metadata).not.toHaveProperty("total_score");
+      expect(award.metadata).not.toHaveProperty("tier");
+      expect(award.metadata).not.toHaveProperty("tierProgress");
+    }
+  });
+
+  it("даёт level_up по unlockedLevelIds с дедупликацией по to_level", () => {
+    const awards = evaluateAchievements({
+      assessmentMap: {},
+      unlockedLevelIds: ["junior", "middle"],
+    }).filter((a) => a.type === "level_up");
+
+    expect(awards).toHaveLength(1);
+    expect(awards[0].metadata).toEqual({
+      from_level: "Junior",
+      to_level: "Middle",
+    });
+    expect(awards[0].matchKey).toBe("to_level");
+    expect(awards[0].matchValue).toBe("Middle");
+  });
+
+  it("даёт отдельное level_up на каждый следующий разблокированный уровень", () => {
+    const awards = evaluateAchievements({
+      assessmentMap: {},
+      unlockedLevelIds: levels.map((level) => level.id),
+    }).filter((a) => a.type === "level_up");
+
+    expect(awards).toHaveLength(levels.length - 1);
+  });
+
+  it("не даёт level_up без разблокированных уровней", () => {
+    expect(
+      evaluateAchievements({ assessmentMap: {} }).filter((a) => a.type === "level_up"),
+    ).toHaveLength(0);
+  });
+
+  it("не даёт streak_7 при максимальном стрике 6", () => {
+    const awards = evaluateAchievements({
+      assessmentMap: {},
+      longestStreak: 6,
+    });
+
+    expect(awards.some((a) => a.type === "streak_7")).toBe(false);
+  });
+
+  it("даёт streak_7 при максимальном стрике 7", () => {
+    const awards = evaluateAchievements({
+      assessmentMap: {},
+      longestStreak: 7,
+    });
+    const streak = awards.find((a) => a.type === "streak_7");
+
+    expect(streak).toBeDefined();
+    expect(streak!.metadata).toEqual({ days: 7 });
+  });
+
+  it("даёт все стрики при максимальном стрике 100", () => {
+    const awards = evaluateAchievements({
+      assessmentMap: {},
+      longestStreak: 100,
+    }).filter((a) => a.type.startsWith("streak_"));
+
+    expect(awards).toHaveLength(4);
   });
 });
 
@@ -189,6 +274,12 @@ describe("achievementKey", () => {
       achievementKey("category_perfect", { category_id: OSNOVY, level_id: "junior" }),
     );
   });
+
+  it("для level_up использует to_level", () => {
+    expect(
+      achievementKey("level_up", { from_level: "Junior", to_level: "Middle" }),
+    ).toBe("level_up::Middle");
+  });
 });
 
 describe("selectMissingAwards", () => {
@@ -197,28 +288,28 @@ describe("selectMissingAwards", () => {
   });
 
   it("возвращает award которого ещё нет", () => {
-    const award = evaluateAchievements(allCheckedMap([OSNOVY]))[0];
+    const award = evaluateAchievements({ assessmentMap: allCheckedMap([OSNOVY]) })[0];
 
     expect(selectMissingAwards([award], [])).toEqual([award]);
   });
 
   it("исключает award который уже есть", () => {
-    const award = evaluateAchievements(allCheckedMap([OSNOVY]))[0];
+    const award = evaluateAchievements({ assessmentMap: allCheckedMap([OSNOVY]) })[0];
     const key = achievementKey(award.type, award.metadata);
 
     expect(selectMissingAwards([award], [key])).toEqual([]);
   });
 
   it("убирает дубликаты внутри одного вызова", () => {
-    const award = evaluateAchievements(allCheckedMap([OSNOVY]))[0];
+    const award = evaluateAchievements({ assessmentMap: allCheckedMap([OSNOVY]) })[0];
 
     expect(selectMissingAwards([award, award], [])).toEqual([award]);
   });
 
   it("matchValue каждого award совпадает с ключом дедупликации", () => {
-    const awards = evaluateAchievements(allCheckedMap(categories.map((c) => c.id))).filter(
-      (a) => a.matchKey !== undefined,
-    );
+    const awards = evaluateAchievements({
+      assessmentMap: allCheckedMap(categories.map((c) => c.id)),
+    }).filter((a) => a.matchKey !== undefined);
 
     expect(awards.length).toBeGreaterThan(0);
     for (const award of awards) {

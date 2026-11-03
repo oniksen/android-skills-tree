@@ -176,3 +176,87 @@ export async function deleteCategoryPerfectAchievement(uid: string, categoryId: 
     await deleteDoc(achievementDoc.ref);
   }
 }
+
+export interface ReconcileAchievementsResult {
+  added: number;
+  removed: number;
+  updated: number;
+}
+
+export async function reconcileAchievements(
+  uid: string,
+  awards: AchievementAward[],
+): Promise<ReconcileAchievementsResult> {
+  const achievementsRef = collection(db, ...userAchievementsPath(uid));
+  const snap = await getDocs(achievementsRef);
+
+  const desired = new Map<string, AchievementAward>();
+  for (const award of awards) {
+    desired.set(achievementKey(award.type, award.metadata), award);
+  }
+
+  const result: ReconcileAchievementsResult = { added: 0, removed: 0, updated: 0 };
+  const kept = new Map<string, (typeof snap.docs)[number]>();
+
+  for (const achievementDoc of snap.docs) {
+    const data = achievementDoc.data() as {
+      type?: unknown;
+      metadata?: Record<string, unknown>;
+    };
+
+    if (typeof data.type !== "string") {
+      await deleteDoc(achievementDoc.ref);
+      result.removed += 1;
+      continue;
+    }
+
+    const key = achievementKey(data.type, data.metadata);
+    if (!desired.has(key) || kept.has(key)) {
+      await deleteDoc(achievementDoc.ref);
+      result.removed += 1;
+      continue;
+    }
+
+    kept.set(key, achievementDoc);
+  }
+
+  for (const [key, award] of desired) {
+    const existing = kept.get(key);
+
+    if (!existing) {
+      await setDoc(doc(achievementsRef, key), {
+        type: award.type,
+        metadata: award.metadata,
+        achievedAt: new Date(),
+      });
+      result.added += 1;
+      continue;
+    }
+
+    const existingData = existing.data() as {
+      metadata?: Record<string, unknown>;
+      achievedAt?: unknown;
+    };
+    const existingMetadata = existingData.metadata ?? {};
+    const metadataChanged = Object.entries(award.metadata).some(
+      ([field, value]) => existingMetadata[field] !== value,
+    );
+    const needsMove = existing.id !== key;
+
+    if (!metadataChanged && !needsMove) continue;
+
+    await setDoc(doc(achievementsRef, key), {
+      type: award.type,
+      metadata: { ...existingMetadata, ...award.metadata },
+      achievedAt: existingData.achievedAt ?? new Date(),
+    });
+    result.updated += 1;
+
+    if (needsMove) {
+      await deleteDoc(existing.ref);
+      result.removed += 1;
+    }
+  }
+
+  return result;
+}
