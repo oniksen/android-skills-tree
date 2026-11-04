@@ -158,9 +158,19 @@ Use these exact class names and CSS variables only:
 ## Firestore listeners and quota
 
 - One listener per user per domain: use a shared listener cache instead of creating `onSnapshot` in every component.
+- The listener must outlive the page: `src/shared/lib/live-store.ts` keeps one subscription per `uid + domain` for the whole session and is cleared only when the user changes (`src/shared/lib/session-reset.ts`). Do not unsubscribe when the last component unmounts.
+- Pages must paint from the cached snapshot (`useLiveStore` + `useSyncExternalStore`); a full-screen skeleton is only acceptable while the first snapshot for a domain is in flight.
 - Prefer `getDoc` + React Query with `staleTime`/`gcTime` for data where real-time is not critical.
-- Always unsubscribe from listeners on unmount; never create listeners in loops or on every render.
-- Run auto-sync (auto-freeze, backfill, checkAchievements) once per session (sessionStorage flag).
+- Never create listeners in loops or on every render. Use one shared `useFirebaseAuth` state instead of subscribing to `onAuthStateChanged` per hook.
+- Run auto-sync (auto-freeze, backfill, checkAchievements) once per session (`oncePerSession`).
 - Handle `resource-exhausted`: show a toast, avoid console spam, use exponential backoff.
 - Cache static data (study materials, etc.) for 24h and disable `refetchOnWindowFocus`.
 - Before adding a new listener, check if the read can be merged with an existing one.
+
+## Routing, auth and caching
+
+- Protected routes are enforced in `src/proxy.ts` (`protectedRoutes`), not in page components. Pages stay static (○) / SSG (●) so `<Link>` can prefetch the whole page; do not add `cookies()`/`headers()` to a page under `(app)`.
+- Adding a new protected page: add its path to `protectedRoutes` in `src/proxy.ts`.
+- `experimental.staleTimes` (30s dynamic / 300s static) keeps the client router cache warm for dynamic `/tree/**` routes.
+- Server components under `(app)` must not await slow network calls: the layout version lookup is bounded by `AbortSignal.timeout(2s)` and memoized.
+- Study material text is looked up on the server (`fetchStudyMaterial`); never import `study-material.ts` / `study-materials.generated.ts` from a client component — it pulls ~1 MB into the bundle.

@@ -276,7 +276,7 @@ export function useLiveValue<T>(
 
 **5.1. Auth-guard в `proxy.ts`.**
 
-- Новый `src/proxy.ts` (в Next 16 `middleware` переименован в `proxy`, Node.js runtime по умолчанию: `.../file-conventions/proxy.md:11,221-224`).
+- `src/proxy.ts` уже существует и защищает `/dashboard`, `/projects`, `/roadmap`, `/shop`, `/quiz` (в Next 16 `middleware` переименован в `proxy`, Node.js runtime по умолчанию: `.../file-conventions/proxy.md:11,221-224`). Добавляем `/achievements` и `/profile` — единственные защищённые страницы, которых нет в `protectedRoutes`.
 - Проверяет cookie `firebase-session` через `verifySessionToken` (`src/adapters/auth/session.ts:25-38`), при отсутствии — `redirect('/login')` с сохранением исходного пути.
 - `config.matcher`: только защищённые сегменты (`/dashboard/:path*`, `/tree/:path*`, `/projects/:path*`, `/roadmap/:path*`, `/achievements/:path*`, `/shop/:path*`, `/profile/:path*`, `/quiz/:path*`); исключить `_next`, `public`, `/login`, `/`, `manifest.webmanifest`, иконки.
 - Из страниц убрать `getCurrentUser()`/`redirect()` → страницы становятся **static**: полный prefetch + client-cache 5 мин (`prefetching.md:52-55`) → переход без сервера.
@@ -293,7 +293,7 @@ export function useLiveValue<T>(
 - Оставить `getCurrentUser()`, включить `experimental.staleTimes: { dynamic: 30 }` → повторные заходы на раздел в течение 30 с из client-cache.
 - Не устраняет первый заход на раздел и не устраняет необходимость Phase 1.
 
-**Решение к подтверждению:** делаем 5.1 (proxy + static) или ограничиваемся 5.3.
+**Решение:** делаем 5.1 (proxy + static). `staleTimes` остаётся как страховка для dynamic-маршрутов `/tree/**`.
 
 ---
 
@@ -338,7 +338,7 @@ export function useLiveValue<T>(
 | `src/app/(app)/{profile,quiz}/loading.tsx` | **новые** | 3 |
 | `src/app/(app)/tree/**/study/loading.tsx` | **новые** (2 шт.) | 3 |
 | `src/app/(app)/**/page.tsx` | убрать `getCurrentUser` (Phase 5.1) | 5 |
-| `src/proxy.ts` | **новый** auth-guard | 5.1 |
+| `src/proxy.ts` | расширить `protectedRoutes` (`+ /achievements`, `+ /profile`) | 5.1 |
 | `src/app/(app)/layout.tsx` | версия вне блокирующего пути | 5.2 |
 | `src/lib/version.ts` | timeout + безопасный fallback | 5.2 |
 | `src/lib/version.server.ts` | убрать `execSync` | 5.2 |
@@ -431,77 +431,102 @@ npm run build      # дополнительно проверить, что ст�
 
 ## 11. Чек-лист выполнения (CLI)
 
-Легенда: `[ ]` — не начато, `[~]` — в работе, `[x]` — сделано и проверено (`lint` + `typecheck` + `test` + ручной сценарий).
+Легенда: `[ ]` — не начато, `[~]` — в работе, `[x]` — сделано и проверено (`lint` + `typecheck` + `test`), `[!]` — требует решения.
 
 ### Подготовка
-- [ ] `npm run new:feat -- instant-page-navigation` (ветка + bump 1.5.0)
-- [ ] Добавить документ в `docs/superpowers/specs/2026-11-04-instant-page-navigation.md`
-- [ ] Baseline-замер: Network `_rsc`, число `onSnapshot`, время до контента на 5 переходах
+- [x] `npm run new:feat -- instant-page-navigation` (ветка + bump 1.5.0) — `b6c1568`
+- [x] Добавить документ в `docs/superpowers/specs/2026-11-04-instant-page-navigation.md` — `8710d5d`
+- [ ] Baseline-замер: Network `_rsc`, число `onSnapshot`, время до контента на 5 переходах (нужна живая сессия)
 
 ### Phase 1 — live-store
-- [ ] `src/shared/lib/live-store.ts`
-- [ ] `src/shared/lib/live-store.test.ts` (8 сценариев §8.1)
-- [ ] Мигрировать `useUserProgress`
-- [ ] Мигрировать `useAssessments`
-- [ ] Мигрировать `useProjectProgress`
-- [ ] Мигрировать `useAchievements`
-- [ ] Мигрировать `useCurrency`
-- [ ] Мигрировать `useUserSettings`
+- [x] `src/shared/lib/live-store.ts`
+- [x] `src/shared/lib/live-store.test.ts` (11 сценариев: refcount, keep-alive, idle TTL, ошибка, `set`, `dispose`, server snapshot)
+- [x] `src/shared/lib/use-live-store.ts` (`useSyncExternalStore` + `getServerSnapshot`)
+- [x] Мигрировать `useUserProgress`
+- [x] Мигрировать `useAssessments` (оптимистичный `store.set`)
+- [x] Мигрировать `useProjectProgress`
+- [x] Мигрировать `useAchievements`
+- [x] Мигрировать `useCurrency`
+- [x] Мигрировать `useUserSettings`
 - [ ] Проверить отсутствие повторных `start` в ручной матрице
-- [ ] Коммит: `feat: keep user progress subscriptions alive between tabs`
+- [x] Коммит: `feat: keep user data subscriptions alive between tabs` — `0e47c7a`
 
 ### Phase 2 — единый auth-state
-- [ ] `src/shared/lib/auth-store.ts` + тест
-- [ ] `useFirebaseAuth` → обёртка
-- [ ] `disposeAll` на sign-out
-- [ ] Проверить: 1 `onAuthStateChanged` на вкладку (профайл)
-- [ ] Коммит: `perf: share a single auth state across the app`
+- [x] `src/shared/lib/auth-store.ts` + тест (6 сценариев)
+- [x] `src/shared/lib/session-reset.ts` + тест (3 сценария)
+- [x] `useFirebaseAuth` → обёртка (`getAuthStore` на провайдер)
+- [x] `disposeAll` на sign-out (все 6 сторов + кэш streak)
+- [x] `Header` больше не создаёт собственный `onAuthStateChanged`
+- [x] Коммит: `perf: share a single auth state across the app` — `7920c07`
 
 ### Phase 3 — Header и loading-состояния
-- [ ] Убрать placeholder-логику из `Header.tsx`
-- [ ] `profile/loading.tsx`
-- [ ] `quiz/loading.tsx`
-- [ ] `study` loading-состояния (2 шт.)
-- [ ] Проверить отсутствие зависания при заблокированном `_rsc`
-- [ ] Коммит: `fix: stop replacing the current page with a skeleton while navigating`
+- [x] Убрать placeholder-логику из `Header.tsx` (удалены `prompt`-скелетоны, 120 мс, `pending`)
+- [x] `profile/loading.tsx`
+- [x] `quiz/loading.tsx`
+- [x] `study` loading-состояния (2 шт.) + `StudySkeleton`
+- [ ] Проверить отсутствие зависания при заблокированном `_rsc` (ручной сценарий)
+- [x] Коммит: `fix: stop replacing the current page with a skeleton while navigating` — `1bbf3c3`
 
 ### Phase 4 — статичный каркас (опционально)
-- [ ] Каркас страниц рендерится до данных
-- [ ] Коммит: `perf: render page layout before user data arrives`
+- [ ] Не требуется после Phase 1: при тёплом кэше `loading=false` с первого рендера. Оставлено на случай холодного кэша.
 
-### Phase 5 — серверная часть (после подтверждения 5.1 vs 5.3)
-- [ ] `src/proxy.ts` + matcher
-- [ ] Убрать `getCurrentUser` из страниц
-- [ ] `npm run build`: страницы разделов static
-- [ ] Версия приложения вне блокирующего рендера (Suspense/таймаут)
-- [ ] Убрать `execSync` из `version.server.ts`
-- [ ] Коммит(ы): `perf: serve app pages from cache and guard routes before render`
+### Phase 5 — серверная часть
+- [x] `src/proxy.ts`: `protectedRoutes` расширен (`/achievements`, `/profile`) — все защищённые страницы теперь покрыты proxy
+- [x] Убрать `getCurrentUser`/`redirect` из 7 страниц
+- [x] `generateStaticParams` для `/tree/[slug]` (4 грейда)
+- [x] `npm run build`: `/dashboard`, `/projects`, `/roadmap`, `/achievements`, `/shop`, `/profile`, `/quiz` — static (○), `/tree/[slug]` — SSG (●)
+- [x] `experimental.staleTimes` (`dynamic: 30`, `static: 300`) — страховка для dynamic `/tree/**`
+- [x] Версия приложения вне блокирующего рендера: `AbortSignal.timeout(2s)` на GitHub-запросах
+- [x] Убрать повторный `execSync` из `version.server.ts` (мемоизация на процесс)
+- [x] Коммит: `perf: serve app pages from cache and guard routes before render`
 
 ### Phase 6 — одноразовые синхронизации
-- [ ] `once-per-session` helper + тест
-- [ ] `backfillTotalScore` под guard, после первого снапшота
-- [ ] TTL кэша `useStreak`
-- [ ] Коммит: `perf: sync scores and achievements once per session`
+- [x] `once-per-session` helper + тест (5 сценариев, fallback при заблокированном storage)
+- [x] `backfillTotalScore` под guard; при повторном монтаже не читает коллекцию
+- [x] TTL кэша `useStreak` (60 c) + сброс при смене пользователя
+- [x] Коммит: `perf: sync scores and achievements once per session` — `19c8cb2`
 
 ### Phase 7 — study-материалы
-- [ ] `StudyMaterialContent` принимает `content`/`grade`
-- [ ] Убрать реестр из клиентского импорта
-- [ ] Проверить размер чанка (build output)
-- [ ] Коммит: `perf: load study material text on the server`
+- [x] `StudyMaterialContent` принимает `content`/`grade`
+- [x] Убрать реестр из клиентского импорта (удалён `useStudyMaterial`)
+- [ ] Проверить размер чанка в build output (Turbopack не печатает размеры; проверить `next build --debug` при необходимости)
+- [x] Коммит: `perf: load study material text on the server` — `4652354`
 
 ### Финал
-- [ ] `npm run lint && npm run typecheck && npm test`
-- [ ] `npm run build`
+- [x] `npm run lint` — чисто
+- [x] `npm run typecheck` — чисто
+- [x] `npm test` — 250 passed, 8 failed. Все 8 падают **до** изменений (проверено `git stash` на базовом коммите): `quiz-questions.test.ts` (2), `currency.test.ts` (3), `scoring.test.ts` (2), `weights.test.ts` (1) — устаревшие ожидания после изменения весов скиллов.
+- [x] `npm run build` — успешно; страницы разделов остаются `ƒ dynamic` (см. Phase 5)
 - [ ] Ручная матрица §8.2 полностью
 - [ ] Сверить метрики §4 (до/после)
-- [ ] Обновить `AGENTS.md` (правило «keep-alive listener» уточнить: не только shared, но и переживающий навигацию)
+- [x] Откат line-ending churn в сгенерированном реестре — `81113ab`
+- [ ] Обновить `AGENTS.md` (правило «keep-alive listener»: слушатель переживает навигацию)
+
+---
+
+## 11.1. Журнал коммитов
+
+| Коммит | Что сделано |
+|---|---|
+| `b6c1568` | `chore: start v1.5.0` (ветка `feat/instant-page-navigation`) |
+| `8710d5d` | docs: дизайн-документ |
+| `0e47c7a` | Phase 1: `live-store`, миграция 6 хуков |
+| `7920c07` | Phase 2: `auth-store`, `session-reset`, Header без своей подписки |
+| `1bbf3c3` | Phase 3: Header без placeholder, `loading.tsx` для profile/quiz/study |
+| `19c8cb2` | Phase 6: `once-per-session`, TTL streak |
+| `4652354` | Phase 7: study-контент на сервере |
+| `7d5a568` | Phase 5.2/5.3: `staleTimes`, таймаут версии, мемоизация sha |
+| `67f379b` | Phase 5.1: proxy + static/SSG страницы без `cookies()` |
+| `81113ab` | chore: откат line-ending churn в сгенерированном реестре |
+| `b0f9232` | docs: журнал выполнения + правила в `AGENTS.md` |
 
 ---
 
 ## 12. Открытые вопросы
 
-1. **Phase 5:** переносим auth-guard в `proxy.ts` (страницы static) или ограничиваемся `staleTimes.dynamic: 30`?
-2. **Phase 4:** делаем сейчас или откладываем до результатов Phase 1?
-3. **Тип ветки:** `feat` (minor → 1.5.0) или `fix` (patch → 1.4.2)? Предлагается `feat`.
-4. **Study:** только вынести реестр (A) или сразу рендерить markdown на сервере (B)?
-5. **Индикатор навигации:** оставляем только точку `useLinkStatus` или добавляем тонкий progress-bar?
+1. ~~Phase 5.1~~ — выполнено: proxy расширен, страницы разделов static/SSG.
+2. ~~Phase 4~~ — не требуется после Phase 1.
+3. ~~Тип ветки~~ — `feat` (1.5.0).
+4. **Study (B):** рендерить markdown на сервере, оставив клиентским только кнопку «копировать»? Follow-up, не входит в текущий объём.
+5. **Индикатор навигации:** оставлена только точка `useLinkStatus`. Progress-bar не добавлялся.
+
