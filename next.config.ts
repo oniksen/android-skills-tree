@@ -45,10 +45,14 @@ const nextConfig: NextConfig = {
     // Pages render only a client shell (all user data comes from Firestore),
     // so reusing the payload briefly is safe and removes the server round-trip
     // when switching tabs.
-    staleTimes: {
-      dynamic: 30,
-      static: 300,
-    },
+    //
+    // Disabled in development: after a dev-server restart the router cache still
+    // references chunk names from the previous process, which 404 and leave the
+    // tab blank until a hard reload.
+    staleTimes:
+      process.env.NODE_ENV === "production"
+        ? { dynamic: 30, static: 300 }
+        : { dynamic: 0, static: 0 },
   },
   async headers() {
     return [
