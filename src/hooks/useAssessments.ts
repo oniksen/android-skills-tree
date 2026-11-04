@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { db } from "@/lib/firebase";
 import { doc, setDoc, runTransaction } from "firebase/firestore";
 import { syncStreak } from "@/adapters/firestore-client/streak-commands";
@@ -12,11 +12,14 @@ import { checkAchievements } from "@/lib/firestore-actions";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
+import { createLiveStore } from "@/shared/lib/live-store";
+import { useLiveStore } from "@/shared/lib/use-live-store";
 import {
   userAssessmentPath,
   userCurrencyPath,
   userProgressPath,
 } from "@/adapters/firestore-client/paths";
+import type { Observer } from "@/ports/observation";
 import type { AssessmentData, CurrencyData } from "@/types";
 
 export interface CrystalAward {
@@ -27,84 +30,44 @@ export interface CrystalAward {
 
 const EMPTY_ASSESSMENT_MAP: Record<string, AssessmentData> = {};
 
-const assessmentCache = new Map<
-  string,
-  {
-    value: Record<string, AssessmentData>;
-    loading: boolean;
-    listeners: Set<(v: Record<string, AssessmentData>) => void>;
-    errorListeners: Set<(e: unknown) => void>;
-    unsub: (() => void) | null;
-  }
->();
+// One collection listener per user for the whole session.
+const assessmentStore = createLiveStore<Record<string, AssessmentData>>();
 
 export function useAssessments() {
   const { assessments: repository } = useServices();
-  const [assessmentMap, setAssessmentMap] = useState<
-    Record<string, AssessmentData>
-  >({});
-  const [loading, setLoading] = useState(true);
-  const [lastAwarded, setLastAwarded] = useState<CrystalAward | null>(null);
   const { uid, loading: authLoading } = useFirebaseAuth();
   const toast = useToast();
-  const mapRef = useRef<Record<string, AssessmentData>>({});
+  const showToast = toast.show;
+  const [lastAwarded, setLastAwarded] = useState<CrystalAward | null>(null);
+  const mapRef = useRef<Record<string, AssessmentData>>(EMPTY_ASSESSMENT_MAP);
+
+  const start = useMemo(
+    () =>
+      uid
+        ? (observer: Observer<Record<string, AssessmentData>>) =>
+            repository.subscribe(uid, observer)
+        : null,
+    [uid, repository],
+  );
+
+  const snapshot = useLiveStore(assessmentStore, uid, start);
+  const assessmentMap = snapshot.data ?? EMPTY_ASSESSMENT_MAP;
 
   useEffect(() => {
-    if (authLoading || !uid) return;
+    if (snapshot.data) mapRef.current = snapshot.data;
+  }, [snapshot.data]);
 
-    let entry = assessmentCache.get(uid);
-    if (!entry) {
-      entry = { value: {}, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
-      assessmentCache.set(uid, entry);
-      entry.unsub = repository.subscribe(uid, {
-        next: (map) => {
-          entry!.value = map;
-          entry!.loading = false;
-          entry!.listeners.forEach((l) => l(map));
-        },
-        error: (error) => {
-          entry!.loading = false;
-          entry!.errorListeners.forEach((l) => l(error));
-        },
-      });
+  useEffect(() => {
+    const error = snapshot.error;
+    if (!error) return;
+    console.error("Error listening to assessments:", error);
+    if (isPermissionDenied(error)) {
+      showToast("Для отслеживания прогресса обратитесь к администратору.");
     }
-
-    const listener = (map: Record<string, AssessmentData>) => {
-      mapRef.current = map;
-      setAssessmentMap(map);
-      setLoading(false);
-    };
-    const errorListener = (error: unknown) => {
-      console.error("Error listening to assessments:", error);
-      if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
-      }
-      if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
-      }
-      setLoading(false);
-    };
-
-    entry.listeners.add(listener);
-    entry.errorListeners.add(errorListener);
-
-    if (!entry.loading) {
-      mapRef.current = entry.value;
-      setTimeout(() => {
-        setAssessmentMap(entry.value);
-        setLoading(false);
-      }, 0);
+    if (isQuotaExceeded(error)) {
+      showToast("Квота Firestore исчерпана. Повторите позже.");
     }
-
-    return () => {
-      entry!.listeners.delete(listener);
-      entry!.errorListeners.delete(errorListener);
-      if (entry!.listeners.size === 0) {
-        entry!.unsub?.();
-        assessmentCache.delete(uid);
-      }
-    };
-  }, [uid, authLoading, repository, toast]);
+  }, [snapshot.error, showToast]);
 
   const toggleSubtopic = useCallback(
     async (skillId: string, subtopicName: string) => {
@@ -172,7 +135,8 @@ export function useAssessments() {
           [skillId]: { score: newScore, subtopics: nextSubtopics },
         };
         mapRef.current = nextMap;
-        setAssessmentMap(nextMap);
+        // Optimistic update: the listener confirms it a moment later.
+        assessmentStore.set(uid, nextMap);
 
         const totalScore = calcTotalScore(nextMap);
         const progressRef = doc(db, ...userProgressPath(uid));
@@ -181,7 +145,7 @@ export function useAssessments() {
         void checkAchievements(uid, nextMap).catch((error) => {
           console.error("Error syncing achievements:", error);
           if (isPermissionDenied(error)) {
-            toast.show("Для отслеживания прогресса обратитесь к администратору.");
+            showToast("Для отслеживания прогресса обратитесь к администратору.");
           }
         });
 
@@ -195,7 +159,7 @@ export function useAssessments() {
           }).catch((error) => {
             console.error("Error syncing streak:", error);
             if (isPermissionDenied(error)) {
-              toast.show("Для отслеживания прогресса обратитесь к администратору.");
+              showToast("Для отслеживания прогресса обратитесь к администратору.");
             }
           });
         }
@@ -204,19 +168,20 @@ export function useAssessments() {
       } catch (error) {
         console.error("Error saving assessment:", error);
         if (isPermissionDenied(error)) {
-          toast.show("Для отслеживания прогресса обратитесь к администратору.");
+          showToast("Для отслеживания прогресса обратитесь к администратору.");
         }
         return null;
       }
     },
-    [uid, toast],
+    [uid, showToast],
   );
 
   const signedOut = !authLoading && !uid;
+  const loading = signedOut ? false : authLoading || snapshot.loading;
 
   return {
     assessmentMap: signedOut ? EMPTY_ASSESSMENT_MAP : assessmentMap,
-    loading: signedOut ? false : loading,
+    loading,
     toggleSubtopic,
     lastAwarded,
   };
