@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useServices } from "@/composition/services-context";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
@@ -13,100 +13,61 @@ import {
   type BuyResult,
 } from "@/core/domain/currency";
 import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
+import { createLiveStore } from "@/shared/lib/live-store";
+import { useLiveStore } from "@/shared/lib/use-live-store";
+import { registerSessionReset } from "@/shared/lib/session-reset";
+import type { Observer } from "@/ports/observation";
 import type { CurrencyData } from "@/types";
 
-interface CurrencyState {
-  currency: CurrencyData;
-  loading: boolean;
-}
-
-const currencyCache = new Map<
-  string,
-  {
-    value: CurrencyData;
-    loading: boolean;
-    listeners: Set<(v: CurrencyData) => void>;
-    errorListeners: Set<(e: unknown) => void>;
-    unsub: (() => void) | null;
-  }
->();
-
-const INITIAL_STATE: CurrencyState = { currency: EMPTY_CURRENCY, loading: true };
+// One listener per user for the whole session.
+const currencyStore = createLiveStore<CurrencyData>();
+registerSessionReset(() => currencyStore.disposeAll());
 
 export function useCurrency() {
   const { currency: repository } = useServices();
-  const [state, setState] = useState<CurrencyState>(INITIAL_STATE);
   const [buying, setBuying] = useState(false);
   const { uid, loading: authLoading } = useFirebaseAuth();
   const toast = useToast();
+  const showToast = toast.show;
+
+  const start = useMemo(
+    () =>
+      uid
+        ? (observer: Observer<CurrencyData>) => repository.subscribe(uid, observer)
+        : null,
+    [uid, repository],
+  );
+
+  const snapshot = useLiveStore(currencyStore, uid, start);
 
   useEffect(() => {
-    if (authLoading || !uid) return;
-
-    let entry = currencyCache.get(uid);
-    if (!entry) {
-      entry = { value: EMPTY_CURRENCY, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
-      currencyCache.set(uid, entry);
-      entry.unsub = repository.subscribe(uid, {
-        next: (currency) => {
-          entry!.value = currency;
-          entry!.loading = false;
-          entry!.listeners.forEach((l) => l(currency));
-        },
-        error: (error) => {
-          entry!.loading = false;
-          entry!.errorListeners.forEach((l) => l(error));
-        },
-      });
+    const error = snapshot.error;
+    if (!error) return;
+    console.error("Error listening to currency:", error);
+    if (isPermissionDenied(error)) {
+      showToast("Для отслеживания прогресса обратитесь к администратору.");
     }
-
-    const listener = (currency: CurrencyData) => setState({ currency, loading: false });
-    const errorListener = (error: unknown) => {
-      console.error("Error listening to currency:", error);
-      if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
-      }
-      if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
-      }
-      setState((prev) => ({ ...prev, loading: false }));
-    };
-
-    entry.listeners.add(listener);
-    entry.errorListeners.add(errorListener);
-
-    if (!entry.loading) {
-      setTimeout(() => {
-        setState({ currency: entry.value, loading: false });
-      }, 0);
+    if (isQuotaExceeded(error)) {
+      showToast("Квота Firestore исчерпана. Повторите позже.");
     }
-
-    return () => {
-      entry!.listeners.delete(listener);
-      entry!.errorListeners.delete(errorListener);
-      if (entry!.listeners.size === 0) {
-        entry!.unsub?.();
-        currencyCache.delete(uid);
-      }
-    };
-  }, [uid, authLoading, repository, toast]);
+  }, [snapshot.error, showToast]);
 
   const signedOut = !authLoading && !uid;
-  const currency = signedOut ? EMPTY_CURRENCY : state.currency;
-  const loading = signedOut ? false : state.loading;
+  const currency = signedOut ? EMPTY_CURRENCY : (snapshot.data ?? EMPTY_CURRENCY);
+  const loading = signedOut ? false : authLoading || snapshot.loading;
 
   const buyFreeze = useCallback(async (): Promise<BuyResult> => {
     setBuying(true);
     try {
       const result = await buyItem(STREAK_FREEZE_ITEM_ID);
       if (result && (result as { reason?: string }).reason === "permission-denied") {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        showToast("Для отслеживания прогресса обратитесь к администратору.");
       }
       return result;
     } finally {
       setBuying(false);
     }
-  }, [toast]);
+  }, [showToast]);
 
   return {
     balance: currency.balance,

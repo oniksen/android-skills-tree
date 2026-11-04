@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { db } from "@/lib/firebase";
 import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
@@ -8,6 +8,10 @@ import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
 import { userSettingsPath } from "@/adapters/firestore-client/paths";
+import { createLiveStore } from "@/shared/lib/live-store";
+import { useLiveStore } from "@/shared/lib/use-live-store";
+import { registerSessionReset } from "@/shared/lib/session-reset";
+import type { Observer } from "@/ports/observation";
 import type { UserSettings } from "@/types";
 
 const DEFAULT_SETTINGS: UserSettings = {
@@ -15,80 +19,51 @@ const DEFAULT_SETTINGS: UserSettings = {
   updatedAt: new Date(),
 };
 
-const settingsCache = new Map<
-  string,
-  {
-    value: UserSettings | null;
-    loading: boolean;
-    listeners: Set<(v: UserSettings | null) => void>;
-    errorListeners: Set<(e: unknown) => void>;
-    unsub: (() => void) | null;
-  }
->();
+// One listener per user for the whole session.
+const settingsStore = createLiveStore<UserSettings>();
+registerSessionReset(() => settingsStore.disposeAll());
 
 export function useUserSettings() {
   const { uid, loading: authLoading } = useFirebaseAuth();
   const toast = useToast();
-  const [settings, setSettings] = useState<UserSettings | null>(null);
-  const [loading, setLoading] = useState(true);
+  const showToast = toast.show;
+
+  const start = useMemo(
+    () =>
+      uid
+        ? (observer: Observer<UserSettings>) => {
+            const ref = doc(db, ...userSettingsPath(uid));
+            return onSnapshot(
+              ref,
+              (snap) => {
+                observer.next(
+                  snap.exists() ? (snap.data() as UserSettings) : DEFAULT_SETTINGS,
+                );
+              },
+              (error) => observer.error?.(error),
+            );
+          }
+        : null,
+    [uid],
+  );
+
+  const snapshot = useLiveStore(settingsStore, uid, start);
 
   useEffect(() => {
-    if (authLoading || !uid) return;
-
-    let entry = settingsCache.get(uid);
-    if (!entry) {
-      entry = { value: null, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
-      settingsCache.set(uid, entry);
-      const ref = doc(db, ...userSettingsPath(uid));
-      entry.unsub = onSnapshot(
-        ref,
-        (snap) => {
-          const value = snap.exists() ? (snap.data() as UserSettings) : DEFAULT_SETTINGS;
-          entry!.value = value;
-          entry!.loading = false;
-          entry!.listeners.forEach((l) => l(value));
-        },
-        (error) => {
-          entry!.loading = false;
-          entry!.errorListeners.forEach((l) => l(error));
-        },
-      );
+    const error = snapshot.error;
+    if (!error) return;
+    console.error("Error listening to settings:", error);
+    if (isPermissionDenied(error)) {
+      showToast("Для отслеживания прогресса обратитесь к администратору.");
     }
-
-    const listener = (value: UserSettings | null) => {
-      setSettings(value);
-      setLoading(false);
-    };
-    const errorListener = (error: unknown) => {
-      console.error("Error listening to settings:", error);
-      setLoading(false);
-      if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
-      }
-      if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
-      }
-    };
-
-    entry.listeners.add(listener);
-    entry.errorListeners.add(errorListener);
-
-    if (!entry.loading) {
-      setTimeout(() => {
-        setSettings(entry.value);
-        setLoading(false);
-      }, 0);
+    if (isQuotaExceeded(error)) {
+      showToast("Квота Firestore исчерпана. Повторите позже.");
     }
+  }, [snapshot.error, showToast]);
 
-    return () => {
-      entry!.listeners.delete(listener);
-      entry!.errorListeners.delete(errorListener);
-      if (entry!.listeners.size === 0) {
-        entry!.unsub?.();
-        settingsCache.delete(uid);
-      }
-    };
-  }, [uid, authLoading, toast]);
+  const signedOut = !authLoading && !uid;
+  const settings = signedOut ? null : (snapshot.data ?? null);
+  const loading = signedOut ? false : authLoading || snapshot.loading;
 
   const todayKey = new Date().toISOString().slice(0, 10);
 
@@ -107,7 +82,7 @@ export function useUserSettings() {
       updatedAt: new Date(),
     };
     await setDoc(ref, { dailyCounts: nextCounts, updatedAt: new Date() }, { merge: true });
-    setSettings(next);
+    settingsStore.set(uid, next);
   }, [uid, settings, todayKey]);
 
   const saveSettings = useCallback(
@@ -125,7 +100,7 @@ export function useUserSettings() {
           : undefined;
       }
       await setDoc(ref, next, { merge: true });
-      setSettings(next);
+      settingsStore.set(uid, next);
     },
     [uid, settings],
   );

@@ -1,7 +1,15 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { verifySessionToken } from "@/adapters/auth/session";
 
-const protectedRoutes = ["/dashboard", "/projects", "/roadmap", "/shop", "/quiz"];
+const protectedRoutes = [
+  "/dashboard",
+  "/projects",
+  "/roadmap",
+  "/shop",
+  "/quiz",
+  "/achievements",
+  "/profile",
+];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

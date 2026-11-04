@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
+import { registerSessionReset } from "@/shared/lib/session-reset";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import {
   applyAutoFreezesOnce,
@@ -15,6 +16,7 @@ import {
   getLocalDayString,
   shiftDay,
   type AutoFreezeReport,
+  type StreakData,
 } from "@/core/domain/streak";
 
 export interface StreakDay {
@@ -26,6 +28,11 @@ export interface StreakDay {
 
 const EMPTY_DAYS: string[] = [];
 
+// Short-lived cache: several pages read the streak, but it changes at most once a day.
+const STREAK_TTL_MS = 60_000;
+const streakCache = new Map<string, { data: StreakData | null; fetchedAt: number }>();
+registerSessionReset(() => streakCache.clear());
+
 export function useStreak() {
   const [currentStreak, setCurrentStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
@@ -36,50 +43,67 @@ export function useStreak() {
   const [loading, setLoading] = useState(true);
   const { uid, loading: authLoading } = useFirebaseAuth();
   const toast = useToast();
+  const showToast = toast.show;
+
+  const applyStreak = useCallback((snapshot: StreakData | null) => {
+    if (!snapshot) {
+      setCurrentStreak(0);
+      setLongestStreak(0);
+      setLastActiveDate(null);
+      setActiveDays([]);
+      setFrozenDays([]);
+      return;
+    }
+
+    const today = getLocalDayString();
+    const streaks = computeStreaks(
+      snapshot.activeDays,
+      snapshot.frozenDays,
+      today,
+    );
+    setCurrentStreak(streaks.currentStreak);
+    setLongestStreak(streaks.longestStreak);
+    setLastActiveDate(snapshot.lastActiveDate);
+    setActiveDays(snapshot.activeDays);
+    setFrozenDays(snapshot.frozenDays);
+  }, []);
 
   const refreshStreak = useCallback(async () => {
     if (!uid) return;
     try {
       const snapshot = await getStreakFirestore(uid);
-      if (!snapshot) {
-        setCurrentStreak(0);
-        setLongestStreak(0);
-        setLastActiveDate(null);
-        setActiveDays([]);
-        setFrozenDays([]);
-      } else {
-        const today = getLocalDayString();
-        const streaks = computeStreaks(
-          snapshot.activeDays,
-          snapshot.frozenDays,
-          today,
-        );
-        setCurrentStreak(streaks.currentStreak);
-        setLongestStreak(streaks.longestStreak);
-        setLastActiveDate(snapshot.lastActiveDate);
-        setActiveDays(snapshot.activeDays);
-        setFrozenDays(snapshot.frozenDays);
-      }
+      streakCache.set(uid, { data: snapshot, fetchedAt: Date.now() });
+      applyStreak(snapshot);
     } catch (error) {
       console.error("Error loading streak:", error);
       if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        showToast("Для отслеживания прогресса обратитесь к администратору.");
       }
       if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
+        showToast("Квота Firestore исчерпана. Повторите позже.");
       }
     } finally {
       setLoading(false);
     }
-  }, [uid, toast]);
+  }, [uid, showToast, applyStreak]);
 
   useEffect(() => {
     if (authLoading || !uid) return;
+
+    const cached = streakCache.get(uid);
+    if (cached && Date.now() - cached.fetchedAt < STREAK_TTL_MS) {
+      const timer = setTimeout(() => {
+        applyStreak(cached.data);
+        setLoading(false);
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+
     const timer = setTimeout(() => {
       void refreshStreak();
     }, 0);
     return () => clearTimeout(timer);
-  }, [uid, authLoading, refreshStreak]);
+  }, [uid, authLoading, refreshStreak, applyStreak]);
 
   // Auto-freeze once per session to avoid repeated reads/writes.
   useEffect(() => {
@@ -94,17 +118,17 @@ export function useStreak() {
     }).catch((error) => {
       console.error("Error applying auto freezes:", error);
       if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        showToast("Для отслеживания прогресса обратитесь к администратору.");
       }
       if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
+        showToast("Квота Firestore исчерпана. Повторите позже.");
       }
     });
 
     return () => {
       cancelled = true;
     };
-  }, [uid, toast]);
+  }, [uid, showToast]);
 
 
 
@@ -117,14 +141,14 @@ export function useStreak() {
     } catch (error) {
       console.error("Error syncing streak:", error);
       if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        showToast("Для отслеживания прогресса обратитесь к администратору.");
       }
       if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
+        showToast("Квота Firestore исчерпана. Повторите позже.");
       }
       return null;
     }
-  }, [uid, toast, refreshStreak]);
+  }, [uid, showToast, refreshStreak]);
 
   const signedOut = !authLoading && !uid;
   const displayActiveDays = signedOut ? EMPTY_DAYS : activeDays;

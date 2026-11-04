@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useServices } from "@/composition/services-context";
@@ -8,82 +8,46 @@ import { useFirebaseAuth } from "./useFirebaseAuth";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
+import { createLiveStore } from "@/shared/lib/live-store";
+import { useLiveStore } from "@/shared/lib/use-live-store";
+import { registerSessionReset } from "@/shared/lib/session-reset";
 import { userProjectPath } from "@/adapters/firestore-client/paths";
+import type { Observer } from "@/ports/observation";
 
 const EMPTY_PROJECT_MAP: Record<string, boolean> = {};
 
-const projectCache = new Map<
-  string,
-  {
-    value: Record<string, boolean>;
-    loading: boolean;
-    listeners: Set<(v: Record<string, boolean>) => void>;
-    errorListeners: Set<(e: unknown) => void>;
-    unsub: (() => void) | null;
-  }
->();
+// One collection listener per user for the whole session.
+const projectStore = createLiveStore<Record<string, boolean>>();
+registerSessionReset(() => projectStore.disposeAll());
 
 export function useProjectProgress() {
   const { projects: repository } = useServices();
-  const [projectMap, setProjectMap] = useState<Record<string, boolean>>({});
-  const [loading, setLoading] = useState(true);
   const { uid, loading: authLoading } = useFirebaseAuth();
   const toast = useToast();
+  const showToast = toast.show;
+
+  const start = useMemo(
+    () =>
+      uid
+        ? (observer: Observer<Record<string, boolean>>) =>
+            repository.subscribe(uid, observer)
+        : null,
+    [uid, repository],
+  );
+
+  const snapshot = useLiveStore(projectStore, uid, start);
 
   useEffect(() => {
-    if (authLoading || !uid) return;
-
-    let entry = projectCache.get(uid);
-    if (!entry) {
-      entry = { value: {}, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
-      projectCache.set(uid, entry);
-      entry.unsub = repository.subscribe(uid, {
-        next: (map) => {
-          entry!.value = map;
-          entry!.loading = false;
-          entry!.listeners.forEach((l) => l(map));
-        },
-        error: (error) => {
-          entry!.loading = false;
-          entry!.errorListeners.forEach((l) => l(error));
-        },
-      });
+    const error = snapshot.error;
+    if (!error) return;
+    console.error("Error listening to projects:", error);
+    if (isPermissionDenied(error)) {
+      showToast("Для отслеживания прогресса обратитесь к администратору.");
     }
-
-    const listener = (map: Record<string, boolean>) => {
-      setProjectMap(map);
-      setLoading(false);
-    };
-    const errorListener = (error: unknown) => {
-      console.error("Error listening to projects:", error);
-      if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
-      }
-      if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
-      }
-      setLoading(false);
-    };
-
-    entry.listeners.add(listener);
-    entry.errorListeners.add(errorListener);
-
-    if (!entry.loading) {
-      setTimeout(() => {
-        setProjectMap(entry.value);
-        setLoading(false);
-      }, 0);
+    if (isQuotaExceeded(error)) {
+      showToast("Квота Firestore исчерпана. Повторите позже.");
     }
-
-    return () => {
-      entry!.listeners.delete(listener);
-      entry!.errorListeners.delete(errorListener);
-      if (entry!.listeners.size === 0) {
-        entry!.unsub?.();
-        projectCache.delete(uid);
-      }
-    };
-  }, [uid, authLoading, repository, toast]);
+  }, [snapshot.error, showToast]);
 
   const toggleProjectCompletion = async (
     projectId: string,
@@ -99,10 +63,10 @@ export function useProjectProgress() {
     } catch (error) {
       console.error("Error toggling project:", error);
       if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        showToast("Для отслеживания прогресса обратитесь к администратору.");
       }
       if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
+        showToast("Квота Firestore исчерпана. Повторите позже.");
       }
       throw error;
     }
@@ -111,8 +75,8 @@ export function useProjectProgress() {
   const signedOut = !authLoading && !uid;
 
   return {
-    projectMap: signedOut ? EMPTY_PROJECT_MAP : projectMap,
-    loading: signedOut ? false : loading,
+    projectMap: signedOut ? EMPTY_PROJECT_MAP : (snapshot.data ?? EMPTY_PROJECT_MAP),
+    loading: signedOut ? false : authLoading || snapshot.loading,
     toggleProjectCompletion,
   };
 }

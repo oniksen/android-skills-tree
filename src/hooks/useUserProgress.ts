@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useServices } from "@/composition/services-context";
@@ -14,6 +14,11 @@ import { userProgressPath } from "@/adapters/firestore-client/paths";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
+import { createLiveStore } from "@/shared/lib/live-store";
+import { useLiveStore } from "@/shared/lib/use-live-store";
+import { registerSessionReset } from "@/shared/lib/session-reset";
+import { oncePerSession } from "@/shared/lib/once-per-session";
+import type { Observer } from "@/ports/observation";
 import type { UserProgress } from "@/types";
 
 const DEFAULT_PROGRESS: UserProgress = {
@@ -22,102 +27,69 @@ const DEFAULT_PROGRESS: UserProgress = {
   totalScore: 0,
 };
 
-// Shared listener cache: one Firestore listener per uid across all hook instances.
-const progressCache = new Map<
-  string,
-  {
-    value: UserProgress | null;
-    loading: boolean;
-    listeners: Set<(v: UserProgress | null) => void>;
-    errorListeners: Set<(e: unknown) => void>;
-    unsub: (() => void) | null;
-  }
->();
+// One subscription per user for the whole session: keeping it alive between
+// pages lets the next page paint real data instead of a skeleton.
+const progressStore = createLiveStore<UserProgress | null>();
+registerSessionReset(() => progressStore.disposeAll());
 
 export function useUserProgress() {
   const { progress: repository } = useServices();
-  const [progress, setProgress] = useState<UserProgress | null>(null);
-  const [loading, setLoading] = useState(true);
   const { uid, loading: authLoading } = useFirebaseAuth();
   const toast = useToast();
+  const showToast = toast.show;
+
+  const start = useMemo(
+    () =>
+      uid
+        ? (observer: Observer<UserProgress | null>) =>
+            repository.subscribe(uid, observer)
+        : null,
+    [uid, repository],
+  );
+
+  const snapshot = useLiveStore(progressStore, uid, start);
+  const signedOut = !authLoading && !uid;
+  const loading = signedOut ? false : authLoading || snapshot.loading;
 
   useEffect(() => {
-    if (authLoading || !uid) return;
-
-    let entry = progressCache.get(uid);
-    if (!entry) {
-      entry = { value: null, loading: true, listeners: new Set(), errorListeners: new Set(), unsub: null };
-      progressCache.set(uid, entry);
-      entry.unsub = repository.subscribe(uid, {
-        next: (value) => {
-          entry!.value = value;
-          entry!.loading = false;
-          entry!.listeners.forEach((l) => l(value));
-        },
-        error: (error) => {
-          entry!.loading = false;
-          entry!.errorListeners.forEach((l) => l(error));
-        },
-      });
+    const error = snapshot.error;
+    if (!error) return;
+    console.error("Error listening to progress:", error);
+    if (isPermissionDenied(error)) {
+      showToast("Для отслеживания прогресса обратитесь к администратору.");
     }
-
-    const listener = (value: UserProgress | null) => {
-      setProgress(value);
-      setLoading(false);
-    };
-    const errorListener = (error: unknown) => {
-      console.error("Error listening to progress:", error);
-      setLoading(false);
-      if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
-      }
-      if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
-      }
-    };
-
-    entry.listeners.add(listener);
-    entry.errorListeners.add(errorListener);
-
-    if (!entry.loading) {
-      setTimeout(() => {
-        setProgress(entry.value);
-        setLoading(false);
-      }, 0);
+    if (isQuotaExceeded(error)) {
+      showToast("Квота Firestore исчерпана. Повторите позже.");
     }
-
-    return () => {
-      entry!.listeners.delete(listener);
-      entry!.errorListeners.delete(errorListener);
-      if (entry!.listeners.size === 0) {
-        entry!.unsub?.();
-        progressCache.delete(uid);
-      }
-    };
-  }, [uid, authLoading, repository, toast]);
+  }, [snapshot.error, showToast]);
 
   useEffect(() => {
     if (!uid) return;
+
+    const reportError = (message: string) => (error: unknown) => {
+      console.error(message, error);
+      if (isPermissionDenied(error)) {
+        showToast("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      if (isQuotaExceeded(error)) {
+        showToast("Квота Firestore исчерпана. Повторите позже.");
+      }
+    };
+
+    // One repair pass per user per session instead of one per page mount.
+    if (!oncePerSession(`backfill-total-score:${uid}`)) {
+      void checkAchievementsOnce(uid).catch(reportError("Error checking achievements:"));
+      return;
+    }
+
     const assessments = readAssessmentMap(uid);
-    void backfillTotalScore(uid, assessments).catch((error) => {
-      console.error("Error recalculating total score:", error);
-      if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
-      }
-      if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
-      }
-    });
-    void checkAchievementsOnce(uid, assessments).catch((error) => {
-      console.error("Error checking achievements:", error);
-      if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
-      }
-      if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
-      }
-    });
-  }, [uid, toast]);
+    void backfillTotalScore(uid, assessments).catch(
+      reportError("Error recalculating total score:"),
+    );
+    void checkAchievementsOnce(uid, assessments).catch(
+      reportError("Error checking achievements:"),
+    );
+  }, [uid, showToast]);
 
   const updateProgress = async (data: Partial<UserProgress>) => {
     if (!uid) return;
@@ -133,20 +105,18 @@ export function useUserProgress() {
     } catch (error) {
       console.error("Error updating progress:", error);
       if (isPermissionDenied(error)) {
-        toast.show("Для отслеживания прогресса обратитесь к администратору.");
+        showToast("Для отслеживания прогресса обратитесь к администратору.");
       }
       if (isQuotaExceeded(error)) {
-        toast.show("Квота Firestore исчерпана. Повторите позже.");
+        showToast("Квота Firestore исчерпана. Повторите позже.");
       }
       throw error;
     }
   };
 
-  const signedOut = !authLoading && !uid;
-
   return {
-    progress: signedOut ? null : progress,
-    loading: signedOut ? false : loading,
+    progress: signedOut ? null : (snapshot.data ?? null),
+    loading,
     updateProgress,
   };
 }

@@ -1,10 +1,6 @@
-import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/adapters/auth/session";
 import ProjectsClient from "@/features/projects/components/ProjectsClient";
 
-export default async function ProjectsPage() {
-  const uid = await getCurrentUser();
-  if (!uid) redirect("/login");
-
+// Auth is enforced by proxy.ts, so this page can stay static and be prefetched.
+export default function ProjectsPage() {
   return <ProjectsClient />;
 }
