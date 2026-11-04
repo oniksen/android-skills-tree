@@ -17,6 +17,7 @@ import { isQuotaExceeded } from "@/shared/lib/quota";
 import { createLiveStore } from "@/shared/lib/live-store";
 import { useLiveStore } from "@/shared/lib/use-live-store";
 import { registerSessionReset } from "@/shared/lib/session-reset";
+import { oncePerSession } from "@/shared/lib/once-per-session";
 import type { Observer } from "@/ports/observation";
 import type { UserProgress } from "@/types";
 
@@ -64,25 +65,30 @@ export function useUserProgress() {
 
   useEffect(() => {
     if (!uid) return;
+
+    const reportError = (message: string) => (error: unknown) => {
+      console.error(message, error);
+      if (isPermissionDenied(error)) {
+        showToast("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      if (isQuotaExceeded(error)) {
+        showToast("Квота Firestore исчерпана. Повторите позже.");
+      }
+    };
+
+    // One repair pass per user per session instead of one per page mount.
+    if (!oncePerSession(`backfill-total-score:${uid}`)) {
+      void checkAchievementsOnce(uid).catch(reportError("Error checking achievements:"));
+      return;
+    }
+
     const assessments = readAssessmentMap(uid);
-    void backfillTotalScore(uid, assessments).catch((error) => {
-      console.error("Error recalculating total score:", error);
-      if (isPermissionDenied(error)) {
-        showToast("Для отслеживания прогресса обратитесь к администратору.");
-      }
-      if (isQuotaExceeded(error)) {
-        showToast("Квота Firestore исчерпана. Повторите позже.");
-      }
-    });
-    void checkAchievementsOnce(uid, assessments).catch((error) => {
-      console.error("Error checking achievements:", error);
-      if (isPermissionDenied(error)) {
-        showToast("Для отслеживания прогресса обратитесь к администратору.");
-      }
-      if (isQuotaExceeded(error)) {
-        showToast("Квота Firestore исчерпана. Повторите позже.");
-      }
-    });
+    void backfillTotalScore(uid, assessments).catch(
+      reportError("Error recalculating total score:"),
+    );
+    void checkAchievementsOnce(uid, assessments).catch(
+      reportError("Error checking achievements:"),
+    );
   }, [uid, showToast]);
 
   const updateProgress = async (data: Partial<UserProgress>) => {
