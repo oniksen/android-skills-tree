@@ -1,24 +1,13 @@
 "use client";
 
 import Link, { useLinkStatus } from "next/link";
-import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
 import { normalizeReleaseVersion } from "@/lib/version";
 import { usePathname } from "next/navigation";
+import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import StreakBadge from "@/shared/ui/StreakBadge";
 import CurrencyBadge from "@/shared/ui/CurrencyBadge";
 import BrandMark from "@/shared/ui/BrandMark";
-import {
-  DashboardSkeleton,
-  TreeSkeleton,
-  ProjectsSkeleton,
-  RoadmapSkeleton,
-  AchievementsSkeleton,
-  ShopSkeleton,
-  ProfileSkeleton,
-} from "@/shared/ui/skeletons";
 import {
   LayoutDashboard,
   GitBranch,
@@ -41,23 +30,6 @@ const NAV_ITEMS = [
 ];
 
 const MOBILE_NAV_ITEMS = NAV_ITEMS.filter((item) => item.href !== "/quiz");
-
-const ROUTE_SKELETONS: Record<string, React.ComponentType> = {
-  "/dashboard": DashboardSkeleton,
-  "/tree/junior": TreeSkeleton,
-  "/projects": ProjectsSkeleton,
-  "/roadmap": RoadmapSkeleton,
-  "/achievements": AchievementsSkeleton,
-  "/shop": ShopSkeleton,
-  "/profile": ProfileSkeleton,
-};
-
-function RoutePlaceholder({ href }: { href: string }) {
-  const Placeholder = ROUTE_SKELETONS[href] ?? TreeSkeleton;
-  return <Placeholder />;
-}
-
-type PendingNav = { href: string; startedPath: string };
 
 interface HeaderProps {
   children?: React.ReactNode;
@@ -107,11 +79,9 @@ function PendingIndicator({ className = "" }: { className?: string }) {
 function DesktopNavItem({
   item,
   active,
-  onNavigate,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
-  onNavigate: (href: string) => void;
 }) {
   const isProfile = item.href === "/profile";
   const className = `group relative flex items-center gap-2.5 rounded-md px-2.5 py-2 font-mono text-sm transition-colors duration-150 ${
@@ -150,7 +120,6 @@ function DesktopNavItem({
   return (
     <Link
       href={item.href}
-      onClick={() => onNavigate(item.href)}
       className={className}
     >
       {inner}
@@ -161,11 +130,9 @@ function DesktopNavItem({
 function TabletNavItem({
   item,
   active,
-  onNavigate,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
-  onNavigate: (href: string) => void;
 }) {
   const isProfile = item.href === "/profile";
   const className = `relative flex flex-col items-center gap-1 rounded-md px-1.5 py-2 text-center font-mono text-[10px] leading-tight transition-colors duration-150 ${
@@ -194,7 +161,6 @@ function TabletNavItem({
     <Link
       href={item.href}
       title={item.label}
-      onClick={() => onNavigate(item.href)}
       className={className}
     >
       {inner}
@@ -205,16 +171,13 @@ function TabletNavItem({
 function MobileNavItem({
   item,
   active,
-  onNavigate,
 }: {
   item: (typeof NAV_ITEMS)[number];
   active: boolean;
-  onNavigate: (href: string) => void;
 }) {
   return (
     <Link
       href={item.href}
-      onClick={() => onNavigate(item.href)}
       aria-label={item.label}
       title={item.label}
       className={`relative flex min-h-[52px] min-w-[44px] flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 transition-colors duration-150 ${
@@ -236,36 +199,14 @@ export default function Header({
   version,
 }: HeaderProps) {
   const pathname = usePathname();
-  const [user, setUser] = useState<{ uid: string } | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [pending, setPending] = useState<PendingNav | null>(null);
-  const [readyPending, setReadyPending] = useState<PendingNav | null>(null);
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser ? { uid: firebaseUser.uid } : null);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const isNavigating = pending !== null && pending.startedPath === pathname;
-
-  useEffect(() => {
-    if (!isNavigating || !pending) return;
-    const timer = setTimeout(() => setReadyPending(pending), 120);
-    return () => clearTimeout(timer);
-  }, [isNavigating, pending]);
-
-  const handleNavigate = (href: string) => {
-    if (pathname !== href) setPending({ href, startedPath: pathname });
-  };
+  const { uid, loading } = useFirebaseAuth();
 
   const segment = (pathname ?? "").split("/")[1] || "";
   const activeHref = segment === "tree" ? "/tree/junior" : `/${segment}`;
   const isQuiz = (pathname ?? "").startsWith("/quiz");
   const isActive = (href: string) =>
     href === "/profile" ? activeHref === "/profile" : href === activeHref;
-  const showNav = !loading && user;
+  const showNav = !loading && Boolean(uid);
 
   return (
     <div className="flex min-h-dvh">
@@ -285,7 +226,7 @@ export default function Header({
                 <DesktopNavItem
                   item={item}
                   active={isActive(item.href)}
-                  onNavigate={handleNavigate}
+
                 />
               </div>
             ))}
@@ -306,7 +247,7 @@ export default function Header({
               key={item.href}
               item={item}
               active={isActive(item.href)}
-              onNavigate={handleNavigate}
+
             />
           ))}
         </nav>
@@ -325,9 +266,9 @@ export default function Header({
               <Prompt path={pathname ?? ""} />
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-2">
-              {!loading && user && <StreakBadge />}
-              {!loading && user && <CurrencyBadge />}
-              {!loading && user && (
+              {!loading && uid && <StreakBadge />}
+              {!loading && uid && <CurrencyBadge />}
+              {!loading && uid && (
                 <Link
                   href="/quiz"
                   className="nav-md:hidden flex items-center justify-center rounded-md p-1.5 text-slate-400 transition-colors hover:bg-blue-500/10 hover:text-blue-600"
@@ -337,7 +278,7 @@ export default function Header({
                 </Link>
               )}
               {!loading &&
-                !user &&
+                !uid &&
                 pathname !== "/login" && (
                   <Link
                     href="/login"
@@ -359,11 +300,7 @@ export default function Header({
               : `w-full max-w-6xl mx-auto flex-1 ${mainClassName}`
           }
         >
-          {isNavigating && pending && readyPending === pending ? (
-            <RoutePlaceholder href={pending.href} />
-          ) : (
-            children
-          )}
+          {children}
         </main>
       </div>
 
@@ -383,7 +320,7 @@ export default function Header({
                   <MobileNavItem
                     item={item}
                     active={isActive(item.href)}
-                    onNavigate={handleNavigate}
+
                   />
                 </li>
               ))}
