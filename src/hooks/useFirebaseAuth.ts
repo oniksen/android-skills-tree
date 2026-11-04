@@ -1,18 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { useServices } from "@/composition/services-context";
 import type { AuthState } from "@/ports/auth-state-provider";
-
-const INITIAL_STATE: AuthState = { uid: null, email: null, loading: true };
+import { getAuthStore } from "@/shared/lib/auth-store";
 
 export function useFirebaseAuth(): AuthState {
   const { auth } = useServices();
-  const [state, setState] = useState<AuthState>(INITIAL_STATE);
+  const store = useMemo(() => getAuthStore(auth), [auth]);
 
-  useEffect(() => {
-    return auth.subscribe({ next: setState });
-  }, [auth]);
-
-  return state;
+  return useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+    store.getServerSnapshot,
+  );
 }

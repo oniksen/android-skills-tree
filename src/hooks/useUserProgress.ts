@@ -16,6 +16,7 @@ import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
 import { createLiveStore } from "@/shared/lib/live-store";
 import { useLiveStore } from "@/shared/lib/use-live-store";
+import { registerSessionReset } from "@/shared/lib/session-reset";
 import type { Observer } from "@/ports/observation";
 import type { UserProgress } from "@/types";
 
@@ -28,6 +29,7 @@ const DEFAULT_PROGRESS: UserProgress = {
 // One subscription per user for the whole session: keeping it alive between
 // pages lets the next page paint real data instead of a skeleton.
 const progressStore = createLiveStore<UserProgress | null>();
+registerSessionReset(() => progressStore.disposeAll());
 
 export function useUserProgress() {
   const { progress: repository } = useServices();

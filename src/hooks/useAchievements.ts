@@ -9,6 +9,7 @@ import { isQuotaExceeded } from "@/shared/lib/quota";
 import { checkAchievementsOnce } from "@/lib/firestore-actions";
 import { createLiveStore } from "@/shared/lib/live-store";
 import { useLiveStore } from "@/shared/lib/use-live-store";
+import { registerSessionReset } from "@/shared/lib/session-reset";
 import type { Observer } from "@/ports/observation";
 import type { Achievement } from "@/types";
 
@@ -16,6 +17,7 @@ const EMPTY_ACHIEVEMENTS: Achievement[] = [];
 
 // One collection listener per user for the whole session.
 const achievementStore = createLiveStore<Achievement[]>();
+registerSessionReset(() => achievementStore.disposeAll());
 
 export function useAchievements() {
   const { achievements: repository } = useServices();

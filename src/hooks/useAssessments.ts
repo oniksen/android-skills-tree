@@ -14,6 +14,7 @@ import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
 import { createLiveStore } from "@/shared/lib/live-store";
 import { useLiveStore } from "@/shared/lib/use-live-store";
+import { registerSessionReset } from "@/shared/lib/session-reset";
 import {
   userAssessmentPath,
   userCurrencyPath,
@@ -32,6 +33,7 @@ const EMPTY_ASSESSMENT_MAP: Record<string, AssessmentData> = {};
 
 // One collection listener per user for the whole session.
 const assessmentStore = createLiveStore<Record<string, AssessmentData>>();
+registerSessionReset(() => assessmentStore.disposeAll());
 
 export function useAssessments() {
   const { assessments: repository } = useServices();

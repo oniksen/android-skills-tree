@@ -15,11 +15,13 @@ import {
 import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
 import { createLiveStore } from "@/shared/lib/live-store";
 import { useLiveStore } from "@/shared/lib/use-live-store";
+import { registerSessionReset } from "@/shared/lib/session-reset";
 import type { Observer } from "@/ports/observation";
 import type { CurrencyData } from "@/types";
 
 // One listener per user for the whole session.
 const currencyStore = createLiveStore<CurrencyData>();
+registerSessionReset(() => currencyStore.disposeAll());
 
 export function useCurrency() {
   const { currency: repository } = useServices();

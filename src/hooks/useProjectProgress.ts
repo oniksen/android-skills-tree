@@ -10,6 +10,7 @@ import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
 import { createLiveStore } from "@/shared/lib/live-store";
 import { useLiveStore } from "@/shared/lib/use-live-store";
+import { registerSessionReset } from "@/shared/lib/session-reset";
 import { userProjectPath } from "@/adapters/firestore-client/paths";
 import type { Observer } from "@/ports/observation";
 
@@ -17,6 +18,7 @@ const EMPTY_PROJECT_MAP: Record<string, boolean> = {};
 
 // One collection listener per user for the whole session.
 const projectStore = createLiveStore<Record<string, boolean>>();
+registerSessionReset(() => projectStore.disposeAll());
 
 export function useProjectProgress() {
   const { projects: repository } = useServices();

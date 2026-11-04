@@ -10,6 +10,7 @@ import { isQuotaExceeded } from "@/shared/lib/quota";
 import { userSettingsPath } from "@/adapters/firestore-client/paths";
 import { createLiveStore } from "@/shared/lib/live-store";
 import { useLiveStore } from "@/shared/lib/use-live-store";
+import { registerSessionReset } from "@/shared/lib/session-reset";
 import type { Observer } from "@/ports/observation";
 import type { UserSettings } from "@/types";
 
@@ -20,6 +21,7 @@ const DEFAULT_SETTINGS: UserSettings = {
 
 // One listener per user for the whole session.
 const settingsStore = createLiveStore<UserSettings>();
+registerSessionReset(() => settingsStore.disposeAll());
 
 export function useUserSettings() {
   const { uid, loading: authLoading } = useFirebaseAuth();
