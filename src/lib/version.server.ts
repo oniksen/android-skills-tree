@@ -1,7 +1,12 @@
 import { execSync } from "node:child_process";
 import { DEVELOPMENT_VERSION } from "./version";
 
+// Resolved once per server process instead of on every layout render.
+let cachedVersion: string | null = null;
+
 export function getDevelopmentVersion(): string {
+  if (cachedVersion) return cachedVersion;
+
   let sha = "local";
   try {
     sha = execSync("git rev-parse --short HEAD", {
@@ -17,5 +22,6 @@ export function getDevelopmentVersion(): string {
   } else if (process.env.GIT_COMMIT_SHA) {
     sha = process.env.GIT_COMMIT_SHA.slice(0, 7);
   }
-  return `v${DEVELOPMENT_VERSION}-dev+${sha}`;
+  cachedVersion = `v${DEVELOPMENT_VERSION}-dev+${sha}`;
+  return cachedVersion;
 }

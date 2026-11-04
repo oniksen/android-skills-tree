@@ -46,6 +46,8 @@ export async function getLatestReleaseVersion(
     headers,
     cache: "force-cache" as const,
     next: { revalidate: 60, tags: ["github-release"] },
+    // The version label must never block a page render for long.
+    signal: AbortSignal.timeout(2_000),
   };
 
   try {

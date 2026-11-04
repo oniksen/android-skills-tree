@@ -41,6 +41,15 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Pages render only a client shell (all user data comes from Firestore),
+    // so reusing the payload briefly is safe and removes the server round-trip
+    // when switching tabs.
+    staleTimes: {
+      dynamic: 30,
+      static: 300,
+    },
+  },
   async headers() {
     return [
       {
