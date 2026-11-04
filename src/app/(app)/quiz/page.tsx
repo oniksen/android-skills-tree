@@ -1,10 +1,6 @@
-import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/adapters/auth/session";
 import QuizConsole from "@/features/quiz/components/QuizConsole";
 
-export default async function QuizPage() {
-  const uid = await getCurrentUser();
-  if (!uid) redirect("/login");
-
+// Auth is enforced by proxy.ts, so this page can stay static and be prefetched.
+export default function QuizPage() {
   return <QuizConsole />;
 }

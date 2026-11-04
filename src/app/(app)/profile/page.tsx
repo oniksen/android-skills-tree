@@ -1,10 +1,6 @@
-import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/adapters/auth/session";
 import ProfileContent from "@/features/profile/components/ProfileContent";
 
-export default async function ProfilePage() {
-  const uid = await getCurrentUser();
-  if (!uid) redirect("/login");
-
+// Auth is enforced by proxy.ts, so this page can stay static and be prefetched.
+export default function ProfilePage() {
   return <ProfileContent />;
 }
