@@ -34,6 +34,10 @@ const CONTENT = `# Переменные
 val x = 1
 \`\`\`
 
+| Оператор | Название |
+|---|---|
+| \\|\\| | OR |
+
 ## 2. Итог
 
 Текст.
@@ -114,6 +118,14 @@ describe("StudyMarkdownRenderer", () => {
     expect(html).toContain('class="study-pills"');
     expect(html).toContain('class="study-pill"');
     expect(html).toContain('href="https://kotlinlang.org/docs/properties.html"');
+  });
+
+  it("рендерит экранированный оператор || в таблице", () => {
+    const html = render();
+    const row = html.match(/<tr><td>\|\|<\/td><td>OR<\/td><\/tr>/);
+
+    expect(row).not.toBeNull();
+    expect((html.match(/<table/g) ?? []).length).toBe(2);
   });
 
   it("рендерит картинку как figure с подписью", () => {
