@@ -129,6 +129,8 @@ legacy-данные для миграции/отката и **больше не 
   - ленивая идемпотентная миграция из legacy-коллекций (`readLegacyUserState`,
     штамп `migratedAt`);
   - все хуки читают один документ; тоггл — одна транзакция `state/current`;
+  - мутации достижений/streak сериализованы per-uid через `runExclusive`
+    (in-memory lock) — убирает гонку внутри вкладки;
   - удалены legacy-репозитории/порты и achievement-cache;
   - legacy-коллекции сохранены как migration/rollback данные.
 
@@ -321,7 +323,9 @@ currency, streak, settings, progress — вложенными полями
 - **Тесты**: тесты Firestore переведены на state-документ; legacy-пути
   проверяются только в `state.test.ts` (миграция).
 - **Консистентность**: XP, кристаллы, streak и достижения теперь меняются в
-  одном документе; конкурентные вкладки защищены транзакциями.
+  одном документе; операции с достижениями/streak сериализованы per-uid внутри
+  вкладки. Cross-tab race между `updateDoc(achievements)` и транзакцией streak
+  остаётся; его закрывает Phase 3 (server-authoritative/Cloud Functions).
 
 ## 8. Итог
 
