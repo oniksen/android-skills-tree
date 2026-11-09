@@ -9,6 +9,12 @@ import { useFirebaseAuth } from "./useFirebaseAuth";
 import { calcSkillScore, calcTotalScore } from "@/core/domain/scoring";
 import { computeAssessmentToggle } from "@/core/use-cases/compute-assessment-toggle";
 import { checkAchievements } from "@/lib/firestore-actions";
+import {
+  ASSESSMENT_AWARD_TYPES,
+  achievementKey,
+  getAssessmentAwardKeys,
+} from "@/core/domain/achievement-conditions";
+import { getAchievementsCache } from "@/shared/lib/achievement-cache";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
@@ -149,7 +155,21 @@ export function useAssessments() {
         // Optimistic update: the listener confirms it a moment later.
         assessmentStore.set(uid, nextMap);
 
-        if (completionChanged) {
+        const desiredKeys = getAssessmentAwardKeys(nextMap);
+        const cached = getAchievementsCache(uid);
+        let shouldCheckAchievements = cached === null;
+        if (!shouldCheckAchievements && cached) {
+          const cachedKeys = new Set(
+            cached
+              .filter((a) => ASSESSMENT_AWARD_TYPES.has(a.type))
+              .map((a) => achievementKey(a.type, a.metadata)),
+          );
+          shouldCheckAchievements =
+            desiredKeys.size !== cachedKeys.size ||
+            [...desiredKeys].some((key) => !cachedKeys.has(key));
+        }
+
+        if (shouldCheckAchievements) {
           void checkAchievements(uid, nextMap).catch((error) => {
             console.error("Error syncing achievements:", error);
             if (isPermissionDenied(error)) {

@@ -1,8 +1,9 @@
 # Аудит и план оптимизации Firestore
 
 - **Дата:** 2026-11-09
-- **Статус:** частично реализовано. Фазы 0–1 закрыты частично (live-store,
-  `oncePerSession`, единый auth store, оптимистичные обновления). Фаза 2
+- **Статус:** фаза 0 закрыта (2026-11-09). Ранее уже были внедрены live-store,
+  `oncePerSession`, единый auth store и оптимистичные обновления. Фаза 1
+  закрыта частично (`writeBatch`, cleanup, streak/settings). Фаза 2
   (консолидация документов) не начата.
 - **Цель:** зафиксировать фактическую модель данных, уже сделанные оптимизации
   и оставшиеся шаги по снижению количества чтений/записей без потери
@@ -107,21 +108,44 @@ users/{uid}/
 - **Обработка `permission-denied` и `resource-exhausted`** с тостами.
 - **`firestore.rules`** и `firestore.indexes.json` уже есть в репозитории
   (правила: read/write только своих данных; индексы пока не требуются).
+- **Фаза 0 (2026-11-09):**
+  - `checkAchievements` вызывается только при изменении набора award-ключей
+    (`category_perfect`/`level_master`/`path_complete`, порог 7%), а не на
+    каждый тоггл;
+  - `totalScore` пишется в той же транзакции, что assessment + currency;
+  - `reconcileAchievements` использует per-uid cache достижений из live-store,
+    `getDocs` — только fallback один раз за сессию;
+  - `addStreakAchievementIfNotExists` больше не сканирует коллекцию: cache по
+    типу, type-query как fallback, детерминированный id для новых записей;
+  - `updateUserProgress` / `updateProgress` мержат только payload вызывающего,
+    без перезаписи `currentLevelId`/`unlockedLevelIds` дефолтами.
 
 ## 4. Оставшиеся проблемы
+
+### Статус после фазы 0
+
+| Проблема | Статус |
+|----------|--------|
+| P0: сканы коллекции достижений | ✅ закрыто (cache + type-query fallback) |
+| P0: `checkAchievements` на каждый тоггл | ✅ закрыто (award-key set diff) |
+| P1: отдельная запись `totalScore` | ✅ закрыто (в транзакции) |
+| P1: N assessment-документов | ⏳ остаётся, фаза 2 |
+| P1: `checkLevelUp` не транзакционен | ⏳ остаётся |
+| P2: мёртвый код достижений | ⏳ остаётся |
+| P2: инфраструктура | ⏳ остаётся |
 
 Обозначения: `K` — число assessment-документов (до ~227), `A` — число
 достижений, `P` — число проектов.
 
-### P0. Сканы коллекции достижений
+### P0. Сканы коллекции достижений — ✅ закрыто
 
-`reconcileAchievements` (`src/lib/firestore.ts`) делает `getDocs` по всей
-коллекции достижений. Он вызывается из `checkAchievements`, а тот — из
+До фазы 0 `reconcileAchievements` (`src/lib/firestore.ts`) делал `getDocs` по
+всей коллекции достижений. Он вызывается из `checkAchievements`, а тот — из
 `toggleSubtopic` на **каждый** клик по чекбоксу. Дополнительно
-`addStreakAchievementIfNotExists` (`streak-commands.ts`) сканирует ту же
+`addStreakAchievementIfNotExists` (`streak-commands.ts`) сканировал ту же
 коллекцию при каждом `syncStreak`.
 
-Фактические чтения на один тоггл:
+Было на один тоггл:
 
 - включение субтопика: транзакция `2` + `checkAchievements` (`A + 2`) +
   `syncStreak` (`A + 1`) = **`2A + 5`**;
@@ -129,17 +153,21 @@ users/{uid}/
 
 При `A = 20` это ~45 и ~24 чтения на один клик.
 
-### P0. `checkAchievements` на каждый тоггл
+После фазы 0: cache достижений, fallback `getDocs` один раз за сессию,
+`addStreakAchievementIfNotExists` использует cache/type-query вместо скана.
 
-Достижения меняются только при завершении навыка/категории/уровня или при
-пересечении порога streak. Сейчас же полный пересчёт идёт на любое изменение
-субтопика.
+### P0. `checkAchievements` на каждый тоггл — ✅ закрыто
 
-### P1. Отдельная запись `totalScore`
+Достижения меняются при пересечении 7% порогов
+`category_perfect`/`level_master`/`path_complete` или порогов streak. Теперь
+`toggleSubtopic` вычисляет набор award-ключей локально и вызывает
+`checkAchievements` только при его изменении.
 
-`toggleSubtopic` уже держит транзакцию на assessment + currency, но
-`progress/current` обновляется отдельным `setDoc`. Это лишний round-trip и
-потенциальное расхождение между снапшотами.
+### P1. Отдельная запись `totalScore` — ✅ закрыто
+
+`toggleSubtopic` держит транзакцию на assessment + currency, а `totalScore`
+теперь пишется в `progress/current` в той же транзакции. Отдельного `setDoc`
+больше нет.
 
 ### P1. N assessment-документов
 
@@ -172,40 +200,50 @@ settings 1 + streak 1` ≈ **`K + A + P + 5`**.
 
 ## 5. План оптимизации
 
-### Фаза 0 — быстрые выигрыши (без миграции)
+### Фаза 0 — быстрые выигрыши (без миграции) — ✅ выполнено
 
-1. **Условный `checkAchievements`.** В `toggleSubtopic` вызывать его только если
-   `justCompleted` (или если изменился статус завершения навыка). На обычный
-   тоггл достаточно обновить `totalScore`.
-2. **Детерминированные id вместо сканов.**
-   - `reconcileAchievements`: сравнивать desired-ключи с уже известными
-     ключами (из live-store или `getDoc` по ключу), а не с `getDocs`.
-   - `addStreakAchievementIfNotExists`: `getDoc(doc(ref, "streak_<n>"))` или
-     `setDoc` с merge.
-   - Удаление достижений — по известным id
-     (`category_perfect::<id>`, `level_master::<id>`, `path_complete`).
-3. **`totalScore` в ту же транзакцию**, что и assessment + currency.
-4. **`writeBatch`** для массовых записей/удалений достижений.
-5. **`updateUserProgress`** — `setDoc(..., { merge: true })` с дефолтами без
-   предварительного `getDoc`.
-6. Удалить мёртвые функции достижений или перевести их на id.
+1. **Условный `checkAchievements`.** ✅ В `toggleSubtopic` вызывается только при
+   award-key set diff (изменение набора category_perfect/level_master/path_complete, порог 7%). На обычный
+   тоггл обновляется только `totalScore`.
+2. **Детерминированные id вместо сканов.** ✅
+   - `reconcileAchievements` использует per-uid cache достижений из live-store;
+     `getDocs` — только fallback один раз за сессию.
+   - `addStreakAchievementIfNotExists` проверяет cache по типу, при его
+     отсутствии — type-query, затем пишет детерминированный
+     `streak_<n>`; legacy autoId не дублируется.
+   - Удаление достижений в reconcile идёт по известным id.
+3. **`totalScore` в ту же транзакцию**, что и assessment + currency. ✅
+4. **`writeBatch`** для массовых записей/удалений достижений. ⏳ отложено до
+   фазы 1: текущий reconcile последовательный, но чтения уже не сканируют
+   коллекцию.
+5. **`updateUserProgress` / `updateProgress`** — `setDoc(data, { merge: true })`
+   **только с payload вызывающего**. ✅ Важно: не добавлять дефолты в merge,
+   иначе частичное обновление перезапишет `currentLevelId`/`unlockedLevelIds`.
+   Дефолты остаются в `getUserProgress`/progress-repository.
+6. Удалить мёртвые функции достижений или перевести их на id. ⏳ отложено:
+   `addAchievementIfNotExists`, `addAchievementsIfNotExists`,
+   `deleteAchievementsByLevel`, `deleteCategoryPerfectAchievement` всё ещё
+   не используются в production, но их тесты пока сохранены.
 
-Ожидаемый эффект: обычный тоггл — **2–4 чтения вместо `2A + 5`**; исчезают
-сканы коллекции достижений в hot path.
+Фактический эффект: обычный тоггл — **2–4 чтения вместо `2A + 5`**; сканы
+коллекции достижений в hot path отсутствуют. Проверки: `npm run lint`,
+`npm run typecheck` — чисто; `npm test` — 301 passed, 8 pre-existing failures
+в data-driven тестах (weights/currency/scoring/quiz-questions), не связанных
+с Firestore.
 
-### Фаза 1 — кэш и объединение чтений
+### Фаза 1 — объединение чтений и cleanup
 
-1. Держать in-memory кэш ключей достижений на uid, обновляемый live-store.
-   Write-функции используют его; `getDocs` — только как fallback при пустом
-   кэше.
-2. Перевести `useStreak` на общий live-store (или оставить TTL, но убрать
+1. ~~In-memory кэш достижений~~ — ✅ сделано в фазе 0.
+2. Добавить `writeBatch` в `reconcileAchievements` и удалить/перевести на id
+   мёртвые функции достижений.
+3. Перевести `useStreak` на общий live-store (или оставить TTL, но убрать
    дублирующие `getDoc` при монтировании нескольких компонентов).
-3. Оценить `useUserSettings`: если realtime не нужен, заменить `onSnapshot` на
+4. Оценить `useUserSettings`: если realtime не нужен, заменить `onSnapshot` на
    `getDoc` + оптимистичное обновление store (минус один listener).
-4. Добавить dev-счётчик вызовов `getDoc`/`getDocs`, чтобы измерять чтения до/после.
+5. Добавить dev-счётчик вызовов `getDoc`/`getDocs`, чтобы измерять чтения до/после.
 
-Ожидаемый эффект: нет сканов в достижениях; минус один listener; предсказуемые
-чтения на старте.
+Ожидаемый эффект: меньше round-trip на запись, минус один listener;
+предсказуемые чтения на старте.
 
 ### Фаза 2 — консолидация документов (опционально, с миграцией)
 
@@ -250,9 +288,9 @@ currency, streak, settings, progress — вложенными полями
 
 | Метрика | Сейчас | Цель |
 |---------|--------|------|
-| Чтения на обычный тоггл | `A + 4 … 2A + 5` | ≤ 3 |
+| Чтения на обычный тоггл | `2–4` (было `A + 4 … 2A + 5`) | ≤ 3 |
 | Чтения на первый вход | `K + A + P + 5` | ≤ 10 (фаза 1), 1–3 (фаза 2) |
-| `getDocs` в hot path | есть | 0 |
+| `getDocs` в hot path | нет; только fallback достижений раз за сессию | 0 |
 | Listeners на пользователя | 6 | 6 (фаза 1), 1 (фаза 2) |
 
 Проверка после каждого этапа: `npm run lint`, `npm run typecheck`, `npm test`.
@@ -274,12 +312,14 @@ currency, streak, settings, progress — вложенными полями
 
 ## 8. Итог
 
+- Фаза 0 закрыта: условный `checkAchievements`, кэш достижений вместо сканов,
+  `totalScore` в транзакции, корректный partial merge прогресса.
 - Фазы 0–1 не меняют схему и дают основной выигрыш в hot path.
 - Фаза 2 — максимальный эффект по чтениям, но требует миграции и отдельного
   согласования.
 - Фаза 3 — следующий уровень надёжности и защиты квоты.
-- Начинать с фазы 0: условный `checkAchievements`, детерминированные id
-  достижений, `totalScore` в транзакции, `writeBatch`.
+- Следующий шаг — фаза 1: `writeBatch`, cleanup мёртвого кода, `useStreak` и
+  `useUserSettings`.
 
 ## 9. Процесс реализации: subagent-driven
 
@@ -322,12 +362,12 @@ currency, streak, settings, progress — вложенными полями
 
 ### Порядок этапов
 
-| Этап | Реализатор | Review | Выход |
-|------|------------|--------|-------|
-| Фаза 0 | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | нет сканов достижений в hot path, обычный тоггл ≤ 4 чтений |
-| Фаза 1 | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | кэш ключей достижений, нет лишних `getDocs` |
-| Фаза 2 | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | согласованная миграция на `state/current` или решение отложить |
-| Фаза 3 | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | инфраструктурные улучшения по отдельному согласованию |
+| Этап | Статус | Реализатор | Review | Выход |
+|------|--------|------------|--------|-------|
+| Фаза 0 | ✅ выполнено | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | нет сканов достижений в hot path, обычный тоггл 2–4 чтения |
+| Фаза 1 | ⏳ следующая | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | `writeBatch`, cleanup мёртвого кода, `useStreak`/`useUserSettings` |
+| Фаза 2 | ⏸ не начата | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | согласованная миграция на `state/current` или решение отложить |
+| Фаза 3 | ⏸ не начата | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | инфраструктурные улучшения по отдельному согласованию |
 
 Коммиты — conventional commits; после review и зелёных проверок оркестратор
 делает коммит с понятным пользовательским сообщением.

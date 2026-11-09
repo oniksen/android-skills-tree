@@ -5,6 +5,7 @@ import { levels } from "@/data/levels";
 import {
   achievementKey,
   evaluateAchievements,
+  getAssessmentAwardKeys,
   isCategoryPerfect,
   isLevelMastered,
   selectMissingAwards,
@@ -318,5 +319,37 @@ describe("selectMissingAwards", () => {
         `${award.type}::${award.matchValue}`,
       );
     }
+  });
+});
+
+describe("getAssessmentAwardKeys", () => {
+  it("empty map produces empty set", () => {
+    expect(getAssessmentAwardKeys({}).size).toBe(0);
+  });
+
+  it("ordinary partial map crossing 7% produces category_perfect key", () => {
+    const cat = categories[0].id;
+    const skill = skills.find((s) => s.categoryId === cat)!;
+    const subs = skill.subtopics.slice(0, 5);
+    const map: AssessmentMap = {
+      [skill.id]: { subtopics: Object.fromEntries(subs.map((st) => [st, true])) },
+    };
+    const keys = getAssessmentAwardKeys(map);
+    expect([...keys].some((k) => k.startsWith("category_perfect::"))).toBe(true);
+  });
+
+  it("fully completed level produces category and level keys", () => {
+    const map = allCheckedMap(categoryIdsOfLevel("junior"));
+    const keys = getAssessmentAwardKeys(map);
+    for (const catId of categoryIdsOfLevel("junior")) {
+      expect(keys.has("category_perfect::" + catId)).toBe(true);
+    }
+    expect(keys.has("level_master::junior")).toBe(true);
+  });
+
+  it("fully completed all levels produces path_complete key", () => {
+    const map = allCheckedMap(categories.map((c) => c.id));
+    const keys = getAssessmentAwardKeys(map);
+    expect(keys.has("path_complete")).toBe(true);
   });
 });

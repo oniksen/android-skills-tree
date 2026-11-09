@@ -11,6 +11,22 @@ export type AssessmentMap = Record<string, { subtopics?: Record<string, boolean>
 export const ACHIEVEMENT_UNLOCK_THRESHOLD = ACHIEVEMENT_TIERS[0].threshold;
 export const PATH_COMPLETE_UNLOCK_THRESHOLD = ACHIEVEMENT_UNLOCK_THRESHOLD;
 
+export const ASSESSMENT_AWARD_TYPES = new Set<string>([
+  "category_perfect",
+  "level_master",
+  "path_complete",
+]);
+
+export function getAssessmentAwardKeys(assessmentMap: AssessmentMap): Set<string> {
+  const awards = evaluateAchievements({ assessmentMap });
+  const keys = new Set<string>();
+  for (const award of awards) {
+    if (!ASSESSMENT_AWARD_TYPES.has(award.type)) continue;
+    keys.add(achievementKey(award.type, award.metadata));
+  }
+  return keys;
+}
+
 export interface AchievementContext {
   assessmentMap: AssessmentMap;
   longestStreak?: number;
