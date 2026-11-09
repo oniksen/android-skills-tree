@@ -1,5 +1,6 @@
 import { createLiveStore } from "./live-store";
 import { registerSessionReset } from "./session-reset";
+import { clearAchievementsCache } from "./achievement-cache";
 import { clearUserStateCache } from "@/adapters/firestore-client/state";
 import type { UserState } from "@/types";
 
@@ -8,6 +9,7 @@ export const userStateStore = createLiveStore<UserState>();
 registerSessionReset(() => {
   userStateStore.disposeAll();
   clearUserStateCache();
+  clearAchievementsCache();
 });
 
 export function setCachedUserState(uid: string, state: UserState): void {

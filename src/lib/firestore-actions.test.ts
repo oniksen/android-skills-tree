@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => {
   const batchMock = {
     set: vi.fn(),
     delete: vi.fn(),
+    update: vi.fn(),
     commit: vi.fn().mockResolvedValue(undefined),
   };
   return {
@@ -41,6 +42,13 @@ vi.mock("@/lib/firebase", () => ({
 vi.mock("@/adapters/firestore-client/streak-commands", () => ({
   getStreak: vi.fn().mockResolvedValue({ longestStreak: 0 }),
   syncStreak: vi.fn(),
+}));
+
+const stateMock = vi.hoisted(() => ({ current: null as unknown }));
+
+vi.mock("@/adapters/firestore-client/state", () => ({
+  readUserState: vi.fn(() => Promise.resolve(stateMock.current)),
+  ensureUserState: vi.fn().mockResolvedValue({}),
 }));
 
 const UID = "user-1";
@@ -113,18 +121,24 @@ describe("checkAchievements", () => {
       }),
     });
     mocks.setDoc.mockResolvedValue(undefined);
+    stateMock.current = {
+      assessments: juniorMap,
+      progress: { currentLevelId: "junior", unlockedLevelIds: ["junior"], totalScore: 0 },
+      streak: { longestStreak: 0 },
+      achievements: {},
+    };
   });
 
   it("с готовой картой использует achievements cache, без неё — fallback", async () => {
     await checkAchievements(UID, juniorMap);
 
-    expect(mocks.getDocs).toHaveBeenCalledTimes(1);
+    expect(mocks.getDocs).toHaveBeenCalledTimes(0);
 
     mocks.getDocs.mockClear();
 
     await checkAchievements(UID);
 
-    expect(mocks.getDocs).toHaveBeenCalledTimes(1);
+    expect(mocks.getDocs).toHaveBeenCalledTimes(0);
   });
 
   it("передаёт награды на сохранение: по category_perfect на каждую категорию уровня", async () => {
@@ -170,6 +184,12 @@ describe("backfillTotalScore", () => {
       exists: () => true,
       data: () => ({ totalScore: 0 }),
     });
+    stateMock.current = {
+      assessments: juniorMap,
+      progress: { currentLevelId: "junior", unlockedLevelIds: ["junior"], totalScore: 0 },
+      streak: { longestStreak: 0 },
+      achievements: {},
+    };
   });
 
   function assessmentReads(): number {
@@ -185,7 +205,7 @@ describe("backfillTotalScore", () => {
 
     await backfillTotalScore(UID);
 
-    expect(assessmentReads()).toBe(1);
+    expect(assessmentReads()).toBe(0);
   });
 
   it("принимает общий промис с картой: обе функции читают assessments один раз и считают по ней", async () => {
@@ -196,7 +216,7 @@ describe("backfillTotalScore", () => {
       checkAchievements(UID, shared),
     ]);
 
-    expect(assessmentReads()).toBe(1);
+    expect(assessmentReads()).toBe(0);
     expect(totalScore).toBe(calcTotalScore(juniorMap));
     expect(
       awards.filter((award) => award.type === "category_perfect"),
@@ -212,6 +232,9 @@ describe("toggleProjectCompletion", () => {
     );
     mocks.doc.mockReturnValue({ name: "doc-ref" });
     mocks.setDoc.mockResolvedValue(undefined);
+    mocks.writeBatch.mockReturnValue(mocks.batch);
+    mocks.batch.set.mockClear();
+    mocks.batch.commit.mockResolvedValue(undefined);
     mocks.runTransaction.mockImplementation(async (_db: unknown, cb: (tx: unknown) => unknown) =>
       cb({ get: vi.fn().mockResolvedValue({ exists: () => false }), set: vi.fn() }),
     );
@@ -221,6 +244,6 @@ describe("toggleProjectCompletion", () => {
     const { toggleProjectCompletion } = await import("./firestore-actions");
     await toggleProjectCompletion("proj-1", true);
 
-    expect(mocks.setDoc).toHaveBeenCalled();
+    expect(mocks.batch.set).toHaveBeenCalled();
   });
 });

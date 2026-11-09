@@ -31,7 +31,12 @@ vi.mock("@/adapters/firestore-client/streak-commands", () => ({
   syncStreak: vi.fn().mockResolvedValue(null),
 }));
 
-import { getUserProgress } from "@/lib/firestore";
+vi.mock("@/adapters/firestore-client/state", () => ({
+  readUserState: vi.fn(),
+  ensureUserState: vi.fn(),
+}));
+
+
 
 describe("checkLevelUp", () => {
   beforeEach(() => {
@@ -44,10 +49,15 @@ describe("checkLevelUp", () => {
   });
 
   it("null при максимальном уровне", async () => {
-    (getUserProgress as ReturnType<typeof vi.fn>).mockResolvedValue({
-      currentLevelId: "senior",
-      unlockedLevelIds: ["junior", "middle", "strong-middle", "senior"],
-      totalScore: 1000,
+    const stateMod = await import("@/adapters/firestore-client/state");
+    (stateMod.readUserState as ReturnType<typeof vi.fn>).mockResolvedValue({
+      progress: {
+        currentLevelId: "senior",
+        unlockedLevelIds: ["junior", "middle", "strong-middle", "senior"],
+        totalScore: 1000,
+      },
+      assessments: {},
+      projects: {},
     });
     const { checkLevelUp } = await import("./firestore-actions");
     const res = await checkLevelUp();
@@ -55,12 +65,16 @@ describe("checkLevelUp", () => {
   });
 
   it("null если категория не набрала порог", async () => {
-    (getUserProgress as ReturnType<typeof vi.fn>).mockResolvedValue({
-      currentLevelId: "junior",
-      unlockedLevelIds: ["junior"],
-      totalScore: 0,
+    const stateMod = await import("@/adapters/firestore-client/state");
+    (stateMod.readUserState as ReturnType<typeof vi.fn>).mockResolvedValue({
+      progress: {
+        currentLevelId: "junior",
+        unlockedLevelIds: ["junior"],
+        totalScore: 0,
+      },
+      assessments: {},
+      projects: {},
     });
-    // readAssessmentMap returns empty → category score 0 < threshold
     mocks.getDocs.mockResolvedValue({ forEach: () => {}, docs: [] });
     const { checkLevelUp } = await import("./firestore-actions");
     const res = await checkLevelUp();

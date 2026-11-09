@@ -13,6 +13,11 @@ vi.mock("@/lib/firebase", () => ({
   db: { name: "mock-db" },
 }));
 
+vi.mock("@/adapters/firestore-client/state", () => ({
+  ensureUserState: vi.fn().mockResolvedValue({}),
+  readUserState: vi.fn().mockResolvedValue({}),
+}));
+
 vi.mock("@/data/shop", () => ({
   getShopItem: (id: string) =>
     id === "freeze" ? { id: "freeze", price: 10 } : undefined,

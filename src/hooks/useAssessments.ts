@@ -14,7 +14,7 @@ import {
   achievementKey,
   getAssessmentAwardKeys,
 } from "@/core/domain/achievement-conditions";
-import { getAchievementsCache } from "@/shared/lib/achievement-cache";
+
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import {
@@ -152,7 +152,7 @@ export function useAssessments() {
         mapRef.current = nextMap;
 
         const desiredKeys = getAssessmentAwardKeys(nextMap);
-        const cached = getAchievementsCache(uid);
+        const cached = state ? Object.values(state.achievements) : null;
         let shouldCheckAchievements = cached === null;
         if (!shouldCheckAchievements && cached) {
           const cachedKeys = new Set(

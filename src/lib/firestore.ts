@@ -1,11 +1,4 @@
-import {
-  doc,
-  getDoc,
-  setDoc,
-  collection,
-  getDocs,
-  writeBatch,
-} from "firebase/firestore";
+import { doc, collection, writeBatch } from "firebase/firestore";
 import { db } from "./firebase";
 import {
   achievementKey,
@@ -13,15 +6,12 @@ import {
 } from "@/core/domain/achievement-conditions";
 import {
   userProgressPath,
-  userProjectsPath,
   userAchievementsPath,
+  userStatePath,
 } from "@/adapters/firestore-client/paths";
-import {
-  getAchievementsCache,
-  setAchievementsCache,
-  clearAchievementsCache,
-} from "@/shared/lib/achievement-cache";
-import type { Achievement, UserProgress } from "@/types";
+import { readUserState, ensureUserState } from "@/adapters/firestore-client/state";
+import { setAchievementsCache } from "@/shared/lib/achievement-cache";
+import type { Achievement, UserProgress, UserState } from "@/types";
 
 // ============ User Progress ============
 
@@ -32,23 +22,21 @@ const DEFAULT_USER_PROGRESS: UserProgress = {
 };
 
 export async function getUserProgress(uid: string): Promise<UserProgress> {
-  const progressRef = doc(db, ...userProgressPath(uid));
-  const snap = await getDoc(progressRef);
-
-  if (!snap.exists()) {
-    await setDoc(progressRef, DEFAULT_USER_PROGRESS);
-    return DEFAULT_USER_PROGRESS;
-  }
-
-  return snap.data() as UserProgress;
+  const state = await readUserState(uid);
+  return (state?.progress as UserProgress | undefined) ?? DEFAULT_USER_PROGRESS;
 }
 
 export async function updateUserProgress(
   uid: string,
   data: Partial<UserProgress>,
 ) {
+  await ensureUserState(uid);
   const progressRef = doc(db, ...userProgressPath(uid));
-  await setDoc(progressRef, data, { merge: true });
+  const stateRef = doc(db, ...userStatePath(uid));
+  const batch = writeBatch(db);
+  batch.set(progressRef, data, { merge: true });
+  batch.set(stateRef, { progress: data }, { merge: true });
+  await batch.commit();
 }
 
 // ============ Project Progress ============
@@ -56,13 +44,13 @@ export async function updateUserProgress(
 export async function getProjectProgressMap(
   uid: string,
 ): Promise<Record<string, boolean>> {
-  const projectsRef = collection(db, ...userProjectsPath(uid));
-  const snap = await getDocs(projectsRef);
-
+  const state = await readUserState(uid);
   const map: Record<string, boolean> = {};
-  snap.forEach((d) => {
-    map[d.id] = d.data().completed;
-  });
+  if (state?.projects) {
+    for (const key of Object.keys(state.projects)) {
+      map[key] = state.projects[key].completed;
+    }
+  }
   return map;
 }
 
@@ -77,8 +65,12 @@ export interface ReconcileAchievementsResult {
 export async function reconcileAchievements(
   uid: string,
   awards: AchievementAward[],
+  state?: UserState,
 ): Promise<ReconcileAchievementsResult> {
+  await ensureUserState(uid);
+  const userState = state ?? (await readUserState(uid));
   const achievementsRef = collection(db, ...userAchievementsPath(uid));
+  const stateRef = doc(db, ...userStatePath(uid));
 
   const desired = new Map<string, AchievementAward>();
   for (const award of awards) {
@@ -87,176 +79,129 @@ export async function reconcileAchievements(
 
   const result: ReconcileAchievementsResult = { added: 0, removed: 0, updated: 0 };
 
-  let batch = writeBatch(db);
+  const batch = writeBatch(db);
   let opCount = 0;
 
-  const flushIfNeeded = async () => {
-    if (opCount >= 500) {
-      await batch.commit();
-      batch = writeBatch(db);
-      opCount = 0;
-    }
-  };
+  const existingMap = userState?.achievements ?? {};
+  const existingDocs = Object.entries(existingMap).map(([key, ach]) => ({
+    id: ach.id || key,
+    ref: doc(achievementsRef, ach.id || key),
+    data: () => ({
+      type: ach.type,
+      metadata: ach.metadata,
+      achievedAt: ach.achievedAt,
+    }),
+  }));
 
-  const queueDelete = async (ref: unknown) => {
-    await flushIfNeeded();
-    batch.delete(ref as never);
-    opCount += 1;
-  };
+  const kept = new Map<string, (typeof existingDocs)[number]>();
 
-  const queueSet = async (ref: unknown, data: unknown) => {
-    await flushIfNeeded();
-    batch.set(ref as never, data as never);
-    opCount += 1;
-  };
+  for (const achievementDoc of existingDocs) {
+    const data = achievementDoc.data() as {
+      type?: unknown;
+      metadata?: Record<string, unknown>;
+    };
 
-  try {
-    let existingDocs: Array<{
-      id: string;
-      ref: { id?: string };
-      data: () => {
-        type?: unknown;
-        metadata?: Record<string, unknown>;
-        achievedAt?: unknown;
-      };
-    }>;
-
-    const cached = getAchievementsCache(uid);
-    if (cached !== null && cached !== undefined) {
-      existingDocs = cached.map((ach) => ({
-        id: ach.id,
-        ref: doc(achievementsRef, ach.id),
-        data: () => ({
-          type: ach.type,
-          metadata: ach.metadata,
-          achievedAt: ach.achievedAt,
-        }),
-      }));
-    } else {
-      const snap = await getDocs(achievementsRef);
-      const list: Achievement[] = snap.docs.map((d) => {
-        const data = d.data() as {
-          type?: string;
-          metadata?: Record<string, unknown>;
-          achievedAt?: { toDate?: () => Date } | Date;
-        };
-        return {
-          id: d.id,
-          type: (data.type ?? "") as string,
-          metadata: data.metadata ?? {},
-          achievedAt:
-            (data.achievedAt as { toDate?: () => Date } | undefined)?.toDate?.() ??
-            (data.achievedAt as Date | undefined) ??
-            new Date(),
-        };
-      });
-      setAchievementsCache(uid, list);
-      existingDocs = list.map((ach) => ({
-        id: ach.id,
-        ref: doc(achievementsRef, ach.id),
-        data: () => ({
-          type: ach.type,
-          metadata: ach.metadata,
-          achievedAt: ach.achievedAt,
-        }),
-      }));
-    }
-    const kept = new Map<string, (typeof existingDocs)[number]>();
-
-    for (const achievementDoc of existingDocs) {
-      const data = achievementDoc.data() as {
-        type?: unknown;
-        metadata?: Record<string, unknown>;
-      };
-
-      if (typeof data.type !== "string") {
-        await queueDelete(achievementDoc.ref);
-        result.removed += 1;
-        continue;
-      }
-
-      const key = achievementKey(data.type, data.metadata);
-      if (!desired.has(key) || kept.has(key)) {
-        await queueDelete(achievementDoc.ref);
-        result.removed += 1;
-        continue;
-      }
-
-      kept.set(key, achievementDoc);
+    if (typeof data.type !== "string") {
+      batch.delete(achievementDoc.ref as never);
+      opCount += 1;
+      result.removed += 1;
+      continue;
     }
 
-    const nextList: Achievement[] = [];
+    const key = achievementKey(data.type, data.metadata);
+    if (!desired.has(key) || kept.has(key)) {
+      batch.delete(achievementDoc.ref as never);
+      opCount += 1;
+      result.removed += 1;
+      continue;
+    }
 
-    for (const [key, award] of desired) {
-      const existing = kept.get(key);
+    kept.set(key, achievementDoc);
+  }
 
-      if (!existing) {
-        const now = new Date();
-        await queueSet(doc(achievementsRef, key), {
-          type: award.type,
-          metadata: award.metadata,
-          achievedAt: now,
-        });
-        result.added += 1;
-        nextList.push({
-          id: key,
-          type: award.type,
-          metadata: award.metadata,
-          achievedAt: now,
-        });
-        continue;
-      }
+  const nextList: Achievement[] = [];
+  const nextMap: Record<string, Achievement> = {};
 
-      const existingData = existing.data() as {
-        metadata?: Record<string, unknown>;
-        achievedAt?: unknown;
-      };
-      const existingMetadata = existingData.metadata ?? {};
-      const metadataChanged = Object.entries(award.metadata).some(
-        ([field, value]) => existingMetadata[field] !== value,
-      );
-      const needsMove = existing.id !== key;
+  for (const [key, award] of desired) {
+    const existing = kept.get(key);
 
-      const achievedAt = (existingData.achievedAt ?? new Date()) as Date;
-
-      if (!metadataChanged && !needsMove) {
-        nextList.push({
-          id: key,
-          type: award.type,
-          metadata: existingMetadata,
-          achievedAt,
-        });
-        continue;
-      }
-
-      const mergedMetadata = { ...existingMetadata, ...award.metadata };
-      await queueSet(doc(achievementsRef, key), {
+    if (!existing) {
+      const now = new Date();
+      batch.set(doc(achievementsRef, key), {
         type: award.type,
-        metadata: mergedMetadata,
-        achievedAt,
+        metadata: award.metadata,
+        achievedAt: now,
       });
-      result.updated += 1;
-
-      if (needsMove) {
-        await queueDelete(existing.ref);
-        result.removed += 1;
-      }
-
-      nextList.push({
+      opCount += 1;
+      result.added += 1;
+      const ach: Achievement = {
         id: key,
         type: award.type,
-        metadata: mergedMetadata,
-        achievedAt,
-      });
+        metadata: award.metadata,
+        achievedAt: now,
+      };
+      nextList.push(ach);
+      nextMap[key] = ach;
+      continue;
     }
 
-    if (opCount > 0) {
-      await batch.commit();
+    const existingData = existing.data() as {
+      metadata?: Record<string, unknown>;
+      achievedAt?: unknown;
+    };
+    const existingMetadata = existingData.metadata ?? {};
+    const metadataChanged = Object.entries(award.metadata).some(
+      ([field, value]) => existingMetadata[field] !== value,
+    );
+    const needsMove = existing.id !== key;
+
+    const achievedAt = (existingData.achievedAt ?? new Date()) as Date;
+
+    if (!metadataChanged && !needsMove) {
+      const ach: Achievement = {
+        id: key,
+        type: award.type,
+        metadata: existingMetadata,
+        achievedAt,
+      };
+      nextList.push(ach);
+      nextMap[key] = ach;
+      continue;
     }
-    setAchievementsCache(uid, nextList);
-    return result;
-  } catch (error) {
-    clearAchievementsCache(uid);
-    throw error;
+
+    const mergedMetadata = { ...existingMetadata, ...award.metadata };
+    batch.set(doc(achievementsRef, key), {
+      type: award.type,
+      metadata: mergedMetadata,
+      achievedAt,
+    });
+    opCount += 1;
+    result.updated += 1;
+
+    if (needsMove) {
+      batch.delete(existing.ref as never);
+      opCount += 1;
+      result.removed += 1;
+    }
+
+    const ach: Achievement = {
+      id: key,
+      type: award.type,
+      metadata: mergedMetadata,
+      achievedAt,
+    };
+    nextList.push(ach);
+    nextMap[key] = ach;
   }
+
+  batch.update(stateRef, { achievements: nextMap });
+  opCount += 1;
+
+  if (opCount > 0) {
+    await batch.commit();
+  }
+
+  setAchievementsCache(uid, nextList);
+
+  return result;
 }

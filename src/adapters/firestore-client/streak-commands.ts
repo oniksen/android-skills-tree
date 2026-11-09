@@ -6,7 +6,6 @@ import { getFreezeCount } from "@/core/domain/currency";
 import {
   collection,
   doc,
-  getDoc,
   getDocs,
   query,
   runTransaction,
@@ -17,7 +16,9 @@ import {
   userAchievementsPath,
   userCurrencyPath,
   userStreakPath,
+  userStatePath,
 } from "@/adapters/firestore-client/paths";
+import { ensureUserState, readUserState } from "@/adapters/firestore-client/state";
 import {
   getAchievementsCache,
   setAchievementsCache,
@@ -38,9 +39,12 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
   if (!user) return null;
   if (autoFreezePermissionDenied) return null;
 
+  await ensureUserState(user.uid);
+
   const today = getLocalDayString();
   const streakRef = doc(db, ...userStreakPath(user.uid));
   const currencyRef = doc(db, ...userCurrencyPath(user.uid));
+  const stateRef = doc(db, ...userStatePath(user.uid));
 
   try {
     const result = await runTransaction(db, async (tx) => {
@@ -76,14 +80,16 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
         today,
       );
 
-      tx.set(streakRef, {
+      const nextStreak = {
         activeDays,
         frozenDays: nextFrozenDays,
         lastActiveDate: existing.lastActiveDate ?? today,
         currentStreak,
         longestStreak,
         updatedAt: new Date(),
-      });
+      };
+
+      tx.set(streakRef, nextStreak);
       tx.set(
         currencyRef,
         {
@@ -93,6 +99,24 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
           },
           updatedAt: new Date(),
         },
+        { merge: true },
+      );
+
+      const nextCurrency = {
+        balance: typeof currency.balance === "number" ? currency.balance : 0,
+        items: {
+          ...(currency.items ?? {}),
+          [STREAK_FREEZE_ITEM_ID]: freezes - toFreeze.length,
+        },
+        claimedSkills:
+          currency.claimedSkills && typeof currency.claimedSkills === "object"
+            ? (currency.claimedSkills as Record<string, string>)
+            : {},
+        updatedAt: new Date(),
+      };
+      tx.set(
+        stateRef,
+        { streak: nextStreak, currency: nextCurrency },
         { merge: true },
       );
 
@@ -131,17 +155,23 @@ export function applyAutoFreezesOnce(): Promise<AutoFreezeReport | null> {
 }
 
 export async function getStreak(uid: string): Promise<StreakData | null> {
-  const streakRef = doc(db, ...userStreakPath(uid));
-  const snap = await getDoc(streakRef);
-  if (!snap.exists()) return null;
-  const data = snap.data() as Omit<StreakData, "updatedAt"> & {
-    frozenDays?: string[];
-    updatedAt?: { toDate?: () => Date };
-  };
+  const state = await readUserState(uid);
+  const streak = state?.streak;
+  if (!streak) return null;
+  if (
+    !streak.lastActiveDate &&
+    (streak.activeDays?.length ?? 0) === 0 &&
+    (streak.frozenDays?.length ?? 0) === 0
+  ) {
+    return null;
+  }
   return {
-    ...data,
-    frozenDays: Array.isArray(data.frozenDays) ? data.frozenDays : [],
-    updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : (data.updatedAt as Date),
+    ...streak,
+    frozenDays: Array.isArray(streak.frozenDays) ? streak.frozenDays : [],
+    updatedAt:
+      streak.updatedAt instanceof Date
+        ? streak.updatedAt
+        : new Date(streak.updatedAt as unknown as string | number),
   };
 }
 
@@ -149,15 +179,21 @@ export async function syncStreak(): Promise<StreakData | null> {
   const user = auth.currentUser;
   if (!user) return null;
 
+  await ensureUserState(user.uid);
+
   const today = getLocalDayString();
   const streakRef = doc(db, ...userStreakPath(user.uid));
+  const stateRef = doc(db, ...userStatePath(user.uid));
 
   try {
     const result = await runTransaction(db, async (tx) => {
       const snap = await tx.get(streakRef);
       const existing = snap.exists() ? (snap.data() as Partial<StreakData>) : {};
       const { changed, data } = computeStreakSync({ today, existing });
-      if (changed) tx.set(streakRef, data);
+      if (changed) {
+        tx.set(streakRef, data);
+        tx.set(stateRef, { streak: data }, { merge: true });
+      }
       return data;
     });
 
@@ -174,21 +210,36 @@ export async function syncStreak(): Promise<StreakData | null> {
 
 async function addStreakAchievementIfNotExists(uid: string, days: number) {
   const type = `streak_${days}`;
+  const state = await ensureUserState(uid);
+
+  // Prefer state for dedupe.
+  if (state?.achievements && state.achievements[type]) return;
+
   const cached = getAchievementsCache(uid);
 
-  if (cached !== null && cached !== undefined) {
-    if (cached.some((achievement) => achievement.type === type)) return;
-  } else {
+  // Legacy fallback only if state has no matching key and cache unavailable.
+  if (cached === null || cached === undefined) {
     const achievementsRef = collection(db, ...userAchievementsPath(uid));
     const snap = await getDocs(
       query(achievementsRef, where("type", "==", type)),
     );
     if (!snap.empty) return;
+  } else {
+    if (cached.some((achievement) => achievement.type === type)) return;
   }
 
   const ref = doc(db, ...userAchievementsPath(uid), `streak_${days}`);
   const achievedAt = new Date();
   await setDoc(ref, { type, metadata: { days }, achievedAt });
+
+  const stateRef = doc(db, ...userStatePath(uid));
+  const achievement = {
+    id: `streak_${days}`,
+    type,
+    metadata: { days },
+    achievedAt,
+  };
+  await setDoc(stateRef, { achievements: { [type]: achievement } }, { merge: true });
 
   if (cached !== null && cached !== undefined) {
     setAchievementsCache(uid, [

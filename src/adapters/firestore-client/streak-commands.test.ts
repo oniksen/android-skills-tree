@@ -22,6 +22,11 @@ vi.mock("@/lib/firebase", () => ({
 
 vi.mock("@/data/shop", () => ({ STREAK_FREEZE_ITEM_ID: "freeze" }));
 
+vi.mock("@/adapters/firestore-client/state", () => ({
+  ensureUserState: vi.fn().mockResolvedValue({ achievements: {} }),
+  readUserState: vi.fn().mockResolvedValue({ streak: null, achievements: {} }),
+}));
+
 beforeEach(() => {
   clearAchievementsCache();
 });
@@ -36,10 +41,16 @@ describe("getStreak", () => {
   });
 
   it("maps data and defaults frozenDays", async () => {
-    mocks.doc.mockReturnValue({ path: "streak" });
-    mocks.getDoc.mockResolvedValue({
-      exists: () => true,
-      data: () => ({ currentStreak: 3, activeDays: ["2026-01-01"], updatedAt: { toDate: () => new Date("2026-01-01") } }),
+    const stateMod = await import("@/adapters/firestore-client/state");
+    (stateMod.readUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      streak: {
+        currentStreak: 3,
+        activeDays: ["2026-01-01"],
+        frozenDays: undefined,
+        lastActiveDate: "2026-01-01",
+        longestStreak: 3,
+        updatedAt: { toDate: () => new Date("2026-01-01") },
+      },
     });
     const r = await getStreak("user-1");
     expect(r?.currentStreak).toBe(3);
@@ -109,7 +120,7 @@ describe("streak achievements", () => {
 
     await syncStreak();
 
-    expect(mocks.setDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.setDoc).toHaveBeenCalledTimes(2);
     const [, payload] = mocks.setDoc.mock.calls[0];
     expect(payload).toEqual({
       type: "streak_7",
@@ -205,7 +216,7 @@ describe("streak achievements", () => {
 
     await syncStreak();
 
-    expect(mocks.setDoc).toHaveBeenCalledTimes(1);
+    expect(mocks.setDoc).toHaveBeenCalledTimes(2);
     const [, payload] = mocks.setDoc.mock.calls[0];
     expect(payload).toEqual({
       type: "streak_7",
