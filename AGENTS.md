@@ -138,6 +138,11 @@ Never edit the generated file by hand.
   `refetchOnWindowFocus`.
 - Before adding a new listener, check if the read can be merged with the existing
   state listener.
+- Firestore uses persistent IndexedDB cache with multi-tab support
+  (`persistentLocalCache` + `persistentMultipleTabManager`).
+- App Check is optional and activates only when
+  `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` is set; enforce App Check in the Firebase
+  console before relying on it.
 
 ## Routing, auth and caching
 
