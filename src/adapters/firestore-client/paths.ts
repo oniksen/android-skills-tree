@@ -6,6 +6,7 @@ export const ACHIEVEMENTS = "achievements" as const;
 export const CURRENCY = "currency" as const;
 export const STREAKS = "streaks" as const;
 export const SETTINGS = "settings" as const;
+export const STATE = "state" as const;
 export const CURRENT = "current" as const;
 
 export function userProgressPath(uid: string): [string, ...string[]] {
@@ -42,4 +43,8 @@ export function userStreakPath(uid: string): [string, ...string[]] {
 
 export function userSettingsPath(uid: string): [string, ...string[]] {
   return [USERS, uid, SETTINGS, CURRENT];
+}
+
+export function userStatePath(uid: string): [string, ...string[]] {
+  return [USERS, uid, STATE, CURRENT];
 }

@@ -5,6 +5,7 @@ import type { CurrencyRepository } from "./currency-repository";
 import type { ProgressRepository } from "./progress-repository";
 import type { ProjectRepository } from "./project-repository";
 import type { StreakRepository } from "./streak-repository";
+import type { StateRepository } from "./state-repository";
 
 export interface Services {
   auth: AuthStateProvider;
@@ -14,4 +15,5 @@ export interface Services {
   achievements: AchievementRepository;
   streak: StreakRepository;
   currency: CurrencyRepository;
+  state: StateRepository;
 }

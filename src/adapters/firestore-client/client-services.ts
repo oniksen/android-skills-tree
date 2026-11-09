@@ -5,6 +5,7 @@ import { createCurrencyRepository } from "./currency-repository";
 import { createProgressRepository } from "./progress-repository";
 import { createProjectRepository } from "./project-repository";
 import { createStreakRepository } from "./streak-repository";
+import { createStateRepository } from "./state-repository";
 import type { Services } from "@/ports/services";
 
 export function createClientServices(): Services {
@@ -16,5 +17,6 @@ export function createClientServices(): Services {
     achievements: createAchievementRepository(),
     streak: createStreakRepository(),
     currency: createCurrencyRepository(),
+    state: createStateRepository(),
   };
 }
