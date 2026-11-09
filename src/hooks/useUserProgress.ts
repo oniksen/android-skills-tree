@@ -21,12 +21,6 @@ import { oncePerSession } from "@/shared/lib/once-per-session";
 import type { Observer } from "@/ports/observation";
 import type { UserProgress } from "@/types";
 
-const DEFAULT_PROGRESS: UserProgress = {
-  currentLevelId: "junior",
-  unlockedLevelIds: ["junior"],
-  totalScore: 0,
-};
-
 // One subscription per user for the whole session: keeping it alive between
 // pages lets the next page paint real data instead of a skeleton.
 const progressStore = createLiveStore<UserProgress | null>();
@@ -95,7 +89,7 @@ export function useUserProgress() {
     if (!uid) return;
     const progressRef = doc(db, ...userProgressPath(uid));
     try {
-      await setDoc(progressRef, { ...DEFAULT_PROGRESS, ...data }, { merge: true });
+      await setDoc(progressRef, data, { merge: true });
     } catch (error) {
       console.error("Error updating progress:", error);
       if (isPermissionDenied(error)) {

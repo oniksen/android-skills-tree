@@ -558,14 +558,22 @@ describe("updateUserProgress", () => {
     mocks.setDoc.mockResolvedValue(undefined);
   });
 
-  it("setDoc с merge и дефолтами", async () => {
+  it("setDoc с merge только payload, без дефолтов", async () => {
     const { updateUserProgress } = await import("./firestore");
     await updateUserProgress(UID, { totalScore: 5 });
     expect(mocks.setDoc).toHaveBeenCalledWith(
       { name: "progress-ref" },
-      expect.objectContaining({ totalScore: 5, currentLevelId: "junior" }),
+      { totalScore: 5 },
       { merge: true },
     );
+  });
+
+  it("не передаёт currentLevelId/unlockedLevelIds при частичном обновлении", async () => {
+    const { updateUserProgress } = await import("./firestore");
+    await updateUserProgress(UID, { totalScore: 5 });
+    const payload = mocks.setDoc.mock.calls[0][1];
+    expect(payload).not.toHaveProperty("currentLevelId");
+    expect(payload).not.toHaveProperty("unlockedLevelIds");
   });
 });
 

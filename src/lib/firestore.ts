@@ -45,7 +45,7 @@ export async function updateUserProgress(
   data: Partial<UserProgress>,
 ) {
   const progressRef = doc(db, ...userProgressPath(uid));
-  await setDoc(progressRef, { ...DEFAULT_USER_PROGRESS, ...data }, { merge: true });
+  await setDoc(progressRef, data, { merge: true });
 }
 
 // ============ Project Progress ============
