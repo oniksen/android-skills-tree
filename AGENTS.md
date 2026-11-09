@@ -143,6 +143,13 @@ Never edit the generated file by hand.
 - App Check is optional and activates only when
   `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` is set; enforce App Check in the Firebase
   console before relying on it.
+- User-visible timestamps are written with `serverTimestamp()`; never put the
+  returned `FieldValue` into the optimistic live-store cache. `normalizeUserState`
+  converts Firestore timestamps back to `Date` on read.
+- `reconcileAchievements` is transactional; `checkAchievements`, `syncStreak` and
+  `applyAutoFreezes` are serialized per uid via `src/shared/lib/user-state-lock.ts`.
+- Dev-only read/write counters are exposed as `window.__firestoreMetrics`
+  (`src/shared/lib/firestore-metrics.ts`).
 
 ## Routing, auth and caching
 

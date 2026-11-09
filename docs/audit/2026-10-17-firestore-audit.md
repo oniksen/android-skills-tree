@@ -1,8 +1,10 @@
 # Аудит и план оптимизации Firestore
 
 - **Дата:** 2026-11-09
-- **Статус:** фазы 0, 1 и 2 закрыты (2026-11-09). Фаза 3 (инфраструктура)
-  отложена. Документ обновлён под state-document модель.
+- **Статус:** фазы 0, 1 и 2 закрыты (2026-11-09). Фаза 3 выполнена в
+  client-safe части (offline, App Check, server timestamps, size guard,
+  transactional achievements, dev metrics); server-authoritative Cloud Functions
+  и budget alerts требуют отдельного инфраструктурного этапа.
 - **Цель:** зафиксировать фактическую модель данных, уже сделанные оптимизации
   и оставшиеся шаги по снижению количества чтений/записей без потери
   функциональности.
@@ -301,11 +303,19 @@ Phase 3b (выполнено):
 - `reconcileAchievements`: транзакция по `state/current`, cross-tab safe.
 - Dev-only read/write counter (`window.__firestoreMetrics`).
 
-Остаётся:
+Остаётся (инфраструктурный этап, не выполнен в этом репозитории):
 - Cloud Functions/Firestore triggers для достижений и level-up
-  (server-authoritative): клиент пишет только assessment.
-- Мониторинг Usage, budget alerts, логирование `resource-exhausted`.
-- Валидация/normalize прочитанных документов (частично: normalizeUserState).
+  (server-authoritative): клиент пишет только assessment. Требует Firebase CLI,
+  Blaze plan, credentials, отдельного проекта/эмулятора, изменения
+  `firestore.rules` и проверки ID-token/App Check. Полу-рабочий scaffold без
+  деплоя создаст ложное ощущение готовности, поэтому эта часть вынесена в
+  отдельное решение.
+- Мониторинг Usage/budget alerts настраивается в Firebase/Google Cloud Console,
+  не в коде приложения.
+- Runtime-шардирование documents при приближении к 1 MiB (сейчас только
+  dev-warning).
+- `normalizeUserState` уже валидирует структуру на чтении; строгая schema
+  validation на записи остаётся задачей server-authoritative слоя.
 
 ## 6. Метрики успеха
 
@@ -322,18 +332,18 @@ Phase 3b (выполнено):
 
 ## 7. Риски
 
-- **Лимит документа 1 MiB**: runtime-проверка размера не добавлена; шардирование
-  assessments по уровням остаётся fallback, если данные приблизятся к лимиту.
+- **Лимит документа 1 MiB**: добавлен dev-warning при приближении к лимиту;
+  блокировки записи и шардирование assessments по уровням не внедрены.
 - **Миграция**: идемпотентная, выполняется при первом чтении; старые коллекции
   сохранены для отката и больше не пишутся.
 - **Security rules**: путь `state/current` покрыт правилом
   `users/{uid}/{document=**}`; server-authoritative запись всё ещё не внедрена.
 - **Тесты**: тесты Firestore переведены на state-документ; legacy-пути
   проверяются только в `state.test.ts` (миграция).
-- **Консистентность**: XP, кристаллы, streak и достижения теперь меняются в
-  одном документе; операции с достижениями/streak сериализованы per-uid внутри
-  вкладки. Cross-tab race между `updateDoc(achievements)` и транзакцией streak
-  остаётся; его закрывает Phase 3 (server-authoritative/Cloud Functions).
+- **Консистентность**: XP, кристаллы, streak и достижения меняются в одном
+  документе; `reconcileAchievements` теперь транзакционный, а операции
+  достижений/streak сериализованы per-uid внутри вкладки. Остаточные cross-tab
+  сценарии закрывает только server-authoritative слой (не внедрён).
 
 ## 8. Итог
 
@@ -344,8 +354,11 @@ Phase 3b (выполнено):
 - Фаза 2 закрыта: консолидация в `users/{uid}/state/current`, ленивая
   миграция, удаление legacy-репозиториев и achievement-cache; legacy-коллекции
   сохранены для отката.
-- Фаза 3 отложена: инфраструктура (Cloud Functions, offline, App Check).
-- Следующий шаг — решение по фазе 3.
+- Фаза 3 (client-safe) закрыта: offline persistence, App Check, server
+  timestamps, size warning, transactional achievements, dev metrics.
+- Server-authoritative Cloud Functions и budget alerts — отдельный
+  инфраструктурный этап (нужны CLI/credentials/Blaze/rules cutover).
+- Следующий шаг — отдельное решение по server-authoritative слою.
 
 ## 9. Процесс реализации: subagent-driven
 
@@ -393,7 +406,8 @@ Phase 3b (выполнено):
 | Фаза 0 | ✅ выполнено | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | нет сканов достижений в hot path, обычный тоггл 2–4 чтения |
 | Фаза 1 | ✅ выполнено | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | `writeBatch`, cleanup мёртвого кода, 5 listeners, streak dedupe |
 | Фаза 2 | ✅ выполнено | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | state document, ленивая миграция, cleanup legacy |
-| Фаза 3 | ⏸ отложена | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | инфраструктурные улучшения по отдельному согласованию |
+| Фаза 3 (client-safe) | ✅ выполнено | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | offline, App Check, server timestamps, size warning, transactional achievements, dev metrics |
+| Фаза 3 (server-authoritative) | ⏸ отдельный этап | — | — | Cloud Functions, rules cutover, budget alerts; нужны CLI/credentials/Blaze |
 
 Коммиты — conventional commits; после review и зелёных проверок оркестратор
 делает коммит с понятным пользовательским сообщением.
