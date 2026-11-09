@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useEffect } from "react";
-import { doc, writeBatch } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { useUserState } from "./useUserState";
@@ -10,7 +10,7 @@ import {
   checkAchievementsOnce,
   readAssessmentMap,
 } from "@/lib/firestore-actions";
-import { userProgressPath, userStatePath } from "@/adapters/firestore-client/paths";
+import { userStatePath } from "@/adapters/firestore-client/paths";
 import { ensureUserState } from "@/adapters/firestore-client/state";
 import { patchCachedUserState } from "@/shared/lib/user-state-store";
 import { useToast } from "@/shared/lib/toast-context";
@@ -59,13 +59,9 @@ export function useUserProgress() {
   const updateProgress = async (data: Partial<UserProgress>) => {
     if (!uid) return;
     await ensureUserState(uid);
-    const progressRef = doc(db, ...userProgressPath(uid));
     const stateRef = doc(db, ...userStatePath(uid));
     try {
-      const batch = writeBatch(db);
-      batch.set(progressRef, data, { merge: true });
-      batch.set(stateRef, { progress: data }, { merge: true });
-      await batch.commit();
+      await setDoc(stateRef, { progress: data }, { merge: true });
       patchCachedUserState(uid, {
         progress: { ...(state?.progress ?? {}), ...data } as UserProgress,
       });

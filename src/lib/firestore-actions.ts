@@ -1,7 +1,7 @@
 "use client";
 
 import { auth, db } from "@/lib/firebase";
-import { doc, writeBatch } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
@@ -21,7 +21,7 @@ import {
   evaluateAchievements,
   type AssessmentMap,
 } from "@/core/domain/achievement-conditions";
-import { userProjectPath, userStatePath } from "@/adapters/firestore-client/paths";
+import { userStatePath } from "@/adapters/firestore-client/paths";
 
 import { patchCachedUserState, userStateStore } from "@/shared/lib/user-state-store";
 
@@ -171,7 +171,6 @@ export async function toggleProjectCompletion(
 ) {
   const uid = getUid();
   await ensureUserState(uid);
-  const projectRef = doc(db, ...userProjectPath(uid, projectId));
   const stateRef = doc(db, ...userStatePath(uid));
   const completedAt = completed ? new Date() : null;
   const statePayload = {
@@ -179,17 +178,11 @@ export async function toggleProjectCompletion(
     completed,
     completedAt,
   };
-  const batch = writeBatch(db);
-  batch.set(projectRef, {
-    completed,
-    completedAt,
-  });
-  batch.set(
+  await setDoc(
     stateRef,
     { projects: { [projectId]: statePayload } },
     { merge: true },
   );
-  await batch.commit();
 
   const cachedProjects = userStateStore.peek(uid).data?.projects ?? {};
   const nextProjects = {

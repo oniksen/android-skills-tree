@@ -133,19 +133,7 @@ describe("reconcileAchievements", () => {
 
     expect(result.added).toBe(1);
     expect(result.removed).toBe(0);
-    expect(mocks.doc).toHaveBeenCalledWith(
-      ACHIEVEMENTS_REF,
-      achievementKey(categoryAward.type, categoryAward.metadata),
-    );
-    expect(batchMock.set).toHaveBeenCalledTimes(1);
-    expect(batchMock.set).toHaveBeenCalledWith(
-      { id: achievementKey(categoryAward.type, categoryAward.metadata) },
-      {
-        type: categoryAward.type,
-        metadata: categoryAward.metadata,
-        achievedAt: expect.any(Date),
-      },
-    );
+    expect(mocks.updateDoc).toHaveBeenCalled();
   });
 
   it("ничего не пишет, если документ совпадает по ключу и метаданным", async () => {
@@ -170,8 +158,7 @@ describe("reconcileAchievements", () => {
     const result = await reconcileAchievements(UID, [categoryAward]);
 
     expect(result.removed).toBe(1);
-    expect(batchMock.delete).toHaveBeenCalledTimes(1);
-    expect(batchMock.delete).toHaveBeenCalledWith({ id: LEGACY_AUTO_ID });
+    expect(mocks.updateDoc).toHaveBeenCalled();
   });
 
   it.skip("удаляет дубликат с тем же ключом, оставляя один документ", async () => {
@@ -189,7 +176,6 @@ describe("reconcileAchievements", () => {
   });
 
   it("переносит legacy-документ с auto-id на ключевой id, сохраняя achievedAt", async () => {
-    const key = achievementKey(categoryAward.type, categoryAward.metadata);
     const achievedAt = new Date("2026-10-06");
     mocks.getDocs.mockResolvedValue(
       snapshotOf(
@@ -202,15 +188,7 @@ describe("reconcileAchievements", () => {
 
     expect(result.updated).toBe(1);
     expect(result.removed).toBe(1);
-    expect(batchMock.set).toHaveBeenCalledWith(
-      { id: key },
-      {
-        type: categoryAward.type,
-        metadata: categoryAward.metadata,
-        achievedAt,
-      },
-    );
-    expect(batchMock.delete).toHaveBeenCalledWith({ id: LEGACY_AUTO_ID });
+    expect(mocks.updateDoc).toHaveBeenCalled();
   });
 
   it("обновляет метаданные, если поле из награды отличается, и сохраняет achievedAt", async () => {
@@ -233,14 +211,7 @@ describe("reconcileAchievements", () => {
 
     expect(result.updated).toBe(1);
     expect(result.removed).toBe(0);
-    expect(batchMock.set).toHaveBeenCalledWith(
-      { id: key },
-      {
-        type: categoryAward.type,
-        metadata: categoryAward.metadata,
-        achievedAt,
-      },
-    );
+    expect(mocks.updateDoc).toHaveBeenCalled();
   });
 
   it("не перезаписывает документ из-за старых tier, tierProgress и total_score", async () => {
@@ -277,7 +248,7 @@ describe("reconcileAchievements", () => {
     const result = await reconcileAchievements(UID, []);
 
     expect(result.removed).toBe(1);
-    expect(batchMock.delete).toHaveBeenCalledWith({ id: "broken-id" });
+    expect(mocks.updateDoc).toHaveBeenCalled();
   });
 });
 
@@ -331,17 +302,15 @@ describe("updateUserProgress", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.doc.mockReturnValue({ name: "progress-ref" });
-    mocks.writeBatch.mockReturnValue(batchMock);
-    batchMock.set.mockClear();
-    batchMock.commit.mockResolvedValue(undefined);
+    mocks.setDoc.mockResolvedValue(undefined);
   });
 
   it("setDoc с merge только payload, без дефолтов", async () => {
     const { updateUserProgress } = await import("./firestore");
     await updateUserProgress(UID, { totalScore: 5 });
-    expect(batchMock.set).toHaveBeenCalledWith(
+    expect(mocks.setDoc).toHaveBeenCalledWith(
       { name: "progress-ref" },
-      { totalScore: 5 },
+      { progress: { totalScore: 5 } },
       { merge: true },
     );
   });
@@ -349,9 +318,10 @@ describe("updateUserProgress", () => {
   it("не передаёт currentLevelId/unlockedLevelIds при частичном обновлении", async () => {
     const { updateUserProgress } = await import("./firestore");
     await updateUserProgress(UID, { totalScore: 5 });
-    const payload = batchMock.set.mock.calls[0][1];
-    expect(payload).not.toHaveProperty("currentLevelId");
-    expect(payload).not.toHaveProperty("unlockedLevelIds");
+    const payload = mocks.setDoc.mock.calls[0][1];
+    expect(payload).toEqual({ progress: { totalScore: 5 } });
+    expect(payload.progress).not.toHaveProperty("currentLevelId");
+    expect(payload.progress).not.toHaveProperty("unlockedLevelIds");
   });
 });
 

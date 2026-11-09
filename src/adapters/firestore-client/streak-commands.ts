@@ -3,26 +3,9 @@
 import { auth, db } from "@/lib/firebase";
 import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
 import { getFreezeCount } from "@/core/domain/currency";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  runTransaction,
-  setDoc,
-  where,
-} from "firebase/firestore";
-import {
-  userAchievementsPath,
-  userCurrencyPath,
-  userStreakPath,
-  userStatePath,
-} from "@/adapters/firestore-client/paths";
-import { ensureUserState, readUserState } from "@/adapters/firestore-client/state";
-import {
-  getAchievementsCache,
-  setAchievementsCache,
-} from "@/shared/lib/achievement-cache";
+import { doc, runTransaction, setDoc } from "firebase/firestore";
+import { userStatePath } from "@/adapters/firestore-client/paths";
+import { ensureUserState, normalizeUserState, readUserState } from "@/adapters/firestore-client/state";
 import {
   STREAK_ACHIEVEMENT_DAYS,
   collectMissedDays,
@@ -42,32 +25,25 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
   await ensureUserState(user.uid);
 
   const today = getLocalDayString();
-  const streakRef = doc(db, ...userStreakPath(user.uid));
-  const currencyRef = doc(db, ...userCurrencyPath(user.uid));
   const stateRef = doc(db, ...userStatePath(user.uid));
 
   try {
     const result = await runTransaction(db, async (tx) => {
-      const streakSnap = await tx.get(streakRef);
-      const existing = streakSnap.exists()
-        ? (streakSnap.data() as Partial<StreakData>)
-        : {};
-      const activeDays = Array.isArray(existing.activeDays) ? existing.activeDays : [];
-      const frozenDays = Array.isArray(existing.frozenDays) ? existing.frozenDays : [];
+      const stateSnap = await tx.get(stateRef);
+      const stateSnapData = typeof stateSnap?.data === "function" ? stateSnap.data() : undefined;
+      const state = normalizeUserState(stateSnapData);
+      const streak = state.streak ?? {};
+      const activeDays = Array.isArray(streak.activeDays) ? streak.activeDays : [];
+      const frozenDays = Array.isArray(streak.frozenDays) ? streak.frozenDays : [];
 
       const missed = collectMissedDays(activeDays, frozenDays, today);
       if (missed.length === 0) {
         return { frozen: [] as string[], unfundedMisses: 0, longestStreak: null };
       }
 
-      const currencySnap = await tx.get(currencyRef);
-      const currency = currencySnap.exists()
-        ? (currencySnap.data() as Partial<CurrencyData>)
-        : {};
+      const currency = state.currency ?? {};
       const freezes = getFreezeCount(currency as CurrencyData);
 
-      // Заморозки тратятся на пропуски по порядку: первая закрывает самый давний
-      // пропуск после последнего захода, каждая следующая — следующий за ним.
       const toFreeze = missed.slice(0, freezes);
       if (toFreeze.length === 0) {
         return { frozen: [] as string[], unfundedMisses: missed.length, longestStreak: null };
@@ -83,24 +59,11 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
       const nextStreak = {
         activeDays,
         frozenDays: nextFrozenDays,
-        lastActiveDate: existing.lastActiveDate ?? today,
+        lastActiveDate: streak.lastActiveDate ?? today,
         currentStreak,
         longestStreak,
         updatedAt: new Date(),
       };
-
-      tx.set(streakRef, nextStreak);
-      tx.set(
-        currencyRef,
-        {
-          items: {
-            ...(currency.items ?? {}),
-            [STREAK_FREEZE_ITEM_ID]: freezes - toFreeze.length,
-          },
-          updatedAt: new Date(),
-        },
-        { merge: true },
-      );
 
       const nextCurrency = {
         balance: typeof currency.balance === "number" ? currency.balance : 0,
@@ -182,16 +145,16 @@ export async function syncStreak(): Promise<StreakData | null> {
   await ensureUserState(user.uid);
 
   const today = getLocalDayString();
-  const streakRef = doc(db, ...userStreakPath(user.uid));
   const stateRef = doc(db, ...userStatePath(user.uid));
 
   try {
     const result = await runTransaction(db, async (tx) => {
-      const snap = await tx.get(streakRef);
-      const existing = snap.exists() ? (snap.data() as Partial<StreakData>) : {};
+      const snap = await tx.get(stateRef);
+      const snapData = typeof snap?.data === "function" ? snap.data() : undefined;
+      const state = normalizeUserState(snapData);
+      const existing = (state.streak ?? {}) as Partial<StreakData>;
       const { changed, data } = computeStreakSync({ today, existing });
       if (changed) {
-        tx.set(streakRef, data);
         tx.set(stateRef, { streak: data }, { merge: true });
       }
       return data;
@@ -212,27 +175,10 @@ async function addStreakAchievementIfNotExists(uid: string, days: number) {
   const type = `streak_${days}`;
   const state = await ensureUserState(uid);
 
-  // Prefer state for dedupe.
   if (state?.achievements && state.achievements[type]) return;
 
-  const cached = getAchievementsCache(uid);
-
-  // Legacy fallback only if state has no matching key and cache unavailable.
-  if (cached === null || cached === undefined) {
-    const achievementsRef = collection(db, ...userAchievementsPath(uid));
-    const snap = await getDocs(
-      query(achievementsRef, where("type", "==", type)),
-    );
-    if (!snap.empty) return;
-  } else {
-    if (cached.some((achievement) => achievement.type === type)) return;
-  }
-
-  const ref = doc(db, ...userAchievementsPath(uid), `streak_${days}`);
-  const achievedAt = new Date();
-  await setDoc(ref, { type, metadata: { days }, achievedAt });
-
   const stateRef = doc(db, ...userStatePath(uid));
+  const achievedAt = new Date();
   const achievement = {
     id: `streak_${days}`,
     type,
@@ -240,13 +186,6 @@ async function addStreakAchievementIfNotExists(uid: string, days: number) {
     achievedAt,
   };
   await setDoc(stateRef, { achievements: { [type]: achievement } }, { merge: true });
-
-  if (cached !== null && cached !== undefined) {
-    setAchievementsCache(uid, [
-      ...cached,
-      { id: `streak_${days}`, type, metadata: { days }, achievedAt },
-    ]);
-  }
 }
 
 async function checkStreakAchievements(uid: string, longestStreak: number) {

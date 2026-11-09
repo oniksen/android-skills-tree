@@ -5,8 +5,8 @@ import { doc, runTransaction } from "firebase/firestore";
 import { getShopItem } from "@/data/shop";
 import { type BuyResult } from "@/core/domain/currency";
 import { computeBuyItem } from "@/core/use-cases/compute-buy-item";
-import { userCurrencyPath, userStatePath } from "@/adapters/firestore-client/paths";
-import { ensureUserState } from "@/adapters/firestore-client/state";
+import { userStatePath } from "@/adapters/firestore-client/paths";
+import { ensureUserState, normalizeUserState } from "@/adapters/firestore-client/state";
 import type { CurrencyData } from "@/types";
 
 export async function buyItem(itemId: string): Promise<BuyResult> {
@@ -16,17 +16,15 @@ export async function buyItem(itemId: string): Promise<BuyResult> {
   const item = getShopItem(itemId);
   if (!item) return { ok: false, reason: "not-found" };
 
-  const currencyRef = doc(db, ...userCurrencyPath(user.uid));
   const stateRef = doc(db, ...userStatePath(user.uid));
 
   await ensureUserState(user.uid);
 
   try {
     return await runTransaction(db, async (tx) => {
-      const snap = await tx.get(currencyRef);
-      const existing = snap.exists()
-        ? (snap.data() as Partial<CurrencyData>)
-        : {};
+      const snap = await tx.get(stateRef);
+      const state = normalizeUserState(snap.data());
+      const existing = state.currency ?? {};
       const balance = typeof existing.balance === "number" ? existing.balance : 0;
       const items =
         existing.items && typeof existing.items === "object" ? existing.items : {};
@@ -40,16 +38,6 @@ export async function buyItem(itemId: string): Promise<BuyResult> {
       if (!plan.ok) return plan;
 
       const nextItems = { ...(items as Record<string, number>), [itemId]: plan.nextOwned };
-
-      tx.set(
-        currencyRef,
-        {
-          balance: plan.nextBalance,
-          items: nextItems,
-          updatedAt: new Date(),
-        },
-        { merge: true },
-      );
 
       const nextCurrency: CurrencyData = {
         balance: plan.nextBalance,

@@ -16,6 +16,7 @@ vi.mock("@/lib/firebase", () => ({
 vi.mock("@/adapters/firestore-client/state", () => ({
   ensureUserState: vi.fn().mockResolvedValue({}),
   readUserState: vi.fn().mockResolvedValue({}),
+  normalizeUserState: vi.fn((d: unknown) => d ?? {}),
 }));
 
 vi.mock("@/data/shop", () => ({
@@ -48,7 +49,7 @@ describe("buyItem", () => {
       const tx = {
         get: vi.fn().mockResolvedValue({
           exists: () => true,
-          data: () => ({ balance: 5, items: {} }),
+          data: () => ({ currency: { balance: 5, items: {} } }),
         }),
         set: vi.fn(),
       };
@@ -64,7 +65,7 @@ describe("buyItem", () => {
       const tx = {
         get: vi.fn().mockResolvedValue({
           exists: () => true,
-          data: () => ({ balance: 20, items: {} }),
+          data: () => ({ currency: { balance: 20, items: {} } }),
         }),
         set: setMock,
       };

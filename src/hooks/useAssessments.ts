@@ -17,13 +17,8 @@ import {
 
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
-import {
-  userAssessmentPath,
-  userCurrencyPath,
-  userProgressPath,
-  userStatePath,
-} from "@/adapters/firestore-client/paths";
-import { ensureUserState } from "@/adapters/firestore-client/state";
+import { userStatePath } from "@/adapters/firestore-client/paths";
+import { ensureUserState, normalizeUserState } from "@/adapters/firestore-client/state";
 import { patchCachedUserState } from "@/shared/lib/user-state-store";
 import type { AssessmentData, CurrencyData, UserProgress } from "@/types";
 
@@ -58,23 +53,19 @@ export function useAssessments() {
 
       await ensureUserState(uid);
 
-      const assessmentRef = doc(db, ...userAssessmentPath(uid, skillId));
-      const currencyRef = doc(db, ...userCurrencyPath(uid));
-      const progressRef = doc(db, ...userProgressPath(uid));
       const stateRef = doc(db, ...userStatePath(uid));
 
       try {
         const result = await runTransaction(db, async (tx) => {
-          const [assessmentSnap, currencySnap] = await Promise.all([
-            tx.get(assessmentRef),
-            tx.get(currencyRef),
-          ]);
+          const stateSnap = await tx.get(stateRef);
+          const state = normalizeUserState(stateSnap.data());
 
+          const assessment = (state.assessments?.[skillId] ?? {}) as {
+            subtopics?: Record<string, boolean>;
+          };
           const storedSubtopics =
-            (assessmentSnap.data()?.subtopics as Record<string, boolean> | undefined) ?? {};
-          const currency = currencySnap.exists()
-            ? (currencySnap.data() as Partial<CurrencyData>)
-            : {};
+            (assessment.subtopics as Record<string, boolean> | undefined) ?? {};
+          const currency = state.currency ?? ({} as Partial<CurrencyData>);
           const balance = typeof currency.balance === "number" ? currency.balance : 0;
           const claimedSkills =
             currency.claimedSkills && typeof currency.claimedSkills === "object"
@@ -94,16 +85,6 @@ export function useAssessments() {
             });
           const newScore = calcSkillScore(skillId, nextSubtopics);
 
-          tx.set(
-            assessmentRef,
-            {
-              subtopics: nextSubtopics,
-              score: newScore,
-              updatedAt: new Date(),
-            },
-            { merge: true },
-          );
-
           let nextCurrency: CurrencyData | undefined;
           if (awarded > 0) {
             nextCurrency = {
@@ -112,24 +93,12 @@ export function useAssessments() {
               claimedSkills: { ...claimedSkills, [skillId]: new Date().toISOString() },
               updatedAt: new Date(),
             };
-            tx.set(
-              currencyRef,
-              {
-                balance: balance + awarded,
-                claimedSkills: { ...claimedSkills, [skillId]: new Date().toISOString() },
-                updatedAt: new Date(),
-              },
-              { merge: true },
-            );
           }
 
-          const nextMap = {
-            ...mapRef.current,
+          const totalScore = calcTotalScore({
+            ...(state.assessments ?? {}),
             [skillId]: { score: newScore, subtopics: nextSubtopics },
-          };
-          const totalScore = calcTotalScore(nextMap);
-
-          tx.set(progressRef, { totalScore }, { merge: true });
+          } as Record<string, { subtopics?: Record<string, boolean> }>);
 
           const statePayload: Record<string, unknown> = {
             assessments: { [skillId]: { score: newScore, subtopics: nextSubtopics, updatedAt: new Date() } },

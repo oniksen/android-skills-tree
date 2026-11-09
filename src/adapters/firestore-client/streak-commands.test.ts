@@ -25,6 +25,7 @@ vi.mock("@/data/shop", () => ({ STREAK_FREEZE_ITEM_ID: "freeze" }));
 vi.mock("@/adapters/firestore-client/state", () => ({
   ensureUserState: vi.fn().mockResolvedValue({ achievements: {} }),
   readUserState: vi.fn().mockResolvedValue({ streak: null, achievements: {} }),
+  normalizeUserState: vi.fn((d: unknown) => (d && typeof d === "object" ? d : { streak: null })),
 }));
 
 beforeEach(() => {
@@ -120,12 +121,17 @@ describe("streak achievements", () => {
 
     await syncStreak();
 
-    expect(mocks.setDoc).toHaveBeenCalledTimes(2);
+    expect(mocks.setDoc).toHaveBeenCalledTimes(1);
     const [, payload] = mocks.setDoc.mock.calls[0];
     expect(payload).toEqual({
-      type: "streak_7",
-      metadata: { days: 7 },
-      achievedAt: expect.any(Date),
+      achievements: {
+        streak_7: {
+          id: "streak_7",
+          type: "streak_7",
+          metadata: { days: 7 },
+          achievedAt: expect.any(Date),
+        },
+      },
     });
   });
 
@@ -145,6 +151,9 @@ describe("streak achievements", () => {
   });
 
   it("не дублирует достижение того же типа (deterministic id)", async () => {
+    const stateMod = await import("@/adapters/firestore-client/state");
+    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
+    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
     mocks.getDocs.mockResolvedValue({ empty: false, docs: [{}] });
     mocks.runTransaction.mockResolvedValue({
       currentStreak: 0,
@@ -161,6 +170,9 @@ describe("streak achievements", () => {
   });
 
   it("не дублирует legacy autoId achievement (cache hit)", async () => {
+    const stateMod = await import("@/adapters/firestore-client/state");
+    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
+    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
     const { setAchievementsCache } = await import("@/shared/lib/achievement-cache");
     setAchievementsCache("user-1", [
       {
@@ -187,6 +199,9 @@ describe("streak achievements", () => {
 
   it("cache null + type query returns legacy doc → no write", async () => {
     clearAchievementsCache();
+    const stateMod = await import("@/adapters/firestore-client/state");
+    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
+    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
     mocks.getDocs.mockResolvedValue({ empty: false, docs: [{}] });
     mocks.runTransaction.mockResolvedValue({
       currentStreak: 0,
@@ -216,12 +231,17 @@ describe("streak achievements", () => {
 
     await syncStreak();
 
-    expect(mocks.setDoc).toHaveBeenCalledTimes(2);
+    expect(mocks.setDoc).toHaveBeenCalledTimes(1);
     const [, payload] = mocks.setDoc.mock.calls[0];
     expect(payload).toEqual({
-      type: "streak_7",
-      metadata: { days: 7 },
-      achievedAt: expect.any(Date),
+      achievements: {
+        streak_7: {
+          id: "streak_7",
+          type: "streak_7",
+          metadata: { days: 7 },
+          achievedAt: expect.any(Date),
+        },
+      },
     });
   });
 });

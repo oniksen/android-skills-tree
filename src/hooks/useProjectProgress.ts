@@ -1,14 +1,14 @@
 ﻿"use client";
 
 import { useMemo } from "react";
-import { doc, writeBatch } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { useUserState } from "./useUserState";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
-import { userProjectPath, userStatePath } from "@/adapters/firestore-client/paths";
+import { userStatePath } from "@/adapters/firestore-client/paths";
 import { ensureUserState } from "@/adapters/firestore-client/state";
 import { patchCachedUserState } from "@/shared/lib/user-state-store";
 
@@ -36,28 +36,22 @@ export function useProjectProgress() {
   ) => {
     if (!uid) return;
     await ensureUserState(uid);
-    const projectRef = doc(db, ...userProjectPath(uid, projectId));
     const stateRef = doc(db, ...userStatePath(uid));
     try {
-      const batch = writeBatch(db);
-      batch.set(projectRef, {
-        completed,
-        completedAt: completed ? new Date() : null,
-      });
-      batch.set(
+      const completedAt = completed ? new Date() : null;
+      await setDoc(
         stateRef,
         {
           projects: {
             [projectId]: {
               projectId,
               completed,
-              completedAt: completed ? new Date() : null,
+              completedAt,
             },
           },
         },
         { merge: true },
       );
-      await batch.commit();
       const nextProjects = {
         ...(state?.projects ?? {}),
         [projectId]: {

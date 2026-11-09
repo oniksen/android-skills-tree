@@ -144,9 +144,9 @@ describe("checkAchievements", () => {
   it("передаёт награды на сохранение: по category_perfect на каждую категорию уровня", async () => {
     await checkAchievements(UID, juniorMap);
 
-    const writtenTypes = mocks.batch.set.mock.calls.map(
-      ([, payload]) => (payload as { type: string }).type,
-    );
+    const updateCall = mocks.updateDoc.mock.calls[0];
+    const payload = updateCall?.[1] as { achievements?: Record<string, { type: string }> };
+    const writtenTypes = Object.values(payload?.achievements ?? {}).map((a) => a.type);
     expect(writtenTypes.filter((type) => type === "category_perfect")).toHaveLength(
       juniorCategoryIds.length,
     );
@@ -244,6 +244,6 @@ describe("toggleProjectCompletion", () => {
     const { toggleProjectCompletion } = await import("./firestore-actions");
     await toggleProjectCompletion("proj-1", true);
 
-    expect(mocks.batch.set).toHaveBeenCalled();
+    expect(mocks.setDoc).toHaveBeenCalled();
   });
 });
