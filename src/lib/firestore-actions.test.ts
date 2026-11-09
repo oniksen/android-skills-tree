@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { clearAchievementsCache } from "@/shared/lib/achievement-cache";
 import { skills } from "@/data/skills";
 import { categories } from "@/data/categories";
 import { calcTotalScore } from "@/core/domain/scoring";
@@ -53,9 +52,6 @@ vi.mock("@/adapters/firestore-client/state", () => ({
 
 const UID = "user-1";
 
-beforeEach(() => {
-  clearAchievementsCache();
-});
 const JUNIOR_ID = "junior";
 
 function allCheckedMap(categoryIds: string[]): AssessmentMap {

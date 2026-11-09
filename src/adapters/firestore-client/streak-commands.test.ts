@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { applyAutoFreezes, applyAutoFreezesOnce, getStreak, syncStreak } from "./streak-commands";
-import { clearAchievementsCache } from "@/shared/lib/achievement-cache";
+
 
 const mocks = vi.hoisted(() => ({
   collection: vi.fn(),
@@ -27,10 +27,6 @@ vi.mock("@/adapters/firestore-client/state", () => ({
   readUserState: vi.fn().mockResolvedValue({ streak: null, achievements: {} }),
   normalizeUserState: vi.fn((d: unknown) => (d && typeof d === "object" ? d : { streak: null })),
 }));
-
-beforeEach(() => {
-  clearAchievementsCache();
-});
 
 describe("getStreak", () => {
   beforeEach(() => vi.clearAllMocks());
@@ -169,56 +165,7 @@ describe("streak achievements", () => {
     expect(mocks.setDoc).not.toHaveBeenCalled();
   });
 
-  it("не дублирует legacy autoId achievement (cache hit)", async () => {
-    const stateMod = await import("@/adapters/firestore-client/state");
-    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
-    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
-    const { setAchievementsCache } = await import("@/shared/lib/achievement-cache");
-    setAchievementsCache("user-1", [
-      {
-        id: "legacy-auto",
-        type: "streak_7",
-        metadata: { days: 7 },
-        achievedAt: new Date(),
-      },
-    ]);
-    mocks.getDocs.mockResolvedValue({ empty: true, docs: [] });
-    mocks.runTransaction.mockResolvedValue({
-      currentStreak: 0,
-      longestStreak: 7,
-      activeDays: ["2026-01-01"],
-      frozenDays: [],
-      lastActiveDate: "2026-01-01",
-      updatedAt: new Date(),
-    });
-
-    await syncStreak();
-
-    expect(mocks.setDoc).not.toHaveBeenCalled();
-  });
-
-  it("cache null + type query returns legacy doc → no write", async () => {
-    clearAchievementsCache();
-    const stateMod = await import("@/adapters/firestore-client/state");
-    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
-    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
-    mocks.getDocs.mockResolvedValue({ empty: false, docs: [{}] });
-    mocks.runTransaction.mockResolvedValue({
-      currentStreak: 0,
-      longestStreak: 7,
-      activeDays: ["2026-01-01"],
-      frozenDays: [],
-      lastActiveDate: "2026-01-01",
-      updatedAt: new Date(),
-    });
-
-    await syncStreak();
-
-    expect(mocks.setDoc).not.toHaveBeenCalled();
-  });
-
   it("cache null + no match → deterministic setDoc", async () => {
-    clearAchievementsCache();
     mocks.getDocs.mockResolvedValue({ empty: true, docs: [] });
     mocks.runTransaction.mockResolvedValue({
       currentStreak: 0,

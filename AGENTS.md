@@ -113,17 +113,31 @@ Never edit the generated file by hand.
   `study-material.ts` / `study-materials.generated.ts` from a client component.
 - Do not commit generated changes unless they came from `npm run generate:materials`.
 
-## Firestore listeners and quota
+## Firestore data model and listeners
 
-- One listener per user per domain: use a shared listener cache instead of creating `onSnapshot` in every component.
-- The listener must outlive the page: `src/shared/lib/live-store.ts` keeps one subscription per `uid + domain` for the whole session and is cleared only when the user changes (`src/shared/lib/session-reset.ts`). Do not unsubscribe when the last component unmounts.
-- Pages must paint from the cached snapshot (`useLiveStore` + `useSyncExternalStore`); a full-screen skeleton is only acceptable while the first snapshot for a domain is in flight.
-- Prefer `getDoc` + React Query with `staleTime`/`gcTime` for data where real-time is not critical.
-- Never create listeners in loops or on every render. Use one shared `useFirebaseAuth` state instead of subscribing to `onAuthStateChanged` per hook.
-- Run auto-sync (auto-freeze, backfill, checkAchievements) once per session (`oncePerSession`).
-- Handle `resource-exhausted`: show a toast, avoid console spam, use exponential backoff.
-- Cache static data (study materials, etc.) for 24h and disable `refetchOnWindowFocus`.
-- Before adding a new listener, check if the read can be merged with an existing one.
+- Source of truth: single state document `users/{uid}/state/current` (`UserState`).
+  Old collections `progress/current`, `assessments`, `projects`, `achievements`,
+  `currency/current`, `streaks/current`, `settings/current` are legacy
+  migration/rollback data only and are no longer written by the app.
+- One state listener per user: `useUserState` + `userStateStore` (live-store keyed
+  by `uid`), not six domain listeners. The listener outlives the page and is
+  cleared only on user change (`session-reset.ts`).
+- Lazy migration on first read: `readLegacyUserState` (in
+  `src/adapters/firestore-client/state.ts`) is the only legacy reader; it runs
+  once when `state/current` is missing and stamps `migratedAt`.
+- Pages paint from the cached snapshot (`useLiveStore` + `useSyncExternalStore`);
+  a full-screen skeleton is only acceptable while the first snapshot is in flight.
+- Prefer `getDoc` + React Query with `staleTime`/`gcTime` for data where
+  real-time is not critical. Never create listeners in loops or on every render;
+  use the shared `useFirebaseAuth` state.
+- Run auto-sync (auto-freeze, backfill, checkAchievements) once per session
+  (`oncePerSession`).
+- Handle `resource-exhausted`: show a toast, avoid console spam, use exponential
+  backoff.
+- Cache static data (study materials, etc.) for 24h and disable
+  `refetchOnWindowFocus`.
+- Before adding a new listener, check if the read can be merged with the existing
+  state listener.
 
 ## Routing, auth and caching
 
