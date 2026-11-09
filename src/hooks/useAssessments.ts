@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { db } from "@/lib/firebase";
-import { doc, setDoc, runTransaction } from "firebase/firestore";
+import { doc, runTransaction } from "firebase/firestore";
 import { syncStreak } from "@/adapters/firestore-client/streak-commands";
 import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
@@ -77,6 +77,7 @@ export function useAssessments() {
 
       const assessmentRef = doc(db, ...userAssessmentPath(uid, skillId));
       const currencyRef = doc(db, ...userCurrencyPath(uid));
+      const progressRef = doc(db, ...userProgressPath(uid));
 
       try {
         const result = await runTransaction(db, async (tx) => {
@@ -96,7 +97,7 @@ export function useAssessments() {
               ? (currency.claimedSkills as Record<string, string>)
               : {};
 
-          const { nextSubtopics, nextValue, complete, justCompleted, awarded } =
+          const { nextSubtopics, nextValue, complete, justCompleted, completionChanged, awarded } =
             computeAssessmentToggle({
               skillId,
               subtopicName,
@@ -127,10 +128,18 @@ export function useAssessments() {
             );
           }
 
-          return { nextValue, nextSubtopics, newScore, complete, awarded, justCompleted };
+          const nextMap = {
+            ...mapRef.current,
+            [skillId]: { score: newScore, subtopics: nextSubtopics },
+          };
+          const totalScore = calcTotalScore(nextMap);
+
+          tx.set(progressRef, { totalScore }, { merge: true });
+
+          return { nextValue, nextSubtopics, newScore, complete, awarded, justCompleted, completionChanged };
         });
 
-        const { nextValue, nextSubtopics, newScore, awarded, justCompleted } = result;
+        const { nextValue, nextSubtopics, newScore, awarded, justCompleted, completionChanged } = result;
 
         const nextMap = {
           ...mapRef.current,
@@ -140,16 +149,14 @@ export function useAssessments() {
         // Optimistic update: the listener confirms it a moment later.
         assessmentStore.set(uid, nextMap);
 
-        const totalScore = calcTotalScore(nextMap);
-        const progressRef = doc(db, ...userProgressPath(uid));
-        await setDoc(progressRef, { totalScore }, { merge: true });
-
-        void checkAchievements(uid, nextMap).catch((error) => {
-          console.error("Error syncing achievements:", error);
-          if (isPermissionDenied(error)) {
-            showToast("Для отслеживания прогресса обратитесь к администратору.");
-          }
-        });
+        if (completionChanged) {
+          void checkAchievements(uid, nextMap).catch((error) => {
+            console.error("Error syncing achievements:", error);
+            if (isPermissionDenied(error)) {
+              showToast("Для отслеживания прогресса обратитесь к администратору.");
+            }
+          });
+        }
 
         if (awarded > 0) {
           setLastAwarded({ skillId, amount: awarded, id: Date.now() });
@@ -166,7 +173,7 @@ export function useAssessments() {
           });
         }
 
-        return { justCompleted };
+        return { justCompleted, completionChanged };
       } catch (error) {
         console.error("Error saving assessment:", error);
         if (isPermissionDenied(error)) {

@@ -556,21 +556,16 @@ describe("updateUserProgress", () => {
     vi.clearAllMocks();
     mocks.doc.mockReturnValue({ name: "progress-ref" });
     mocks.setDoc.mockResolvedValue(undefined);
-    mocks.updateDoc.mockResolvedValue(undefined);
-    mocks.getDoc.mockResolvedValue({ exists: () => true });
   });
 
-  it("updateDoc при наличии документа", async () => {
+  it("setDoc с merge и дефолтами", async () => {
     const { updateUserProgress } = await import("./firestore");
     await updateUserProgress(UID, { totalScore: 5 });
-    expect(mocks.updateDoc).toHaveBeenCalled();
-  });
-
-  it("setDoc при отсутствии документа", async () => {
-    mocks.getDoc.mockResolvedValue({ exists: () => false });
-    const { updateUserProgress } = await import("./firestore");
-    await updateUserProgress(UID, { totalScore: 5 });
-    expect(mocks.setDoc).toHaveBeenCalled();
+    expect(mocks.setDoc).toHaveBeenCalledWith(
+      { name: "progress-ref" },
+      expect.objectContaining({ totalScore: 5, currentLevelId: "junior" }),
+      { merge: true },
+    );
   });
 });
 

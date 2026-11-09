@@ -13,6 +13,7 @@ export interface AssessmentToggleResult {
   nextValue: boolean;
   complete: boolean;
   justCompleted: boolean;
+  completionChanged: boolean;
   awarded: number;
 }
 
@@ -27,10 +28,12 @@ export function computeAssessmentToggle(
   };
   const nextValue = nextSubtopics[subtopicName] === true;
   const complete = isSkillComplete(skillId, nextSubtopics);
+  const wasComplete = isSkillComplete(skillId, storedSubtopics);
   const alreadyClaimed = typeof claimedSkills[skillId] === "string";
   const awarded =
     complete && !alreadyClaimed ? getCrystalRewardForSkill(skillId) : 0;
-  const justCompleted = complete && !isSkillComplete(skillId, storedSubtopics);
+  const justCompleted = complete && !wasComplete;
+  const completionChanged = complete !== wasComplete;
 
-  return { nextSubtopics, nextValue, complete, justCompleted, awarded };
+  return { nextSubtopics, nextValue, complete, justCompleted, completionChanged, awarded };
 }

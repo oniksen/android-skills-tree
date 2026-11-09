@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
@@ -95,13 +95,7 @@ export function useUserProgress() {
     if (!uid) return;
     const progressRef = doc(db, ...userProgressPath(uid));
     try {
-      const snap = await getDoc(progressRef);
-      if (snap.exists()) {
-        const { updateDoc } = await import("firebase/firestore");
-        await updateDoc(progressRef, data);
-      } else {
-        await setDoc(progressRef, { ...DEFAULT_PROGRESS, ...data });
-      }
+      await setDoc(progressRef, { ...DEFAULT_PROGRESS, ...data }, { merge: true });
     } catch (error) {
       console.error("Error updating progress:", error);
       if (isPermissionDenied(error)) {

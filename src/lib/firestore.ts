@@ -45,13 +45,7 @@ export async function updateUserProgress(
   data: Partial<UserProgress>,
 ) {
   const progressRef = doc(db, ...userProgressPath(uid));
-  const snap = await getDoc(progressRef);
-
-  if (!snap.exists()) {
-    await setDoc(progressRef, { ...DEFAULT_USER_PROGRESS, ...data });
-  } else {
-    await updateDoc(progressRef, data);
-  }
+  await setDoc(progressRef, { ...DEFAULT_USER_PROGRESS, ...data }, { merge: true });
 }
 
 // ============ Project Progress ============
