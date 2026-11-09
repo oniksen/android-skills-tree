@@ -2,10 +2,11 @@
 
 import { motion } from "motion/react";
 import { Lock } from "lucide-react";
+import type { ReactNode } from "react";
 
 interface AchievementCardProps {
   title: string;
-  icon: string;
+  icon: ReactNode;
   condition: string;
   achievedAt: Date | null;
   tier?: string | null;
