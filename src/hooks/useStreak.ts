@@ -31,7 +31,9 @@ const EMPTY_DAYS: string[] = [];
 // Short-lived cache: several pages read the streak, but it changes at most once a day.
 const STREAK_TTL_MS = 60_000;
 const streakCache = new Map<string, { data: StreakData | null; fetchedAt: number }>();
+const streakInFlight = new Map<string, Promise<StreakData | null>>();
 registerSessionReset(() => streakCache.clear());
+registerSessionReset(() => streakInFlight.clear());
 
 export function useStreak() {
   const [currentStreak, setCurrentStreak] = useState(0);
@@ -71,8 +73,19 @@ export function useStreak() {
   const refreshStreak = useCallback(async () => {
     if (!uid) return;
     try {
-      const snapshot = await getStreakFirestore(uid);
-      streakCache.set(uid, { data: snapshot, fetchedAt: Date.now() });
+      let inFlight = streakInFlight.get(uid);
+      if (!inFlight) {
+        inFlight = getStreakFirestore(uid)
+          .then((snapshot) => {
+            streakCache.set(uid, { data: snapshot, fetchedAt: Date.now() });
+            return snapshot;
+          })
+          .finally(() => {
+            streakInFlight.delete(uid);
+          });
+        streakInFlight.set(uid, inFlight);
+      }
+      const snapshot = await inFlight;
       applyStreak(snapshot);
     } catch (error) {
       console.error("Error loading streak:", error);

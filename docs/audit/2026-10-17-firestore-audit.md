@@ -1,10 +1,9 @@
 # Аудит и план оптимизации Firestore
 
 - **Дата:** 2026-11-09
-- **Статус:** фаза 0 закрыта (2026-11-09). Ранее уже были внедрены live-store,
-  `oncePerSession`, единый auth store и оптимистичные обновления. Фаза 1
-  закрыта частично (`writeBatch`, cleanup, streak/settings). Фаза 2
-  (консолидация документов) не начата.
+- **Статус:** фазы 0 и 1 закрыты (2026-11-09). Ранее уже были внедрены
+  live-store, `oncePerSession`, единый auth store и оптимистичные обновления.
+  Фаза 2 (консолидация документов) не начата; dev read counter отложен.
 - **Цель:** зафиксировать фактическую модель данных, уже сделанные оптимизации
   и оставшиеся шаги по снижению количества чтений/записей без потери
   функциональности.
@@ -52,7 +51,7 @@ users/{uid}/
 
 ### Чтение (realtime)
 
-Шесть `onSnapshot`-подписок на пользователя, по одной на домен. Все они созданы
+Пять `onSnapshot`-подписок на пользователя, по одной на домен. Все они созданы
 через `createLiveStore` и живут весь сеанс, поэтому переход между страницами не
 пересоздаёт подписку.
 
@@ -63,11 +62,14 @@ users/{uid}/
 | `useProjectProgress` | `projects` | вся коллекция |
 | `useAchievements` | `achievements` | вся коллекция |
 | `useCurrency` | `currency/current` | doc |
-| `useUserSettings` | `settings/current` | doc |
+
+`useUserSettings` после фазы 1 делает один `getDoc` (без realtime-listener) и
+обновляет live-store оптимистично при `saveSettings`/`incrementDailyCount`.
 
 `useStreak` **не** использует `onSnapshot`: он делает `getDoc` через
-`getStreak` и кэширует результат на 60 секунд (`STREAK_TTL_MS`). Auto-freeze
-запускается один раз за сессию.
+`getStreak`, кэширует результат на 60 секунд (`STREAK_TTL_MS`) и дедуплицирует
+одновременные запросы через `streakInFlight`. Auto-freeze запускается один раз
+за сессию.
 
 Дополнительные разовые чтения:
 
@@ -81,17 +83,21 @@ users/{uid}/
 ### Запись
 
 - `useAssessments.toggleSubtopic` — транзакция: `assessments/{skillId}` +
-  `currency/current` (начисление кристаллов при первом завершении навыка).
-  После транзакции — отдельный `setDoc(progress/current, { totalScore })`,
-  затем `checkAchievements`, затем `syncStreak` (если включили субтопик).
+  `currency/current` + `progress/current.totalScore` (начисление кристаллов при
+  первом завершении навыка). После транзакции `checkAchievements` вызывается
+  только при изменении набора award-ключей, затем `syncStreak` (если включили
+  субтопик).
 - `buyItem` — транзакция по `currency/current`.
 - `syncStreak` / `applyAutoFreezes` — транзакции по `streaks/current` и
   `currency/current`.
 - `checkLevelUp` — **не транзакция**: читает прогресс/оценки/проекты, затем
   отдельно пишет `progress/current` и вызывает `checkAchievements`.
-- `reconcileAchievements` — читает всю коллекцию достижений и пишет/удаляет
-  документы последовательно.
-- `updateUserProgress` — `getDoc` + `updateDoc`/`setDoc`.
+- `reconcileAchievements` — использует cache достижений, пишет/удаляет через
+  `writeBatch` (до 500 операций на батч).
+- `updateUserProgress` / `updateProgress` — `setDoc(data, { merge: true })`
+  только с payload вызывающего.
+- `useUserSettings` — `getDoc` при первом чтении; записи — `setDoc` с merge и
+  оптимистичным обновлением live-store.
 
 ## 3. Что уже сделано
 
@@ -119,10 +125,19 @@ users/{uid}/
     типу, type-query как fallback, детерминированный id для новых записей;
   - `updateUserProgress` / `updateProgress` мержат только payload вызывающего,
     без перезаписи `currentLevelId`/`unlockedLevelIds` дефолтами.
+- **Фаза 1 (2026-11-09):**
+  - `reconcileAchievements` пишет/удаляет через `writeBatch` (до 500 операций);
+  - удалены мёртвые achievement-хелперы (`addAchievementIfNotExists`,
+    `addAchievementsIfNotExists`, `deleteAchievementsByLevel`,
+    `deleteCategoryPerfectAchievement`) и их тесты;
+  - одновременные `getStreak` дедуплицируются через `streakInFlight`;
+  - `useUserSettings` больше не держит realtime-listener: один `getDoc` +
+    оптимистичное обновление live-store;
+  - dev read counter отложен (не добавлен, чтобы не шуметь в production).
 
 ## 4. Оставшиеся проблемы
 
-### Статус после фазы 0
+### Статус после фаз 0–1
 
 | Проблема | Статус |
 |----------|--------|
@@ -131,8 +146,8 @@ users/{uid}/
 | P1: отдельная запись `totalScore` | ✅ закрыто (в транзакции) |
 | P1: N assessment-документов | ⏳ остаётся, фаза 2 |
 | P1: `checkLevelUp` не транзакционен | ⏳ остаётся |
-| P2: мёртвый код достижений | ⏳ остаётся |
-| P2: инфраструктура | ⏳ остаётся |
+| P2: мёртвый код достижений | ✅ закрыто |
+| P2: инфраструктура | ⏳ частично: settings listener убран, streak dedupe; offline/App Check остаются |
 
 Обозначения: `K` — число assessment-документов (до ~227), `A` — число
 достижений, `P` — число проектов.
@@ -213,17 +228,16 @@ settings 1 + streak 1` ≈ **`K + A + P + 5`**.
      `streak_<n>`; legacy autoId не дублируется.
    - Удаление достижений в reconcile идёт по известным id.
 3. **`totalScore` в ту же транзакцию**, что и assessment + currency. ✅
-4. **`writeBatch`** для массовых записей/удалений достижений. ⏳ отложено до
-   фазы 1: текущий reconcile последовательный, но чтения уже не сканируют
-   коллекцию.
+4. **`writeBatch`** для массовых записей/удалений достижений. ✅ выполнено в
+   фазе 1 (батчи до 500 операций).
 5. **`updateUserProgress` / `updateProgress`** — `setDoc(data, { merge: true })`
    **только с payload вызывающего**. ✅ Важно: не добавлять дефолты в merge,
    иначе частичное обновление перезапишет `currentLevelId`/`unlockedLevelIds`.
    Дефолты остаются в `getUserProgress`/progress-repository.
-6. Удалить мёртвые функции достижений или перевести их на id. ⏳ отложено:
-   `addAchievementIfNotExists`, `addAchievementsIfNotExists`,
-   `deleteAchievementsByLevel`, `deleteCategoryPerfectAchievement` всё ещё
-   не используются в production, но их тесты пока сохранены.
+6. Удалить мёртвые функции достижений или перевести их на id. ✅ выполнено в
+   фазе 1: `addAchievementIfNotExists`, `addAchievementsIfNotExists`,
+   `deleteAchievementsByLevel`, `deleteCategoryPerfectAchievement` удалены
+   вместе с тестами.
 
 Фактический эффект: обычный тоггл — **2–4 чтения вместо `2A + 5`**; сканы
 коллекции достижений в hot path отсутствуют. Проверки: `npm run lint`,
@@ -231,18 +245,19 @@ settings 1 + streak 1` ≈ **`K + A + P + 5`**.
 в data-driven тестах (weights/currency/scoring/quiz-questions), не связанных
 с Firestore.
 
-### Фаза 1 — объединение чтений и cleanup
+### Фаза 1 — объединение чтений и cleanup — ✅ выполнено
 
 1. ~~In-memory кэш достижений~~ — ✅ сделано в фазе 0.
-2. Добавить `writeBatch` в `reconcileAchievements` и удалить/перевести на id
-   мёртвые функции достижений.
-3. Перевести `useStreak` на общий live-store (или оставить TTL, но убрать
-   дублирующие `getDoc` при монтировании нескольких компонентов).
-4. Оценить `useUserSettings`: если realtime не нужен, заменить `onSnapshot` на
-   `getDoc` + оптимистичное обновление store (минус один listener).
-5. Добавить dev-счётчик вызовов `getDoc`/`getDocs`, чтобы измерять чтения до/после.
+2. `writeBatch` в `reconcileAchievements` + удаление мёртвых функций достижений.
+   ✅ Батчи до 500 операций, хелперы и их тесты удалены.
+3. `useStreak`: оставлен TTL-кэш, добавлен `streakInFlight` для дедупликации
+   одновременных `getDoc`. ✅
+4. `useUserSettings`: realtime-listener заменён на один `getDoc` +
+   оптимистичное обновление store. ✅ Минус один listener.
+5. Dev-счётчик вызовов `getDoc`/`getDocs` — ⏳ отложен: не добавляли
+   instrumentation в production-код.
 
-Ожидаемый эффект: меньше round-trip на запись, минус один listener;
+Фактический эффект: меньше round-trip на запись, 5 listeners вместо 6,
 предсказуемые чтения на старте.
 
 ### Фаза 2 — консолидация документов (опционально, с миграцией)
@@ -289,9 +304,9 @@ currency, streak, settings, progress — вложенными полями
 | Метрика | Сейчас | Цель |
 |---------|--------|------|
 | Чтения на обычный тоггл | `2–4` (было `A + 4 … 2A + 5`) | ≤ 3 |
-| Чтения на первый вход | `K + A + P + 5` | ≤ 10 (фаза 1), 1–3 (фаза 2) |
+| Чтения на первый вход | `K + A + P + 5` | 1–3 (фаза 2) |
 | `getDocs` в hot path | нет; только fallback достижений раз за сессию | 0 |
-| Listeners на пользователя | 6 | 6 (фаза 1), 1 (фаза 2) |
+| Listeners на пользователя | 5 | 1 (фаза 2) |
 
 Проверка после каждого этапа: `npm run lint`, `npm run typecheck`, `npm test`.
 Дополнительно — Firebase Console → Usage и эмулятор Firestore для сравнения
@@ -314,12 +329,13 @@ currency, streak, settings, progress — вложенными полями
 
 - Фаза 0 закрыта: условный `checkAchievements`, кэш достижений вместо сканов,
   `totalScore` в транзакции, корректный partial merge прогресса.
+- Фаза 1 закрыта: `writeBatch`, cleanup мёртвого кода, дедупликация streak,
+  удаление settings-listener; dev read counter отложен.
 - Фазы 0–1 не меняют схему и дают основной выигрыш в hot path.
 - Фаза 2 — максимальный эффект по чтениям, но требует миграции и отдельного
   согласования.
 - Фаза 3 — следующий уровень надёжности и защиты квоты.
-- Следующий шаг — фаза 1: `writeBatch`, cleanup мёртвого кода, `useStreak` и
-  `useUserSettings`.
+- Следующий шаг — решение по фазе 2 (консолидация `state/current`).
 
 ## 9. Процесс реализации: subagent-driven
 
@@ -365,7 +381,7 @@ currency, streak, settings, progress — вложенными полями
 | Этап | Статус | Реализатор | Review | Выход |
 |------|--------|------------|--------|-------|
 | Фаза 0 | ✅ выполнено | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | нет сканов достижений в hot path, обычный тоггл 2–4 чтения |
-| Фаза 1 | ⏳ следующая | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | `writeBatch`, cleanup мёртвого кода, `useStreak`/`useUserSettings` |
+| Фаза 1 | ✅ выполнено | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | `writeBatch`, cleanup мёртвого кода, 5 listeners, streak dedupe |
 | Фаза 2 | ⏸ не начата | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | согласованная миграция на `state/current` или решение отложить |
 | Фаза 3 | ⏸ не начата | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | инфраструктурные улучшения по отдельному согласованию |
 

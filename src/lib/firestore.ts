@@ -2,15 +2,13 @@ import {
   doc,
   getDoc,
   setDoc,
-  updateDoc,
-  deleteDoc,
   collection,
   getDocs,
+  writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import {
   achievementKey,
-  selectMissingAwards,
   type AchievementAward,
 } from "@/core/domain/achievement-conditions";
 import {
@@ -70,112 +68,6 @@ export async function getProjectProgressMap(
 
 // ============ Achievements ============
 
-export async function addAchievementIfNotExists(
-  uid: string,
-  type: string,
-  metadata: Record<string, unknown>,
-  matchKey?: string,
-  matchValue?: unknown,
-) {
-  const achievementsRef = collection(db, ...userAchievementsPath(uid));
-  const snap = await getDocs(achievementsRef);
-
-  const exists = snap.docs.some((doc) => {
-    const data = doc.data();
-    if (data.type !== type) return false;
-    if (matchKey && matchValue !== undefined) {
-      return data.metadata?.[matchKey] === matchValue;
-    }
-    return true;
-  });
-
-  if (!exists) {
-    const newRef = doc(achievementsRef);
-    await setDoc(newRef, {
-      type,
-      metadata,
-      achievedAt: new Date(),
-    });
-  }
-}
-
-export async function addAchievementsIfNotExists(
-  uid: string,
-  awards: AchievementAward[],
-) {
-  if (awards.length === 0) return;
-
-  const achievementsRef = collection(db, ...userAchievementsPath(uid));
-  const snap = await getDocs(achievementsRef);
-
-  const existingKeys = snap.docs.flatMap((d) => {
-    const data = d.data() as { type?: string; metadata?: Record<string, unknown> };
-    if (typeof data.type !== "string") return [];
-    return [achievementKey(data.type, data.metadata)];
-  });
-
-  for (const award of awards) {
-    const key = achievementKey(award.type, award.metadata);
-    const ref = doc(achievementsRef, key);
-    const existing = snap.docs.find((d) => d.id === key);
-    if (existing) {
-      await updateDoc(ref, {
-        metadata: {
-          ...(existing.data().metadata ?? {}),
-          ...award.metadata,
-        },
-      });
-      continue;
-    }
-  }
-
-  for (const award of selectMissingAwards(awards, existingKeys)) {
-    await setDoc(doc(achievementsRef, achievementKey(award.type, award.metadata)), {
-      type: award.type,
-      metadata: award.metadata,
-      achievedAt: new Date(),
-    });
-  }
-}
-
-export async function deleteAchievementsByLevel(uid: string, levelId: string) {
-  const achievementsRef = collection(db, ...userAchievementsPath(uid));
-  const snap = await getDocs(achievementsRef);
-
-  for (const achievementDoc of snap.docs) {
-    const data = achievementDoc.data() as {
-      type?: string;
-      metadata?: Record<string, unknown>;
-    };
-    const isLevelScoped =
-      (data.type === "category_perfect" || data.type === "level_master") &&
-      data.metadata?.level_id === levelId;
-    const invalidatesPath = data.type === "path_complete";
-
-    if (isLevelScoped || invalidatesPath) {
-      await deleteDoc(achievementDoc.ref);
-    }
-  }
-}
-
-export async function deleteCategoryPerfectAchievement(uid: string, categoryId: string) {
-  const achievementsRef = collection(db, ...userAchievementsPath(uid));
-  const snap = await getDocs(achievementsRef);
-
-  const revokedKey = achievementKey("category_perfect", { category_id: categoryId });
-
-  for (const achievementDoc of snap.docs) {
-    const data = achievementDoc.data() as {
-      type?: string;
-      metadata?: Record<string, unknown>;
-    };
-    if (typeof data.type !== "string") continue;
-    if (achievementKey(data.type, data.metadata) !== revokedKey) continue;
-
-    await deleteDoc(achievementDoc.ref);
-  }
-}
-
 export interface ReconcileAchievementsResult {
   added: number;
   removed: number;
@@ -194,6 +86,29 @@ export async function reconcileAchievements(
   }
 
   const result: ReconcileAchievementsResult = { added: 0, removed: 0, updated: 0 };
+
+  let batch = writeBatch(db);
+  let opCount = 0;
+
+  const flushIfNeeded = async () => {
+    if (opCount >= 500) {
+      await batch.commit();
+      batch = writeBatch(db);
+      opCount = 0;
+    }
+  };
+
+  const queueDelete = async (ref: unknown) => {
+    await flushIfNeeded();
+    batch.delete(ref as never);
+    opCount += 1;
+  };
+
+  const queueSet = async (ref: unknown, data: unknown) => {
+    await flushIfNeeded();
+    batch.set(ref as never, data as never);
+    opCount += 1;
+  };
 
   try {
     let existingDocs: Array<{
@@ -255,14 +170,14 @@ export async function reconcileAchievements(
       };
 
       if (typeof data.type !== "string") {
-        await deleteDoc(achievementDoc.ref as never);
+        await queueDelete(achievementDoc.ref);
         result.removed += 1;
         continue;
       }
 
       const key = achievementKey(data.type, data.metadata);
       if (!desired.has(key) || kept.has(key)) {
-        await deleteDoc(achievementDoc.ref as never);
+        await queueDelete(achievementDoc.ref);
         result.removed += 1;
         continue;
       }
@@ -277,7 +192,7 @@ export async function reconcileAchievements(
 
       if (!existing) {
         const now = new Date();
-        await setDoc(doc(achievementsRef, key), {
+        await queueSet(doc(achievementsRef, key), {
           type: award.type,
           metadata: award.metadata,
           achievedAt: now,
@@ -315,7 +230,7 @@ export async function reconcileAchievements(
       }
 
       const mergedMetadata = { ...existingMetadata, ...award.metadata };
-      await setDoc(doc(achievementsRef, key), {
+      await queueSet(doc(achievementsRef, key), {
         type: award.type,
         metadata: mergedMetadata,
         achievedAt,
@@ -323,7 +238,7 @@ export async function reconcileAchievements(
       result.updated += 1;
 
       if (needsMove) {
-        await deleteDoc(existing.ref as never);
+        await queueDelete(existing.ref);
         result.removed += 1;
       }
 
@@ -335,6 +250,9 @@ export async function reconcileAchievements(
       });
     }
 
+    if (opCount > 0) {
+      await batch.commit();
+    }
     setAchievementsCache(uid, nextList);
     return result;
   } catch (error) {

@@ -10,17 +10,26 @@ import {
   readAssessmentMap,
 } from "@/lib/firestore-actions";
 
-const mocks = vi.hoisted(() => ({
-  collection: vi.fn(),
-  doc: vi.fn(),
-  getDoc: vi.fn(),
-  getDocs: vi.fn(),
-  setDoc: vi.fn(),
-  updateDoc: vi.fn(),
-  deleteDoc: vi.fn(),
-  query: vi.fn(),
-  runTransaction: vi.fn(),
-}));
+const mocks = vi.hoisted(() => {
+  const batchMock = {
+    set: vi.fn(),
+    delete: vi.fn(),
+    commit: vi.fn().mockResolvedValue(undefined),
+  };
+  return {
+    collection: vi.fn(),
+    doc: vi.fn(),
+    getDoc: vi.fn(),
+    getDocs: vi.fn(),
+    setDoc: vi.fn(),
+    updateDoc: vi.fn(),
+    deleteDoc: vi.fn(),
+    query: vi.fn(),
+    runTransaction: vi.fn(),
+    writeBatch: vi.fn(() => batchMock),
+    batch: batchMock,
+  };
+});
 
 vi.mock("firebase/firestore", () => mocks);
 
@@ -121,7 +130,7 @@ describe("checkAchievements", () => {
   it("передаёт награды на сохранение: по category_perfect на каждую категорию уровня", async () => {
     await checkAchievements(UID, juniorMap);
 
-    const writtenTypes = mocks.setDoc.mock.calls.map(
+    const writtenTypes = mocks.batch.set.mock.calls.map(
       ([, payload]) => (payload as { type: string }).type,
     );
     expect(writtenTypes.filter((type) => type === "category_perfect")).toHaveLength(

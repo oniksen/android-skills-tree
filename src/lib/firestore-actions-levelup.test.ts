@@ -23,8 +23,6 @@ vi.mock("@/lib/firestore", () => ({
   getUserProgress: vi.fn(),
   updateUserProgress: vi.fn(),
   getProjectProgressMap: vi.fn(),
-  addAchievementIfNotExists: vi.fn(),
-  addAchievementsIfNotExists: vi.fn(),
   reconcileAchievements: vi.fn(),
 }));
 

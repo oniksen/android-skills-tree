@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo } from "react";
 import { db } from "@/lib/firebase";
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
@@ -33,15 +33,14 @@ export function useUserSettings() {
       uid
         ? (observer: Observer<UserSettings>) => {
             const ref = doc(db, ...userSettingsPath(uid));
-            return onSnapshot(
-              ref,
-              (snap) => {
+            getDoc(ref)
+              .then((snap) => {
                 observer.next(
                   snap.exists() ? (snap.data() as UserSettings) : DEFAULT_SETTINGS,
                 );
-              },
-              (error) => observer.error?.(error),
-            );
+              })
+              .catch((error) => observer.error?.(error));
+            return () => {};
           }
         : null,
     [uid],
