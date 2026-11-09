@@ -106,7 +106,7 @@ describe("checkAchievements", () => {
     mocks.setDoc.mockResolvedValue(undefined);
   });
 
-  it("с готовой картой читает Firestore один раз, без неё — дважды", async () => {
+  it("с готовой картой использует achievements cache, без неё — fallback", async () => {
     await checkAchievements(UID, juniorMap);
 
     expect(mocks.getDocs).toHaveBeenCalledTimes(1);

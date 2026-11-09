@@ -219,7 +219,6 @@ export async function reconcileAchievements(
       }));
     } else {
       const snap = await getDocs(achievementsRef);
-      existingDocs = snap.docs.map((d) => d as unknown as (typeof existingDocs)[number]);
       const list: Achievement[] = snap.docs.map((d) => {
         const data = d.data() as {
           type?: string;
@@ -237,6 +236,15 @@ export async function reconcileAchievements(
         };
       });
       setAchievementsCache(uid, list);
+      existingDocs = list.map((ach) => ({
+        id: ach.id,
+        ref: doc(achievementsRef, ach.id),
+        data: () => ({
+          type: ach.type,
+          metadata: ach.metadata,
+          achievedAt: ach.achievedAt,
+        }),
+      }));
     }
     const kept = new Map<string, (typeof existingDocs)[number]>();
 

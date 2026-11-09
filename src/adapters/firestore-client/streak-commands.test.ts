@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { applyAutoFreezes, applyAutoFreezesOnce, getStreak, syncStreak } from "./streak-commands";
+import { clearAchievementsCache } from "@/shared/lib/achievement-cache";
 
 const mocks = vi.hoisted(() => ({
   collection: vi.fn(),
@@ -8,6 +9,7 @@ const mocks = vi.hoisted(() => ({
   getDocs: vi.fn(),
   query: vi.fn(),
   runTransaction: vi.fn(),
+  where: vi.fn(),
   setDoc: vi.fn(),
 }));
 
@@ -19,6 +21,10 @@ vi.mock("@/lib/firebase", () => ({
 }));
 
 vi.mock("@/data/shop", () => ({ STREAK_FREEZE_ITEM_ID: "freeze" }));
+
+beforeEach(() => {
+  clearAchievementsCache();
+});
 
 describe("getStreak", () => {
   beforeEach(() => vi.clearAllMocks());
@@ -49,6 +55,7 @@ describe("syncStreak", () => {
     mocks.getDocs.mockResolvedValue({ docs: [] });
     mocks.getDoc.mockResolvedValue({ exists: () => true });
     mocks.query.mockImplementation((r) => r);
+    mocks.where.mockImplementation((...args: unknown[]) => args);
     mocks.setDoc.mockResolvedValue(undefined);
   });
 
@@ -84,8 +91,9 @@ describe("streak achievements", () => {
     vi.clearAllMocks();
     mocks.doc.mockReturnValue({ path: "ach" });
     mocks.collection.mockReturnValue({ path: "ach" });
-    mocks.getDoc.mockResolvedValue({ exists: () => false });
+    mocks.getDocs.mockResolvedValue({ empty: true, docs: [] });
     mocks.query.mockImplementation((r: unknown) => r);
+    mocks.where.mockImplementation((...args: unknown[]) => args);
     mocks.setDoc.mockResolvedValue(undefined);
   });
 
@@ -125,8 +133,8 @@ describe("streak achievements", () => {
     expect(mocks.setDoc).not.toHaveBeenCalled();
   });
 
-  it("не дублирует достижение того же типа", async () => {
-    mocks.getDoc.mockResolvedValue({ exists: () => true });
+  it("не дублирует достижение того же типа (deterministic id)", async () => {
+    mocks.getDocs.mockResolvedValue({ empty: false, docs: [{}] });
     mocks.runTransaction.mockResolvedValue({
       currentStreak: 0,
       longestStreak: 7,
@@ -140,6 +148,71 @@ describe("streak achievements", () => {
 
     expect(mocks.setDoc).not.toHaveBeenCalled();
   });
+
+  it("не дублирует legacy autoId achievement (cache hit)", async () => {
+    const { setAchievementsCache } = await import("@/shared/lib/achievement-cache");
+    setAchievementsCache("user-1", [
+      {
+        id: "legacy-auto",
+        type: "streak_7",
+        metadata: { days: 7 },
+        achievedAt: new Date(),
+      },
+    ]);
+    mocks.getDocs.mockResolvedValue({ empty: true, docs: [] });
+    mocks.runTransaction.mockResolvedValue({
+      currentStreak: 0,
+      longestStreak: 7,
+      activeDays: ["2026-01-01"],
+      frozenDays: [],
+      lastActiveDate: "2026-01-01",
+      updatedAt: new Date(),
+    });
+
+    await syncStreak();
+
+    expect(mocks.setDoc).not.toHaveBeenCalled();
+  });
+
+  it("cache null + type query returns legacy doc → no write", async () => {
+    clearAchievementsCache();
+    mocks.getDocs.mockResolvedValue({ empty: false, docs: [{}] });
+    mocks.runTransaction.mockResolvedValue({
+      currentStreak: 0,
+      longestStreak: 7,
+      activeDays: ["2026-01-01"],
+      frozenDays: [],
+      lastActiveDate: "2026-01-01",
+      updatedAt: new Date(),
+    });
+
+    await syncStreak();
+
+    expect(mocks.setDoc).not.toHaveBeenCalled();
+  });
+
+  it("cache null + no match → deterministic setDoc", async () => {
+    clearAchievementsCache();
+    mocks.getDocs.mockResolvedValue({ empty: true, docs: [] });
+    mocks.runTransaction.mockResolvedValue({
+      currentStreak: 0,
+      longestStreak: 7,
+      activeDays: ["2026-01-01"],
+      frozenDays: [],
+      lastActiveDate: "2026-01-01",
+      updatedAt: new Date(),
+    });
+
+    await syncStreak();
+
+    expect(mocks.setDoc).toHaveBeenCalledTimes(1);
+    const [, payload] = mocks.setDoc.mock.calls[0];
+    expect(payload).toEqual({
+      type: "streak_7",
+      metadata: { days: 7 },
+      achievedAt: expect.any(Date),
+    });
+  });
 });
 
 describe("applyAutoFreezes", () => {
@@ -149,6 +222,7 @@ describe("applyAutoFreezes", () => {
     mocks.collection.mockReturnValue({ path: "ach" });
     mocks.getDocs.mockResolvedValue({ docs: [] });
     mocks.query.mockImplementation((r: unknown) => r);
+    mocks.where.mockImplementation((...args: unknown[]) => args);
     mocks.setDoc.mockResolvedValue(undefined);
     mocks.runTransaction.mockImplementation(async (_db: unknown, cb: (tx: unknown) => unknown) => {
       const tx = {
@@ -183,6 +257,7 @@ describe("applyAutoFreezesOnce", () => {
     mocks.collection.mockReturnValue({ path: "ach" });
     mocks.getDocs.mockResolvedValue({ docs: [] });
     mocks.query.mockImplementation((r) => r);
+    mocks.where.mockImplementation((...args: unknown[]) => args);
     mocks.setDoc.mockResolvedValue(undefined);
 
     const [a, b] = await Promise.all([applyAutoFreezesOnce(), applyAutoFreezesOnce()]);

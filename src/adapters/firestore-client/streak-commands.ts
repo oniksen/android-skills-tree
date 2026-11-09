@@ -4,16 +4,24 @@ import { auth, db } from "@/lib/firebase";
 import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
 import { getFreezeCount } from "@/core/domain/currency";
 import {
+  collection,
   doc,
   getDoc,
+  getDocs,
+  query,
   runTransaction,
   setDoc,
+  where,
 } from "firebase/firestore";
 import {
   userAchievementsPath,
   userCurrencyPath,
   userStreakPath,
 } from "@/adapters/firestore-client/paths";
+import {
+  getAchievementsCache,
+  setAchievementsCache,
+} from "@/shared/lib/achievement-cache";
 import {
   STREAK_ACHIEVEMENT_DAYS,
   collectMissedDays,
@@ -166,10 +174,28 @@ export async function syncStreak(): Promise<StreakData | null> {
 
 async function addStreakAchievementIfNotExists(uid: string, days: number) {
   const type = `streak_${days}`;
+  const cached = getAchievementsCache(uid);
+
+  if (cached !== null && cached !== undefined) {
+    if (cached.some((achievement) => achievement.type === type)) return;
+  } else {
+    const achievementsRef = collection(db, ...userAchievementsPath(uid));
+    const snap = await getDocs(
+      query(achievementsRef, where("type", "==", type)),
+    );
+    if (!snap.empty) return;
+  }
+
   const ref = doc(db, ...userAchievementsPath(uid), `streak_${days}`);
-  const snap = await getDoc(ref);
-  if (snap.exists()) return;
-  await setDoc(ref, { type, metadata: { days }, achievedAt: new Date() });
+  const achievedAt = new Date();
+  await setDoc(ref, { type, metadata: { days }, achievedAt });
+
+  if (cached !== null && cached !== undefined) {
+    setAchievementsCache(uid, [
+      ...cached,
+      { id: `streak_${days}`, type, metadata: { days }, achievedAt },
+    ]);
+  }
 }
 
 async function checkStreakAchievements(uid: string, longestStreak: number) {
