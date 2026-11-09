@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
   getDocs: vi.fn(),
   query: vi.fn(),
   runTransaction: vi.fn(),
+  serverTimestamp: vi.fn(() => "SERVER_TS"),
   where: vi.fn(),
   setDoc: vi.fn(),
 }));
@@ -125,7 +126,7 @@ describe("streak achievements", () => {
           id: "streak_7",
           type: "streak_7",
           metadata: { days: 7 },
-          achievedAt: expect.any(Date),
+          achievedAt: "SERVER_TS",
         },
       },
     });
@@ -186,7 +187,7 @@ describe("streak achievements", () => {
           id: "streak_7",
           type: "streak_7",
           metadata: { days: 7 },
-          achievedAt: expect.any(Date),
+          achievedAt: "SERVER_TS",
         },
       },
     });

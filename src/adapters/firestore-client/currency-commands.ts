@@ -1,12 +1,13 @@
 "use client";
 
 import { auth, db } from "@/lib/firebase";
-import { doc, runTransaction } from "firebase/firestore";
+import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { getShopItem } from "@/data/shop";
 import { type BuyResult } from "@/core/domain/currency";
 import { computeBuyItem } from "@/core/use-cases/compute-buy-item";
 import { userStatePath } from "@/adapters/firestore-client/paths";
 import { ensureUserState, normalizeUserState } from "@/adapters/firestore-client/state";
+import { recordWrite } from "@/shared/lib/firestore-metrics";
 import type { CurrencyData } from "@/types";
 
 export async function buyItem(itemId: string): Promise<BuyResult> {
@@ -21,7 +22,7 @@ export async function buyItem(itemId: string): Promise<BuyResult> {
   await ensureUserState(user.uid);
 
   try {
-    return await runTransaction(db, async (tx) => {
+    const result = await runTransaction(db, async (tx) => {
       const snap = await tx.get(stateRef);
       const state = normalizeUserState(snap.data());
       const existing = state.currency ?? {};
@@ -43,12 +44,14 @@ export async function buyItem(itemId: string): Promise<BuyResult> {
         balance: plan.nextBalance,
         items: nextItems,
         claimedSkills,
-        updatedAt: new Date(),
+        updatedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
       };
       tx.set(stateRef, { currency: nextCurrency }, { merge: true });
 
       return { ok: true as const };
     });
+    if (result && result.ok) recordWrite("buyItem", 1);
+    return result;
   } catch (error) {
     console.error("Error buying item:", error);
     if (error && typeof error === "object" && (error as { code?: string }).code === "permission-denied") {

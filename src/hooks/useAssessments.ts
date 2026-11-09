@@ -1,8 +1,8 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { db } from "@/lib/firebase";
-import { doc, runTransaction } from "firebase/firestore";
+import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { syncStreak } from "@/adapters/firestore-client/streak-commands";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { useUserState } from "./useUserState";
@@ -20,6 +20,7 @@ import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { userStatePath } from "@/adapters/firestore-client/paths";
 import { ensureUserState, normalizeUserState } from "@/adapters/firestore-client/state";
 import { patchCachedUserState } from "@/shared/lib/user-state-store";
+import { recordWrite } from "@/shared/lib/firestore-metrics";
 import type { AssessmentData, CurrencyData, UserProgress } from "@/types";
 
 export interface CrystalAward {
@@ -91,7 +92,7 @@ export function useAssessments() {
               balance: balance + awarded,
               items,
               claimedSkills: { ...claimedSkills, [skillId]: new Date().toISOString() },
-              updatedAt: new Date(),
+              updatedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
             };
           }
 
@@ -101,7 +102,7 @@ export function useAssessments() {
           } as Record<string, { subtopics?: Record<string, boolean> }>);
 
           const statePayload: Record<string, unknown> = {
-            assessments: { [skillId]: { score: newScore, subtopics: nextSubtopics, updatedAt: new Date() } },
+            assessments: { [skillId]: { score: newScore, subtopics: nextSubtopics, updatedAt: serverTimestamp() as unknown as Date } }, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
             progress: { totalScore },
           };
           if (awarded > 0 && nextCurrency) {
@@ -111,6 +112,8 @@ export function useAssessments() {
 
           return { nextValue, nextSubtopics, newScore, complete, awarded, justCompleted, completionChanged, nextCurrency };
         });
+
+        recordWrite("toggleSubtopic", 1);
 
         const { nextValue, nextSubtopics, newScore, awarded, justCompleted, completionChanged, nextCurrency } = result;
 
@@ -150,7 +153,7 @@ export function useAssessments() {
         patchCachedUserState(uid, {
           assessments: nextMap,
           progress: { ...(state?.progress ?? {}), totalScore: calcTotalScore(nextMap) } as UserProgress,
-          ...(awarded > 0 && nextCurrency ? { currency: nextCurrency } : {}),
+          ...(awarded > 0 && nextCurrency ? { currency: { ...nextCurrency, updatedAt: new Date() } } : {}),
         });
 
         if (nextValue) {

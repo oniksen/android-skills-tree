@@ -14,6 +14,8 @@ const mocks = vi.hoisted(() => ({
   getDocs: vi.fn(),
   query: vi.fn(),
   writeBatch: vi.fn(),
+  runTransaction: vi.fn(),
+  serverTimestamp: vi.fn(() => "SERVER_TS"),
 }));
 
 vi.mock("firebase/firestore", () => mocks);
@@ -42,6 +44,10 @@ vi.mock("@/adapters/firestore-client/state", () => ({
     return { achievements };
   }),
   ensureUserState: vi.fn(async () => ({ achievements: {} })),
+  normalizeUserState: vi.fn((raw: unknown) => {
+    const r = (raw && typeof raw === "object" ? raw : {}) as { achievements?: unknown };
+    return { achievements: r.achievements ?? {}, streak: { longestStreak: 0 } };
+  }),
 }));
 
 const UID = "user-1";
@@ -120,6 +126,32 @@ describe("reconcileAchievements", () => {
     mocks.writeBatch.mockReturnValue(batchMock);
     batchMock.commit.mockResolvedValue(undefined);
     mocks.updateDoc.mockResolvedValue(undefined);
+    mocks.runTransaction.mockImplementation(async (_db: unknown, cb: (tx: unknown) => unknown) => {
+      const snap = await mocks.getDocs();
+      const achievements: Record<string, unknown> = {};
+      for (const d of snap?.docs ?? []) {
+        const data = d.data();
+        const type = data.type;
+        const metadata = data.metadata ?? {};
+        const key = achievementKey(type, metadata);
+        achievements[key] = {
+          id: d.id,
+          type,
+          metadata,
+          achievedAt:
+            (data.achievedAt as { toDate?: () => Date } | undefined)?.toDate?.() ??
+            (data.achievedAt as Date | undefined) ??
+            new Date(),
+          tier: data.tier,
+          tierProgress: data.tierProgress,
+        };
+      }
+      const tx = {
+        get: vi.fn().mockResolvedValue({ data: () => ({ achievements, streak: { longestStreak: 0 } }) }),
+        update: mocks.updateDoc,
+      };
+      return cb(tx);
+    });
   });
 
   it("добавляет отсутствующее достижение под ключевым id", async () => {
@@ -258,6 +290,19 @@ describe("reconcileAchievements cache", () => {
     mocks.writeBatch.mockReturnValue(batchMock);
     batchMock.commit.mockResolvedValue(undefined);
     mocks.getDocs.mockResolvedValue(snapshotOf([]));
+    mocks.runTransaction.mockImplementation(async (_db: unknown, cb: (tx: unknown) => unknown) => {
+      const snap = await mocks.getDocs();
+      const achievements: Record<string, unknown> = {};
+      for (const d of snap?.docs ?? []) {
+        const data = d.data();
+        const type = data.type;
+        const metadata = data.metadata ?? {};
+        const key = achievementKey(type, metadata);
+        achievements[key] = { id: d.id, type, metadata, achievedAt: data.achievedAt ?? new Date() };
+      }
+      const tx = { get: vi.fn().mockResolvedValue({ data: () => ({ achievements, streak: { longestStreak: 0 } }) }), update: mocks.updateDoc };
+      return cb(tx);
+    });
   });
 
   it("второй вызов не обращается к getDocs", async () => {

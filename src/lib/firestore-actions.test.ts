@@ -26,6 +26,7 @@ const mocks = vi.hoisted(() => {
     deleteDoc: vi.fn(),
     query: vi.fn(),
     runTransaction: vi.fn(),
+    serverTimestamp: vi.fn(() => "SERVER_TS"),
     writeBatch: vi.fn(() => batchMock),
     batch: batchMock,
   };
@@ -48,6 +49,7 @@ const stateMock = vi.hoisted(() => ({ current: null as unknown }));
 vi.mock("@/adapters/firestore-client/state", () => ({
   readUserState: vi.fn(() => Promise.resolve(stateMock.current)),
   ensureUserState: vi.fn().mockResolvedValue({}),
+  normalizeUserState: vi.fn((d: unknown) => (d && typeof d === "object" ? d : {})),
 }));
 
 const UID = "user-1";
@@ -117,6 +119,12 @@ describe("checkAchievements", () => {
       }),
     });
     mocks.setDoc.mockResolvedValue(undefined);
+    mocks.runTransaction.mockImplementation(async (_db: unknown, cb: (tx: unknown) => unknown) =>
+      cb({
+        get: vi.fn().mockResolvedValue({ data: () => stateMock.current }),
+        update: mocks.updateDoc,
+      }),
+    );
     stateMock.current = {
       assessments: juniorMap,
       progress: { currentLevelId: "junior", unlockedLevelIds: ["junior"], totalScore: 0 },

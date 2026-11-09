@@ -291,13 +291,21 @@ currency, streak, settings, progress — вложенными полями
 
 ### Фаза 3 — инфраструктура
 
+Phase 3a (выполнено):
+- Offline persistence (IndexedDB, multi-tab).
+- App Check для защиты квоты (опционально, по env).
+
+Phase 3b (выполнено):
+- `serverTimestamp()` для доверенного времени (user-visible timestamps).
+- Runtime size guard: предупреждение при приближении к 1 MiB (только dev, без блокировки/шардирования).
+- `reconcileAchievements`: транзакция по `state/current`, cross-tab safe.
+- Dev-only read/write counter (`window.__firestoreMetrics`).
+
+Остаётся:
 - Cloud Functions/Firestore triggers для достижений и level-up
   (server-authoritative): клиент пишет только assessment.
-- Offline persistence (IndexedDB, multi-tab).
-- App Check для защиты квоты.
 - Мониторинг Usage, budget alerts, логирование `resource-exhausted`.
-- `serverTimestamp()` для доверенного времени.
-- Валидация/normalize прочитанных документов.
+- Валидация/normalize прочитанных документов (частично: normalizeUserState).
 
 ## 6. Метрики успеха
 

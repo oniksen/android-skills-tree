@@ -4,6 +4,7 @@ import { buyItem } from "./currency-commands";
 const mocks = vi.hoisted(() => ({
   doc: vi.fn(),
   runTransaction: vi.fn(),
+  serverTimestamp: vi.fn(() => "SERVER_TS"),
 }));
 
 vi.mock("firebase/firestore", () => mocks);

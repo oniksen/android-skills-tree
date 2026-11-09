@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 
 import { useCallback } from "react";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 import { useUserState } from "./useUserState";
@@ -43,11 +43,11 @@ export function useUserSettings() {
     const next: UserSettings = {
       ...(settings ?? DEFAULT_SETTINGS),
       dailyCounts: nextCounts,
-      updatedAt: new Date(),
+      updatedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
     };
     try {
       await setDoc(stateRef, { settings: next }, { merge: true });
-      patchCachedUserState(uid, { settings: next });
+      patchCachedUserState(uid, { settings: { ...next, updatedAt: new Date() } });
     } catch (error) {
       console.error("Error incrementing daily count:", error);
       if (isPermissionDenied(error)) {
@@ -68,7 +68,7 @@ export function useUserSettings() {
       const next: UserSettings = {
         ...(settings ?? DEFAULT_SETTINGS),
         ...patch,
-        updatedAt: new Date(),
+        updatedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
       };
       if (patch.groqApiKey !== undefined) {
         next.groqKeyLast4 = patch.groqApiKey
@@ -77,7 +77,7 @@ export function useUserSettings() {
       }
       try {
         await setDoc(stateRef, { settings: next }, { merge: true });
-        patchCachedUserState(uid, { settings: next });
+        patchCachedUserState(uid, { settings: { ...next, updatedAt: new Date() } });
       } catch (error) {
         console.error("Error saving settings:", error);
         if (isPermissionDenied(error)) {

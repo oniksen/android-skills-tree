@@ -3,7 +3,7 @@
 import { auth, db } from "@/lib/firebase";
 import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
 import { getFreezeCount } from "@/core/domain/currency";
-import { doc, runTransaction, setDoc } from "firebase/firestore";
+import { doc, runTransaction, setDoc, serverTimestamp } from "firebase/firestore";
 import { userStatePath } from "@/adapters/firestore-client/paths";
 import { ensureUserState, normalizeUserState, readUserState } from "@/adapters/firestore-client/state";
 import {
@@ -17,6 +17,7 @@ import {
 import { computeStreakSync } from "@/core/use-cases/compute-streak-sync";
 import type { CurrencyData } from "@/types";
 import { runExclusive } from "@/shared/lib/user-state-lock";
+import { recordWrite } from "@/shared/lib/firestore-metrics";
 
 export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
   const user = auth.currentUser;
@@ -64,7 +65,7 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
           lastActiveDate: streak.lastActiveDate ?? today,
           currentStreak,
           longestStreak,
-          updatedAt: new Date(),
+          updatedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
         };
 
         const nextCurrency = {
@@ -77,13 +78,14 @@ export async function applyAutoFreezes(): Promise<AutoFreezeReport | null> {
             currency.claimedSkills && typeof currency.claimedSkills === "object"
               ? (currency.claimedSkills as Record<string, string>)
               : {},
-          updatedAt: new Date(),
+          updatedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
         };
         tx.set(
           stateRef,
           { streak: nextStreak, currency: nextCurrency },
           { merge: true },
         );
+        recordWrite("applyAutoFreezes", 1);
 
         return {
           frozen: toFreeze,
@@ -159,7 +161,17 @@ export async function syncStreak(): Promise<StreakData | null> {
         const existing = (state.streak ?? {}) as Partial<StreakData>;
         const { changed, data } = computeStreakSync({ today, existing });
         if (changed) {
-          tx.set(stateRef, { streak: data }, { merge: true });
+          tx.set(
+            stateRef,
+            {
+              streak: {
+                ...data,
+                updatedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
+              },
+            },
+            { merge: true },
+          );
+          recordWrite("syncStreak", 1);
         }
         return data;
       });
@@ -183,7 +195,7 @@ async function addStreakAchievementIfNotExists(uid: string, days: number) {
   if (state?.achievements && state.achievements[type]) return;
 
   const stateRef = doc(db, ...userStatePath(uid));
-  const achievedAt = new Date();
+  const achievedAt = serverTimestamp() as unknown as Date; // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
   const achievement = {
     id: `streak_${days}`,
     type,

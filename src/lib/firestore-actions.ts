@@ -1,7 +1,7 @@
 "use client";
 
 import { auth, db } from "@/lib/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
@@ -174,7 +174,9 @@ export async function toggleProjectCompletion(
   const uid = getUid();
   await ensureUserState(uid);
   const stateRef = doc(db, ...userStatePath(uid));
-  const completedAt = completed ? new Date() : null;
+  const completedAt = completed
+    ? (serverTimestamp() as unknown as Date)
+    : null; // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
   const statePayload = {
     projectId,
     completed,
@@ -187,9 +189,14 @@ export async function toggleProjectCompletion(
   );
 
   const cachedProjects = userStateStore.peek(uid).data?.projects ?? {};
+  const optimisticStatePayload = {
+    projectId,
+    completed,
+    completedAt: completed ? new Date() : null,
+  };
   const nextProjects = {
     ...cachedProjects,
-    [projectId]: statePayload,
+    [projectId]: optimisticStatePayload,
   };
   patchCachedUserState(uid, { projects: nextProjects });
 

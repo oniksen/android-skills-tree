@@ -7,6 +7,7 @@ import {
   runTransaction,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { recordRead } from "@/shared/lib/firestore-metrics";
 import {
   userProgressPath,
   userAssessmentsPath,
@@ -64,6 +65,25 @@ export function defaultUserState(): UserState {
 }
 
 export const DEFAULT_USER_STATE: UserState = defaultUserState();
+
+// ---- size guard ----
+
+const warnedUids = new Set<string>();
+
+export function estimateUserStateBytes(state: UserState): number {
+  return new TextEncoder().encode(JSON.stringify(state)).length;
+}
+
+export function warnIfUserStateTooLarge(uid: string, state: UserState): void {
+  if (process.env.NODE_ENV === "production") return;
+  if (warnedUids.has(uid)) return;
+  const bytes = estimateUserStateBytes(state);
+  if (bytes < 900_000) return;
+  warnedUids.add(uid);
+  console.warn(
+    `[firestore] user state for ${uid} is ${bytes} bytes, close to the 1 MiB document limit`,
+  );
+}
 
 // ---- helpers ----
 
@@ -282,6 +302,8 @@ export async function readLegacyUserState(uid: string): Promise<UserState> {
     getDocs(collection(db, ...userAchievementsPath(uid))),
   ]);
 
+  recordRead("readLegacyUserState", 7);
+
   // progress
   if (progressSnap.exists()) {
     const data = progressSnap.data() as Partial<UserProgress>;
@@ -403,6 +425,7 @@ export async function migrateUserState(uid: string): Promise<UserState> {
   if (snap.exists()) {
     const state = normalizeUserState(snap.data());
     userStateCache.set(uid, state);
+    warnIfUserStateTooLarge(uid, state);
     return state;
   }
 
@@ -430,6 +453,7 @@ export async function migrateUserState(uid: string): Promise<UserState> {
   }
 
   userStateCache.set(uid, result);
+  warnIfUserStateTooLarge(uid, result);
   return result;
 }
 
@@ -467,6 +491,7 @@ export async function ensureUserState(uid: string): Promise<UserState> {
 export async function readUserState(uid: string): Promise<UserState> {
   try {
     const snap = await getDoc(doc(db, ...userStatePath(uid)));
+    recordRead("readUserState", 1);
     if (snap.exists()) {
       const state = normalizeUserState(snap.data());
       userStateCache.set(uid, state);
@@ -508,6 +533,7 @@ export function subscribeUserState(
         if (snapshot.exists()) {
           const state = normalizeUserState(snapshot.data());
           userStateCache.set(uid, state);
+          warnIfUserStateTooLarge(uid, state);
           entry!.observers.forEach((o) => o.next(state));
           return;
         }
