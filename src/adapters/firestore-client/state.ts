@@ -426,8 +426,7 @@ export async function migrateUserState(uid: string): Promise<UserState> {
     });
   } catch (error) {
     console.error("migrateUserState write failed:", error);
-    userStateCache.set(uid, legacy);
-    return legacy;
+    throw error;
   }
 
   userStateCache.set(uid, result);
@@ -474,9 +473,13 @@ export async function readUserState(uid: string): Promise<UserState> {
       return state;
     }
   } catch {
-    // fall through
+    // fall through to migration attempt
   }
-  return ensureUserState(uid);
+  try {
+    return await ensureUserState(uid);
+  } catch {
+    return readLegacyUserState(uid);
+  }
 }
 
 // ---- subscribe ----
@@ -516,7 +519,13 @@ export function subscribeUserState(
             userStateCache.set(uid, state);
             entry!.observers.forEach((o) => o.next(state));
           })
-          .catch((error) => {
+          .catch(async (error) => {
+            try {
+              const legacy = await readLegacyUserState(uid);
+              entry!.observers.forEach((o) => o.next(legacy));
+            } catch {
+              // ignore legacy read failure; forward original error
+            }
             entry!.observers.forEach((o) => o.error?.(error));
           })
           .finally(() => {

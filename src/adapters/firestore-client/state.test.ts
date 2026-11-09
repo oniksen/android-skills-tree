@@ -4,6 +4,7 @@ import {
   readLegacyUserState,
   migrateUserState,
   ensureUserState,
+  readUserState,
   subscribeUserState,
   clearUserStateCache,
 } from "./state";
@@ -199,6 +200,31 @@ describe("state", () => {
         return { forEach: () => {} };
       });
       await expect(readLegacyUserState("u-fail2")).rejects.toThrow("boom2");
+    });
+
+    it("rejects when state doc write fails", async () => {
+      mocks.getDoc.mockResolvedValue({ exists: () => false });
+      mocks.getDocs.mockResolvedValue({ forEach: () => {} });
+      mocks.runTransaction.mockRejectedValue(new Error("write-fail"));
+      await expect(migrateUserState("u-writefail")).rejects.toThrow("write-fail");
+    });
+
+    it("ensureUserState rejects and does not cache on write failure", async () => {
+      mocks.getDoc.mockResolvedValue({ exists: () => false });
+      mocks.getDocs.mockResolvedValue({ forEach: () => {} });
+      mocks.runTransaction.mockRejectedValue(new Error("write-fail"));
+      await expect(ensureUserState("u-ensfail")).rejects.toThrow("write-fail");
+      const callsBefore = mocks.getDoc.mock.calls.length;
+      await expect(ensureUserState("u-ensfail")).rejects.toThrow("write-fail");
+      expect(mocks.getDoc.mock.calls.length).toBeGreaterThan(callsBefore);
+    });
+
+    it("readUserState returns legacy data when migration write fails", async () => {
+      mocks.getDoc.mockResolvedValue({ exists: () => false });
+      mocks.getDocs.mockResolvedValue({ forEach: () => {} });
+      mocks.runTransaction.mockRejectedValue(new Error("write-fail"));
+      const s = await readUserState("u-ro");
+      expect(s.schemaVersion).toBe(1);
     });
 
     it("is idempotent when doc appears during transaction", async () => {
