@@ -24,7 +24,7 @@ import {
 import { userStatePath } from "@/adapters/firestore-client/paths";
 
 import { patchCachedUserState, userStateStore } from "@/shared/lib/user-state-store";
-
+import { runExclusive } from "@/shared/lib/user-state-lock";
 function getUid(): string {
   const user = auth.currentUser;
   if (!user) throw new Error("Not authenticated");
@@ -63,19 +63,21 @@ export async function checkAchievements(
   uid: string,
   preloadedMap?: PreloadedAssessments,
 ) {
-  const state = await readUserState(uid);
-  const resolvedPreloaded = preloadedMap ? await preloadedMap : null;
-  const assessmentMap = (resolvedPreloaded ?? state?.assessments ?? {}) as AssessmentMap;
+  return runExclusive(uid, async () => {
+    const state = await readUserState(uid);
+    const resolvedPreloaded = preloadedMap ? await preloadedMap : null;
+    const assessmentMap = (resolvedPreloaded ?? state?.assessments ?? {}) as AssessmentMap;
 
-  const awards = evaluateAchievements({
-    assessmentMap,
-    longestStreak: state?.streak?.longestStreak ?? 0,
-    unlockedLevelIds:
-      state?.progress?.unlockedLevelIds ?? [state?.progress?.currentLevelId ?? "junior"],
+    const awards = evaluateAchievements({
+      assessmentMap,
+      longestStreak: state?.streak?.longestStreak ?? 0,
+      unlockedLevelIds:
+        state?.progress?.unlockedLevelIds ?? [state?.progress?.currentLevelId ?? "junior"],
+    });
+
+    await reconcileAchievements(uid, awards, state);
+    return awards;
   });
-
-  await reconcileAchievements(uid, awards, state);
-  return awards;
 }
 
 const achievementsSynced = new Set<string>();
