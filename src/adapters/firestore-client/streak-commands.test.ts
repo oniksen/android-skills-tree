@@ -47,6 +47,7 @@ describe("syncStreak", () => {
     mocks.doc.mockReturnValue({ path: "streak" });
     mocks.collection.mockReturnValue({ path: "ach" });
     mocks.getDocs.mockResolvedValue({ docs: [] });
+    mocks.getDoc.mockResolvedValue({ exists: () => true });
     mocks.query.mockImplementation((r) => r);
     mocks.setDoc.mockResolvedValue(undefined);
   });
@@ -81,14 +82,14 @@ describe("syncStreak", () => {
 describe("streak achievements", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.doc.mockReturnValue({ path: "streak" });
+    mocks.doc.mockReturnValue({ path: "ach" });
     mocks.collection.mockReturnValue({ path: "ach" });
+    mocks.getDoc.mockResolvedValue({ exists: () => false });
     mocks.query.mockImplementation((r: unknown) => r);
     mocks.setDoc.mockResolvedValue(undefined);
   });
 
   it("начисляет стрик по longestStreak и не пишет тир", async () => {
-    mocks.getDocs.mockResolvedValue({ docs: [] });
     mocks.runTransaction.mockResolvedValue({
       currentStreak: 0,
       longestStreak: 7,
@@ -110,7 +111,6 @@ describe("streak achievements", () => {
   });
 
   it("не начисляет стрик ниже первого порога", async () => {
-    mocks.getDocs.mockResolvedValue({ docs: [] });
     mocks.runTransaction.mockResolvedValue({
       currentStreak: 6,
       longestStreak: 6,
@@ -126,7 +126,7 @@ describe("streak achievements", () => {
   });
 
   it("не дублирует достижение того же типа", async () => {
-    mocks.getDocs.mockResolvedValue({ docs: [{ data: () => ({ type: "streak_7" }) }] });
+    mocks.getDoc.mockResolvedValue({ exists: () => true });
     mocks.runTransaction.mockResolvedValue({
       currentStreak: 0,
       longestStreak: 7,

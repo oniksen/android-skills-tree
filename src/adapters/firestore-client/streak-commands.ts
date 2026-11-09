@@ -4,11 +4,8 @@ import { auth, db } from "@/lib/firebase";
 import { STREAK_FREEZE_ITEM_ID } from "@/data/shop";
 import { getFreezeCount } from "@/core/domain/currency";
 import {
-  collection,
   doc,
   getDoc,
-  getDocs,
-  query,
   runTransaction,
   setDoc,
 } from "firebase/firestore";
@@ -168,19 +165,11 @@ export async function syncStreak(): Promise<StreakData | null> {
 }
 
 async function addStreakAchievementIfNotExists(uid: string, days: number) {
-  const achievementsRef = collection(db, ...userAchievementsPath(uid));
-  const snap = await getDocs(query(achievementsRef));
   const type = `streak_${days}`;
-
-  const exists = snap.docs.some((d) => d.data().type === type);
-  if (exists) return;
-
-  const newRef = doc(achievementsRef);
-  await setDoc(newRef, {
-    type,
-    metadata: { days },
-    achievedAt: new Date(),
-  });
+  const ref = doc(db, ...userAchievementsPath(uid), `streak_${days}`);
+  const snap = await getDoc(ref);
+  if (snap.exists()) return;
+  await setDoc(ref, { type, metadata: { days }, achievedAt: new Date() });
 }
 
 async function checkStreakAchievements(uid: string, longestStreak: number) {

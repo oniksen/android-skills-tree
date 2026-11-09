@@ -1,6 +1,7 @@
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { userAchievementsPath } from "./paths";
+import { setAchievementsCache } from "@/shared/lib/achievement-cache";
 import type { AchievementRepository } from "@/ports/achievement-repository";
 import type { Achievement } from "@/types";
 
@@ -22,6 +23,7 @@ export function createAchievementRepository(): AchievementRepository {
             });
           });
           list.sort((a, b) => b.achievedAt.getTime() - a.achievedAt.getTime());
+          setAchievementsCache(uid, list);
           observer.next(list);
         },
         (error) => observer.error?.(error),

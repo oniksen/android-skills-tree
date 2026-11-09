@@ -18,7 +18,12 @@ import {
   userProjectsPath,
   userAchievementsPath,
 } from "@/adapters/firestore-client/paths";
-import type { UserProgress } from "@/types";
+import {
+  getAchievementsCache,
+  setAchievementsCache,
+  clearAchievementsCache,
+} from "@/shared/lib/achievement-cache";
+import type { Achievement, UserProgress } from "@/types";
 
 // ============ User Progress ============
 
@@ -182,7 +187,6 @@ export async function reconcileAchievements(
   awards: AchievementAward[],
 ): Promise<ReconcileAchievementsResult> {
   const achievementsRef = collection(db, ...userAchievementsPath(uid));
-  const snap = await getDocs(achievementsRef);
 
   const desired = new Map<string, AchievementAward>();
   for (const award of awards) {
@@ -190,67 +194,143 @@ export async function reconcileAchievements(
   }
 
   const result: ReconcileAchievementsResult = { added: 0, removed: 0, updated: 0 };
-  const kept = new Map<string, (typeof snap.docs)[number]>();
 
-  for (const achievementDoc of snap.docs) {
-    const data = achievementDoc.data() as {
-      type?: unknown;
-      metadata?: Record<string, unknown>;
-    };
+  try {
+    let existingDocs: Array<{
+      id: string;
+      ref: { id?: string };
+      data: () => {
+        type?: unknown;
+        metadata?: Record<string, unknown>;
+        achievedAt?: unknown;
+      };
+    }>;
 
-    if (typeof data.type !== "string") {
-      await deleteDoc(achievementDoc.ref);
-      result.removed += 1;
-      continue;
+    const cached = getAchievementsCache(uid);
+    if (cached !== null && cached !== undefined) {
+      existingDocs = cached.map((ach) => ({
+        id: ach.id,
+        ref: doc(achievementsRef, ach.id),
+        data: () => ({
+          type: ach.type,
+          metadata: ach.metadata,
+          achievedAt: ach.achievedAt,
+        }),
+      }));
+    } else {
+      const snap = await getDocs(achievementsRef);
+      existingDocs = snap.docs.map((d) => d as unknown as (typeof existingDocs)[number]);
+      const list: Achievement[] = snap.docs.map((d) => {
+        const data = d.data() as {
+          type?: string;
+          metadata?: Record<string, unknown>;
+          achievedAt?: { toDate?: () => Date } | Date;
+        };
+        return {
+          id: d.id,
+          type: (data.type ?? "") as string,
+          metadata: data.metadata ?? {},
+          achievedAt:
+            (data.achievedAt as { toDate?: () => Date } | undefined)?.toDate?.() ??
+            (data.achievedAt as Date | undefined) ??
+            new Date(),
+        };
+      });
+      setAchievementsCache(uid, list);
+    }
+    const kept = new Map<string, (typeof existingDocs)[number]>();
+
+    for (const achievementDoc of existingDocs) {
+      const data = achievementDoc.data() as {
+        type?: unknown;
+        metadata?: Record<string, unknown>;
+      };
+
+      if (typeof data.type !== "string") {
+        await deleteDoc(achievementDoc.ref as never);
+        result.removed += 1;
+        continue;
+      }
+
+      const key = achievementKey(data.type, data.metadata);
+      if (!desired.has(key) || kept.has(key)) {
+        await deleteDoc(achievementDoc.ref as never);
+        result.removed += 1;
+        continue;
+      }
+
+      kept.set(key, achievementDoc);
     }
 
-    const key = achievementKey(data.type, data.metadata);
-    if (!desired.has(key) || kept.has(key)) {
-      await deleteDoc(achievementDoc.ref);
-      result.removed += 1;
-      continue;
-    }
+    const nextList: Achievement[] = [];
 
-    kept.set(key, achievementDoc);
-  }
+    for (const [key, award] of desired) {
+      const existing = kept.get(key);
 
-  for (const [key, award] of desired) {
-    const existing = kept.get(key);
+      if (!existing) {
+        const now = new Date();
+        await setDoc(doc(achievementsRef, key), {
+          type: award.type,
+          metadata: award.metadata,
+          achievedAt: now,
+        });
+        result.added += 1;
+        nextList.push({
+          id: key,
+          type: award.type,
+          metadata: award.metadata,
+          achievedAt: now,
+        });
+        continue;
+      }
 
-    if (!existing) {
+      const existingData = existing.data() as {
+        metadata?: Record<string, unknown>;
+        achievedAt?: unknown;
+      };
+      const existingMetadata = existingData.metadata ?? {};
+      const metadataChanged = Object.entries(award.metadata).some(
+        ([field, value]) => existingMetadata[field] !== value,
+      );
+      const needsMove = existing.id !== key;
+
+      const achievedAt = (existingData.achievedAt ?? new Date()) as Date;
+
+      if (!metadataChanged && !needsMove) {
+        nextList.push({
+          id: key,
+          type: award.type,
+          metadata: existingMetadata,
+          achievedAt,
+        });
+        continue;
+      }
+
+      const mergedMetadata = { ...existingMetadata, ...award.metadata };
       await setDoc(doc(achievementsRef, key), {
         type: award.type,
-        metadata: award.metadata,
-        achievedAt: new Date(),
+        metadata: mergedMetadata,
+        achievedAt,
       });
-      result.added += 1;
-      continue;
+      result.updated += 1;
+
+      if (needsMove) {
+        await deleteDoc(existing.ref as never);
+        result.removed += 1;
+      }
+
+      nextList.push({
+        id: key,
+        type: award.type,
+        metadata: mergedMetadata,
+        achievedAt,
+      });
     }
 
-    const existingData = existing.data() as {
-      metadata?: Record<string, unknown>;
-      achievedAt?: unknown;
-    };
-    const existingMetadata = existingData.metadata ?? {};
-    const metadataChanged = Object.entries(award.metadata).some(
-      ([field, value]) => existingMetadata[field] !== value,
-    );
-    const needsMove = existing.id !== key;
-
-    if (!metadataChanged && !needsMove) continue;
-
-    await setDoc(doc(achievementsRef, key), {
-      type: award.type,
-      metadata: { ...existingMetadata, ...award.metadata },
-      achievedAt: existingData.achievedAt ?? new Date(),
-    });
-    result.updated += 1;
-
-    if (needsMove) {
-      await deleteDoc(existing.ref);
-      result.removed += 1;
-    }
+    setAchievementsCache(uid, nextList);
+    return result;
+  } catch (error) {
+    clearAchievementsCache(uid);
+    throw error;
   }
-
-  return result;
 }
