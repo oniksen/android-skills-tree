@@ -7,3 +7,4 @@ export { useAchievements } from "./useAchievements";
 export { useStreak } from "./useStreak";
 export { useCurrency } from "./useCurrency";
 export { useUserSettings } from "./useUserSettings";
+export { useUserState } from "./useUserState";
