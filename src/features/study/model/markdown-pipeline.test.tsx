@@ -4,7 +4,6 @@ import {
   STUDY_INLINE_COMPONENTS,
   STUDY_MARKDOWN_COMPONENTS,
 } from "../components/markdown-components";
-import { FIXTURE } from "../components/study-html-fixture";
 import {
   __CACHE_LIMIT,
   __getCacheSize,
@@ -21,8 +20,18 @@ function render(markdown: string): string {
 }
 
 describe("markdown pipeline", () => {
-  it("одинаковая строка даёт одинаковый HTML", () => {
-    expect(render(FIXTURE)).toBe(render(FIXTURE));
+  it("raw HTML показывается текстом, а не исчезает", () => {
+    const generic = render("Тип List<T> в тексте.");
+    expect(generic).toContain("List");
+    expect(generic).toContain("&lt;T&gt;");
+
+    const lineBreak = render("Первая строка<br>вторая");
+    expect(lineBreak).toContain("Первая строка");
+    expect(lineBreak).toContain("вторая");
+    expect(lineBreak).toContain("&lt;br&gt;");
+
+    const comment = render("Текст <!-- x --> после");
+    expect(comment).toContain("&lt;!--");
   });
 
   it("пустая строка даёт пустой документ", () => {

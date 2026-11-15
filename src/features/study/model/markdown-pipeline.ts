@@ -24,7 +24,11 @@ import rehypeStudyHighlight from "./study-highlight";
 const processor = unified()
   .use(remarkParse)
   .use(remarkGfm)
-  .use(remarkRehype)
+  // `allowDangerousHtml` is not "dangerous" here: the raw nodes it keeps are
+  // turned into escaped text by `buildHastTree` below, exactly like
+  // `react-markdown`'s `post()`. Without the flag `mdast-util-to-hast` drops the
+  // node before our pass, so `<T>` and `<br>` silently disappeared from pages.
+  .use(remarkRehype, { allowDangerousHtml: true })
   .use(rehypeStudyHighlight);
 
 /**

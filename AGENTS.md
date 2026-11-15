@@ -100,7 +100,9 @@ Never edit the generated file by hand.
   client bundle: one `unified()` built at module import, a FIFO tree cache and
   `renderMarkdown()`. `StudyProse`/`StudyInline` must not use `<ReactMarkdown>` — a guard test
   fails if they do; `components/__fixtures__/study-render/*.html` is a byte-exact golden
-  baseline that is never regenerated to make a test pass.
+  baseline that is never regenerated to make a test pass. Regenerate it only deliberately:
+  `npm run study:golden`, then review the diff; a diff in a material baseline without a
+  content edit is a regression.
 - `src/features/study/components/markdown-components.tsx` maps Markdown tags to blocks:
   tables get a scroll wrapper, fences become `StudyCodeBlock`, task lists become
   checklists, link lists in sources sections become pills, a standalone image becomes a
