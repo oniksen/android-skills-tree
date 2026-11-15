@@ -250,6 +250,89 @@ describe("parseStudySectionBody", () => {
     expect(blocks).toHaveLength(1);
     expect(blocks[0].type).toBe("markdown");
   });
+
+  it("не оставляет raw :::cards, если директива не закрыта", () => {
+    const blocks = parseStudySectionBody(
+      "До.\n\n:::cards\n- **Имя** — текст.\n\nПосле.",
+    );
+
+    const markdown = blocks
+      .filter((block) => block.type === "markdown")
+      .map((block) => block.content)
+      .join("\n");
+
+    expect(markdown).not.toContain(":::cards");
+    expect(markdown).toContain("- **Имя** — текст.");
+    expect(markdown).toContain("После.");
+  });
+
+  it("разбирает несколько директив :::cards в одной секции", () => {
+    const blocks = parseStudySectionBody(`:::cards
+- **А** — первая.
+:::
+
+Между блоками.
+
+:::cards
+- **Б** — вторая.
+:::`);
+
+    expect(blocks.map((block) => block.type)).toEqual([
+      "cards",
+      "markdown",
+      "cards",
+    ]);
+    expect(blocks[0]).toMatchObject({ items: [{ title: "А" }] });
+    expect(blocks[2]).toMatchObject({ items: [{ title: "Б" }] });
+  });
+
+  it("оставляет пустую директиву :::cards пустой сеткой", () => {
+    const blocks = parseStudySectionBody(":::cards\n:::");
+
+    expect(blocks).toEqual([{ type: "cards", items: [] }]);
+  });
+
+  it("не закрывает :::cards по ::: внутри блока кода", () => {
+    const blocks = parseStudySectionBody(`:::cards
+- **А** — пример:
+\`\`\`text
+:::
+\`\`\`
+- **Б** — второй.
+:::`);
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "cards" });
+    if (blocks[0].type === "cards") {
+      expect(blocks[0].items.map((item) => item.title)).toEqual(["А", "Б"]);
+    }
+  });
+
+  it("сохраняет :::cards внутри блока кода как код", () => {
+    const blocks = parseStudySectionBody("```text\n:::cards\n- **А** — текст.\n:::\n```");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "markdown" });
+    if (blocks[0].type === "markdown") {
+      expect(blocks[0].content).toContain(":::cards");
+    }
+  });
+
+  it("не открывает директиву строкой с лишним текстом", () => {
+    const blocks = parseStudySectionBody(":::cards лишнее\n- **А** — текст.");
+
+    expect(blocks.map((block) => block.type)).toEqual(["markdown"]);
+  });
+
+  it("нормализует CRLF в директиве", () => {
+    const blocks = parseStudySectionBody(
+      ":::cards\r\n- **Имя** — текст.\r\n:::",
+    );
+
+    expect(blocks).toEqual([
+      { type: "cards", items: [{ title: "Имя", content: "текст." }] },
+    ]);
+  });
 });
 
 describe("вспомогательные функции", () => {

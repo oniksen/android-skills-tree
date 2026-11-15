@@ -197,10 +197,23 @@ function parseNote(lines: string[]): StudySectionBlock {
   return { type: "note", variant, content: body.join("\n").trim() };
 }
 
+/**
+ * Finds the line that closes a `:::cards` directive.
+ *
+ * `:::` is only a closer outside fenced code, so a snippet that happens to
+ * contain the marker cannot end the directive early.
+ */
 function findDirectiveEnd(lines: string[], from: number): number {
+  let inFence = false;
+
   for (let index = from; index < lines.length; index += 1) {
-    if (CARDS_CLOSE.test(lines[index])) return index;
+    if (FENCE.test(lines[index])) {
+      inFence = !inFence;
+      continue;
+    }
+    if (!inFence && CARDS_CLOSE.test(lines[index])) return index;
   }
+
   return -1;
 }
 
@@ -242,6 +255,11 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
         index = end + 1;
         continue;
       }
+
+      // Unclosed directive: drop the opener so a raw `:::cards` marker never
+      // reaches the page, and keep the body as ordinary Markdown.
+      index += 1;
+      continue;
     }
 
     if (!inFence && line.startsWith(">")) {
