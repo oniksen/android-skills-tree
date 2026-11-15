@@ -42,6 +42,38 @@ export function createStudyMarkdownComponents({
   sources = false,
   inline = false,
 }: ComponentOptions = {}): Components {
+  const StudyImage: NonNullable<Components["img"]> = ({ src, alt }) => (
+    <figure className={blockClass("figure")}>
+      {/* Markdown images point at arbitrary hosts; next/image needs a configured allowlist. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={typeof src === "string" ? src : undefined}
+        alt={alt ?? ""}
+        loading="lazy"
+      />
+      {alt ? (
+        <figcaption className={blockClass("caption")}>{alt}</figcaption>
+      ) : null}
+    </figure>
+  );
+
+  /**
+   * React Markdown wraps a standalone image in `<p>`, but `<figure>` is not
+   * allowed inside a paragraph. Such a paragraph is dropped instead.
+   */
+  const isFigureOnly = (children: ReactNode): boolean => {
+    const nodes = (Array.isArray(children) ? children : [children]).filter(
+      (node) => node !== null && node !== undefined && node !== "",
+    );
+
+    return (
+      nodes.length > 0 &&
+      nodes.every(
+        (node) => React.isValidElement(node) && node.type === StudyImage,
+      )
+    );
+  };
+
   const heading = (weight: "h3" | "h4" = "h3") => {
     const StudyHeading = ({ children }: { children?: ReactNode }) => {
       if (weight === "h4") {
@@ -60,7 +92,8 @@ export function createStudyMarkdownComponents({
   return {
     p: inline
       ? ({ children }) => <>{children}</>
-      : ({ children }) => <p>{children}</p>,
+      : ({ children }) =>
+          isFigureOnly(children) ? <>{children}</> : <p>{children}</p>,
     h1: heading(),
     h2: heading(),
     h3: heading(),
@@ -83,7 +116,7 @@ export function createStudyMarkdownComponents({
     table: ({ children }) => (
       <div
         className={blockClass("tableWrap")}
-        role="region"
+        role="group"
         aria-label="Таблица"
         tabIndex={0}
       >
@@ -133,16 +166,7 @@ export function createStudyMarkdownComponents({
         </a>
       );
     },
-    img: ({ src, alt }) => (
-      <figure className={blockClass("figure")}>
-        {/* Markdown images point at arbitrary hosts; next/image needs a configured allowlist. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={alt ?? ""} loading="lazy" />
-        {alt ? (
-          <figcaption className={blockClass("caption")}>{alt}</figcaption>
-        ) : null}
-      </figure>
-    ),
+    img: StudyImage,
     hr: () => <hr className={blockClass("divider")} />,
   };
 }

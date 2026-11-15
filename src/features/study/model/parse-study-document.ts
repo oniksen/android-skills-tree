@@ -272,6 +272,11 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
         }
         const isBlank = lines[index].trim() === "";
         if (isBlank && (lines[index + 1] ?? "").startsWith(">")) {
+          // A blank line followed by a new `> [!WARNING]`-style marker starts
+          // the next note; without this, two adjacent alerts merge and the
+          // second marker leaks into the first note's text.
+          const nextLine = (lines[index + 1] ?? "").replace(/^>\s?/, "").trim();
+          if (NOTE_MARKER.test(nextLine)) break;
           quote.push("");
           index += 1;
           continue;

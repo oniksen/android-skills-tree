@@ -100,7 +100,8 @@ describe("StudyMarkdownRenderer", () => {
 
     expect(html).toContain('class="study-table-wrap"');
     expect(html).toContain('class="study-table"');
-    expect(html).toContain('role="region"');
+    expect(html).toContain('role="group"');
+    expect(html).toContain('aria-label="Таблица"');
   });
 
   it("рендерит блок кода с языком и кнопкой копирования", () => {
@@ -134,6 +135,15 @@ describe("StudyMarkdownRenderer", () => {
     expect(html).toContain('class="study-figure"');
     expect(html).toContain('class="study-figure-caption">Схема работы');
     expect(html).toContain('alt="Схема работы"');
+  });
+
+  it("не оборачивает figure в абзац", () => {
+    const html = renderToStaticMarkup(
+      <StudyMarkdownRenderer content={"# Тема\n\n## Раздел\n\n![Схема](https://example.com/a.png)"} />,
+    );
+
+    expect(html).toContain('<figure class="study-figure">');
+    expect(html).not.toContain("<p><figure");
   });
 
   it("не оставляет raw HTML в тексте", () => {

@@ -197,6 +197,19 @@ describe("parseStudySectionBody", () => {
     });
   });
 
+  it("разделяет соседние заметки, если вторая начинается с маркера", () => {
+    const blocks = parseStudySectionBody(
+      "> [!NOTE]\n> Первая заметка.\n\n> [!WARNING]\n> Второе предупреждение.",
+    );
+
+    expect(blocks.map((block) => block.type)).toEqual(["note", "note"]);
+    expect(blocks[0]).toMatchObject({ variant: "note", content: "Первая заметка." });
+    expect(blocks[1]).toMatchObject({
+      variant: "warn",
+      content: "Второе предупреждение.",
+    });
+  });
+
   it("разбирает директиву :::cards", () => {
     const blocks = parseStudySectionBody(`До.
 
