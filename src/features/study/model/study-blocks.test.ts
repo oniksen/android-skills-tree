@@ -97,7 +97,9 @@ describe("реестр блоков учебных материалов", () => 
       .filter((file) => file.endsWith(".tsx") && !file.includes(".test."));
 
     const offenders = files.filter((file) =>
-      fs.readFileSync(new URL(file, COMPONENTS_DIR), "utf8").includes("STUDY_BLOCK"),
+      /\bSTUDY_BLOCK\b/.test(
+        fs.readFileSync(new URL(file, COMPONENTS_DIR), "utf8"),
+      ),
     );
 
     expect(offenders).toEqual([]);
