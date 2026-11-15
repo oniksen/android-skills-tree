@@ -1,11 +1,8 @@
 "use client";
 
-import { memo } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { memo, useMemo } from "react";
+import { renderMarkdown } from "../model/markdown-pipeline";
 import { STUDY_INLINE_COMPONENTS } from "./markdown-components";
-
-const REMARK_PLUGINS = [remarkGfm];
 
 /**
  * Section titles are single-line text, but `1. Объявление` or `- текст`
@@ -20,11 +17,12 @@ function escapeBlockMarkers(text: string): string {
 
 /** Inline markdown for headings, card titles and hero copy. */
 function StudyInline({ text }: { text: string }) {
-  return (
-    <ReactMarkdown remarkPlugins={REMARK_PLUGINS} components={STUDY_INLINE_COMPONENTS}>
-      {escapeBlockMarkers(text)}
-    </ReactMarkdown>
+  const content = useMemo(
+    () => renderMarkdown(escapeBlockMarkers(text), STUDY_INLINE_COMPONENTS),
+    [text],
   );
+
+  return <>{content}</>;
 }
 
 export default memo(StudyInline);

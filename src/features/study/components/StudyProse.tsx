@@ -1,17 +1,11 @@
 "use client";
 
-import { memo } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeStudyHighlight from "../model/study-highlight";
+import { memo, useMemo } from "react";
+import { renderMarkdown } from "../model/markdown-pipeline";
 import {
   STUDY_MARKDOWN_COMPONENTS,
   STUDY_SOURCES_COMPONENTS,
 } from "./markdown-components";
-
-/** Stable arrays: `ReactMarkdown` rebuilds its processor on every render anyway. */
-const REMARK_PLUGINS = [remarkGfm];
-const REHYPE_PLUGINS = [rehypeStudyHighlight];
 
 function StudyProse({
   markdown,
@@ -20,17 +14,18 @@ function StudyProse({
   markdown: string;
   sources?: boolean;
 }) {
-  return (
-    <ReactMarkdown
-      remarkPlugins={REMARK_PLUGINS}
-      rehypePlugins={REHYPE_PLUGINS}
-      components={
-        sources ? STUDY_SOURCES_COMPONENTS : STUDY_MARKDOWN_COMPONENTS
-      }
-    >
-      {markdown}
-    </ReactMarkdown>
+  // The processor lives in `markdown-pipeline`, so only the tree conversion is
+  // repeated per render.
+  const content = useMemo(
+    () =>
+      renderMarkdown(
+        markdown,
+        sources ? STUDY_SOURCES_COMPONENTS : STUDY_MARKDOWN_COMPONENTS,
+      ),
+    [markdown, sources],
   );
+
+  return <>{content}</>;
 }
 
 export default memo(StudyProse);
