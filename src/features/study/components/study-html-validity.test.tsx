@@ -1,50 +1,13 @@
-import { HtmlValidate, type Report } from "html-validate";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { STUDY_MATERIALS } from "../study-materials.generated";
 import { renderFixture, renderFixturePage } from "./study-html-fixture";
+import {
+  hasExactClass,
+  studyHtmlMessages as messagesOf,
+  validateStudyMarkup as validate,
+} from "./study-html-validator";
 import StudyMarkdownRenderer from "./StudyMarkdownRenderer";
-
-/**
- * The renderer produces a page fragment, not a document: wrap it in the
- * smallest valid shell so html-validate can check the real DOM it emits.
- */
-function documentFor(body: string): string {
-  return `<!DOCTYPE html><html lang="ru"><head><title>test</title></head><body>${body}</body></html>`;
-}
-
-const htmlvalidate = new HtmlValidate({
-  extends: ["html-validate:recommended"],
-  rules: {
-    // react-dom/server serialises booleans as `disabled=""` and voids as
-    // `<input/>`; both are serializer artefacts, not authored markup.
-    "attribute-boolean-style": "off",
-    "void-style": "off",
-    // GFM table alignment arrives as `style="text-align:right"` from the
-    // Markdown pipeline; there is no class-based equivalent to switch to.
-    "no-inline-style": "off",
-  },
-});
-
-async function validate(markup: string): Promise<Report> {
-  return htmlvalidate.validateString(documentFor(markup));
-}
-
-function messagesOf(report: Report): string[] {
-  return report.results.flatMap((result) =>
-    result.messages.map(
-      (message) => `${message.ruleId} (${message.line}:${message.column}) ${message.message}`,
-    ),
-  );
-}
-
-/** Exact class token inside a `class` attribute — not a substring. */
-function hasExactClass(html: string, name: string): boolean {
-  for (const [, value] of html.matchAll(/class="([^"]*)"/g)) {
-    if (value.split(/\s+/).includes(name)) return true;
-  }
-  return false;
-}
 
 /**
  * The word `NaN` may legitimately appear in a material about numbers, so in
