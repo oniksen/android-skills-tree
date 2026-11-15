@@ -86,8 +86,15 @@ export const STUDY_BLOCK_MAP = {
     className: STUDY_BLOCK.sectionTitle,
     layout: "block",
   },
-  /** Markdown H1–H3 inside a section body are all rendered as `<h3>`. */
-  subtitle: { tags: ["h3"], className: STUDY_BLOCK.subtitle, layout: "block" },
+  /**
+   * Markdown H1–H3 inside a section body render as `<h3>`; H4–H6 render as
+   * `<h4>` together with `subtitleMinor`.
+   */
+  subtitle: {
+    tags: ["h3", "h4"],
+    className: STUDY_BLOCK.subtitle,
+    layout: "block",
+  },
   /** Markdown H4–H6 add the minor variant on top of `subtitle`. */
   subtitleMinor: {
     tags: ["h4"],
