@@ -1,17 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback } from "react";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { useUserState } from "./useUserState";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
-import { userSettingsPath } from "@/adapters/firestore-client/paths";
-import { createLiveStore } from "@/shared/lib/live-store";
-import { useLiveStore } from "@/shared/lib/use-live-store";
-import { registerSessionReset } from "@/shared/lib/session-reset";
-import type { Observer } from "@/ports/observation";
+import { userStatePath } from "@/adapters/firestore-client/paths";
+import { ensureUserState } from "@/adapters/firestore-client/state";
+import { patchCachedUserState } from "@/shared/lib/user-state-store";
 import type { UserSettings } from "@/types";
 
 const DEFAULT_SETTINGS: UserSettings = {
@@ -19,51 +18,15 @@ const DEFAULT_SETTINGS: UserSettings = {
   updatedAt: new Date(),
 };
 
-// One listener per user for the whole session.
-const settingsStore = createLiveStore<UserSettings>();
-registerSessionReset(() => settingsStore.disposeAll());
-
 export function useUserSettings() {
   const { uid, loading: authLoading } = useFirebaseAuth();
+  const { state, loading: stateLoading } = useUserState();
   const toast = useToast();
   const showToast = toast.show;
 
-  const start = useMemo(
-    () =>
-      uid
-        ? (observer: Observer<UserSettings>) => {
-            const ref = doc(db, ...userSettingsPath(uid));
-            return onSnapshot(
-              ref,
-              (snap) => {
-                observer.next(
-                  snap.exists() ? (snap.data() as UserSettings) : DEFAULT_SETTINGS,
-                );
-              },
-              (error) => observer.error?.(error),
-            );
-          }
-        : null,
-    [uid],
-  );
-
-  const snapshot = useLiveStore(settingsStore, uid, start);
-
-  useEffect(() => {
-    const error = snapshot.error;
-    if (!error) return;
-    console.error("Error listening to settings:", error);
-    if (isPermissionDenied(error)) {
-      showToast("Для отслеживания прогресса обратитесь к администратору.");
-    }
-    if (isQuotaExceeded(error)) {
-      showToast("Квота Firestore исчерпана. Повторите позже.");
-    }
-  }, [snapshot.error, showToast]);
-
   const signedOut = !authLoading && !uid;
-  const settings = signedOut ? null : (snapshot.data ?? null);
-  const loading = signedOut ? false : authLoading || snapshot.loading;
+  const settings = signedOut ? null : (state?.settings ?? null);
+  const loading = signedOut ? false : stateLoading;
 
   const todayKey = new Date().toISOString().slice(0, 10);
 
@@ -73,36 +36,60 @@ export function useUserSettings() {
 
   const incrementDailyCount = useCallback(async () => {
     if (!uid) return;
-    const ref = doc(db, ...userSettingsPath(uid));
+    await ensureUserState(uid);
+    const stateRef = doc(db, ...userStatePath(uid));
     const current = settings?.dailyCounts?.[todayKey] ?? 0;
     const nextCounts = { ...(settings?.dailyCounts ?? {}), [todayKey]: current + 1 };
     const next: UserSettings = {
       ...(settings ?? DEFAULT_SETTINGS),
       dailyCounts: nextCounts,
-      updatedAt: new Date(),
+      updatedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
     };
-    await setDoc(ref, { dailyCounts: nextCounts, updatedAt: new Date() }, { merge: true });
-    settingsStore.set(uid, next);
-  }, [uid, settings, todayKey]);
+    try {
+      await setDoc(stateRef, { settings: next }, { merge: true });
+      patchCachedUserState(uid, { settings: { ...next, updatedAt: new Date() } });
+    } catch (error) {
+      console.error("Error incrementing daily count:", error);
+      if (isPermissionDenied(error)) {
+        showToast("Для отслеживания прогресса обратитесь к администратору.");
+      }
+      if (isQuotaExceeded(error)) {
+        showToast("Квота Firestore исчерпана. Повторите позже.");
+      }
+      throw error;
+    }
+  }, [uid, settings, todayKey, showToast]);
 
   const saveSettings = useCallback(
     async (patch: Partial<UserSettings>) => {
       if (!uid) return;
-      const ref = doc(db, ...userSettingsPath(uid));
+      await ensureUserState(uid);
+      const stateRef = doc(db, ...userStatePath(uid));
       const next: UserSettings = {
         ...(settings ?? DEFAULT_SETTINGS),
         ...patch,
-        updatedAt: new Date(),
+        updatedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
       };
       if (patch.groqApiKey !== undefined) {
         next.groqKeyLast4 = patch.groqApiKey
           ? patch.groqApiKey.slice(-6)
           : undefined;
       }
-      await setDoc(ref, next, { merge: true });
-      settingsStore.set(uid, next);
+      try {
+        await setDoc(stateRef, { settings: next }, { merge: true });
+        patchCachedUserState(uid, { settings: { ...next, updatedAt: new Date() } });
+      } catch (error) {
+        console.error("Error saving settings:", error);
+        if (isPermissionDenied(error)) {
+          showToast("Для отслеживания прогресса обратитесь к администратору.");
+        }
+        if (isQuotaExceeded(error)) {
+          showToast("Квота Firestore исчерпана. Повторите позже.");
+        }
+        throw error;
+      }
     },
-    [uid, settings],
+    [uid, settings, showToast],
   );
 
   return { settings, loading, saveSettings, uid, getTodayCount, incrementDailyCount, todayKey };

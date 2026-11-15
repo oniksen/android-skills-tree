@@ -1,27 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { db } from "@/lib/firebase";
-import { doc, setDoc, runTransaction } from "firebase/firestore";
+import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { syncStreak } from "@/adapters/firestore-client/streak-commands";
-import { useServices } from "@/composition/services-context";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { useUserState } from "./useUserState";
 import { calcSkillScore, calcTotalScore } from "@/core/domain/scoring";
 import { computeAssessmentToggle } from "@/core/use-cases/compute-assessment-toggle";
 import { checkAchievements } from "@/lib/firestore-actions";
+import {
+  ASSESSMENT_AWARD_TYPES,
+  achievementKey,
+  getAssessmentAwardKeys,
+} from "@/core/domain/achievement-conditions";
+
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
-import { isQuotaExceeded } from "@/shared/lib/quota";
-import { createLiveStore } from "@/shared/lib/live-store";
-import { useLiveStore } from "@/shared/lib/use-live-store";
-import { registerSessionReset } from "@/shared/lib/session-reset";
-import {
-  userAssessmentPath,
-  userCurrencyPath,
-  userProgressPath,
-} from "@/adapters/firestore-client/paths";
-import type { Observer } from "@/ports/observation";
-import type { AssessmentData, CurrencyData } from "@/types";
+import { userStatePath } from "@/adapters/firestore-client/paths";
+import { ensureUserState, normalizeUserState } from "@/adapters/firestore-client/state";
+import { patchCachedUserState } from "@/shared/lib/user-state-store";
+import { recordWrite } from "@/shared/lib/firestore-metrics";
+import type { AssessmentData, CurrencyData, UserProgress } from "@/types";
 
 export interface CrystalAward {
   skillId: string;
@@ -31,72 +31,53 @@ export interface CrystalAward {
 
 const EMPTY_ASSESSMENT_MAP: Record<string, AssessmentData> = {};
 
-// One collection listener per user for the whole session.
-const assessmentStore = createLiveStore<Record<string, AssessmentData>>();
-registerSessionReset(() => assessmentStore.disposeAll());
-
 export function useAssessments() {
-  const { assessments: repository } = useServices();
   const { uid, loading: authLoading } = useFirebaseAuth();
+  const { state, loading: stateLoading } = useUserState();
   const toast = useToast();
   const showToast = toast.show;
   const [lastAwarded, setLastAwarded] = useState<CrystalAward | null>(null);
   const mapRef = useRef<Record<string, AssessmentData>>(EMPTY_ASSESSMENT_MAP);
 
-  const start = useMemo(
-    () =>
-      uid
-        ? (observer: Observer<Record<string, AssessmentData>>) =>
-            repository.subscribe(uid, observer)
-        : null,
-    [uid, repository],
-  );
-
-  const snapshot = useLiveStore(assessmentStore, uid, start);
-  const assessmentMap = snapshot.data ?? EMPTY_ASSESSMENT_MAP;
+  const assessmentMap = state?.assessments ?? EMPTY_ASSESSMENT_MAP;
 
   useEffect(() => {
-    if (snapshot.data) mapRef.current = snapshot.data;
-  }, [snapshot.data]);
+    if (state?.assessments) mapRef.current = state.assessments;
+  }, [state?.assessments]);
 
-  useEffect(() => {
-    const error = snapshot.error;
-    if (!error) return;
-    console.error("Error listening to assessments:", error);
-    if (isPermissionDenied(error)) {
-      showToast("Для отслеживания прогресса обратитесь к администратору.");
-    }
-    if (isQuotaExceeded(error)) {
-      showToast("Квота Firestore исчерпана. Повторите позже.");
-    }
-  }, [snapshot.error, showToast]);
+  const signedOut = !authLoading && !uid;
+  const loading = signedOut ? false : stateLoading;
 
   const toggleSubtopic = useCallback(
     async (skillId: string, subtopicName: string) => {
       if (!uid) return null;
 
-      const assessmentRef = doc(db, ...userAssessmentPath(uid, skillId));
-      const currencyRef = doc(db, ...userCurrencyPath(uid));
+      await ensureUserState(uid);
+
+      const stateRef = doc(db, ...userStatePath(uid));
 
       try {
         const result = await runTransaction(db, async (tx) => {
-          const [assessmentSnap, currencySnap] = await Promise.all([
-            tx.get(assessmentRef),
-            tx.get(currencyRef),
-          ]);
+          const stateSnap = await tx.get(stateRef);
+          const state = normalizeUserState(stateSnap.data());
 
+          const assessment = (state.assessments?.[skillId] ?? {}) as {
+            subtopics?: Record<string, boolean>;
+          };
           const storedSubtopics =
-            (assessmentSnap.data()?.subtopics as Record<string, boolean> | undefined) ?? {};
-          const currency = currencySnap.exists()
-            ? (currencySnap.data() as Partial<CurrencyData>)
-            : {};
+            (assessment.subtopics as Record<string, boolean> | undefined) ?? {};
+          const currency = state.currency ?? ({} as Partial<CurrencyData>);
           const balance = typeof currency.balance === "number" ? currency.balance : 0;
           const claimedSkills =
             currency.claimedSkills && typeof currency.claimedSkills === "object"
               ? (currency.claimedSkills as Record<string, string>)
               : {};
+          const items =
+            currency.items && typeof currency.items === "object" && !Array.isArray(currency.items)
+              ? (currency.items as Record<string, number>)
+              : {};
 
-          const { nextSubtopics, nextValue, complete, justCompleted, awarded } =
+          const { nextSubtopics, nextValue, complete, justCompleted, completionChanged, awarded } =
             computeAssessmentToggle({
               skillId,
               subtopicName,
@@ -105,55 +86,75 @@ export function useAssessments() {
             });
           const newScore = calcSkillScore(skillId, nextSubtopics);
 
-          tx.set(
-            assessmentRef,
-            {
-              subtopics: nextSubtopics,
-              score: newScore,
-              updatedAt: new Date(),
-            },
-            { merge: true },
-          );
-
+          let nextCurrency: CurrencyData | undefined;
           if (awarded > 0) {
-            tx.set(
-              currencyRef,
-              {
-                balance: balance + awarded,
-                claimedSkills: { ...claimedSkills, [skillId]: new Date().toISOString() },
-                updatedAt: new Date(),
-              },
-              { merge: true },
-            );
+            nextCurrency = {
+              balance: balance + awarded,
+              items,
+              claimedSkills: { ...claimedSkills, [skillId]: new Date().toISOString() },
+              updatedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
+            };
           }
 
-          return { nextValue, nextSubtopics, newScore, complete, awarded, justCompleted };
+          const totalScore = calcTotalScore({
+            ...(state.assessments ?? {}),
+            [skillId]: { score: newScore, subtopics: nextSubtopics },
+          } as Record<string, { subtopics?: Record<string, boolean> }>);
+
+          const statePayload: Record<string, unknown> = {
+            assessments: { [skillId]: { score: newScore, subtopics: nextSubtopics, updatedAt: serverTimestamp() as unknown as Date } }, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
+            progress: { totalScore },
+          };
+          if (awarded > 0 && nextCurrency) {
+            statePayload.currency = nextCurrency;
+          }
+          tx.set(stateRef, statePayload, { merge: true });
+
+          return { nextValue, nextSubtopics, newScore, complete, awarded, justCompleted, completionChanged, nextCurrency };
         });
 
-        const { nextValue, nextSubtopics, newScore, awarded, justCompleted } = result;
+        recordWrite("toggleSubtopic", 1);
+
+        const { nextValue, nextSubtopics, newScore, awarded, justCompleted, completionChanged, nextCurrency } = result;
 
         const nextMap = {
           ...mapRef.current,
           [skillId]: { score: newScore, subtopics: nextSubtopics },
         };
         mapRef.current = nextMap;
-        // Optimistic update: the listener confirms it a moment later.
-        assessmentStore.set(uid, nextMap);
 
-        const totalScore = calcTotalScore(nextMap);
-        const progressRef = doc(db, ...userProgressPath(uid));
-        await setDoc(progressRef, { totalScore }, { merge: true });
+        const desiredKeys = getAssessmentAwardKeys(nextMap);
+        const cached = state ? Object.values(state.achievements) : null;
+        let shouldCheckAchievements = cached === null;
+        if (!shouldCheckAchievements && cached) {
+          const cachedKeys = new Set(
+            cached
+              .filter((a) => ASSESSMENT_AWARD_TYPES.has(a.type))
+              .map((a) => achievementKey(a.type, a.metadata)),
+          );
+          shouldCheckAchievements =
+            desiredKeys.size !== cachedKeys.size ||
+            [...desiredKeys].some((key) => !cachedKeys.has(key));
+        }
 
-        void checkAchievements(uid, nextMap).catch((error) => {
-          console.error("Error syncing achievements:", error);
-          if (isPermissionDenied(error)) {
-            showToast("Для отслеживания прогресса обратитесь к администратору.");
-          }
-        });
+        if (shouldCheckAchievements) {
+          void checkAchievements(uid, nextMap).catch((error) => {
+            console.error("Error syncing achievements:", error);
+            if (isPermissionDenied(error)) {
+              showToast("Для отслеживания прогресса обратитесь к администратору.");
+            }
+          });
+        }
 
         if (awarded > 0) {
           setLastAwarded({ skillId, amount: awarded, id: Date.now() });
         }
+
+        patchCachedUserState(uid, {
+          assessments: nextMap,
+          progress: { ...(state?.progress ?? {}), totalScore: calcTotalScore(nextMap) } as UserProgress,
+          ...(awarded > 0 && nextCurrency ? { currency: { ...nextCurrency, updatedAt: new Date() } } : {}),
+        });
 
         if (nextValue) {
           void syncStreak().then((res) => {
@@ -166,7 +167,7 @@ export function useAssessments() {
           });
         }
 
-        return { justCompleted };
+        return { justCompleted, completionChanged };
       } catch (error) {
         console.error("Error saving assessment:", error);
         if (isPermissionDenied(error)) {
@@ -175,11 +176,8 @@ export function useAssessments() {
         return null;
       }
     },
-    [uid, showToast],
+    [uid, showToast, state],
   );
-
-  const signedOut = !authLoading && !uid;
-  const loading = signedOut ? false : authLoading || snapshot.loading;
 
   return {
     assessmentMap: signedOut ? EMPTY_ASSESSMENT_MAP : assessmentMap,

@@ -4,6 +4,7 @@ import { buyItem } from "./currency-commands";
 const mocks = vi.hoisted(() => ({
   doc: vi.fn(),
   runTransaction: vi.fn(),
+  serverTimestamp: vi.fn(() => "SERVER_TS"),
 }));
 
 vi.mock("firebase/firestore", () => mocks);
@@ -11,6 +12,12 @@ vi.mock("firebase/firestore", () => mocks);
 vi.mock("@/lib/firebase", () => ({
   auth: { currentUser: { uid: "user-1" } },
   db: { name: "mock-db" },
+}));
+
+vi.mock("@/adapters/firestore-client/state", () => ({
+  ensureUserState: vi.fn().mockResolvedValue({}),
+  readUserState: vi.fn().mockResolvedValue({}),
+  normalizeUserState: vi.fn((d: unknown) => d ?? {}),
 }));
 
 vi.mock("@/data/shop", () => ({
@@ -43,7 +50,7 @@ describe("buyItem", () => {
       const tx = {
         get: vi.fn().mockResolvedValue({
           exists: () => true,
-          data: () => ({ balance: 5, items: {} }),
+          data: () => ({ currency: { balance: 5, items: {} } }),
         }),
         set: vi.fn(),
       };
@@ -59,7 +66,7 @@ describe("buyItem", () => {
       const tx = {
         get: vi.fn().mockResolvedValue({
           exists: () => true,
-          data: () => ({ balance: 20, items: {} }),
+          data: () => ({ currency: { balance: 20, items: {} } }),
         }),
         set: setMock,
       };

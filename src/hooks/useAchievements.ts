@@ -1,52 +1,21 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { useServices } from "@/composition/services-context";
+import { useEffect } from "react";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { useUserState } from "./useUserState";
 import { useToast } from "@/shared/lib/toast-context";
 import { isPermissionDenied } from "@/shared/lib/permission-denied";
 import { isQuotaExceeded } from "@/shared/lib/quota";
 import { checkAchievementsOnce } from "@/lib/firestore-actions";
-import { createLiveStore } from "@/shared/lib/live-store";
-import { useLiveStore } from "@/shared/lib/use-live-store";
-import { registerSessionReset } from "@/shared/lib/session-reset";
-import type { Observer } from "@/ports/observation";
 import type { Achievement } from "@/types";
 
 const EMPTY_ACHIEVEMENTS: Achievement[] = [];
 
-// One collection listener per user for the whole session.
-const achievementStore = createLiveStore<Achievement[]>();
-registerSessionReset(() => achievementStore.disposeAll());
-
 export function useAchievements() {
-  const { achievements: repository } = useServices();
   const { uid, loading: authLoading } = useFirebaseAuth();
+  const { state, loading: stateLoading } = useUserState();
   const toast = useToast();
   const showToast = toast.show;
-
-  const start = useMemo(
-    () =>
-      uid
-        ? (observer: Observer<Achievement[]>) =>
-            repository.subscribe(uid, observer)
-        : null,
-    [uid, repository],
-  );
-
-  const snapshot = useLiveStore(achievementStore, uid, start);
-
-  useEffect(() => {
-    const error = snapshot.error;
-    if (!error) return;
-    console.error("Error listening to achievements:", error);
-    if (isPermissionDenied(error)) {
-      showToast("Для отслеживания прогресса обратитесь к администратору.");
-    }
-    if (isQuotaExceeded(error)) {
-      showToast("Квота Firestore исчерпана. Повторите позже.");
-    }
-  }, [snapshot.error, showToast]);
 
   useEffect(() => {
     if (!uid) return;
@@ -63,8 +32,14 @@ export function useAchievements() {
 
   const signedOut = !authLoading && !uid;
 
+  const achievements = signedOut
+    ? EMPTY_ACHIEVEMENTS
+    : Object.values(state?.achievements ?? {}).sort(
+        (a, b) => b.achievedAt.getTime() - a.achievedAt.getTime(),
+      );
+
   return {
-    achievements: signedOut ? EMPTY_ACHIEVEMENTS : (snapshot.data ?? EMPTY_ACHIEVEMENTS),
-    loading: signedOut ? false : authLoading || snapshot.loading,
+    achievements,
+    loading: signedOut ? false : stateLoading,
   };
 }

@@ -1,128 +1,413 @@
-# Аудит Firestore
+# Аудит и план оптимизации Firestore
 
-- **Дата:** 2026-10-17
-- **Цель:** описать фактическую модель данных, паттерны доступа и предложить
-  улучшения без изменения схемы (решение согласовано).
+- **Дата:** 2026-11-09
+- **Статус:** фазы 0, 1 и 2 закрыты (2026-11-09). Фаза 3 выполнена в
+  client-safe части (offline, App Check, server timestamps, size guard,
+  transactional achievements, dev metrics); server-authoritative Cloud Functions
+  и budget alerts требуют отдельного инфраструктурного этапа.
+- **Цель:** зафиксировать фактическую модель данных, уже сделанные оптимизации
+  и оставшиеся шаги по снижению количества чтений/записей без потери
+  функциональности.
 
-## 1. Фактическая схема данных
+> Фазы 0–2 выполнены. Фаза 2 консолидировала состояние в `users/{uid}/state/current`;
+> legacy-коллекции сохранены для отката. Фаза 3 (инфраструктура) отложена.
 
-Все данные изолированы по пользователю под `users/{uid}`:
+## 1. Фактическая схема данных (Phase 2: state document)
 
+Источник истины — один документ состояния на пользователя:
+
+```text
+users/{uid}/state/current     # UserState (всё состояние)
 ```
-users/{uid}/
-├── progress/current        # UserProgress
-├── assessments/{skillId}   # Assessment (по одному документу на навык)
-├── projects/{projectId}    # ProjectProgress
-├── achievements/{autoId}   # Achievement (авто-id)
-├── currency/current        # CurrencyData
-└── streaks/current         # StreakData
-```
 
-### Поля документов
+Старые коллекции `progress/current`, `assessments`, `projects`, `achievements`,
+`currency/current`, `streaks/current`, `settings/current` сохранены как
+legacy-данные для миграции/отката и **больше не пишутся** приложением.
 
-| Путь | Поля |
-|------|------|
-| `progress/current` | `currentLevelId: string`, `unlockedLevelIds: string[]`, `totalScore: number` |
-| `assessments/{skillId}` | `subtopics: Record<string, boolean>`, `score: number`, `updatedAt: Date` |
-| `projects/{projectId}` | `completed: boolean`, `completedAt: Date \| null`, (в `resetLevelProgress` фильтр по `levelId`) |
-| `achievements/{autoId}` | `type: string`, `metadata: Record<string, unknown>`, `achievedAt: Date` |
-| `currency/current` | `balance: number`, `items: Record<string, number>`, `claimedSkills?: Record<string, string>`, `updatedAt: Date` |
-| `streaks/current` | `activeDays: string[]`, `frozenDays: string[]`, `lastActiveDate: string`, `currentStreak: number`, `longestStreak: number`, `updatedAt: Date` |
+### Поля документа `state/current` (`UserState`)
 
-> Примечание: коллекция серии называется `streaks` (во множественном числе),
-> остальные — по имени сущности. Несогласованность именования.
+| Поле | Тип | Описание |
+|------|-----|----------|
+| `progress` | `UserProgress` | `currentLevelId`, `unlockedLevelIds`, `totalScore` |
+| `assessments` | `Record<skillId, Assessment>` | `subtopics`, `score`, `updatedAt` |
+| `projects` | `Record<projectId, ProjectProgress>` | `completed`, `completedAt` |
+| `achievements` | `Record<achievementKey, Achievement>` | `id`, `type`, `metadata`, `achievedAt` |
+| `currency` | `CurrencyData` | `balance`, `items`, `claimedSkills`, `updatedAt` |
+| `streak` | `StreakData` | `activeDays`, `frozenDays`, `lastActiveDate`, `currentStreak`, `longestStreak`, `updatedAt` |
+| `settings` | `UserSettings` | `maxDailyQuestions`, `dailyCounts`, `groqApiKey`, `groqKeyLast4`, `updatedAt` |
+| `migratedAt` | `Date` (опц.) | штамп идемпотентной ленивой миграции |
 
-## 2. Паттерны доступа (текущие)
+Примечания:
+
+- Новые достижения пишутся с ключом = `achievementKey(type, metadata)`
+  (`category_perfect::<id>`, `level_master::<id>`, `level_up::<to_level>`,
+  `streak_<n>`, `path_complete`). Legacy autoId-документы мигрируются в
+  детерминированные ключи при первом чтении.
+- `readLegacyUserState` (`src/adapters/firestore-client/state.ts`) — единственный
+  читатель legacy-коллекций.
+
+## 2. Паттерны доступа (Phase 2)
 
 ### Чтение (realtime)
-Шесть `onSnapshot`-листенеров на сессию:
 
-| Хук | Слушает |
-|-----|---------|
-| `useUserProgress` | `progress/current` (doc) |
-| `useCurrency` | `currency/current` (doc) |
-| `useStreak` | `streaks/current` (doc) |
-| `useAssessments` | `assessments` (**вся коллекция**) |
-| `useProjectProgress` | `projects` (**вся коллекция**) |
-| `useAchievements` | `achievements` (**вся коллекция**) |
+Один `onSnapshot` на документ `users/{uid}/state/current` через
+`useUserState` + `userStateStore`. Все доменные хуки читают из одного снапшота.
 
-Плюс `useUserProgress` при каждом входе вызывает `readAssessmentMap` +
-`backfillTotalScore` + `checkAchievements` (дополнительные чтения всей коллекции
-assessments и achievements).
+| Хук | Читает из |
+|-----|-----------|
+| `useUserProgress` | `state.progress` |
+| `useAssessments` | `state.assessments` |
+| `useProjectProgress` | `state.projects` |
+| `useAchievements` | `state.achievements` |
+| `useCurrency` | `state.currency` |
+| `useStreak` | `state.streak` |
+| `useUserSettings` | `state.settings` |
+
+`useStreak` читает `state.streak` из общего снапшота; `getStreak`/`syncStreak`
+используют `readUserState`/транзакцию по `state/current`.
+
+Дополнительные разовые чтения:
+
+- ленивая миграция при первом входе (`readLegacyUserState`) — один раз;
+- `checkAchievementsOnce` (защищён общим Set по uid);
+- `checkLevelUp` после завершения навыка читает `state/current` через
+  `readUserState` (один `getDoc`).
 
 ### Запись
-- `useAssessments.toggleSubtopic` — транзакция: обновляет `assessments/{skillId}`
-  и `currency/current` (начисляет кристаллы, если навык завершён впервые).
-- `currency.buyItem` — транзакция по `currency/current`.
-- `streak.syncStreak` / `applyAutoFreezes` — транзакции по `streaks/current`
-  и `currency/current`. **Молодцы: критичные операции уже в транзакциях.**
-- `firestore-actions.checkLevelUp` — **не транзакция**: читает прогресс/оценки,
-  затем пишет `progress/current` и достижение отдельными вызовами. Возможны гонки.
-- `firestore-actions.resetLevelProgress` — циклы `deleteDoc` (N последовательных
-  записей), не batch.
 
-## 3. Проблемы и предложения
+- `useAssessments.toggleSubtopic` — одна транзакция по `state/current`:
+  assessment + currency + progress.totalScore (начисление кристаллов при
+  первом завершении навыка). После транзакции `checkAchievements` вызывается
+  только при изменении набора award-ключей, затем `syncStreak` (если включили
+  субтопик).
+- `buyItem` — транзакция по `state/current` (currency).
+- `syncStreak` / `applyAutoFreezes` — транзакции по `state/current`.
+- `checkLevelUp` — читает state, затем пишет `state/current` (progress) и
+  вызывает `checkAchievements`.
+- `reconcileAchievements` — пишет/удаляет достижения в `state/current`
+  (`updateDoc`).
+- `updateUserProgress` / `updateProgress` — `setDoc({ progress }, { merge: true })`
+  только с payload вызывающего.
+- `useUserSettings` — запись `setDoc({ settings }, { merge: true })` +
+  оптимистичное обновление live-store.
 
-### 3.1 Дублирование слоя доступа
-`getUserProgress`, `updateUserProgress`, `getProjectProgressMap` реализованы в
-`src/lib/firestore.ts` **и** `src/lib/firestore-actions.ts`.
+## 3. Что уже сделано
 
-**Предложение.** Единый модуль путей + одна реализация на функцию; убрать мёртвый
-код (`saveAssessment`, `toggleProjectCompletion`, `deleteProjectProgress`,
-`createDefaultUserProgress`, `queries.ts` — используются ли они вообще).
+- **Shared live-store** (`src/shared/lib/live-store.ts`,
+  `use-live-store.ts`): одна подписка на `uid + домен` на сессию,
+  `useSyncExternalStore`, сохранение последнего снапшота при ошибке.
+- **`oncePerSession`**: backfill total score и `checkAchievements` больше не
+  повторяются на каждом маунте страницы.
+- **Единый auth store** (`auth-store.ts`): один `onAuthStateChanged` на
+  приложение вместо подписки в каждом хуке.
+- **Session reset** при смене пользователя: `disposeAll` для всех live-store и
+  очистка кэшей.
+- **Оптимистичное обновление** assessments после транзакции.
+- **Обработка `permission-denied` и `resource-exhausted`** с тостами.
+- **`firestore.rules`** и `firestore.indexes.json` уже есть в репозитории
+  (правила: read/write только своих данных; индексы пока не требуются).
+- **Фаза 0 (2026-11-09):**
+  - `checkAchievements` вызывается только при изменении набора award-ключей
+    (`category_perfect`/`level_master`/`path_complete`, порог 7%), а не на
+    каждый тоггл;
+  - `totalScore` пишется в той же транзакции, что assessment + currency;
+  - `reconcileAchievements` использует per-uid cache достижений из live-store,
+    `getDocs` — только fallback один раз за сессию;
+  - `addStreakAchievementIfNotExists` больше не сканирует коллекцию: cache по
+    типу, type-query как fallback, детерминированный id для новых записей;
+  - `updateUserProgress` / `updateProgress` мержат только payload вызывающего,
+    без перезаписи `currentLevelId`/`unlockedLevelIds` дефолтами.
+- **Фаза 1 (2026-11-09):**
+  - `reconcileAchievements` пишет/удаляет через `writeBatch` (до 500 операций);
+  - удалены мёртвые achievement-хелперы (`addAchievementIfNotExists`,
+    `addAchievementsIfNotExists`, `deleteAchievementsByLevel`,
+    `deleteCategoryPerfectAchievement`) и их тесты;
+  - одновременные `getStreak` дедуплицируются через `streakInFlight`;
+  - `useUserSettings` больше не держит realtime-listener: один `getDoc` +
+    оптимистичное обновление live-store;
+  - dev read counter отложен (не добавлен, чтобы не шуметь в production).
+- **Фаза 2 (2026-11-09):**
+  - введён единый документ `users/{uid}/state/current` (`UserState`);
+  - ленивая идемпотентная миграция из legacy-коллекций (`readLegacyUserState`,
+    штамп `migratedAt`);
+  - все хуки читают один документ; тоггл — одна транзакция `state/current`;
+  - мутации достижений/streak сериализованы per-uid через `runExclusive`
+    (in-memory lock) — убирает гонку внутри вкладки;
+  - удалены legacy-репозитории/порты и achievement-cache;
+  - legacy-коллекции сохранены как migration/rollback данные.
 
-### 3.2 Отсутствие констант путей и типизации
-Строки `doc(db, "users", uid, "assessments", skillId)` разбросаны по файлам.
+## 4. Оставшиеся проблемы
 
-**Предложение.** Ввести `core`-константы путей и типизированные конвертеры
-(`converter<T>()`), чтобы структура Firestore была описана в одном месте.
+### Статус после фаз 0–1
 
-### 3.3 Смешанные клиентские записи
-См. `security-audit` S3. В целевой архитектуре записи переносятся в серверный
-слой; `firestore-actions.ts` (client) заменяется серверными сценариями.
+| Проблема | Статус |
+|----------|--------|
+| P0: сканы коллекции достижений | ✅ закрыто (state document; legacy cache удалён) |
+| P0: `checkAchievements` на каждый тоггл | ✅ закрыто (award-key set diff) |
+| P1: отдельная запись `totalScore` | ✅ закрыто (в транзакции) |
+| P1: N assessment-документов | ✅ закрыто (Phase 2: один документ) |
+| P1: `checkLevelUp` не транзакционен | ⏳ остаётся (Phase 3) |
+| P2: мёртвый код достижений | ✅ закрыто |
+| P2: инфраструктура | ⏳ частично: settings listener убран, streak dedupe; offline/App Check остаются |
 
-### 3.4 Неатомарность `checkLevelUp`
-Проверка условий и запись уровня/достижения не транзакционны.
+Обозначения: `K` — число assessment-документов (до ~227), `A` — число
+достижений, `P` — число проектов.
 
-**Предложение.** Обернуть в `runTransaction` (signal server-side) или в Admin
-`runTransaction`, чтобы условия и запись были атомарны.
+### P0. Сканы коллекции достижений — ✅ закрыто
 
-### 3.5 Батчинг удаления
-`resetLevelProgress` удаляет документы в цикле.
+До фазы 0 `reconcileAchievements` (`src/lib/firestore.ts`) делал `getDocs` по
+всей коллекции достижений. Он вызывается из `checkAchievements`, а тот — из
+`toggleSubtopic` на **каждый** клик по чекбоксу. Дополнительно
+`addStreakAchievementIfNotExists` (`streak-commands.ts`) сканировал ту же
+коллекцию при каждом `syncStreak`.
 
-**Предложение.** Использовать `writeBatch` (до 500 операций на батч).
+Было на один тоггл:
 
-### 3.6 Timestamps
-Смешение `new Date()` на клиенте и потенциального `serverTimestamp()`. При
-server-authoritative важно писать `FieldValue.serverTimestamp()` — доверенное
-время сервера.
+- включение субтопика: транзакция `2` + `checkAchievements` (`A + 2`) +
+  `syncStreak` (`A + 1`) = **`2A + 5`**;
+- выключение: **`A + 4`**.
 
-### 3.7 Полные коллекции в listeners
-`assessments`/`projects`/`achievements` слушаются целиком. Сейчас объёмы небольшие
-(~227 навыков), но каждое изменение документа → повторная доставка. Для будущего
-масштаба:
+При `A = 20` это ~45 и ~24 чтения на один клик.
 
-**Предложение.**
-- слушать только `doc` там, где нужен агрегат;
-- либо вычислять агрегаты (`totalScore`, счётчики) на сервере и слушать один
-  `progress/current`;
-- при росте коллекций — пагинация/`limit()`.
+После фазы 0: cache достижений, fallback `getDocs` один раз за сессию,
+`addStreakAchievementIfNotExists` использует cache/type-query вместо скана.
 
-### 3.8 Валидация на границе
-Данные из Firestore кастуются через `as UserProgress` без проверки.
+### P0. `checkAchievements` на каждый тоггл — ✅ закрыто
 
-**Предложение.** Валидировать/нормализовать (zod) при чтении, чтобы некорректные
-документы не ломали UI.
+Достижения меняются при пересечении 7% порогов
+`category_perfect`/`level_master`/`path_complete` или порогов streak. Теперь
+`toggleSubtopic` вычисляет набор award-ключей локально и вызывает
+`checkAchievements` только при его изменении.
 
-### 3.9 Индексы и правила
-В репозитории нет `firestore.indexes.json` и `firestore.rules`. Текущие запросы —
-чтение коллекций без `where`/`orderBy`, составные индексы пока не требуются, но
-правила обязательны (см. `security-audit` S2).
+### P1. Отдельная запись `totalScore` — ✅ закрыто
 
-## 4. Итог
+`toggleSubtopic` держит транзакцию на assessment + currency, а `totalScore`
+теперь пишется в `progress/current` в той же транзакции. Отдельного `setDoc`
+больше нет.
 
-- **Схему сохраняем** (миграция данных не нужна).
-- **Немедленно:** правила Firestore в репозитории; устранение дублей и мёртвого кода;
-  `writeBatch` в `resetLevelProgress`; транзакция в `checkLevelUp`.
-- **В рамках server-authoritative:** все записи — через Admin SDK; агрегаты
-  (`totalScore`, баланс, streak) считаются сервером; клиент только читает/слушает.
+### P1. N assessment-документов
+
+Стартовая загрузка читает `K` документов коллекции `assessments`. Это самый
+дорогой источник чтений при первом входе:
+
+`progress 1 + assessments K + achievements A + projects P + currency 1 +
+settings 1 + streak 1` ≈ **`K + A + P + 5`**.
+
+### P1. `checkLevelUp` не транзакционен
+
+Проверка условий и запись уровня/достижения разнесены. Возможны гонки при
+быстрых кликах или нескольких вкладках.
+
+### P2. Мёртвый код в слое достижений
+
+`addAchievementIfNotExists`, `addAchievementsIfNotExists`,
+`deleteAchievementsByLevel`, `deleteCategoryPerfectAchievement` сейчас не
+вызываются из production-кода (только тесты). Их можно удалить или перевести
+на детерминированные id, чтобы не поддерживать сканы.
+
+### P2. Инфраструктура
+
+- Нет offline persistence (`enableIndexedDbPersistence`).
+- Нет App Check.
+- Нет серверной агрегации: клиент сам считает `totalScore`, достижения и
+  level-up.
+- Timestamps смешаны: клиентский `new Date()` вместо `serverTimestamp()`.
+- Данные из Firestore кастуются через `as T` без валидации.
+
+## 5. План оптимизации
+
+### Фаза 0 — быстрые выигрыши (без миграции) — ✅ выполнено
+
+1. **Условный `checkAchievements`.** ✅ В `toggleSubtopic` вызывается только при
+   award-key set diff (изменение набора category_perfect/level_master/path_complete, порог 7%). На обычный
+   тоггл обновляется только `totalScore`.
+2. **Детерминированные id вместо сканов.** ✅
+   - `reconcileAchievements` использует per-uid cache достижений из live-store;
+     `getDocs` — только fallback один раз за сессию.
+   - `addStreakAchievementIfNotExists` проверяет cache по типу, при его
+     отсутствии — type-query, затем пишет детерминированный
+     `streak_<n>`; legacy autoId не дублируется.
+   - Удаление достижений в reconcile идёт по известным id.
+3. **`totalScore` в ту же транзакцию**, что и assessment + currency. ✅
+4. **`writeBatch`** для массовых записей/удалений достижений. ✅ выполнено в
+   фазе 1 (батчи до 500 операций).
+5. **`updateUserProgress` / `updateProgress`** — `setDoc(data, { merge: true })`
+   **только с payload вызывающего**. ✅ Важно: не добавлять дефолты в merge,
+   иначе частичное обновление перезапишет `currentLevelId`/`unlockedLevelIds`.
+   Дефолты остаются в `getUserProgress`/progress-repository.
+6. Удалить мёртвые функции достижений или перевести их на id. ✅ выполнено в
+   фазе 1: `addAchievementIfNotExists`, `addAchievementsIfNotExists`,
+   `deleteAchievementsByLevel`, `deleteCategoryPerfectAchievement` удалены
+   вместе с тестами.
+
+Фактический эффект: обычный тоггл — **2–4 чтения вместо `2A + 5`**; сканы
+коллекции достижений в hot path отсутствуют. Проверки: `npm run lint`,
+`npm run typecheck` — чисто; `npm test` — 301 passed, 8 pre-existing failures
+в data-driven тестах (weights/currency/scoring/quiz-questions), не связанных
+с Firestore.
+
+### Фаза 1 — объединение чтений и cleanup — ✅ выполнено
+
+1. ~~In-memory кэш достижений~~ — ✅ сделано в фазе 0.
+2. `writeBatch` в `reconcileAchievements` + удаление мёртвых функций достижений.
+   ✅ Батчи до 500 операций, хелперы и их тесты удалены.
+3. `useStreak`: оставлен TTL-кэш, добавлен `streakInFlight` для дедупликации
+   одновременных `getDoc`. ✅
+4. `useUserSettings`: realtime-listener заменён на один `getDoc` +
+   оптимистичное обновление store. ✅ Минус один listener.
+5. Dev-счётчик вызовов `getDoc`/`getDocs` — ⏳ отложен: не добавляли
+   instrumentation в production-код.
+
+Фактический эффект: меньше round-trip на запись, 5 listeners вместо 6,
+предсказуемые чтения на старте.
+
+### Фаза 2 — консолидация документов — ✅ выполнено
+
+Введён единый документ состояния `users/{uid}/state/current` (`UserState`) с
+картами:
+
+```text
+assessments: Record<skillId, { subtopics, score, updatedAt }>
+projects:    Record<projectId, { completed, completedAt }>
+achievements: Record<achievementKey, Achievement>
+currency, streak, settings, progress — вложенными полями
+```
+
+Все доменные хуки читают **один документ** через `useUserState`. Тоггл —
+одна транзакция по `state/current`: **1 чтение + 1 запись**. Стартовая
+загрузка — **1 документ** вместо `K + A + P`.
+
+Миграция:
+
+- идемпотентная функция при первом входе: если `state/current` нет — собрать из
+  старых коллекций, записать, поставить `migratedAt`;
+- старые коллекции сохранены как migration/rollback данные и больше не пишутся;
+- runtime-проверка размера документа не добавлена; лимит 1 MiB остаётся
+  риском, шардирование assessments по уровням — fallback на будущее;
+- `firestore.rules` покрывают новый путь через `users/{uid}/{document=**}`;
+- legacy-репозитории, порты и achievement-cache удалены.
+
+Это единственный этап, который изменил ранее согласованное решение «без
+изменения схемы». Он выполнен после фаз 0–1, когда метрики всё ещё показывали
+высокий расход на старте.
+
+### Фаза 3 — инфраструктура
+
+Phase 3a (выполнено):
+- Offline persistence (IndexedDB, multi-tab).
+- App Check для защиты квоты (опционально, по env).
+
+Phase 3b (выполнено):
+- `serverTimestamp()` для доверенного времени (user-visible timestamps).
+- Runtime size guard: предупреждение при приближении к 1 MiB (только dev, без блокировки/шардирования).
+- `reconcileAchievements`: транзакция по `state/current`, cross-tab safe.
+- Dev-only read/write counter (`window.__firestoreMetrics`).
+
+Остаётся (инфраструктурный этап, не выполнен в этом репозитории):
+- Cloud Functions/Firestore triggers для достижений и level-up
+  (server-authoritative): клиент пишет только assessment. Требует Firebase CLI,
+  Blaze plan, credentials, отдельного проекта/эмулятора, изменения
+  `firestore.rules` и проверки ID-token/App Check. Полу-рабочий scaffold без
+  деплоя создаст ложное ощущение готовности, поэтому эта часть вынесена в
+  отдельное решение.
+- Мониторинг Usage/budget alerts настраивается в Firebase/Google Cloud Console,
+  не в коде приложения.
+- Runtime-шардирование documents при приближении к 1 MiB (сейчас только
+  dev-warning).
+- `normalizeUserState` уже валидирует структуру на чтении; строгая schema
+  validation на записи остаётся задачей server-authoritative слоя.
+
+## 6. Метрики успеха
+
+| Метрика | Сейчас | Цель |
+|---------|--------|------|
+| Чтения на обычный тоггл | `2–4` (было `A + 4 … 2A + 5`) | ≤ 3 |
+| Чтения на первый вход | `1–3` (state document) | 1–3 (фаза 2) |
+| `getDocs` в hot path | нет; legacy читается только при миграции | 0 |
+| Listeners на пользователя | 1 | 1 |
+
+Проверка после каждого этапа: `npm run lint`, `npm run typecheck`, `npm test`.
+Дополнительно — Firebase Console → Usage и эмулятор Firestore для сравнения
+чтений до/после.
+
+## 7. Риски
+
+- **Лимит документа 1 MiB**: добавлен dev-warning при приближении к лимиту;
+  блокировки записи и шардирование assessments по уровням не внедрены.
+- **Миграция**: идемпотентная, выполняется при первом чтении; старые коллекции
+  сохранены для отката и больше не пишутся.
+- **Security rules**: путь `state/current` покрыт правилом
+  `users/{uid}/{document=**}`; server-authoritative запись всё ещё не внедрена.
+- **Тесты**: тесты Firestore переведены на state-документ; legacy-пути
+  проверяются только в `state.test.ts` (миграция).
+- **Консистентность**: XP, кристаллы, streak и достижения меняются в одном
+  документе; `reconcileAchievements` теперь транзакционный, а операции
+  достижений/streak сериализованы per-uid внутри вкладки. Остаточные cross-tab
+  сценарии закрывает только server-authoritative слой (не внедрён).
+
+## 8. Итог
+
+- Фаза 0 закрыта: условный `checkAchievements`, кэш достижений вместо сканов,
+  `totalScore` в транзакции, корректный partial merge прогресса.
+- Фаза 1 закрыта: `writeBatch`, cleanup мёртвого кода, дедупликация streak,
+  удаление settings-listener; dev read counter отложен.
+- Фаза 2 закрыта: консолидация в `users/{uid}/state/current`, ленивая
+  миграция, удаление legacy-репозиториев и achievement-cache; legacy-коллекции
+  сохранены для отката.
+- Фаза 3 (client-safe) закрыта: offline persistence, App Check, server
+  timestamps, size warning, transactional achievements, dev metrics.
+- Server-authoritative Cloud Functions и budget alerts — отдельный
+  инфраструктурный этап (нужны CLI/credentials/Blaze/rules cutover).
+- Следующий шаг — отдельное решение по server-authoritative слою.
+
+## 9. Процесс реализации: subagent-driven
+
+Реализация плана выполняется через субагентов. Оркестратор (текущая сессия)
+декомпозирует фазу на независимые задачи, запускает их последовательно и
+проверяет результат после каждого этапа.
+
+### Роли и модели
+
+| Роль | Модель | Ответственность |
+|------|--------|-----------------|
+| Оркестратор | `opencode-go/deepseek-v4.1-flash` | декомпозиция, постановка задач, review, финальная верификация, обновление плана |
+| Субагент-реализатор | `opencode-go/beam-free` | написание кода и тестов в рамках одной задачи, запуск локальных проверок |
+
+Правила:
+
+- Каждая задача субагента имеет точный scope: файлы, ожидаемое поведение,
+  тесты и критерии готовности. Свежая сессия субагента не помнит контекст,
+  поэтому в prompt передаются все нужные ссылки и ограничения.
+- Субагенты не запускаются параллельно на одних и тех же файлах. Если задачи
+  независимы, допускается параллельный запуск в отдельных worktree.
+- Субагент не коммитит и не пушит изменения; коммит делает оркестратор после
+  успешного review.
+- После каждого этапа оркестратор переключается обратно на
+  `opencode-go/deepseek-v4.1-flash` и проводит review.
+
+### Review после этапа
+
+Обязательный чек-лист:
+
+1. Diff соответствует задаче; нет несвязанных изменений.
+2. Чтения/записи действительно сократились по заявленным метрикам.
+3. `npm run lint`, `npm run typecheck`, `npm test` проходят.
+4. Нет регрессий в XP, кристаллах, streak, достижениях и level-up.
+5. Обновлены тесты путей/моков, если менялись Firestore-пути.
+6. План и статус фазы обновлены в этом документе.
+
+Если review находит проблему, создаётся fix-задача для
+`opencode-go/beam-free`; цикл повторяется до прохождения чек-листа.
+
+### Порядок этапов
+
+| Этап | Статус | Реализатор | Review | Выход |
+|------|--------|------------|--------|-------|
+| Фаза 0 | ✅ выполнено | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | нет сканов достижений в hot path, обычный тоггл 2–4 чтения |
+| Фаза 1 | ✅ выполнено | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | `writeBatch`, cleanup мёртвого кода, 5 listeners, streak dedupe |
+| Фаза 2 | ✅ выполнено | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | state document, ленивая миграция, cleanup legacy |
+| Фаза 3 (client-safe) | ✅ выполнено | `opencode-go/beam-free` | `opencode-go/deepseek-v4.1-flash` | offline, App Check, server timestamps, size warning, transactional achievements, dev metrics |
+| Фаза 3 (server-authoritative) | ⏸ отдельный этап | — | — | Cloud Functions, rules cutover, budget alerts; нужны CLI/credentials/Blaze |
+
+Коммиты — conventional commits; после review и зелёных проверок оркестратор
+делает коммит с понятным пользовательским сообщением.

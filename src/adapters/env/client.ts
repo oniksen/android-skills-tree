@@ -7,6 +7,7 @@ const clientEnvSchema = z.object({
   storageBucket: z.string().min(1),
   messagingSenderId: z.string().min(1),
   appId: z.string().min(1),
+  appCheckSiteKey: z.string().optional(),
 });
 
 const parsed = clientEnvSchema.safeParse({
@@ -16,6 +17,7 @@ const parsed = clientEnvSchema.safeParse({
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  appCheckSiteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
 });
 
 if (!parsed.success) {

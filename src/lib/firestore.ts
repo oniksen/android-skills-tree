@@ -1,24 +1,13 @@
-import {
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-  collection,
-  getDocs,
-} from "firebase/firestore";
+import { doc, setDoc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
 import {
   achievementKey,
-  selectMissingAwards,
   type AchievementAward,
 } from "@/core/domain/achievement-conditions";
-import {
-  userProgressPath,
-  userProjectsPath,
-  userAchievementsPath,
-} from "@/adapters/firestore-client/paths";
-import type { UserProgress } from "@/types";
+import { userStatePath } from "@/adapters/firestore-client/paths";
+import { readUserState, ensureUserState, normalizeUserState } from "@/adapters/firestore-client/state";
+import type { Achievement, UserProgress, UserState } from "@/types";
+import { recordWrite } from "@/shared/lib/firestore-metrics";
 
 // ============ User Progress ============
 
@@ -29,29 +18,17 @@ const DEFAULT_USER_PROGRESS: UserProgress = {
 };
 
 export async function getUserProgress(uid: string): Promise<UserProgress> {
-  const progressRef = doc(db, ...userProgressPath(uid));
-  const snap = await getDoc(progressRef);
-
-  if (!snap.exists()) {
-    await setDoc(progressRef, DEFAULT_USER_PROGRESS);
-    return DEFAULT_USER_PROGRESS;
-  }
-
-  return snap.data() as UserProgress;
+  const state = await readUserState(uid);
+  return (state?.progress as UserProgress | undefined) ?? DEFAULT_USER_PROGRESS;
 }
 
 export async function updateUserProgress(
   uid: string,
   data: Partial<UserProgress>,
 ) {
-  const progressRef = doc(db, ...userProgressPath(uid));
-  const snap = await getDoc(progressRef);
-
-  if (!snap.exists()) {
-    await setDoc(progressRef, { ...DEFAULT_USER_PROGRESS, ...data });
-  } else {
-    await updateDoc(progressRef, data);
-  }
+  await ensureUserState(uid);
+  const stateRef = doc(db, ...userStatePath(uid));
+  await setDoc(stateRef, { progress: data }, { merge: true });
 }
 
 // ============ Project Progress ============
@@ -59,123 +36,17 @@ export async function updateUserProgress(
 export async function getProjectProgressMap(
   uid: string,
 ): Promise<Record<string, boolean>> {
-  const projectsRef = collection(db, ...userProjectsPath(uid));
-  const snap = await getDocs(projectsRef);
-
+  const state = await readUserState(uid);
   const map: Record<string, boolean> = {};
-  snap.forEach((d) => {
-    map[d.id] = d.data().completed;
-  });
+  if (state?.projects) {
+    for (const key of Object.keys(state.projects)) {
+      map[key] = state.projects[key].completed;
+    }
+  }
   return map;
 }
 
 // ============ Achievements ============
-
-export async function addAchievementIfNotExists(
-  uid: string,
-  type: string,
-  metadata: Record<string, unknown>,
-  matchKey?: string,
-  matchValue?: unknown,
-) {
-  const achievementsRef = collection(db, ...userAchievementsPath(uid));
-  const snap = await getDocs(achievementsRef);
-
-  const exists = snap.docs.some((doc) => {
-    const data = doc.data();
-    if (data.type !== type) return false;
-    if (matchKey && matchValue !== undefined) {
-      return data.metadata?.[matchKey] === matchValue;
-    }
-    return true;
-  });
-
-  if (!exists) {
-    const newRef = doc(achievementsRef);
-    await setDoc(newRef, {
-      type,
-      metadata,
-      achievedAt: new Date(),
-    });
-  }
-}
-
-export async function addAchievementsIfNotExists(
-  uid: string,
-  awards: AchievementAward[],
-) {
-  if (awards.length === 0) return;
-
-  const achievementsRef = collection(db, ...userAchievementsPath(uid));
-  const snap = await getDocs(achievementsRef);
-
-  const existingKeys = snap.docs.flatMap((d) => {
-    const data = d.data() as { type?: string; metadata?: Record<string, unknown> };
-    if (typeof data.type !== "string") return [];
-    return [achievementKey(data.type, data.metadata)];
-  });
-
-  for (const award of awards) {
-    const key = achievementKey(award.type, award.metadata);
-    const ref = doc(achievementsRef, key);
-    const existing = snap.docs.find((d) => d.id === key);
-    if (existing) {
-      await updateDoc(ref, {
-        metadata: {
-          ...(existing.data().metadata ?? {}),
-          ...award.metadata,
-        },
-      });
-      continue;
-    }
-  }
-
-  for (const award of selectMissingAwards(awards, existingKeys)) {
-    await setDoc(doc(achievementsRef, achievementKey(award.type, award.metadata)), {
-      type: award.type,
-      metadata: award.metadata,
-      achievedAt: new Date(),
-    });
-  }
-}
-
-export async function deleteAchievementsByLevel(uid: string, levelId: string) {
-  const achievementsRef = collection(db, ...userAchievementsPath(uid));
-  const snap = await getDocs(achievementsRef);
-
-  for (const achievementDoc of snap.docs) {
-    const data = achievementDoc.data() as {
-      type?: string;
-      metadata?: Record<string, unknown>;
-    };
-    const isLevelScoped =
-      (data.type === "category_perfect" || data.type === "level_master") &&
-      data.metadata?.level_id === levelId;
-    const invalidatesPath = data.type === "path_complete";
-
-    if (isLevelScoped || invalidatesPath) {
-      await deleteDoc(achievementDoc.ref);
-    }
-  }
-}
-
-export async function deleteCategoryPerfectAchievement(uid: string, categoryId: string) {
-  const achievementsRef = collection(db, ...userAchievementsPath(uid));
-  const snap = await getDocs(achievementsRef);
-
-  const revokedKey = achievementKey("category_perfect", { category_id: categoryId });
-
-  for (const achievementDoc of snap.docs) {
-    const data = achievementDoc.data() as {
-      type?: string;
-      metadata?: Record<string, unknown>;
-    };
-    if (typeof data.type !== "string") continue;
-    if (achievementKey(data.type, data.metadata) !== revokedKey) continue;
-
-    await deleteDoc(achievementDoc.ref);
-  }
-}
 
 export interface ReconcileAchievementsResult {
   added: number;
@@ -186,77 +57,112 @@ export interface ReconcileAchievementsResult {
 export async function reconcileAchievements(
   uid: string,
   awards: AchievementAward[],
+  _state?: UserState,
 ): Promise<ReconcileAchievementsResult> {
-  const achievementsRef = collection(db, ...userAchievementsPath(uid));
-  const snap = await getDocs(achievementsRef);
+  await ensureUserState(uid);
+  void _state;
+  const stateRef = doc(db, ...userStatePath(uid));
 
-  const desired = new Map<string, AchievementAward>();
-  for (const award of awards) {
-    desired.set(achievementKey(award.type, award.metadata), award);
-  }
+  const resultCounts = await runTransaction(db, async (tx) => {
+    const snap = await tx.get(stateRef);
+    const snapData = typeof snap?.data === "function" ? snap.data() : undefined;
+    const userState = normalizeUserState(snapData);
 
-  const result: ReconcileAchievementsResult = { added: 0, removed: 0, updated: 0 };
-  const kept = new Map<string, (typeof snap.docs)[number]>();
-
-  for (const achievementDoc of snap.docs) {
-    const data = achievementDoc.data() as {
-      type?: unknown;
-      metadata?: Record<string, unknown>;
-    };
-
-    if (typeof data.type !== "string") {
-      await deleteDoc(achievementDoc.ref);
-      result.removed += 1;
-      continue;
+    const desired = new Map<string, AchievementAward>();
+    for (const award of awards) {
+      desired.set(achievementKey(award.type, award.metadata), award);
     }
 
-    const key = achievementKey(data.type, data.metadata);
-    if (!desired.has(key) || kept.has(key)) {
-      await deleteDoc(achievementDoc.ref);
-      result.removed += 1;
-      continue;
+    // preserve existing streak achievements that are still earned
+    const longestStreak = userState?.streak?.longestStreak ?? 0;
+    const existingAchievements = userState?.achievements ?? {};
+    for (const ach of Object.values(existingAchievements)) {
+      if (typeof ach?.type !== "string" || !ach.type.startsWith("streak_")) continue;
+      const n = Number(ach.type.slice("streak_".length));
+      if (!Number.isFinite(n) || n > longestStreak) continue;
+      const key = achievementKey(ach.type, ach.metadata ?? {});
+      if (!desired.has(key)) {
+        desired.set(key, { type: ach.type, metadata: ach.metadata ?? {} });
+      }
     }
 
-    kept.set(key, achievementDoc);
-  }
+    const result: ReconcileAchievementsResult = { added: 0, removed: 0, updated: 0 };
 
-  for (const [key, award] of desired) {
-    const existing = kept.get(key);
+    const kept = new Map<string, { key: string; ach: Achievement }>();
 
-    if (!existing) {
-      await setDoc(doc(achievementsRef, key), {
+    for (const [entryKey, ach] of Object.entries(existingAchievements)) {
+      if (typeof ach?.type !== "string" || !ach.type) {
+        result.removed += 1;
+        continue;
+      }
+
+      const key = achievementKey(ach.type, ach.metadata);
+      if (!desired.has(key) || kept.has(key)) {
+        result.removed += 1;
+        continue;
+      }
+
+      kept.set(key, { key: entryKey, ach });
+    }
+
+    const nextMap: Record<string, Achievement> = {};
+
+    for (const [key, award] of desired) {
+      const existing = kept.get(key);
+
+      if (!existing) {
+        result.added += 1;
+        const ach: Achievement = {
+          id: key,
+          type: award.type,
+          metadata: award.metadata,
+          achievedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
+        };
+        nextMap[key] = ach;
+        continue;
+      }
+
+      const existingAch = existing.ach;
+      const existingMetadata = existingAch.metadata ?? {};
+      const metadataChanged = Object.entries(award.metadata).some(
+        ([field, value]) => existingMetadata[field] !== value,
+      );
+      const needsMove = existingAch.id !== key;
+
+      const achievedAt = (existingAch.achievedAt ?? new Date()) as Date;
+
+      if (!metadataChanged && !needsMove) {
+        const ach: Achievement = {
+          id: key,
+          type: award.type,
+          metadata: existingMetadata,
+          achievedAt,
+        };
+        nextMap[key] = ach;
+        continue;
+      }
+
+      const mergedMetadata = { ...existingMetadata, ...award.metadata };
+      result.updated += 1;
+
+      if (needsMove) {
+        result.removed += 1;
+      }
+
+      const ach: Achievement = {
+        id: key,
         type: award.type,
-        metadata: award.metadata,
-        achievedAt: new Date(),
-      });
-      result.added += 1;
-      continue;
+        metadata: mergedMetadata,
+        achievedAt,
+      };
+      nextMap[key] = ach;
     }
 
-    const existingData = existing.data() as {
-      metadata?: Record<string, unknown>;
-      achievedAt?: unknown;
-    };
-    const existingMetadata = existingData.metadata ?? {};
-    const metadataChanged = Object.entries(award.metadata).some(
-      ([field, value]) => existingMetadata[field] !== value,
-    );
-    const needsMove = existing.id !== key;
+    tx.update(stateRef, { achievements: nextMap });
 
-    if (!metadataChanged && !needsMove) continue;
+    return result;
+  });
 
-    await setDoc(doc(achievementsRef, key), {
-      type: award.type,
-      metadata: { ...existingMetadata, ...award.metadata },
-      achievedAt: existingData.achievedAt ?? new Date(),
-    });
-    result.updated += 1;
-
-    if (needsMove) {
-      await deleteDoc(existing.ref);
-      result.removed += 1;
-    }
-  }
-
-  return result;
+  recordWrite("reconcileAchievements", 1);
+  return resultCounts;
 }

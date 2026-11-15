@@ -1,11 +1,13 @@
 "use client";
 
 import { auth, db } from "@/lib/firebase";
-import { doc, runTransaction } from "firebase/firestore";
+import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { getShopItem } from "@/data/shop";
 import { type BuyResult } from "@/core/domain/currency";
 import { computeBuyItem } from "@/core/use-cases/compute-buy-item";
-import { userCurrencyPath } from "@/adapters/firestore-client/paths";
+import { userStatePath } from "@/adapters/firestore-client/paths";
+import { ensureUserState, normalizeUserState } from "@/adapters/firestore-client/state";
+import { recordWrite } from "@/shared/lib/firestore-metrics";
 import type { CurrencyData } from "@/types";
 
 export async function buyItem(itemId: string): Promise<BuyResult> {
@@ -15,33 +17,41 @@ export async function buyItem(itemId: string): Promise<BuyResult> {
   const item = getShopItem(itemId);
   if (!item) return { ok: false, reason: "not-found" };
 
-  const currencyRef = doc(db, ...userCurrencyPath(user.uid));
+  const stateRef = doc(db, ...userStatePath(user.uid));
+
+  await ensureUserState(user.uid);
 
   try {
-    return await runTransaction(db, async (tx) => {
-      const snap = await tx.get(currencyRef);
-      const existing = snap.exists()
-        ? (snap.data() as Partial<CurrencyData>)
-        : {};
+    const result = await runTransaction(db, async (tx) => {
+      const snap = await tx.get(stateRef);
+      const state = normalizeUserState(snap.data());
+      const existing = state.currency ?? {};
       const balance = typeof existing.balance === "number" ? existing.balance : 0;
       const items =
         existing.items && typeof existing.items === "object" ? existing.items : {};
       const owned = typeof items[itemId] === "number" ? items[itemId] : 0;
+      const claimedSkills =
+        existing.claimedSkills && typeof existing.claimedSkills === "object"
+          ? (existing.claimedSkills as Record<string, string>)
+          : {};
 
       const plan = computeBuyItem({ item, balance, owned });
       if (!plan.ok) return plan;
 
-      tx.set(
-        currencyRef,
-        {
-          balance: plan.nextBalance,
-          items: { ...items, [itemId]: plan.nextOwned },
-          updatedAt: new Date(),
-        },
-        { merge: true },
-      );
+      const nextItems = { ...(items as Record<string, number>), [itemId]: plan.nextOwned };
+
+      const nextCurrency: CurrencyData = {
+        balance: plan.nextBalance,
+        items: nextItems,
+        claimedSkills,
+        updatedAt: serverTimestamp() as unknown as Date, // Firestore resolves this server-side; normalizeUserState converts it back to Date on read.
+      };
+      tx.set(stateRef, { currency: nextCurrency }, { merge: true });
+
       return { ok: true as const };
     });
+    if (result && result.ok) recordWrite("buyItem", 1);
+    return result;
   } catch (error) {
     console.error("Error buying item:", error);
     if (error && typeof error === "object" && (error as { code?: string }).code === "permission-denied") {

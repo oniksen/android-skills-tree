@@ -14,6 +14,19 @@ export interface Assessment {
 export interface AssessmentData {
   score: number;
   subtopics?: Record<string, boolean>;
+  updatedAt?: Date;
+}
+
+export interface UserState {
+  schemaVersion: number;
+  migratedAt?: Date;
+  progress: UserProgress;
+  assessments: Record<string, AssessmentData>;
+  projects: Record<string, ProjectProgress>;
+  achievements: Record<string, Achievement>;
+  currency: CurrencyData;
+  streak: StreakData;
+  settings: UserSettings;
 }
 
 export interface ProjectProgress {

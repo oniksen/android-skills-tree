@@ -20,6 +20,7 @@ describe("computeAssessmentToggle", () => {
     expect(result.nextSubtopics[skill.subtopics[0]]).toBe(true);
     expect(result.complete).toBe(false);
     expect(result.justCompleted).toBe(false);
+    expect(result.completionChanged).toBe(false);
     expect(result.awarded).toBe(0);
   });
 
@@ -35,6 +36,7 @@ describe("computeAssessmentToggle", () => {
 
     expect(result.complete).toBe(true);
     expect(result.justCompleted).toBe(true);
+    expect(result.completionChanged).toBe(true);
     expect(result.awarded).toBe(reward);
   });
 
@@ -63,6 +65,7 @@ describe("computeAssessmentToggle", () => {
     expect(result.nextValue).toBe(false);
     expect(result.complete).toBe(false);
     expect(result.justCompleted).toBe(false);
+    expect(result.completionChanged).toBe(true);
     expect(result.awarded).toBe(0);
   });
 });

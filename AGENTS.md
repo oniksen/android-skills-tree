@@ -13,7 +13,7 @@ server-rendered Next.js with client components talking to Firestore via hooks.
 ## Project map
 
 - `src/app/` — App Router routes/layouts (thin): `page.tsx`, `layout.tsx`, `login/`, `(app)/`, `manifest.ts`, `globals.css`.
-- `src/features/` — feature modules (`tree`, `roadmap`, `projects`, `shop`, `achievements`, `dashboard`, `profile`, `quiz`, `study`, `auth`) with `components/` and `actions/`.
+- `src/features/` — feature modules (`tree`, `roadmap`, `projects`, `shop`, `achievements`, `dashboard`, `profile`, `quiz`, `study`, `auth`) with `components/`, `model/` and `actions/`.
 - `src/shared/` — shared UI (`shared/ui`) and helpers (`shared/lib`).
 - `src/core/` — domain (`core/domain`) and use-cases (`core/use-cases`).
 - `src/ports/` — repository/service interfaces.
@@ -72,100 +72,84 @@ server-rendered Next.js with client components talking to Firestore via hooks.
 ## Study material pipeline (Markdown → page)
 
 Source of truth: `content/study-materials/<grade>/<id>.md`.
+Authoring rules live in `STUDY_MATERIALS_FORMATTING.txt` at the repo root — read it before
+adding or editing a material. Files are plain GFM: raw HTML is not supported.
+
 The generated registry `src/features/study/study-materials.generated.ts` is auto-built by
 `scripts/generate-study-materials-registry.mjs` (`npm run generate:materials`; also runs in `prebuild`).
 Never edit the generated file by hand.
 
-### Required Markdown shape
+### Rendering
 
-```markdown
-# <Название темы>
-
-**Уровень:** Junior
-**Категория:** <категория>
-**Язык:** Kotlin
-**Кратко:** <одно предложение для lead; optional>
-**Футер:** <текст footer; optional>
-
-## Содержание
-
-1. [<Раздел>](#1-...)
-
----
-
-# 1. <Раздел>
-
-... H2/H3, code fences, study-* HTML blocks ...
-
-# Итоговая самопроверка категории
-
-...
-
-## Источники и документация
-
-### <Группа>
-- [Title](https://...)
-```
-
-### Rendering contract (`StudyMarkdownRenderer` / `applyStudyPattern`)
-
-- Requires **at least 2 H1**. If fewer, content is returned unchanged (legacy HTML materials).
-- First H1 becomes `study-title`; metadata in the header area is parsed for hero/lead/footer.
-- H1 sections after the first become `study-section` blocks with auto-generated `study-nav`.
-- H2 → `study-subtitle`; H3 → `study-small`.
-- H2 whose title contains `Источник` + following `- [Title](url)` lines → clickable `study-pill` links.
-- Blank lines are required around raw HTML blocks; otherwise Markdown stops parsing.
-- Inline code in headings must use backticks only; the renderer escapes `<`, `>`, `&`.
-
-### Supported visual blocks
-
-Use these exact class names and CSS variables only:
-`study-hero`, `study-eyebrow`, `study-title`, `study-lead`, `study-nav`, `study-nav-link`,
-`study-section`, `study-section-title`, `study-subtitle`, `study-grid`, `study-mini`,
-`study-mini-title`, `study-note`, `study-note study-warn`, `study-table`, `study-flow`,
-`study-node`, `study-arrow`, `study-pill`, `study-checklist`, `study-footer`, `study-muted`,
-`study-small`, `study-tag`, `study-code`, `study-tree`, `study-diagram`.
-
-### Authoring requirements
-
-- Each study topic must cover **all** subtopics listed in `src/data/skills/<grade>.ts` for that skill.
-- Target volume: **at least 700 words of clean information per topic** (excluding code blocks and HTML tags).
-- Include concrete examples, real-world cases, and common mistakes/errors.
-- Every topic page must have **anchor links (study-nav)** for each subtopic section.
-- Keep `study-*` classes and structure; add new sections before the self-check section.
+- `src/features/study/model/parse-study-document.ts` → `parseStudyDocument()` returns
+  `{ meta, sections }`; H1 is the page title, H2 are sections (legacy multi-H1 files are
+  still accepted), `## Содержание` is dropped, sources sections are flagged.
+- `src/features/study/model/study-blocks.ts` → `STUDY_BLOCK` / `STUDY_BLOCK_MAP`: the only
+  place where `study-*` class names are declared. The renderer never writes them by hand.
+  `study-blocks.test.ts` fails if the registry and `globals.css` drift apart.
+- `src/features/study/components/markdown-components.tsx` maps Markdown tags to blocks:
+  tables get a scroll wrapper, fences become `StudyCodeBlock`, task lists become
+  checklists, link lists in sources sections become pills.
+- `:::cards` is the only directive: `- **Заголовок** — текст` items become a responsive grid.
+- Blockquotes become notes; `> [!WARNING]` / `> [!CAUTION]` switch the warning variant.
+- Phones keep the same blocks edge to edge (no side borders, inner padding preserved);
+  code, tables and card grids scroll inside their own container.
 
 ### Binding and routes
 
 - Category: `studyMaterial: "<id>"` in `src/data/categories.ts`.
 - Skill: `studyMaterial: "<id>"` in `src/data/skills/<grade>.ts`.
 - Routes: `/tree/[slug]/category/[categoryId]/study` and `/tree/[slug]/skill/[skillId]/study`.
-- Category/skill cards show `BookOpen` icon when `studyMaterial` is set.
+- Cards show a `BookOpen` icon when `studyMaterial` is set.
 
-### Commands
+### Commands and gotchas
 
 - Regenerate registry: `npm run generate:materials`
 - Sync to Firestore: `npm run upload:study`
 - Verify: `npm run lint`, `npm run typecheck`, `npm test`
-
-### Gotchas
-
 - `categoryId` in the registry mirrors the material `id`; it is not used for binding.
 - Study checkboxes are visual-only; there is no persistence.
-- Legacy HTML materials bypass `applyStudyPattern`.
+- Study text is looked up on the server (`fetchStudyMaterial`); never import
+  `study-material.ts` / `study-materials.generated.ts` from a client component.
 - Do not commit generated changes unless they came from `npm run generate:materials`.
-- `npm run prebuild` regenerates the registry before `npm run build`.
 
-## Firestore listeners and quota
+## Firestore data model and listeners
 
-- One listener per user per domain: use a shared listener cache instead of creating `onSnapshot` in every component.
-- The listener must outlive the page: `src/shared/lib/live-store.ts` keeps one subscription per `uid + domain` for the whole session and is cleared only when the user changes (`src/shared/lib/session-reset.ts`). Do not unsubscribe when the last component unmounts.
-- Pages must paint from the cached snapshot (`useLiveStore` + `useSyncExternalStore`); a full-screen skeleton is only acceptable while the first snapshot for a domain is in flight.
-- Prefer `getDoc` + React Query with `staleTime`/`gcTime` for data where real-time is not critical.
-- Never create listeners in loops or on every render. Use one shared `useFirebaseAuth` state instead of subscribing to `onAuthStateChanged` per hook.
-- Run auto-sync (auto-freeze, backfill, checkAchievements) once per session (`oncePerSession`).
-- Handle `resource-exhausted`: show a toast, avoid console spam, use exponential backoff.
-- Cache static data (study materials, etc.) for 24h and disable `refetchOnWindowFocus`.
-- Before adding a new listener, check if the read can be merged with an existing one.
+- Source of truth: single state document `users/{uid}/state/current` (`UserState`).
+  Old collections `progress/current`, `assessments`, `projects`, `achievements`,
+  `currency/current`, `streaks/current`, `settings/current` are legacy
+  migration/rollback data only and are no longer written by the app.
+- One state listener per user: `useUserState` + `userStateStore` (live-store keyed
+  by `uid`), not six domain listeners. The listener outlives the page and is
+  cleared only on user change (`session-reset.ts`).
+- Lazy migration on first read: `readLegacyUserState` (in
+  `src/adapters/firestore-client/state.ts`) is the only legacy reader; it runs
+  once when `state/current` is missing and stamps `migratedAt`.
+- Pages paint from the cached snapshot (`useLiveStore` + `useSyncExternalStore`);
+  a full-screen skeleton is only acceptable while the first snapshot is in flight.
+- Prefer `getDoc` + React Query with `staleTime`/`gcTime` for data where
+  real-time is not critical. Never create listeners in loops or on every render;
+  use the shared `useFirebaseAuth` state.
+- Run auto-sync (auto-freeze, backfill, checkAchievements) once per session
+  (`oncePerSession`).
+- Handle `resource-exhausted`: show a toast, avoid console spam, use exponential
+  backoff.
+- Cache static data (study materials, etc.) for 24h and disable
+  `refetchOnWindowFocus`.
+- Before adding a new listener, check if the read can be merged with the existing
+  state listener.
+- Firestore uses persistent IndexedDB cache with multi-tab support
+  (`persistentLocalCache` + `persistentMultipleTabManager`).
+- App Check is optional and activates only when
+  `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` is set; enforce App Check in the Firebase
+  console before relying on it.
+- User-visible timestamps are written with `serverTimestamp()`; never put the
+  returned `FieldValue` into the optimistic live-store cache. `normalizeUserState`
+  converts Firestore timestamps back to `Date` on read.
+- `reconcileAchievements` is transactional; `checkAchievements`, `syncStreak` and
+  `applyAutoFreezes` are serialized per uid via `src/shared/lib/user-state-lock.ts`.
+- Dev-only read/write counters are exposed as `window.__firestoreMetrics`
+  (`src/shared/lib/firestore-metrics.ts`).
 
 ## Routing, auth and caching
 

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { applyAutoFreezes, applyAutoFreezesOnce, getStreak, syncStreak } from "./streak-commands";
 
+
 const mocks = vi.hoisted(() => ({
   collection: vi.fn(),
   doc: vi.fn(),
@@ -8,6 +9,8 @@ const mocks = vi.hoisted(() => ({
   getDocs: vi.fn(),
   query: vi.fn(),
   runTransaction: vi.fn(),
+  serverTimestamp: vi.fn(() => "SERVER_TS"),
+  where: vi.fn(),
   setDoc: vi.fn(),
 }));
 
@@ -20,6 +23,12 @@ vi.mock("@/lib/firebase", () => ({
 
 vi.mock("@/data/shop", () => ({ STREAK_FREEZE_ITEM_ID: "freeze" }));
 
+vi.mock("@/adapters/firestore-client/state", () => ({
+  ensureUserState: vi.fn().mockResolvedValue({ achievements: {} }),
+  readUserState: vi.fn().mockResolvedValue({ streak: null, achievements: {} }),
+  normalizeUserState: vi.fn((d: unknown) => (d && typeof d === "object" ? d : { streak: null })),
+}));
+
 describe("getStreak", () => {
   beforeEach(() => vi.clearAllMocks());
 
@@ -30,10 +39,16 @@ describe("getStreak", () => {
   });
 
   it("maps data and defaults frozenDays", async () => {
-    mocks.doc.mockReturnValue({ path: "streak" });
-    mocks.getDoc.mockResolvedValue({
-      exists: () => true,
-      data: () => ({ currentStreak: 3, activeDays: ["2026-01-01"], updatedAt: { toDate: () => new Date("2026-01-01") } }),
+    const stateMod = await import("@/adapters/firestore-client/state");
+    (stateMod.readUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      streak: {
+        currentStreak: 3,
+        activeDays: ["2026-01-01"],
+        frozenDays: undefined,
+        lastActiveDate: "2026-01-01",
+        longestStreak: 3,
+        updatedAt: { toDate: () => new Date("2026-01-01") },
+      },
     });
     const r = await getStreak("user-1");
     expect(r?.currentStreak).toBe(3);
@@ -47,7 +62,9 @@ describe("syncStreak", () => {
     mocks.doc.mockReturnValue({ path: "streak" });
     mocks.collection.mockReturnValue({ path: "ach" });
     mocks.getDocs.mockResolvedValue({ docs: [] });
+    mocks.getDoc.mockResolvedValue({ exists: () => true });
     mocks.query.mockImplementation((r) => r);
+    mocks.where.mockImplementation((...args: unknown[]) => args);
     mocks.setDoc.mockResolvedValue(undefined);
   });
 
@@ -81,14 +98,15 @@ describe("syncStreak", () => {
 describe("streak achievements", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.doc.mockReturnValue({ path: "streak" });
+    mocks.doc.mockReturnValue({ path: "ach" });
     mocks.collection.mockReturnValue({ path: "ach" });
+    mocks.getDocs.mockResolvedValue({ empty: true, docs: [] });
     mocks.query.mockImplementation((r: unknown) => r);
+    mocks.where.mockImplementation((...args: unknown[]) => args);
     mocks.setDoc.mockResolvedValue(undefined);
   });
 
   it("начисляет стрик по longestStreak и не пишет тир", async () => {
-    mocks.getDocs.mockResolvedValue({ docs: [] });
     mocks.runTransaction.mockResolvedValue({
       currentStreak: 0,
       longestStreak: 7,
@@ -103,14 +121,18 @@ describe("streak achievements", () => {
     expect(mocks.setDoc).toHaveBeenCalledTimes(1);
     const [, payload] = mocks.setDoc.mock.calls[0];
     expect(payload).toEqual({
-      type: "streak_7",
-      metadata: { days: 7 },
-      achievedAt: expect.any(Date),
+      achievements: {
+        streak_7: {
+          id: "streak_7",
+          type: "streak_7",
+          metadata: { days: 7 },
+          achievedAt: "SERVER_TS",
+        },
+      },
     });
   });
 
   it("не начисляет стрик ниже первого порога", async () => {
-    mocks.getDocs.mockResolvedValue({ docs: [] });
     mocks.runTransaction.mockResolvedValue({
       currentStreak: 6,
       longestStreak: 6,
@@ -125,8 +147,11 @@ describe("streak achievements", () => {
     expect(mocks.setDoc).not.toHaveBeenCalled();
   });
 
-  it("не дублирует достижение того же типа", async () => {
-    mocks.getDocs.mockResolvedValue({ docs: [{ data: () => ({ type: "streak_7" }) }] });
+  it("не дублирует достижение того же типа (deterministic id)", async () => {
+    const stateMod = await import("@/adapters/firestore-client/state");
+    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
+    (stateMod.ensureUserState as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ achievements: { streak_7: { type: "streak_7" } } });
+    mocks.getDocs.mockResolvedValue({ empty: false, docs: [{}] });
     mocks.runTransaction.mockResolvedValue({
       currentStreak: 0,
       longestStreak: 7,
@@ -140,6 +165,33 @@ describe("streak achievements", () => {
 
     expect(mocks.setDoc).not.toHaveBeenCalled();
   });
+
+  it("cache null + no match → deterministic setDoc", async () => {
+    mocks.getDocs.mockResolvedValue({ empty: true, docs: [] });
+    mocks.runTransaction.mockResolvedValue({
+      currentStreak: 0,
+      longestStreak: 7,
+      activeDays: ["2026-01-01"],
+      frozenDays: [],
+      lastActiveDate: "2026-01-01",
+      updatedAt: new Date(),
+    });
+
+    await syncStreak();
+
+    expect(mocks.setDoc).toHaveBeenCalledTimes(1);
+    const [, payload] = mocks.setDoc.mock.calls[0];
+    expect(payload).toEqual({
+      achievements: {
+        streak_7: {
+          id: "streak_7",
+          type: "streak_7",
+          metadata: { days: 7 },
+          achievedAt: "SERVER_TS",
+        },
+      },
+    });
+  });
 });
 
 describe("applyAutoFreezes", () => {
@@ -149,6 +201,7 @@ describe("applyAutoFreezes", () => {
     mocks.collection.mockReturnValue({ path: "ach" });
     mocks.getDocs.mockResolvedValue({ docs: [] });
     mocks.query.mockImplementation((r: unknown) => r);
+    mocks.where.mockImplementation((...args: unknown[]) => args);
     mocks.setDoc.mockResolvedValue(undefined);
     mocks.runTransaction.mockImplementation(async (_db: unknown, cb: (tx: unknown) => unknown) => {
       const tx = {
@@ -183,6 +236,7 @@ describe("applyAutoFreezesOnce", () => {
     mocks.collection.mockReturnValue({ path: "ach" });
     mocks.getDocs.mockResolvedValue({ docs: [] });
     mocks.query.mockImplementation((r) => r);
+    mocks.where.mockImplementation((...args: unknown[]) => args);
     mocks.setDoc.mockResolvedValue(undefined);
 
     const [a, b] = await Promise.all([applyAutoFreezesOnce(), applyAutoFreezesOnce()]);

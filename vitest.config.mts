@@ -9,7 +9,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.{ts,tsx}"],
     env: {
       NEXT_PUBLIC_FIREBASE_API_KEY: "test-api-key",
       NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: "test.firebaseapp.com",
