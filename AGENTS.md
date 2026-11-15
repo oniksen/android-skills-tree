@@ -85,15 +85,36 @@ Never edit the generated file by hand.
   `{ meta, sections }`; H1 is the page title, H2 are sections (legacy multi-H1 files are
   still accepted), `## Содержание` is dropped, sources sections are flagged.
 - `src/features/study/model/study-blocks.ts` → `STUDY_BLOCK` / `STUDY_BLOCK_MAP`: the only
-  place where `study-*` class names are declared. The renderer never writes them by hand.
-  `study-blocks.test.ts` fails if the registry and `globals.css` drift apart.
+  place where `study-*` class names are declared. Components resolve every class through
+  `blockClass("note")` — no component imports `STUDY_BLOCK` directly and no `study-*` string
+  is written by hand. Each registry entry lists the HTML `tags` it is really rendered as and
+  a `layout`; `study-blocks.test.ts` fails if the registry and `globals.css` drift apart or
+  if a component goes back to reading classes straight from `STUDY_BLOCK`.
+- `src/features/study/components/study-block-renderer.tsx` → `STUDY_BLOCK_RENDERERS`: the one
+  map from `StudySectionBlock["type"]` to a React component, typed with
+  `satisfies Record<…>` so a missing entry is a compile error. `StudySection` has no
+  `if (block.type === …)` branching left.
 - `src/features/study/components/markdown-components.tsx` maps Markdown tags to blocks:
   tables get a scroll wrapper, fences become `StudyCodeBlock`, task lists become
-  checklists, link lists in sources sections become pills.
+  checklists, link lists in sources sections become pills, a standalone image becomes a
+  `figure` instead of a `figure` wrapped in `p`.
 - `:::cards` is the only directive: `- **Заголовок** — текст` items become a responsive grid.
-- Blockquotes become notes; `> [!WARNING]` / `> [!CAUTION]` switch the warning variant.
+  `parseStudySectionBody` is the only place that recognises it; a `:::` inside a fenced code
+  block does not close the directive, and an unclosed `:::cards` keeps its body as Markdown
+  (the opener is dropped, so the raw marker never reaches the page).
+- Blockquotes become notes; `> [!WARNING]` / `> [!CAUTION]` switch the warning variant, and a
+  new marker after a blank line starts a new note instead of merging into the previous one.
 - Phones keep the same blocks edge to edge (no side borders, inner padding preserved);
   code, tables and card grids scroll inside their own container.
+
+### Adding or changing a block
+
+1. Extend `StudySectionBlock` in `parse-study-document.ts` and parse it there.
+2. Add the class(es) to `STUDY_BLOCK`/`STUDY_BLOCK_MAP` in `study-blocks.ts` and style them
+   in `globals.css`.
+3. Add the renderer to `STUDY_BLOCK_RENDERERS` and cover it in `study-block-renderer.test.tsx`.
+4. If it changes the emitted markup, add it to the fixture in `study-html-validity.test.tsx`;
+   that test validates every material with `html-validate:recommended`.
 
 ### Binding and routes
 
