@@ -219,6 +219,41 @@ function parseNote(lines: string[]): StudySectionBlock {
 }
 
 /**
+ * Splits one collected quote into the notes it really contains.
+ *
+ * A line that is nothing but a `[!NOTE]`-style marker starts the next note,
+ * so an alert written below the first line does not leak into the text as a
+ * literal `[!WARNING]`. Markers inside a fenced block are code, not markers.
+ * Chunks that are empty after trimming are dropped; everything else keeps its
+ * order and inner blank lines.
+ */
+function splitNoteChunks(lines: string[]): string[][] {
+  const chunks: string[][] = [];
+  let current: string[] = [];
+  let fence: Fence | null = null;
+
+  for (const line of lines) {
+    const marker = fenceMarker(line);
+    if (marker) {
+      fence = toggleFence(fence, marker);
+      current.push(line);
+      continue;
+    }
+
+    if (!fence && current.length > 0 && NOTE_MARKER.test(line.trim())) {
+      chunks.push(current);
+      current = [line];
+      continue;
+    }
+
+    current.push(line);
+  }
+
+  chunks.push(current);
+  return chunks.filter((chunk) => chunk.join("\n").trim() !== "");
+}
+
+/**
  * Finds the line that closes a `:::cards` directive.
  *
  * `:::` is only a closer outside fenced code, so a snippet that happens to
@@ -307,7 +342,7 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
         break;
       }
       flushMarkdown();
-      blocks.push(parseNote(quote));
+      for (const chunk of splitNoteChunks(quote)) blocks.push(parseNote(chunk));
       continue;
     }
 

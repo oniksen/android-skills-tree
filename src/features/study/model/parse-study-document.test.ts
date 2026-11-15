@@ -211,6 +211,57 @@ describe("parseStudySectionBody", () => {
     });
   });
 
+  it("разделяет заметки по маркеру внутри цитаты", () => {
+    const blocks = parseStudySectionBody(
+      "> [!NOTE]\n> Первый текст.\n> [!WARNING]\n> Осторожно.",
+    );
+
+    expect(blocks.map((block) => block.type)).toEqual(["note", "note"]);
+    expect(blocks[0]).toMatchObject({ variant: "note", content: "Первый текст." });
+    expect(blocks[1]).toMatchObject({ variant: "warn", content: "Осторожно." });
+
+    for (const block of blocks) {
+      expect(block.type === "note" ? block.content : "").not.toContain("[!");
+    }
+  });
+
+  it("распознаёт TIP после вводной строки", () => {
+    const blocks = parseStudySectionBody(
+      "> Короткое вступление.\n> [!TIP]\n> Лайфхак.",
+    );
+
+    expect(blocks.map((block) => block.type)).toEqual(["note", "note"]);
+    expect(blocks[0]).toMatchObject({
+      variant: "note",
+      content: "Короткое вступление.",
+    });
+    expect(blocks[1]).toMatchObject({ variant: "note", content: "Лайфхак." });
+
+    for (const block of blocks) {
+      expect(block.type === "note" ? block.content : "").not.toContain("[!TIP]");
+    }
+  });
+
+  it("не режет заметку по маркеру внутри фенса", () => {
+    const blocks = parseStudySectionBody("> ```text\n> [!WARNING]\n> ```");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "note", variant: "note" });
+    expect(blocks[0].type === "note" ? blocks[0].content : "").toContain(
+      "[!WARNING]",
+    );
+  });
+
+  it("не режет по строке, где маркер не один", () => {
+    const blocks = parseStudySectionBody("> [!WARNING] текст");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "note", variant: "note" });
+    expect(blocks[0].type === "note" ? blocks[0].content : "").toContain(
+      "[!WARNING] текст",
+    );
+  });
+
   it("разбирает директиву :::cards", () => {
     const blocks = parseStudySectionBody(`До.
 

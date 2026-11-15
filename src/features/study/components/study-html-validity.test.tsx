@@ -128,7 +128,7 @@ describe("HTML учебных материалов", () => {
   it("фикстур не содержит raw markdown-маркеров", () => {
     const html = renderFixture();
 
-    for (const marker of [":::cards", "[!WARNING]", "[!CAUTION]", "[!NOTE]", "undefined", "NaN"]) {
+    for (const marker of [":::cards", "[!NOTE]", "[!TIP]", "[!IMPORTANT]", "[!WARNING]", "[!CAUTION]", "undefined", "NaN"]) {
       expect(html, marker).not.toContain(marker);
     }
   });
@@ -162,7 +162,7 @@ describe("HTML учебных материалов", () => {
       expect(html).toContain('class="study-hero"');
       expect(html).toContain('class="study-section"');
       expect(html).toContain('class="study-title"');
-      for (const marker of [":::cards", "[!WARNING]", "[!CAUTION]", "undefined", "NaN"]) {
+      for (const marker of [":::cards", "[!NOTE]", "[!TIP]", "[!IMPORTANT]", "[!WARNING]", "[!CAUTION]", "undefined", "NaN"]) {
         expect(html, marker).not.toContain(marker);
       }
     });
