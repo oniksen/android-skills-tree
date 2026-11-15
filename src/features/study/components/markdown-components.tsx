@@ -3,7 +3,7 @@
 import React from "react";
 import type { ReactNode } from "react";
 import type { Components } from "react-markdown";
-import { STUDY_BLOCK } from "../model/study-blocks";
+import { blockClass } from "../model/study-blocks";
 import StudyCodeBlock from "./StudyCodeBlock";
 
 function isCheckbox(node: ReactNode): boolean {
@@ -42,53 +42,52 @@ export function createStudyMarkdownComponents({
   sources = false,
   inline = false,
 }: ComponentOptions = {}): Components {
-  const heading =
-    (className: string, weight: "h3" | "h4" = "h3") => {
-      const StudyHeading = ({ children }: { children?: ReactNode }) => {
-        if (weight === "h4") {
-          return (
-            <h4 className={`${STUDY_BLOCK.subtitle} ${STUDY_BLOCK.subtitleMinor}`}>
-              {children}
-            </h4>
-          );
-        }
-        return <h3 className={className}>{children}</h3>;
-      };
-      StudyHeading.displayName = weight === "h4" ? "StudyHeading4" : "StudyHeading3";
-      return StudyHeading;
+  const heading = (weight: "h3" | "h4" = "h3") => {
+    const StudyHeading = ({ children }: { children?: ReactNode }) => {
+      if (weight === "h4") {
+        return (
+          <h4 className={`${blockClass("subtitle")} ${blockClass("subtitleMinor")}`}>
+            {children}
+          </h4>
+        );
+      }
+      return <h3 className={blockClass("subtitle")}>{children}</h3>;
     };
+    StudyHeading.displayName = weight === "h4" ? "StudyHeading4" : "StudyHeading3";
+    return StudyHeading;
+  };
 
   return {
     p: inline
       ? ({ children }) => <>{children}</>
       : ({ children }) => <p>{children}</p>,
-    h1: heading(STUDY_BLOCK.subtitle),
-    h2: heading(STUDY_BLOCK.subtitle),
-    h3: heading(STUDY_BLOCK.subtitle),
-    h4: heading(STUDY_BLOCK.subtitle, "h4"),
-    h5: heading(STUDY_BLOCK.subtitle, "h4"),
-    h6: heading(STUDY_BLOCK.subtitle, "h4"),
+    h1: heading(),
+    h2: heading(),
+    h3: heading(),
+    h4: heading("h4"),
+    h5: heading("h4"),
+    h6: heading("h4"),
     ul: ({ children }) => {
-      if (sources) return <ul className={STUDY_BLOCK.pills}>{children}</ul>;
+      if (sources) return <ul className={blockClass("pills")}>{children}</ul>;
       if (hasCheckbox(children)) {
-        return <ul className={STUDY_BLOCK.checklist}>{children}</ul>;
+        return <ul className={blockClass("checklist")}>{children}</ul>;
       }
-      return <ul className={STUDY_BLOCK.list}>{children}</ul>;
+      return <ul className={blockClass("list")}>{children}</ul>;
     },
-    ol: ({ children }) => <ol className={STUDY_BLOCK.list}>{children}</ol>,
+    ol: ({ children }) => <ol className={blockClass("list")}>{children}</ol>,
     li: ({ children }) => (
-      <li className={hasCheckbox(children) ? STUDY_BLOCK.checkItem : undefined}>
+      <li className={hasCheckbox(children) ? blockClass("checkItem") : undefined}>
         {children}
       </li>
     ),
     table: ({ children }) => (
       <div
-        className={STUDY_BLOCK.tableWrap}
+        className={blockClass("tableWrap")}
         role="region"
         aria-label="Таблица"
         tabIndex={0}
       >
-        <table className={STUDY_BLOCK.table}>{children}</table>
+        <table className={blockClass("table")}>{children}</table>
       </div>
     ),
     pre: ({ children }) => {
@@ -106,13 +105,13 @@ export function createStudyMarkdownComponents({
     },
     code: ({ children }) => <code>{children}</code>,
     blockquote: ({ children }) => (
-      <div className={STUDY_BLOCK.note}>{children}</div>
+      <div className={blockClass("note")}>{children}</div>
     ),
     a: ({ href, children }) => {
       if (sources) {
         return (
           <a
-            className={STUDY_BLOCK.pill}
+            className={blockClass("pill")}
             href={href}
             target="_blank"
             rel="noopener noreferrer"
@@ -135,16 +134,16 @@ export function createStudyMarkdownComponents({
       );
     },
     img: ({ src, alt }) => (
-      <figure className={STUDY_BLOCK.figure}>
+      <figure className={blockClass("figure")}>
         {/* Markdown images point at arbitrary hosts; next/image needs a configured allowlist. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt={alt ?? ""} loading="lazy" />
         {alt ? (
-          <figcaption className={STUDY_BLOCK.caption}>{alt}</figcaption>
+          <figcaption className={blockClass("caption")}>{alt}</figcaption>
         ) : null}
       </figure>
     ),
-    hr: () => <hr className={STUDY_BLOCK.divider} />,
+    hr: () => <hr className={blockClass("divider")} />,
   };
 }
 

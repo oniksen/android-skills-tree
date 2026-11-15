@@ -1,6 +1,6 @@
 "use client";
 
-import { STUDY_BLOCK } from "../model/study-blocks";
+import { blockClass } from "../model/study-blocks";
 import type { StudyNoteVariant } from "../model/parse-study-document";
 import StudyProse from "./StudyProse";
 
@@ -13,8 +13,8 @@ export default function StudyNote({
 }) {
   const className =
     variant === "warn"
-      ? `${STUDY_BLOCK.note} ${STUDY_BLOCK.noteWarn}`
-      : STUDY_BLOCK.note;
+      ? `${blockClass("note")} ${blockClass("noteWarn")}`
+      : blockClass("note");
 
   return (
     <div className={className}>

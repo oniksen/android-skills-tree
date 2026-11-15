@@ -1,6 +1,6 @@
 "use client";
 
-import { STUDY_BLOCK } from "../model/study-blocks";
+import { blockClass } from "../model/study-blocks";
 import type { StudySection } from "../model/parse-study-document";
 import { stripMarkdownInline } from "../model/parse-study-document";
 
@@ -8,11 +8,11 @@ export default function StudyNav({ sections }: { sections: StudySection[] }) {
   if (sections.length === 0) return null;
 
   return (
-    <nav className={STUDY_BLOCK.nav} aria-label="Содержание">
+    <nav className={blockClass("nav")} aria-label="Содержание">
       {sections.map((section) => (
         <a
           key={section.id}
-          className={STUDY_BLOCK.navLink}
+          className={blockClass("navLink")}
           href={`#${section.id}`}
         >
           {stripMarkdownInline(section.title)}

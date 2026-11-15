@@ -1,10 +1,12 @@
+import type { JSX } from "react";
+
 /**
  * Single source of truth for study material blocks.
  *
  * The renderer never writes `study-*` class names by hand: it resolves a
- * block kind through `STUDY_BLOCK_MAP`. `study-blocks.test.ts` checks both
- * directions — every class in `STUDY_BLOCK` exists in globals.css and every
- * `study-*` class in globals.css is declared here.
+ * block kind through `blockClass()` (see `components/*`). `study-blocks.test.ts`
+ * checks both directions — every class in `STUDY_BLOCK` exists in globals.css
+ * and every `study-*` class in globals.css is declared here.
  */
 export const STUDY_BLOCK = {
   page: "study-page",
@@ -48,9 +50,18 @@ export const STUDY_BLOCK = {
 
 export type StudyBlockClass = (typeof STUDY_BLOCK)[keyof typeof STUDY_BLOCK];
 
+/** HTML element a block can be rendered as. */
+export type StudyBlockTag = keyof JSX.IntrinsicElements;
+
+/**
+ * Contract for one block kind.
+ *
+ * `tags` lists every element the class actually lands on: `list` is a `<ul>`
+ * for Markdown bullets and an `<ol>` for numbered lists, so the registry must
+ * not claim a single tag. Everything else renders exactly one tag.
+ */
 export interface StudyBlockDefinition {
-  /** Markdown/HTML tag the block is rendered from. */
-  tag: string;
+  tags: readonly [StudyBlockTag, ...StudyBlockTag[]];
   /** Class applied to the rendered element. */
   className: StudyBlockClass;
   /** A standalone container or an inline element inside prose. */
@@ -58,68 +69,78 @@ export interface StudyBlockDefinition {
 }
 
 export const STUDY_BLOCK_MAP = {
-  page: { tag: "div", className: STUDY_BLOCK.page, layout: "block" },
-  topbar: { tag: "div", className: STUDY_BLOCK.topbar, layout: "block" },
-  back: { tag: "a", className: STUDY_BLOCK.back, layout: "inline" },
-  article: { tag: "article", className: STUDY_BLOCK.article, layout: "block" },
-  hero: { tag: "header", className: STUDY_BLOCK.hero, layout: "block" },
-  eyebrow: { tag: "p", className: STUDY_BLOCK.eyebrow, layout: "block" },
-  title: { tag: "h1", className: STUDY_BLOCK.title, layout: "block" },
-  lead: { tag: "p", className: STUDY_BLOCK.lead, layout: "block" },
-  nav: { tag: "nav", className: STUDY_BLOCK.nav, layout: "block" },
-  navLink: { tag: "a", className: STUDY_BLOCK.navLink, layout: "inline" },
-  section: { tag: "section", className: STUDY_BLOCK.section, layout: "block" },
+  page: { tags: ["div"], className: STUDY_BLOCK.page, layout: "block" },
+  topbar: { tags: ["div"], className: STUDY_BLOCK.topbar, layout: "block" },
+  back: { tags: ["a"], className: STUDY_BLOCK.back, layout: "inline" },
+  article: { tags: ["article"], className: STUDY_BLOCK.article, layout: "block" },
+  markdown: { tags: ["div"], className: STUDY_BLOCK.markdown, layout: "block" },
+  hero: { tags: ["header"], className: STUDY_BLOCK.hero, layout: "block" },
+  eyebrow: { tags: ["p"], className: STUDY_BLOCK.eyebrow, layout: "block" },
+  title: { tags: ["h1"], className: STUDY_BLOCK.title, layout: "block" },
+  lead: { tags: ["p"], className: STUDY_BLOCK.lead, layout: "block" },
+  nav: { tags: ["nav"], className: STUDY_BLOCK.nav, layout: "block" },
+  navLink: { tags: ["a"], className: STUDY_BLOCK.navLink, layout: "inline" },
+  section: { tags: ["section"], className: STUDY_BLOCK.section, layout: "block" },
   sectionTitle: {
-    tag: "h2",
+    tags: ["h2"],
     className: STUDY_BLOCK.sectionTitle,
     layout: "block",
   },
-  subtitle: { tag: "h3", className: STUDY_BLOCK.subtitle, layout: "block" },
+  /** Markdown H1–H3 inside a section body are all rendered as `<h3>`. */
+  subtitle: { tags: ["h3"], className: STUDY_BLOCK.subtitle, layout: "block" },
+  /** Markdown H4–H6 add the minor variant on top of `subtitle`. */
   subtitleMinor: {
-    tag: "h4",
+    tags: ["h4"],
     className: STUDY_BLOCK.subtitleMinor,
     layout: "block",
   },
-  list: { tag: "ul", className: STUDY_BLOCK.list, layout: "block" },
-  note: { tag: "blockquote", className: STUDY_BLOCK.note, layout: "block" },
-  noteWarn: { tag: "blockquote", className: STUDY_BLOCK.noteWarn, layout: "block" },
-  checklist: { tag: "ul", className: STUDY_BLOCK.checklist, layout: "block" },
-  checkItem: { tag: "li", className: STUDY_BLOCK.checkItem, layout: "block" },
+  list: { tags: ["ul", "ol"], className: STUDY_BLOCK.list, layout: "block" },
+  note: { tags: ["div"], className: STUDY_BLOCK.note, layout: "block" },
+  noteWarn: { tags: ["div"], className: STUDY_BLOCK.noteWarn, layout: "block" },
+  checklist: { tags: ["ul"], className: STUDY_BLOCK.checklist, layout: "block" },
+  checkItem: { tags: ["li"], className: STUDY_BLOCK.checkItem, layout: "block" },
   tableWrap: {
-    tag: "table",
+    tags: ["div"],
     className: STUDY_BLOCK.tableWrap,
     layout: "block",
   },
-  table: { tag: "table", className: STUDY_BLOCK.table, layout: "block" },
-  codeWrap: { tag: "pre", className: STUDY_BLOCK.codeWrap, layout: "block" },
-  codeBar: { tag: "div", className: STUDY_BLOCK.codeBar, layout: "block" },
-  codeLang: { tag: "span", className: STUDY_BLOCK.codeLang, layout: "inline" },
-  code: { tag: "pre", className: STUDY_BLOCK.code, layout: "block" },
-  copy: { tag: "button", className: STUDY_BLOCK.copy, layout: "inline" },
+  table: { tags: ["table"], className: STUDY_BLOCK.table, layout: "block" },
+  codeWrap: {
+    tags: ["div"],
+    className: STUDY_BLOCK.codeWrap,
+    layout: "block",
+  },
+  codeBar: { tags: ["div"], className: STUDY_BLOCK.codeBar, layout: "block" },
+  codeLang: {
+    tags: ["span"],
+    className: STUDY_BLOCK.codeLang,
+    layout: "inline",
+  },
+  code: { tags: ["pre"], className: STUDY_BLOCK.code, layout: "block" },
+  copy: { tags: ["button"], className: STUDY_BLOCK.copy, layout: "inline" },
   copyCopied: {
-    tag: "button",
+    tags: ["button"],
     className: STUDY_BLOCK.copyCopied,
     layout: "inline",
   },
-  cards: { tag: "div", className: STUDY_BLOCK.cards, layout: "block" },
-  card: { tag: "div", className: STUDY_BLOCK.card, layout: "block" },
-  cardTitle: { tag: "p", className: STUDY_BLOCK.cardTitle, layout: "block" },
-  pills: { tag: "ul", className: STUDY_BLOCK.pills, layout: "block" },
-  pill: { tag: "a", className: STUDY_BLOCK.pill, layout: "inline" },
-  figure: { tag: "img", className: STUDY_BLOCK.figure, layout: "block" },
+  cards: { tags: ["div"], className: STUDY_BLOCK.cards, layout: "block" },
+  card: { tags: ["div"], className: STUDY_BLOCK.card, layout: "block" },
+  cardTitle: { tags: ["p"], className: STUDY_BLOCK.cardTitle, layout: "block" },
+  pills: { tags: ["ul"], className: STUDY_BLOCK.pills, layout: "block" },
+  pill: { tags: ["a"], className: STUDY_BLOCK.pill, layout: "inline" },
+  figure: { tags: ["figure"], className: STUDY_BLOCK.figure, layout: "block" },
   caption: {
-    tag: "figcaption",
+    tags: ["figcaption"],
     className: STUDY_BLOCK.caption,
     layout: "inline",
   },
-  divider: { tag: "hr", className: STUDY_BLOCK.divider, layout: "block" },
-  footer: { tag: "footer", className: STUDY_BLOCK.footer, layout: "block" },
-  markdown: { tag: "div", className: STUDY_BLOCK.markdown, layout: "block" },
+  divider: { tags: ["hr"], className: STUDY_BLOCK.divider, layout: "block" },
+  footer: { tags: ["footer"], className: STUDY_BLOCK.footer, layout: "block" },
 } as const satisfies Record<string, StudyBlockDefinition>;
 
 export type StudyBlockKind = keyof typeof STUDY_BLOCK_MAP;
 
 /** Class for a block kind, e.g. `blockClass("note")` -> "study-note". */
-export function blockClass(kind: StudyBlockKind): string {
+export function blockClass(kind: StudyBlockKind): StudyBlockClass {
   return STUDY_BLOCK_MAP[kind].className;
 }

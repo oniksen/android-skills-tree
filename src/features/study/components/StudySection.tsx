@@ -1,6 +1,6 @@
 "use client";
 
-import { STUDY_BLOCK } from "../model/study-blocks";
+import { blockClass } from "../model/study-blocks";
 import type { StudySection as StudySectionData } from "../model/parse-study-document";
 import StudyCards from "./StudyCards";
 import StudyInline from "./StudyInline";
@@ -15,10 +15,10 @@ export default function StudySection({
   return (
     <section
       id={section.id}
-      className={STUDY_BLOCK.section}
+      className={blockClass("section")}
       aria-labelledby={`${section.id}-title`}
     >
-      <h2 id={`${section.id}-title`} className={STUDY_BLOCK.sectionTitle}>
+      <h2 id={`${section.id}-title`} className={blockClass("sectionTitle")}>
         <StudyInline text={section.title} />
       </h2>
       {section.blocks.map((block, index) => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { STUDY_BLOCK } from "../model/study-blocks";
+import { blockClass } from "../model/study-blocks";
 import { parseStudyDocument } from "../model/parse-study-document";
 import StudyFooter from "./StudyFooter";
 import StudyHero from "./StudyHero";
@@ -23,7 +23,7 @@ export default function StudyMarkdownRenderer({
 
   if (!studyDocument) {
     return (
-      <div className={STUDY_BLOCK.markdown}>
+      <div className={blockClass("markdown")}>
         <StudyProse markdown={content} />
       </div>
     );
