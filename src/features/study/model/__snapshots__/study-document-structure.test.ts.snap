@@ -1,0 +1,237 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`kotlin-basics: структура документа стабильна 1`] = `
+{
+  "sections": [
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "1. Синтаксис Kotlin",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "2. Null Safety",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "3. Data Class",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "4. Properties и Accessors",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "5. Object и Companion Object",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "6. Extension Functions",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "7. Lambda",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "8. Higher Order Functions",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "9. Scope Functions",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "10. Enum",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "11. Sealed Class и Sealed Interface",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "12. Packages и Visibility Modifiers",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "13. Generics Basics",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговая самопроверка категории",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговый проект",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговый список официальной документации Kotlin",
+    },
+  ],
+  "title": "Kotlin Basics",
+}
+`;
+
+exports[`osnovy-programmirovaniya-kotlin: структура документа стабильна 1`] = `
+{
+  "sections": [
+    {
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+      ],
+      "sources": false,
+      "title": "1. Переменные",
+    },
+    {
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+      ],
+      "sources": false,
+      "title": "2. Типы данных",
+    },
+    {
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+      ],
+      "sources": false,
+      "title": "3. Условные конструкции",
+    },
+    {
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+      ],
+      "sources": false,
+      "title": "4. Циклы",
+    },
+    {
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+      ],
+      "sources": false,
+      "title": "5. Функции",
+    },
+    {
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+      ],
+      "sources": false,
+      "title": "6. ООП: основы",
+    },
+    {
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "7. Коллекции",
+    },
+    {
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+      ],
+      "sources": false,
+      "title": "8. Обработка ошибок",
+    },
+    {
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+      ],
+      "sources": false,
+      "title": "9. Основы алгоритмов",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговая самопроверка категории",
+    },
+    {
+      "blocks": [
+        "markdown",
+      ],
+      "sources": true,
+      "title": "Источники и документация",
+    },
+  ],
+  "title": "Основы программирования на Kotlin",
+}
+`;

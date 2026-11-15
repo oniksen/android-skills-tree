@@ -106,6 +106,11 @@ describe("реестр блоков учебных материалов", () => 
     expect(STUDY_BLOCK_MAP.list.tags).toEqual(["ul", "ol"]);
   });
 
+  it("у каждого класса реестра есть ровно один kind", () => {
+    const classes = Object.values(STUDY_BLOCK_MAP).map((d) => d.className);
+    expect(new Set(classes)).toEqual(new Set(Object.values(STUDY_BLOCK)));
+  });
+
   it("не читает STUDY_BLOCK напрямую в компонентах — только blockClass", () => {
     const offenders = sourceFiles(SRC_DIR)
       .filter((file) => /\bSTUDY_BLOCK\b/.test(fs.readFileSync(file, "utf8")))

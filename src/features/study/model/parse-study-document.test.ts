@@ -415,6 +415,48 @@ describe("parseStudySectionBody", () => {
       { type: "cards", items: [{ title: "Имя", content: "текст." }] },
     ]);
   });
+
+  it("оставляет незакрытую директиву разметкой, выкидывая маркер", () => {
+    const blocks = parseStudySectionBody(":::cards\n- **А** — текст.");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "markdown" });
+    if (blocks[0].type === "markdown") {
+      expect(blocks[0].content).not.toContain(":::cards");
+      expect(blocks[0].content).toContain("- **А** — текст.");
+    }
+  });
+
+  it("не считает одиночное ::: директивой", () => {
+    const blocks = parseStudySectionBody(":::");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "markdown" });
+    if (blocks[0].type === "markdown") {
+      expect(blocks[0].content).toContain(":::");
+    }
+  });
+
+  it("сохраняет незакрытый фенс внутри markdown-блока", () => {
+    const blocks = parseStudySectionBody("```text\nкод без закрытия");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "markdown" });
+    if (blocks[0].type === "markdown") {
+      expect(blocks[0].content).toContain("```text");
+      expect(blocks[0].content).toContain("код без закрытия");
+    }
+  });
+
+  it("закрывает директиву строкой ::: с хвостовыми пробелами", () => {
+    const blocks = parseStudySectionBody(":::cards\n- **А** — x\n:::   ");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({
+      type: "cards",
+      items: [{ title: "А", content: "x" }],
+    });
+  });
 });
 
 describe("вспомогательные функции", () => {
