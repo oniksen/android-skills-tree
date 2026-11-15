@@ -7,7 +7,22 @@ const css = fs.readFileSync(
   "utf8",
 );
 
-const COMPONENTS_DIR = new URL("../components/", import.meta.url);
+const SRC_DIR = new URL("../../../", import.meta.url);
+
+/** Every TypeScript source file under src, minus the registry and the tests. */
+function sourceFiles(dir: URL): URL[] {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const child = new URL(
+      `${entry.name}${entry.isDirectory() ? "/" : ""}`,
+      dir,
+    );
+    if (entry.isDirectory()) return sourceFiles(child);
+    if (!/\.tsx?$/.test(entry.name)) return [];
+    if (entry.name.includes(".test.")) return [];
+    if (entry.name === "study-blocks.ts") return [];
+    return [child];
+  });
+}
 
 /** HTML elements the study pipeline is allowed to emit. */
 const HTML_TAGS = [
@@ -92,15 +107,9 @@ describe("реестр блоков учебных материалов", () => 
   });
 
   it("не читает STUDY_BLOCK напрямую в компонентах — только blockClass", () => {
-    const files = fs
-      .readdirSync(COMPONENTS_DIR)
-      .filter((file) => file.endsWith(".tsx") && !file.includes(".test."));
-
-    const offenders = files.filter((file) =>
-      /\bSTUDY_BLOCK\b/.test(
-        fs.readFileSync(new URL(file, COMPONENTS_DIR), "utf8"),
-      ),
-    );
+    const offenders = sourceFiles(SRC_DIR)
+      .filter((file) => /\bSTUDY_BLOCK\b/.test(fs.readFileSync(file, "utf8")))
+      .map((file) => file.pathname.split("/src/").at(-1));
 
     expect(offenders).toEqual([]);
   });

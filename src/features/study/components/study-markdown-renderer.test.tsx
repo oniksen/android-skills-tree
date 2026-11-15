@@ -146,6 +146,19 @@ describe("StudyMarkdownRenderer", () => {
     expect(html).not.toContain("<p><figure");
   });
 
+  it("не оборачивает в абзац несколько картинок подряд", () => {
+    const html = renderToStaticMarkup(
+      <StudyMarkdownRenderer
+        content={
+          "# Тема\n\n## Раздел\n\n![Первая](https://example.com/a.png)\n![Вторая](https://example.com/b.png)"
+        }
+      />,
+    );
+
+    expect(html).not.toContain("<p><figure");
+    expect((html.match(/<figure class="study-figure">/g) ?? []).length).toBe(2);
+  });
+
   it("не оставляет raw HTML в тексте", () => {
     const html = render();
 

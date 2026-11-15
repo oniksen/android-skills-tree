@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  collectHeadings,
   parseStudyDocument,
   parseStudySectionBody,
   shiftHeadings,
@@ -331,6 +332,23 @@ describe("parseStudySectionBody", () => {
     }
   });
 
+  it("не подменяет закрывающий фенс фенсом другого вида", () => {
+    const blocks = parseStudySectionBody(`:::cards
+- **А** — пример:
+~~~text
+\`\`\`
+:::
+после
+~~~
+:::`);
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "cards" });
+    if (blocks[0].type === "cards") {
+      expect(blocks[0].items.map((item) => item.title)).toEqual(["А"]);
+    }
+  });
+
   it("не открывает директиву строкой с лишним текстом", () => {
     const blocks = parseStudySectionBody(":::cards лишнее\n- **А** — текст.");
 
@@ -353,6 +371,19 @@ describe("вспомогательные функции", () => {
     const shifted = shiftHeadings(["## A", "```", "## B", "```", "### C"], 1);
 
     expect(shifted).toEqual(["### A", "```", "## B", "```", "#### C"]);
+  });
+
+  it("не путает закрывающий фенс другого вида с открывающим", () => {
+    const headings = collectHeadings([
+      "~~~",
+      "# Не заголовок",
+      "```",
+      "# Тоже не заголовок",
+      "~~~",
+      "# Заголовок",
+    ]);
+
+    expect(headings.map((heading) => heading.title)).toEqual(["Заголовок"]);
   });
 
   it("очищает инлайн-разметку", () => {

@@ -63,7 +63,10 @@ export function createStudyMarkdownComponents({
    */
   const isFigureOnly = (children: ReactNode): boolean => {
     const nodes = (Array.isArray(children) ? children : [children]).filter(
-      (node) => node !== null && node !== undefined && node !== "",
+      (node) =>
+        node !== null &&
+        node !== undefined &&
+        !(typeof node === "string" && node.trim() === ""),
     );
 
     return (

@@ -47,7 +47,7 @@ export interface ParseStudyDocumentOptions {
 
 const HEADING = /^(#{1,6})\s+(.+?)\s*$/;
 const META_LINE = /^\*\*([^*:]{1,40}):\*\*\s*(.*?)\s*$/;
-const FENCE = /^\s*(```|~~~)/;
+const FENCE = /^\s*(`{3,}|~{3,})/;
 const CARDS_OPEN = /^:::cards\s*$/;
 const CARDS_CLOSE = /^:::\s*$/;
 const NOTE_MARKER = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/i;
@@ -58,6 +58,25 @@ interface Heading {
   level: number;
   title: string;
   index: number;
+}
+
+/** An open fenced code block: markdown closes it only with the same marker. */
+interface Fence {
+  char: "`" | "~";
+  length: number;
+}
+
+function fenceMarker(line: string): Fence | null {
+  const marker = FENCE.exec(line)?.[1];
+  if (!marker) return null;
+  return { char: marker[0] === "`" ? "`" : "~", length: marker.length };
+}
+
+/** Opens a fence, or closes it when the marker matches the opening one. */
+function toggleFence(fence: Fence | null, marker: Fence): Fence | null {
+  if (!fence) return marker;
+  if (marker.char === fence.char && marker.length >= fence.length) return null;
+  return fence;
 }
 
 const GRADE_LABELS: Record<string, string> = {
@@ -79,14 +98,15 @@ export function normalizeDocumentMarkdown(markdown: string): string {
 /** Collects markdown headings outside fenced code blocks. */
 export function collectHeadings(lines: string[]): Heading[] {
   const headings: Heading[] = [];
-  let inFence = false;
+  let fence: Fence | null = null;
 
   lines.forEach((line, index) => {
-    if (FENCE.test(line)) {
-      inFence = !inFence;
+    const marker = fenceMarker(line);
+    if (marker) {
+      fence = toggleFence(fence, marker);
       return;
     }
-    if (inFence) return;
+    if (fence) return;
     const match = line.match(HEADING);
     if (!match) return;
     headings.push({
@@ -101,13 +121,14 @@ export function collectHeadings(lines: string[]): Heading[] {
 
 /** Shifts heading levels (used for legacy files where H1 was a section). */
 export function shiftHeadings(lines: string[], delta: number): string[] {
-  let inFence = false;
+  let fence: Fence | null = null;
   return lines.map((line) => {
-    if (FENCE.test(line)) {
-      inFence = !inFence;
+    const marker = fenceMarker(line);
+    if (marker) {
+      fence = toggleFence(fence, marker);
       return line;
     }
-    if (inFence) return line;
+    if (fence) return line;
     const match = line.match(HEADING);
     if (!match) return line;
     const level = Math.min(6, Math.max(1, match[1].length + delta));
@@ -204,14 +225,15 @@ function parseNote(lines: string[]): StudySectionBlock {
  * contain the marker cannot end the directive early.
  */
 function findDirectiveEnd(lines: string[], from: number): number {
-  let inFence = false;
+  let fence: Fence | null = null;
 
   for (let index = from; index < lines.length; index += 1) {
-    if (FENCE.test(lines[index])) {
-      inFence = !inFence;
+    const marker = fenceMarker(lines[index]);
+    if (marker) {
+      fence = toggleFence(fence, marker);
       continue;
     }
-    if (!inFence && CARDS_CLOSE.test(lines[index])) return index;
+    if (!fence && CARDS_CLOSE.test(lines[index])) return index;
   }
 
   return -1;
@@ -225,7 +247,7 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
   const lines = normalizeDocumentMarkdown(markdown).split("\n");
   const blocks: StudySectionBlock[] = [];
   let buffer: string[] = [];
-  let inFence = false;
+  let fence: Fence | null = null;
 
   const flushMarkdown = () => {
     const content = buffer.join("\n").trim();
@@ -237,14 +259,15 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
   while (index < lines.length) {
     const line = lines[index];
 
-    if (FENCE.test(line)) {
-      inFence = !inFence;
+    const marker = fenceMarker(line);
+    if (marker) {
+      fence = toggleFence(fence, marker);
       buffer.push(line);
       index += 1;
       continue;
     }
 
-    if (!inFence && CARDS_OPEN.test(line)) {
+    if (!fence && CARDS_OPEN.test(line)) {
       const end = findDirectiveEnd(lines, index + 1);
       if (end !== -1) {
         flushMarkdown();
@@ -262,7 +285,7 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
       continue;
     }
 
-    if (!inFence && line.startsWith(">")) {
+    if (!fence && line.startsWith(">")) {
       const quote: string[] = [];
       while (index < lines.length) {
         if (lines[index].startsWith(">")) {
