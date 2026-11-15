@@ -96,6 +96,11 @@ Never edit the generated file by hand.
   map from `StudySectionBlock["type"]` to a React component, typed with
   `satisfies Record<…>` so a missing entry is a compile error. `StudySection` has no
   `if (block.type === …)` branching left.
+- `src/features/study/model/markdown-pipeline.ts` is the single Markdown processor of the
+  client bundle: one `unified()` built at module import, a FIFO tree cache and
+  `renderMarkdown()`. `StudyProse`/`StudyInline` must not use `<ReactMarkdown>` — a guard test
+  fails if they do; `components/__fixtures__/study-render/*.html` is a byte-exact golden
+  baseline that is never regenerated to make a test pass.
 - `src/features/study/components/markdown-components.tsx` maps Markdown tags to blocks:
   tables get a scroll wrapper, fences become `StudyCodeBlock`, task lists become
   checklists, link lists in sources sections become pills, a standalone image becomes a
