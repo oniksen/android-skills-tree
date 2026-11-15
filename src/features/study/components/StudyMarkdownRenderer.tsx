@@ -9,6 +9,8 @@ import StudyNav from "./StudyNav";
 import StudyProse from "./StudyProse";
 import StudySection from "./StudySection";
 
+const MARKDOWN = blockClass("markdown");
+
 export default function StudyMarkdownRenderer({
   content,
   grade,
@@ -23,7 +25,7 @@ export default function StudyMarkdownRenderer({
 
   if (!studyDocument) {
     return (
-      <div className={blockClass("markdown")}>
+      <div className={MARKDOWN}>
         <StudyProse markdown={content} />
       </div>
     );

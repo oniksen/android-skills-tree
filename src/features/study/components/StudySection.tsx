@@ -1,11 +1,15 @@
 "use client";
 
+import { memo } from "react";
 import { blockClass } from "../model/study-blocks";
 import type { StudySection as StudySectionData } from "../model/parse-study-document";
 import { StudyBlockRenderer } from "./study-block-renderer";
 import StudyInline from "./StudyInline";
 
-export default function StudySection({
+const SECTION = blockClass("section");
+const SECTION_TITLE = blockClass("sectionTitle");
+
+function StudySection({
   section,
 }: {
   section: StudySectionData;
@@ -13,10 +17,10 @@ export default function StudySection({
   return (
     <section
       id={section.id}
-      className={blockClass("section")}
+      className={SECTION}
       aria-labelledby={`${section.id}-title`}
     >
-      <h2 id={`${section.id}-title`} className={blockClass("sectionTitle")}>
+      <h2 id={`${section.id}-title`} className={SECTION_TITLE}>
         <StudyInline text={section.title} />
       </h2>
       {section.blocks.map((block, index) => (
@@ -29,3 +33,5 @@ export default function StudySection({
     </section>
   );
 }
+
+export default memo(StudySection);

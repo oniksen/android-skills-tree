@@ -4,6 +4,14 @@ import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 import { blockClass } from "../model/study-blocks";
 
+const CODE_WRAP = blockClass("codeWrap");
+const CODE_BAR = blockClass("codeBar");
+const CODE_LANG = blockClass("codeLang");
+const CODE = blockClass("code");
+const COPY = blockClass("copy");
+const COPY_COPIED = blockClass("copyCopied");
+
+// не memo: внутри состояние копирования
 export default function StudyCodeBlock({
   code,
   language = "",
@@ -26,12 +34,12 @@ export default function StudyCodeBlock({
   }
 
   return (
-    <div className={blockClass("codeWrap")}>
-      <div className={blockClass("codeBar")}>
-        <span className={blockClass("codeLang")}>{language || "code"}</span>
+    <div className={CODE_WRAP}>
+      <div className={CODE_BAR}>
+        <span className={CODE_LANG}>{language || "code"}</span>
         <button
           type="button"
-          className={[blockClass("copy"), copied ? blockClass("copyCopied") : ""]
+          className={[COPY, copied ? COPY_COPIED : ""]
             .filter(Boolean)
             .join(" ")}
           onClick={handleCopy}
@@ -41,7 +49,7 @@ export default function StudyCodeBlock({
           {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
         </button>
       </div>
-      <pre className={blockClass("code")}>
+      <pre className={CODE}>
         <code className={language ? `hljs language-${language}` : "hljs"}>
           {children ?? code}
         </code>

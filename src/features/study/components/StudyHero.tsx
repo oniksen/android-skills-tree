@@ -5,14 +5,19 @@ import type { StudyDocumentMeta } from "../model/parse-study-document";
 import { studyEyebrow, studyLead } from "../model/parse-study-document";
 import StudyInline from "./StudyInline";
 
+const HERO = blockClass("hero");
+const EYEBROW = blockClass("eyebrow");
+const TITLE = blockClass("title");
+const LEAD = blockClass("lead");
+
 export default function StudyHero({ meta }: { meta: StudyDocumentMeta }) {
   return (
-    <header className={blockClass("hero")}>
-      <p className={blockClass("eyebrow")}>{studyEyebrow(meta)}</p>
-      <h1 className={blockClass("title")}>
+    <header className={HERO}>
+      <p className={EYEBROW}>{studyEyebrow(meta)}</p>
+      <h1 className={TITLE}>
         <StudyInline text={meta.title} />
       </h1>
-      <p className={blockClass("lead")}>
+      <p className={LEAD}>
         <StudyInline text={studyLead(meta)} />
       </p>
     </header>

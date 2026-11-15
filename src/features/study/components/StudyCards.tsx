@@ -1,19 +1,24 @@
 "use client";
 
+import { memo } from "react";
 import { blockClass } from "../model/study-blocks";
 import type { StudyCardItem } from "../model/parse-study-document";
 import StudyInline from "./StudyInline";
 import StudyProse from "./StudyProse";
 
-export default function StudyCards({ items }: { items: StudyCardItem[] }) {
+const CARDS = blockClass("cards");
+const CARD = blockClass("card");
+const CARD_TITLE = blockClass("cardTitle");
+
+function StudyCards({ items }: { items: StudyCardItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <div className={blockClass("cards")}>
+    <div className={CARDS}>
       {items.map((item, index) => (
-        <div key={`${item.title}-${index}`} className={blockClass("card")}>
+        <div key={`${item.title}-${index}`} className={CARD}>
           {item.title ? (
-            <p className={blockClass("cardTitle")}>
+            <p className={CARD_TITLE}>
               <StudyInline text={item.title} />
             </p>
           ) : null}
@@ -23,3 +28,5 @@ export default function StudyCards({ items }: { items: StudyCardItem[] }) {
     </div>
   );
 }
+
+export default memo(StudyCards);

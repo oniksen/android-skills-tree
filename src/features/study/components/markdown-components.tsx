@@ -6,6 +6,20 @@ import type { Components } from "react-markdown";
 import { blockClass } from "../model/study-blocks";
 import StudyCodeBlock from "./StudyCodeBlock";
 
+const FIGURE = blockClass("figure");
+const CAPTION = blockClass("caption");
+const SUBTITLE = blockClass("subtitle");
+const SUBTITLE_MINOR = `${SUBTITLE} ${blockClass("subtitleMinor")}`;
+const PILLS = blockClass("pills");
+const CHECKLIST = blockClass("checklist");
+const LIST = blockClass("list");
+const CHECK_ITEM = blockClass("checkItem");
+const TABLE_WRAP = blockClass("tableWrap");
+const TABLE = blockClass("table");
+const NOTE = blockClass("note");
+const PILL = blockClass("pill");
+const DIVIDER = blockClass("divider");
+
 function isCheckbox(node: ReactNode): boolean {
   if (!React.isValidElement(node)) return false;
   if (node.type === "input") {
@@ -43,7 +57,7 @@ export function createStudyMarkdownComponents({
   inline = false,
 }: ComponentOptions = {}): Components {
   const StudyImage: NonNullable<Components["img"]> = ({ src, alt }) => (
-    <figure className={blockClass("figure")}>
+    <figure className={FIGURE}>
       {/* Markdown images point at arbitrary hosts; next/image needs a configured allowlist. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -52,7 +66,7 @@ export function createStudyMarkdownComponents({
         loading="lazy"
       />
       {alt ? (
-        <figcaption className={blockClass("caption")}>{alt}</figcaption>
+        <figcaption className={CAPTION}>{alt}</figcaption>
       ) : null}
     </figure>
   );
@@ -81,12 +95,12 @@ export function createStudyMarkdownComponents({
     const StudyHeading = ({ children }: { children?: ReactNode }) => {
       if (weight === "h4") {
         return (
-          <h4 className={`${blockClass("subtitle")} ${blockClass("subtitleMinor")}`}>
+          <h4 className={SUBTITLE_MINOR}>
             {children}
           </h4>
         );
       }
-      return <h3 className={blockClass("subtitle")}>{children}</h3>;
+      return <h3 className={SUBTITLE}>{children}</h3>;
     };
     StudyHeading.displayName = weight === "h4" ? "StudyHeading4" : "StudyHeading3";
     return StudyHeading;
@@ -104,26 +118,26 @@ export function createStudyMarkdownComponents({
     h5: heading("h4"),
     h6: heading("h4"),
     ul: ({ children }) => {
-      if (sources) return <ul className={blockClass("pills")}>{children}</ul>;
+      if (sources) return <ul className={PILLS}>{children}</ul>;
       if (hasCheckbox(children)) {
-        return <ul className={blockClass("checklist")}>{children}</ul>;
+        return <ul className={CHECKLIST}>{children}</ul>;
       }
-      return <ul className={blockClass("list")}>{children}</ul>;
+      return <ul className={LIST}>{children}</ul>;
     },
-    ol: ({ children }) => <ol className={blockClass("list")}>{children}</ol>,
+    ol: ({ children }) => <ol className={LIST}>{children}</ol>,
     li: ({ children }) => (
-      <li className={hasCheckbox(children) ? blockClass("checkItem") : undefined}>
+      <li className={hasCheckbox(children) ? CHECK_ITEM : undefined}>
         {children}
       </li>
     ),
     table: ({ children }) => (
       <div
-        className={blockClass("tableWrap")}
+        className={TABLE_WRAP}
         role="group"
         aria-label="Таблица"
         tabIndex={0}
       >
-        <table className={blockClass("table")}>{children}</table>
+        <table className={TABLE}>{children}</table>
       </div>
     ),
     pre: ({ children }) => {
@@ -141,13 +155,13 @@ export function createStudyMarkdownComponents({
     },
     code: ({ children }) => <code>{children}</code>,
     blockquote: ({ children }) => (
-      <div className={blockClass("note")}>{children}</div>
+      <div className={NOTE}>{children}</div>
     ),
     a: ({ href, children }) => {
       if (sources) {
         return (
           <a
-            className={blockClass("pill")}
+            className={PILL}
             href={href}
             target="_blank"
             rel="noopener noreferrer"
@@ -170,7 +184,7 @@ export function createStudyMarkdownComponents({
       );
     },
     img: StudyImage,
-    hr: () => <hr className={blockClass("divider")} />,
+    hr: () => <hr className={DIVIDER} />,
   };
 }
 
