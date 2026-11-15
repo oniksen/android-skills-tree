@@ -2,8 +2,8 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
-import { ACHIEVEMENT_TIER_ICONS } from "@/data/achievements";
 import type { AchievementDef } from "@/data/achievements";
+import TierIcon from "@/features/achievements/components/TierIcon";
 import type { Achievement } from "@/types";
 import AchievementCard from "@/features/achievements/components/AchievementCard";
 import { getAchievementProgress } from "@/core/domain/achievement-conditions";
@@ -56,7 +56,11 @@ export default function ProfileAchievements({
               assessmentMap,
               streakDays: longestStreak,
             });
-            const tierIcon = status.tier ? ACHIEVEMENT_TIER_ICONS[status.tier] : def.icon;
+            const tierIcon = status.tier ? (
+              <TierIcon tier={status.tier} className="h-7 w-7" />
+            ) : (
+              def.icon
+            );
             return (
               <motion.li
                 key={def.id}

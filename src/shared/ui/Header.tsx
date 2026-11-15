@@ -8,6 +8,7 @@ import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import StreakBadge from "@/shared/ui/StreakBadge";
 import CurrencyBadge from "@/shared/ui/CurrencyBadge";
 import BrandMark from "@/shared/ui/BrandMark";
+import AchievementUnlockWatcher from "@/features/achievements/components/AchievementUnlockWatcher";
 import {
   LayoutDashboard,
   GitBranch,
@@ -328,6 +329,8 @@ export default function Header({
           </div>
         </motion.nav>
       )}
+
+      {showNav && <AchievementUnlockWatcher />}
     </div>
 
   );

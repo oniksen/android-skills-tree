@@ -4,10 +4,10 @@ import { motion } from "motion/react";
 import { useAchievements, useStreak } from "@/hooks";
 import { useAssessments } from "@/hooks/useAssessments";
 import AchievementCard from "@/features/achievements/components/AchievementCard";
+import TierIcon from "@/features/achievements/components/TierIcon";
 import { AchievementsSkeleton } from "@/shared/ui/skeletons";
 import {
   getAchievementCatalog,
-  ACHIEVEMENT_TIER_ICONS,
   type AchievementDef,
 } from "@/data/achievements";
 import { getAchievementProgress } from "@/core/domain/achievement-conditions";
@@ -70,7 +70,11 @@ export default function AchievementsClient() {
                 const earned = earnedIds.has(def.id);
                 const achievement = achievements.find((a) => def.matches(a));
                 const status = getAchievementProgress(def, { assessmentMap, streakDays: longestStreak });
-                const tierIcon = status.tier ? ACHIEVEMENT_TIER_ICONS[status.tier] : def.icon;
+                const tierIcon = status.tier ? (
+                  <TierIcon tier={status.tier} className="h-7 w-7" />
+                ) : (
+                  def.icon
+                );
                 return (
                   <motion.div
                     key={def.id}
