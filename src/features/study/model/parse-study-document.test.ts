@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  collectHeadings,
   parseStudyDocument,
   parseStudySectionBody,
   shiftHeadings,
@@ -197,6 +198,70 @@ describe("parseStudySectionBody", () => {
     });
   });
 
+  it("разделяет соседние заметки, если вторая начинается с маркера", () => {
+    const blocks = parseStudySectionBody(
+      "> [!NOTE]\n> Первая заметка.\n\n> [!WARNING]\n> Второе предупреждение.",
+    );
+
+    expect(blocks.map((block) => block.type)).toEqual(["note", "note"]);
+    expect(blocks[0]).toMatchObject({ variant: "note", content: "Первая заметка." });
+    expect(blocks[1]).toMatchObject({
+      variant: "warn",
+      content: "Второе предупреждение.",
+    });
+  });
+
+  it("разделяет заметки по маркеру внутри цитаты", () => {
+    const blocks = parseStudySectionBody(
+      "> [!NOTE]\n> Первый текст.\n> [!WARNING]\n> Осторожно.",
+    );
+
+    expect(blocks.map((block) => block.type)).toEqual(["note", "note"]);
+    expect(blocks[0]).toMatchObject({ variant: "note", content: "Первый текст." });
+    expect(blocks[1]).toMatchObject({ variant: "warn", content: "Осторожно." });
+
+    for (const block of blocks) {
+      expect(block.type === "note" ? block.content : "").not.toContain("[!");
+    }
+  });
+
+  it("распознаёт TIP после вводной строки", () => {
+    const blocks = parseStudySectionBody(
+      "> Короткое вступление.\n> [!TIP]\n> Лайфхак.",
+    );
+
+    expect(blocks.map((block) => block.type)).toEqual(["note", "note"]);
+    expect(blocks[0]).toMatchObject({
+      variant: "note",
+      content: "Короткое вступление.",
+    });
+    expect(blocks[1]).toMatchObject({ variant: "note", content: "Лайфхак." });
+
+    for (const block of blocks) {
+      expect(block.type === "note" ? block.content : "").not.toContain("[!TIP]");
+    }
+  });
+
+  it("не режет заметку по маркеру внутри фенса", () => {
+    const blocks = parseStudySectionBody("> ```text\n> [!WARNING]\n> ```");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "note", variant: "note" });
+    expect(blocks[0].type === "note" ? blocks[0].content : "").toContain(
+      "[!WARNING]",
+    );
+  });
+
+  it("не режет по строке, где маркер не один", () => {
+    const blocks = parseStudySectionBody("> [!WARNING] текст");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "note", variant: "note" });
+    expect(blocks[0].type === "note" ? blocks[0].content : "").toContain(
+      "[!WARNING] текст",
+    );
+  });
+
   it("разбирает директиву :::cards", () => {
     const blocks = parseStudySectionBody(`До.
 
@@ -250,6 +315,148 @@ describe("parseStudySectionBody", () => {
     expect(blocks).toHaveLength(1);
     expect(blocks[0].type).toBe("markdown");
   });
+
+  it("не оставляет raw :::cards, если директива не закрыта", () => {
+    const blocks = parseStudySectionBody(
+      "До.\n\n:::cards\n- **Имя** — текст.\n\nПосле.",
+    );
+
+    const markdown = blocks
+      .filter((block) => block.type === "markdown")
+      .map((block) => block.content)
+      .join("\n");
+
+    expect(markdown).not.toContain(":::cards");
+    expect(markdown).toContain("- **Имя** — текст.");
+    expect(markdown).toContain("После.");
+  });
+
+  it("разбирает несколько директив :::cards в одной секции", () => {
+    const blocks = parseStudySectionBody(`:::cards
+- **А** — первая.
+:::
+
+Между блоками.
+
+:::cards
+- **Б** — вторая.
+:::`);
+
+    expect(blocks.map((block) => block.type)).toEqual([
+      "cards",
+      "markdown",
+      "cards",
+    ]);
+    expect(blocks[0]).toMatchObject({ items: [{ title: "А" }] });
+    expect(blocks[2]).toMatchObject({ items: [{ title: "Б" }] });
+  });
+
+  it("оставляет пустую директиву :::cards пустой сеткой", () => {
+    const blocks = parseStudySectionBody(":::cards\n:::");
+
+    expect(blocks).toEqual([{ type: "cards", items: [] }]);
+  });
+
+  it("не закрывает :::cards по ::: внутри блока кода", () => {
+    const blocks = parseStudySectionBody(`:::cards
+- **А** — пример:
+\`\`\`text
+:::
+\`\`\`
+- **Б** — второй.
+:::`);
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "cards" });
+    if (blocks[0].type === "cards") {
+      expect(blocks[0].items.map((item) => item.title)).toEqual(["А", "Б"]);
+    }
+  });
+
+  it("сохраняет :::cards внутри блока кода как код", () => {
+    const blocks = parseStudySectionBody("```text\n:::cards\n- **А** — текст.\n:::\n```");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "markdown" });
+    if (blocks[0].type === "markdown") {
+      expect(blocks[0].content).toContain(":::cards");
+    }
+  });
+
+  it("не подменяет закрывающий фенс фенсом другого вида", () => {
+    const blocks = parseStudySectionBody(`:::cards
+- **А** — пример:
+~~~text
+\`\`\`
+:::
+после
+~~~
+:::`);
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "cards" });
+    if (blocks[0].type === "cards") {
+      expect(blocks[0].items.map((item) => item.title)).toEqual(["А"]);
+    }
+  });
+
+  it("не открывает директиву строкой с лишним текстом", () => {
+    const blocks = parseStudySectionBody(":::cards лишнее\n- **А** — текст.");
+
+    expect(blocks.map((block) => block.type)).toEqual(["markdown"]);
+  });
+
+  it("нормализует CRLF в директиве", () => {
+    const blocks = parseStudySectionBody(
+      ":::cards\r\n- **Имя** — текст.\r\n:::",
+    );
+
+    expect(blocks).toEqual([
+      { type: "cards", items: [{ title: "Имя", content: "текст." }] },
+    ]);
+  });
+
+  it("оставляет незакрытую директиву разметкой, выкидывая маркер", () => {
+    const blocks = parseStudySectionBody(":::cards\n- **А** — текст.");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "markdown" });
+    if (blocks[0].type === "markdown") {
+      expect(blocks[0].content).not.toContain(":::cards");
+      expect(blocks[0].content).toContain("- **А** — текст.");
+    }
+  });
+
+  it("не считает одиночное ::: директивой", () => {
+    const blocks = parseStudySectionBody(":::");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "markdown" });
+    if (blocks[0].type === "markdown") {
+      expect(blocks[0].content).toContain(":::");
+    }
+  });
+
+  it("сохраняет незакрытый фенс внутри markdown-блока", () => {
+    const blocks = parseStudySectionBody("```text\nкод без закрытия");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "markdown" });
+    if (blocks[0].type === "markdown") {
+      expect(blocks[0].content).toContain("```text");
+      expect(blocks[0].content).toContain("код без закрытия");
+    }
+  });
+
+  it("закрывает директиву строкой ::: с хвостовыми пробелами", () => {
+    const blocks = parseStudySectionBody(":::cards\n- **А** — x\n:::   ");
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({
+      type: "cards",
+      items: [{ title: "А", content: "x" }],
+    });
+  });
 });
 
 describe("вспомогательные функции", () => {
@@ -257,6 +464,19 @@ describe("вспомогательные функции", () => {
     const shifted = shiftHeadings(["## A", "```", "## B", "```", "### C"], 1);
 
     expect(shifted).toEqual(["### A", "```", "## B", "```", "#### C"]);
+  });
+
+  it("не путает закрывающий фенс другого вида с открывающим", () => {
+    const headings = collectHeadings([
+      "~~~",
+      "# Не заголовок",
+      "```",
+      "# Тоже не заголовок",
+      "~~~",
+      "# Заголовок",
+    ]);
+
+    expect(headings.map((heading) => heading.title)).toEqual(["Заголовок"]);
   });
 
   it("очищает инлайн-разметку", () => {

@@ -3,8 +3,22 @@
 import React from "react";
 import type { ReactNode } from "react";
 import type { Components } from "react-markdown";
-import { STUDY_BLOCK } from "../model/study-blocks";
+import { blockClass } from "../model/study-blocks";
 import StudyCodeBlock from "./StudyCodeBlock";
+
+const FIGURE = blockClass("figure");
+const CAPTION = blockClass("caption");
+const SUBTITLE = blockClass("subtitle");
+const SUBTITLE_MINOR = `${SUBTITLE} ${blockClass("subtitleMinor")}`;
+const PILLS = blockClass("pills");
+const CHECKLIST = blockClass("checklist");
+const LIST = blockClass("list");
+const CHECK_ITEM = blockClass("checkItem");
+const TABLE_WRAP = blockClass("tableWrap");
+const TABLE = blockClass("table");
+const NOTE = blockClass("note");
+const PILL = blockClass("pill");
+const DIVIDER = blockClass("divider");
 
 function isCheckbox(node: ReactNode): boolean {
   if (!React.isValidElement(node)) return false;
@@ -42,53 +56,88 @@ export function createStudyMarkdownComponents({
   sources = false,
   inline = false,
 }: ComponentOptions = {}): Components {
-  const heading =
-    (className: string, weight: "h3" | "h4" = "h3") => {
-      const StudyHeading = ({ children }: { children?: ReactNode }) => {
-        if (weight === "h4") {
-          return (
-            <h4 className={`${STUDY_BLOCK.subtitle} ${STUDY_BLOCK.subtitleMinor}`}>
-              {children}
-            </h4>
-          );
-        }
-        return <h3 className={className}>{children}</h3>;
-      };
-      StudyHeading.displayName = weight === "h4" ? "StudyHeading4" : "StudyHeading3";
-      return StudyHeading;
+  const StudyImage: NonNullable<Components["img"]> = ({ src, alt }) => (
+    <figure className={FIGURE}>
+      {/* Markdown images point at arbitrary hosts; next/image needs a configured allowlist. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={typeof src === "string" ? src : undefined}
+        alt={alt ?? ""}
+        loading="lazy"
+      />
+      {alt ? (
+        <figcaption className={CAPTION}>{alt}</figcaption>
+      ) : null}
+    </figure>
+  );
+
+  /**
+   * React Markdown wraps a standalone image in `<p>`, but `<figure>` is not
+   * allowed inside a paragraph. Such a paragraph is dropped instead.
+   */
+  const isFigureOnly = (children: ReactNode): boolean => {
+    const nodes = (Array.isArray(children) ? children : [children]).filter(
+      (node) =>
+        node !== null &&
+        node !== undefined &&
+        !(typeof node === "string" && node.trim() === ""),
+    );
+
+    return (
+      nodes.length > 0 &&
+      nodes.every(
+        (node) => React.isValidElement(node) && node.type === StudyImage,
+      )
+    );
+  };
+
+  const heading = (weight: "h3" | "h4" = "h3") => {
+    const StudyHeading = ({ children }: { children?: ReactNode }) => {
+      if (weight === "h4") {
+        return (
+          <h4 className={SUBTITLE_MINOR}>
+            {children}
+          </h4>
+        );
+      }
+      return <h3 className={SUBTITLE}>{children}</h3>;
     };
+    StudyHeading.displayName = weight === "h4" ? "StudyHeading4" : "StudyHeading3";
+    return StudyHeading;
+  };
 
   return {
     p: inline
       ? ({ children }) => <>{children}</>
-      : ({ children }) => <p>{children}</p>,
-    h1: heading(STUDY_BLOCK.subtitle),
-    h2: heading(STUDY_BLOCK.subtitle),
-    h3: heading(STUDY_BLOCK.subtitle),
-    h4: heading(STUDY_BLOCK.subtitle, "h4"),
-    h5: heading(STUDY_BLOCK.subtitle, "h4"),
-    h6: heading(STUDY_BLOCK.subtitle, "h4"),
+      : ({ children }) =>
+          isFigureOnly(children) ? <>{children}</> : <p>{children}</p>,
+    h1: heading(),
+    h2: heading(),
+    h3: heading(),
+    h4: heading("h4"),
+    h5: heading("h4"),
+    h6: heading("h4"),
     ul: ({ children }) => {
-      if (sources) return <ul className={STUDY_BLOCK.pills}>{children}</ul>;
+      if (sources) return <ul className={PILLS}>{children}</ul>;
       if (hasCheckbox(children)) {
-        return <ul className={STUDY_BLOCK.checklist}>{children}</ul>;
+        return <ul className={CHECKLIST}>{children}</ul>;
       }
-      return <ul className={STUDY_BLOCK.list}>{children}</ul>;
+      return <ul className={LIST}>{children}</ul>;
     },
-    ol: ({ children }) => <ol className={STUDY_BLOCK.list}>{children}</ol>,
+    ol: ({ children }) => <ol className={LIST}>{children}</ol>,
     li: ({ children }) => (
-      <li className={hasCheckbox(children) ? STUDY_BLOCK.checkItem : undefined}>
+      <li className={hasCheckbox(children) ? CHECK_ITEM : undefined}>
         {children}
       </li>
     ),
     table: ({ children }) => (
       <div
-        className={STUDY_BLOCK.tableWrap}
-        role="region"
+        className={TABLE_WRAP}
+        role="group"
         aria-label="Таблица"
         tabIndex={0}
       >
-        <table className={STUDY_BLOCK.table}>{children}</table>
+        <table className={TABLE}>{children}</table>
       </div>
     ),
     pre: ({ children }) => {
@@ -106,13 +155,13 @@ export function createStudyMarkdownComponents({
     },
     code: ({ children }) => <code>{children}</code>,
     blockquote: ({ children }) => (
-      <div className={STUDY_BLOCK.note}>{children}</div>
+      <div className={NOTE}>{children}</div>
     ),
     a: ({ href, children }) => {
       if (sources) {
         return (
           <a
-            className={STUDY_BLOCK.pill}
+            className={PILL}
             href={href}
             target="_blank"
             rel="noopener noreferrer"
@@ -134,17 +183,8 @@ export function createStudyMarkdownComponents({
         </a>
       );
     },
-    img: ({ src, alt }) => (
-      <figure className={STUDY_BLOCK.figure}>
-        {/* Markdown images point at arbitrary hosts; next/image needs a configured allowlist. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={alt ?? ""} loading="lazy" />
-        {alt ? (
-          <figcaption className={STUDY_BLOCK.caption}>{alt}</figcaption>
-        ) : null}
-      </figure>
-    ),
-    hr: () => <hr className={STUDY_BLOCK.divider} />,
+    img: StudyImage,
+    hr: () => <hr className={DIVIDER} />,
   };
 }
 

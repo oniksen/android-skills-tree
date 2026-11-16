@@ -1,14 +1,14 @@
-import { STUDY_BLOCK } from "@/features/study/model/study-blocks";
+import { blockClass } from "@/features/study/model/study-blocks";
 import { Skeleton } from "./Skeleton";
 
 export default function StudySkeleton() {
   return (
-    <div className={STUDY_BLOCK.page} aria-busy>
-      <div className={STUDY_BLOCK.topbar}>
+    <div className={blockClass("page")} aria-busy>
+      <div className={blockClass("topbar")}>
         <Skeleton className="h-4 w-32" />
       </div>
-      <div className={STUDY_BLOCK.article}>
-        <div className={STUDY_BLOCK.hero}>
+      <div className={blockClass("article")}>
+        <div className={blockClass("hero")}>
           <Skeleton className="h-3 w-24" />
           <Skeleton className="mt-3 h-8 w-2/3" />
           <Skeleton className="mt-4 h-4 w-full" />
@@ -19,7 +19,7 @@ export default function StudySkeleton() {
           <Skeleton className="h-7 w-24 rounded-full" />
           <Skeleton className="h-7 w-32 rounded-full" />
         </div>
-        <div className={STUDY_BLOCK.section}>
+        <div className={blockClass("section")}>
           <Skeleton className="h-6 w-1/2" />
           <Skeleton className="mt-4 h-4 w-full" />
           <Skeleton className="mt-2 h-4 w-full" />

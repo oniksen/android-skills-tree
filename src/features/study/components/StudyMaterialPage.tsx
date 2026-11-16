@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { STUDY_BLOCK } from "../model/study-blocks";
+import { blockClass } from "../model/study-blocks";
 
 export default function StudyMaterialPage({
   backHref,
@@ -12,14 +12,14 @@ export default function StudyMaterialPage({
   children: React.ReactNode;
 }) {
   return (
-    <div className={STUDY_BLOCK.page}>
-      <div className={STUDY_BLOCK.topbar}>
-        <Link href={backHref} className={STUDY_BLOCK.back}>
+    <div className={blockClass("page")}>
+      <div className={blockClass("topbar")}>
+        <Link href={backHref} className={blockClass("back")}>
           <ArrowLeft className="h-4 w-4" />
           {backLabel}
         </Link>
       </div>
-      <article className={STUDY_BLOCK.article}>{children}</article>
+      <article className={blockClass("article")}>{children}</article>
     </div>
   );
 }

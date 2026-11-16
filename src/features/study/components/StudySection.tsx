@@ -1,13 +1,15 @@
 "use client";
 
-import { STUDY_BLOCK } from "../model/study-blocks";
+import { memo } from "react";
+import { blockClass } from "../model/study-blocks";
 import type { StudySection as StudySectionData } from "../model/parse-study-document";
-import StudyCards from "./StudyCards";
+import { StudyBlockRenderer } from "./study-block-renderer";
 import StudyInline from "./StudyInline";
-import StudyNote from "./StudyNote";
-import StudyProse from "./StudyProse";
 
-export default function StudySection({
+const SECTION = blockClass("section");
+const SECTION_TITLE = blockClass("sectionTitle");
+
+function StudySection({
   section,
 }: {
   section: StudySectionData;
@@ -15,33 +17,21 @@ export default function StudySection({
   return (
     <section
       id={section.id}
-      className={STUDY_BLOCK.section}
+      className={SECTION}
       aria-labelledby={`${section.id}-title`}
     >
-      <h2 id={`${section.id}-title`} className={STUDY_BLOCK.sectionTitle}>
+      <h2 id={`${section.id}-title`} className={SECTION_TITLE}>
         <StudyInline text={section.title} />
       </h2>
-      {section.blocks.map((block, index) => {
-        if (block.type === "cards") {
-          return <StudyCards key={`cards-${index}`} items={block.items} />;
-        }
-        if (block.type === "note") {
-          return (
-            <StudyNote
-              key={`note-${index}`}
-              content={block.content}
-              variant={block.variant}
-            />
-          );
-        }
-        return (
-          <StudyProse
-            key={`markdown-${index}`}
-            markdown={block.content}
-            sources={section.isSources}
-          />
-        );
-      })}
+      {section.blocks.map((block, index) => (
+        <StudyBlockRenderer
+          key={`${block.type}-${index}`}
+          block={block}
+          sources={section.isSources}
+        />
+      ))}
     </section>
   );
 }
+
+export default memo(StudySection);

@@ -47,7 +47,7 @@ export interface ParseStudyDocumentOptions {
 
 const HEADING = /^(#{1,6})\s+(.+?)\s*$/;
 const META_LINE = /^\*\*([^*:]{1,40}):\*\*\s*(.*?)\s*$/;
-const FENCE = /^\s*(```|~~~)/;
+const FENCE = /^\s*(`{3,}|~{3,})/;
 const CARDS_OPEN = /^:::cards\s*$/;
 const CARDS_CLOSE = /^:::\s*$/;
 const NOTE_MARKER = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/i;
@@ -58,6 +58,25 @@ interface Heading {
   level: number;
   title: string;
   index: number;
+}
+
+/** An open fenced code block: markdown closes it only with the same marker. */
+interface Fence {
+  char: "`" | "~";
+  length: number;
+}
+
+function fenceMarker(line: string): Fence | null {
+  const marker = FENCE.exec(line)?.[1];
+  if (!marker) return null;
+  return { char: marker[0] === "`" ? "`" : "~", length: marker.length };
+}
+
+/** Opens a fence, or closes it when the marker matches the opening one. */
+function toggleFence(fence: Fence | null, marker: Fence): Fence | null {
+  if (!fence) return marker;
+  if (marker.char === fence.char && marker.length >= fence.length) return null;
+  return fence;
 }
 
 const GRADE_LABELS: Record<string, string> = {
@@ -79,14 +98,15 @@ export function normalizeDocumentMarkdown(markdown: string): string {
 /** Collects markdown headings outside fenced code blocks. */
 export function collectHeadings(lines: string[]): Heading[] {
   const headings: Heading[] = [];
-  let inFence = false;
+  let fence: Fence | null = null;
 
   lines.forEach((line, index) => {
-    if (FENCE.test(line)) {
-      inFence = !inFence;
+    const marker = fenceMarker(line);
+    if (marker) {
+      fence = toggleFence(fence, marker);
       return;
     }
-    if (inFence) return;
+    if (fence) return;
     const match = line.match(HEADING);
     if (!match) return;
     headings.push({
@@ -101,13 +121,14 @@ export function collectHeadings(lines: string[]): Heading[] {
 
 /** Shifts heading levels (used for legacy files where H1 was a section). */
 export function shiftHeadings(lines: string[], delta: number): string[] {
-  let inFence = false;
+  let fence: Fence | null = null;
   return lines.map((line) => {
-    if (FENCE.test(line)) {
-      inFence = !inFence;
+    const marker = fenceMarker(line);
+    if (marker) {
+      fence = toggleFence(fence, marker);
       return line;
     }
-    if (inFence) return line;
+    if (fence) return line;
     const match = line.match(HEADING);
     if (!match) return line;
     const level = Math.min(6, Math.max(1, match[1].length + delta));
@@ -197,10 +218,59 @@ function parseNote(lines: string[]): StudySectionBlock {
   return { type: "note", variant, content: body.join("\n").trim() };
 }
 
-function findDirectiveEnd(lines: string[], from: number): number {
-  for (let index = from; index < lines.length; index += 1) {
-    if (CARDS_CLOSE.test(lines[index])) return index;
+/**
+ * Splits one collected quote into the notes it really contains.
+ *
+ * A line that is nothing but a `[!NOTE]`-style marker starts the next note,
+ * so an alert written below the first line does not leak into the text as a
+ * literal `[!WARNING]`. Markers inside a fenced block are code, not markers.
+ * Chunks that are empty after trimming are dropped; everything else keeps its
+ * order and inner blank lines.
+ */
+function splitNoteChunks(lines: string[]): string[][] {
+  const chunks: string[][] = [];
+  let current: string[] = [];
+  let fence: Fence | null = null;
+
+  for (const line of lines) {
+    const marker = fenceMarker(line);
+    if (marker) {
+      fence = toggleFence(fence, marker);
+      current.push(line);
+      continue;
+    }
+
+    if (!fence && current.length > 0 && NOTE_MARKER.test(line.trim())) {
+      chunks.push(current);
+      current = [line];
+      continue;
+    }
+
+    current.push(line);
   }
+
+  chunks.push(current);
+  return chunks.filter((chunk) => chunk.join("\n").trim() !== "");
+}
+
+/**
+ * Finds the line that closes a `:::cards` directive.
+ *
+ * `:::` is only a closer outside fenced code, so a snippet that happens to
+ * contain the marker cannot end the directive early.
+ */
+function findDirectiveEnd(lines: string[], from: number): number {
+  let fence: Fence | null = null;
+
+  for (let index = from; index < lines.length; index += 1) {
+    const marker = fenceMarker(lines[index]);
+    if (marker) {
+      fence = toggleFence(fence, marker);
+      continue;
+    }
+    if (!fence && CARDS_CLOSE.test(lines[index])) return index;
+  }
+
   return -1;
 }
 
@@ -212,7 +282,7 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
   const lines = normalizeDocumentMarkdown(markdown).split("\n");
   const blocks: StudySectionBlock[] = [];
   let buffer: string[] = [];
-  let inFence = false;
+  let fence: Fence | null = null;
 
   const flushMarkdown = () => {
     const content = buffer.join("\n").trim();
@@ -224,14 +294,15 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
   while (index < lines.length) {
     const line = lines[index];
 
-    if (FENCE.test(line)) {
-      inFence = !inFence;
+    const marker = fenceMarker(line);
+    if (marker) {
+      fence = toggleFence(fence, marker);
       buffer.push(line);
       index += 1;
       continue;
     }
 
-    if (!inFence && CARDS_OPEN.test(line)) {
+    if (!fence && CARDS_OPEN.test(line)) {
       const end = findDirectiveEnd(lines, index + 1);
       if (end !== -1) {
         flushMarkdown();
@@ -242,9 +313,14 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
         index = end + 1;
         continue;
       }
+
+      // Unclosed directive: drop the opener so a raw `:::cards` marker never
+      // reaches the page, and keep the body as ordinary Markdown.
+      index += 1;
+      continue;
     }
 
-    if (!inFence && line.startsWith(">")) {
+    if (!fence && line.startsWith(">")) {
       const quote: string[] = [];
       while (index < lines.length) {
         if (lines[index].startsWith(">")) {
@@ -254,6 +330,11 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
         }
         const isBlank = lines[index].trim() === "";
         if (isBlank && (lines[index + 1] ?? "").startsWith(">")) {
+          // A blank line followed by a new `> [!WARNING]`-style marker starts
+          // the next note; without this, two adjacent alerts merge and the
+          // second marker leaks into the first note's text.
+          const nextLine = (lines[index + 1] ?? "").replace(/^>\s?/, "").trim();
+          if (NOTE_MARKER.test(nextLine)) break;
           quote.push("");
           index += 1;
           continue;
@@ -261,7 +342,7 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
         break;
       }
       flushMarkdown();
-      blocks.push(parseNote(quote));
+      for (const chunk of splitNoteChunks(quote)) blocks.push(parseNote(chunk));
       continue;
     }
 
