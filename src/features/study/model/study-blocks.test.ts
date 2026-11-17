@@ -30,6 +30,7 @@ const HTML_TAGS = [
   "article",
   "blockquote",
   "button",
+  "details",
   "div",
   "figcaption",
   "figure",
@@ -47,6 +48,7 @@ const HTML_TAGS = [
   "pre",
   "section",
   "span",
+  "summary",
   "table",
   "ul",
 ];

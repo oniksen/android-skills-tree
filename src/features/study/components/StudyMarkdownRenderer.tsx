@@ -5,11 +5,13 @@ import { blockClass } from "../model/study-blocks";
 import { parseStudyDocument } from "../model/parse-study-document";
 import StudyFooter from "./StudyFooter";
 import StudyHero from "./StudyHero";
-import StudyNav from "./StudyNav";
+import StudyToc from "./StudyToc";
 import StudyProse from "./StudyProse";
 import StudySection from "./StudySection";
 
 const MARKDOWN = blockClass("markdown");
+const LAYOUT = blockClass("layout");
+const CONTENT = blockClass("content");
 
 export default function StudyMarkdownRenderer({
   content,
@@ -32,13 +34,15 @@ export default function StudyMarkdownRenderer({
   }
 
   return (
-    <>
-      <StudyHero meta={studyDocument.meta} />
-      <StudyNav sections={studyDocument.sections} />
-      {studyDocument.sections.map((section) => (
-        <StudySection key={section.id} section={section} />
-      ))}
-      <StudyFooter meta={studyDocument.meta} />
-    </>
+    <div className={LAYOUT}>
+      <StudyToc sections={studyDocument.sections} />
+      <div className={CONTENT}>
+        <StudyHero meta={studyDocument.meta} />
+        {studyDocument.sections.map((section) => (
+          <StudySection key={section.id} section={section} />
+        ))}
+        <StudyFooter meta={studyDocument.meta} />
+      </div>
+    </div>
   );
 }

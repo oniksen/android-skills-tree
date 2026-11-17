@@ -75,8 +75,13 @@ describe("HTML учебных материалов", () => {
       "study-eyebrow",
       "study-title",
       "study-lead",
-      "study-nav",
-      "study-nav-link",
+      "study-toc",
+      "study-toc-rail",
+      "study-toc-compact",
+      "study-toc-summary",
+      "study-toc-list",
+      "study-toc-group",
+      "study-toc-link",
       "study-section",
       "study-section-title",
       "study-subtitle",
@@ -120,7 +125,7 @@ describe("HTML учебных материалов", () => {
   it("подписывает навигацию, таблицы, рисунки и кнопку копирования", () => {
     const html = renderFixture();
 
-    expect(html).toContain('aria-label="Содержание"');
+    expect(html).toContain('aria-label="Содержание материала"');
     expect(html).toContain('aria-label="Таблица"');
     expect(html).toContain("aria-label=\"Копировать");
     expect(html).toContain('class="study-figure-caption">Схема работы компилятора');
