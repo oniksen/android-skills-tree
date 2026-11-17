@@ -45,6 +45,50 @@ export function extractText(node: ReactNode): string {
   return extractText((node.props as { children?: ReactNode }).children);
 }
 
+const HEADING_ANCHOR = /\s*\{#([a-z0-9]+(?:-[a-z0-9]+)*)\}\s*$/;
+
+export interface StudyHeadingAnchor {
+  text: string;
+  anchor: string | null;
+}
+
+/**
+ * Reads an author anchor from the end of a heading.
+ *
+ * The anchor is the only place the study pipeline learns an element id, and
+ * this module is its only parser: the heading components and the table of
+ * contents both call it. An invalid marker is ordinary text — the author sees
+ * it on the page instead of getting a silently renamed heading.
+ */
+export function parseStudyHeadingAnchor(text: string): StudyHeadingAnchor {
+  const value = text.trimEnd();
+  const match = HEADING_ANCHOR.exec(value);
+  if (!match) return { text, anchor: null };
+  return { text: value.slice(0, match.index).trimEnd(), anchor: match[1] };
+}
+
+/**
+ * Removes a trailing anchor from rendered heading children.
+ *
+ * The Markdown parser turns `{#id}` into a plain text child at the end of the
+ * heading, so the marker is stripped from that child and every inline element
+ * (`code`, emphasis, links) survives untouched.
+ */
+function splitHeadingAnchor(children: ReactNode): {
+  children: ReactNode;
+  anchor: string | null;
+} {
+  const nodes = React.Children.toArray(children);
+  const last = nodes.at(-1);
+  if (typeof last !== "string") return { children, anchor: null };
+
+  const { text, anchor } = parseStudyHeadingAnchor(last);
+  if (!anchor) return { children, anchor: null };
+
+  nodes[nodes.length - 1] = text;
+  return { children: nodes, anchor };
+}
+
 interface ComponentOptions {
   /** Sources section: link lists become pills. */
   sources?: boolean;
@@ -93,14 +137,19 @@ export function createStudyMarkdownComponents({
 
   const heading = (weight: "h3" | "h4" = "h3") => {
     const StudyHeading = ({ children }: { children?: ReactNode }) => {
+      const { children: content, anchor } = splitHeadingAnchor(children);
       if (weight === "h4") {
         return (
-          <h4 className={SUBTITLE_MINOR}>
-            {children}
+          <h4 id={anchor ?? undefined} className={SUBTITLE_MINOR}>
+            {content}
           </h4>
         );
       }
-      return <h3 className={SUBTITLE}>{children}</h3>;
+      return (
+        <h3 id={anchor ?? undefined} className={SUBTITLE}>
+          {content}
+        </h3>
+      );
     };
     StudyHeading.displayName = weight === "h4" ? "StudyHeading4" : "StudyHeading3";
     return StudyHeading;
