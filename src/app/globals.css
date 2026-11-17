@@ -455,23 +455,18 @@
 
 /* Study material pages */
 :root {
-  --study-shadow: 0 4px 18px rgba(24, 39, 75, 0.06);
   --study-code-bg: #1f1e1a;
   --study-code-ink: #e5edf8;
   --study-accent-bg: #f7ddd1;
   --study-accent-text: #c15f3c;
   --study-warn-bg: #f7e7c6;
   --study-warn-border: #a9761a;
-  --study-measure: 72ch;
-  --study-radius: 14px;
-  --study-card-pad: clamp(1rem, 2vw, 1.75rem);
-  /* Header.tsx wraps <main> in px-4. On phones study blocks cancel that
-     padding to sit edge to edge, then re-apply it as their inner padding. */
-  --study-gutter: 1rem;
+  /* One horizontal rhythm for the whole surface: no page padding, so the
+     material can use every pixel the sidebar leaves. */
+  --study-pad: clamp(1rem, 3vw, 3rem);
 }
 
 :root[data-theme="dark"] {
-  --study-shadow: none;
   --study-code-bg: #0b0e14;
   --study-code-ink: #e5edf8;
   --study-accent-bg: rgba(224, 137, 104, 0.14);
@@ -482,13 +477,15 @@
 
 .study-page {
   width: 100%;
-  padding: 12px 0 32px;
+  min-height: calc(100dvh - 56px - env(safe-area-inset-top));
+  padding: 0;
+  background: var(--surface);
 }
 
 .study-topbar {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  padding: 12px var(--study-pad) 0;
 }
 
 .study-back {
@@ -512,19 +509,13 @@
 }
 
 .study-article {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  display: block;
 }
 
 /* Hero ------------------------------------------------------------------ */
 
 .study-hero {
-  padding: var(--study-card-pad);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--study-radius);
-  background: linear-gradient(135deg, var(--surface), var(--study-accent-bg));
-  box-shadow: var(--study-shadow);
+  padding: 20px var(--study-pad) 8px;
 }
 
 .study-eyebrow {
@@ -548,7 +539,6 @@
   margin: 0;
   color: var(--color-slate-500);
   line-height: 1.65;
-  max-width: var(--study-measure);
 }
 
 .study-lead p {
@@ -568,7 +558,7 @@
 
 .study-toc {
   display: block;
-  padding: 12px var(--study-gutter);
+  padding: 12px var(--study-pad);
   border-bottom: 1px solid var(--surface-border);
 }
 
@@ -622,41 +612,41 @@
 }
 
 @media (min-width: 1280px) {
-  .study-toc {
-    border-bottom: 0;
+  .study-layout {
+    grid-template-columns: 280px minmax(0, 1fr);
   }
 
-  .study-toc-compact {
-    display: none;
+  .study-toc {
+    padding: 20px 16px 32px;
+    border-right: 1px solid var(--surface-border);
+    border-bottom: 0;
   }
 
   .study-toc-rail {
     display: block;
+    position: sticky;
+    top: calc(56px + env(safe-area-inset-top));
+    max-height: calc(100dvh - 56px - env(safe-area-inset-top));
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .study-toc-compact {
+    display: none;
   }
 }
 
 /* Sections -------------------------------------------------------------- */
 
 .study-section {
-  padding: var(--study-card-pad);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--study-radius);
-  background: var(--surface);
-  box-shadow: var(--study-shadow);
-  /* Wide blocks scroll inside their own wrappers; clip here so a stray
-     over-wide block can never make the whole page scroll sideways. */
+  padding: 16px var(--study-pad) 28px;
+  /* One continuous sheet: no card, no page background between sections. */
   overflow-x: clip;
   scroll-margin-top: calc(56px + env(safe-area-inset-top) + 12px);
 }
 
-/* Reading measure for prose; wide blocks break out of it. */
-.study-section > * {
-  max-width: var(--study-measure);
-}
-
-.study-section
-  > :is(.study-table-wrap, .study-code-wrap, .study-cards, .study-pills, .study-figure) {
-  max-width: none;
+.study-content :is(section, h3, h4)[id] {
+  scroll-margin-top: calc(56px + env(safe-area-inset-top) + 12px);
 }
 
 .study-section-title {
@@ -1083,9 +1073,9 @@
 }
 
 .study-footer {
-  padding: 4px 0 0;
+  padding: 8px var(--study-pad) 32px;
   font-size: 0.82rem;
-  text-align: center;
+  text-align: left;
   color: var(--color-slate-500);
 }
 
@@ -1095,7 +1085,7 @@
 
 /* Fallback for files without an H1 (should not happen after migration). */
 .study-markdown {
-  max-width: var(--study-measure);
+  padding: 0 var(--study-pad);
 }
 
 .study-markdown p {
@@ -1103,36 +1093,23 @@
   line-height: 1.7;
 }
 
-/* Phones: same blocks, edge to edge, inner padding preserved ------------ */
+/* Phones: the same full-width surface, with the fixed bottom nav cleared -- */
 
 @media (max-width: 599px) {
   .study-page {
-    width: auto;
-    margin-inline: calc(var(--study-gutter) * -1);
-    padding: 6px 0 24px;
+    padding: 0;
   }
 
   .study-topbar {
-    margin-bottom: 10px;
-    padding-inline: var(--study-gutter);
-  }
-
-  .study-article {
-    gap: 8px;
+    padding-inline: var(--study-pad);
   }
 
   .study-hero {
-    padding: 20px var(--study-gutter) 18px;
-    border-inline: 0;
-    border-radius: 0;
-    box-shadow: none;
+    padding: 16px var(--study-pad) 8px;
   }
 
   .study-section {
-    padding: 16px var(--study-gutter) 18px;
-    border-inline: 0;
-    border-radius: 0;
-    box-shadow: none;
+    padding: 14px var(--study-pad) 20px;
     scroll-margin-top: calc(56px + env(safe-area-inset-top) + 8px);
   }
 
@@ -1149,7 +1126,7 @@
   }
 
   .study-footer {
-    padding-inline: var(--study-gutter);
+    padding: 8px var(--study-pad) calc(96px + env(safe-area-inset-bottom));
   }
 }
 

@@ -75,6 +75,8 @@ describe("HTML учебных материалов", () => {
       "study-eyebrow",
       "study-title",
       "study-lead",
+      "study-layout",
+      "study-content",
       "study-toc",
       "study-toc-rail",
       "study-toc-compact",
@@ -129,7 +131,7 @@ describe("HTML учебных материалов", () => {
     expect(html).toContain('aria-label="Таблица"');
     expect(html).toContain("aria-label=\"Копировать");
     expect(html).toContain('class="study-figure-caption">Схема работы компилятора');
-    expect(html).toContain('aria-labelledby="sec-1-title"');
+    expect(html).toContain('aria-labelledby="obyavlenie-peremennoy-title"');
   });
 
   for (const material of Object.values(STUDY_MATERIALS)) {

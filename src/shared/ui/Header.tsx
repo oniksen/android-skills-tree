@@ -205,6 +205,7 @@ export default function Header({
   const segment = (pathname ?? "").split("/")[1] || "";
   const activeHref = segment === "tree" ? "/tree/junior" : `/${segment}`;
   const isQuiz = (pathname ?? "").startsWith("/quiz");
+  const isStudy = /\/study(\/|$)/.test(pathname ?? "");
   const isActive = (href: string) =>
     href === "/profile" ? activeHref === "/profile" : href === activeHref;
   const showNav = !loading && Boolean(uid);
@@ -298,7 +299,9 @@ export default function Header({
           className={
             isQuiz
               ? "flex w-full flex-1 flex-col"
-              : `w-full max-w-6xl mx-auto flex-1 ${mainClassName}`
+              : isStudy
+                ? "w-full flex-1"
+                : `w-full max-w-6xl mx-auto flex-1 ${mainClassName}`
           }
         >
           {children}
