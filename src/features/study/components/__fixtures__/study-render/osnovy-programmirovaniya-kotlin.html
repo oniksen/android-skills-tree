@@ -1,5 +1,5 @@
-<div class="study-layout"><nav class="study-toc" aria-label="Содержание материала"><div class="study-toc-rail"><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#sec-1">1. Переменные</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-2">2. Типы данных</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-3">3. Условные конструкции</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-4">4. Циклы</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-5">5. Функции</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-6">6. ООП: основы</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-7">7. Коллекции</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-8">8. Обработка ошибок</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-9">9. Основы алгоритмов</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-10">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-11">Источники и документация</a></li></ol></div><details class="study-toc-compact"><summary class="study-toc-summary">Содержание</summary><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#sec-1">1. Переменные</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-2">2. Типы данных</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-3">3. Условные конструкции</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-4">4. Циклы</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-5">5. Функции</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-6">6. ООП: основы</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-7">7. Коллекции</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-8">8. Обработка ошибок</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-9">9. Основы алгоритмов</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-10">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-11">Источники и документация</a></li></ol></details></nav><div class="study-content"><header class="study-hero"><p class="study-eyebrow">Основы программирования · Junior</p><h1 class="study-title">Основы программирования на Kotlin</h1><p class="study-lead">Комплексный учебный конспект по основам программирования на Kotlin для уровня Junior.</p></header><section id="sec-1" class="study-section" aria-labelledby="sec-1-title"><h2 id="sec-1-title" class="study-section-title">1. Переменные</h2><p>Переменные позволяют хранить данные, обращаться к ним по имени и использовать в вычислениях. Практически любая программа работает с данными: получает их от пользователя, преобразует, сохраняет и передаёт другим частям приложения.</p>
-<p>В Kotlin переменные объявляются с помощью <code>val</code> и <code>var</code>. Разница между ними определяет, можно ли присвоить переменной новое значение после первоначального объявления.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Имя</p><p>Понятное имя описывает назначение переменной: <code>userName</code>, а не <code>x</code>.</p></div><div class="study-card"><p class="study-card-title">Значение</p><p>Значение можно вычислить, получить от пользователя, прочитать из ресурса или передать в функцию.</p></div><div class="study-card"><p class="study-card-title">Изменяемость</p><p>Нужно заранее решить, можно ли менять значение после создания переменной.</p></div><div class="study-card"><p class="study-card-title">Тип</p><p>Kotlin знает тип переменной: число, строка, булево значение, список, объект и другие.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> выбирайте <code>val</code> по умолчанию. Переходите на <code>var</code> только тогда, когда значение действительно должно меняться.</p></div><h3 class="study-subtitle">1.1. <code>val</code> и <code>var</code></h3>
+<div class="study-layout"><nav class="study-toc" aria-label="Содержание материала"><div class="study-toc-rail"><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#peremennye">1. Переменные</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#val-i-var">1.1. val и var</a></li><li><a class="study-toc-link" href="#obyavlenie-i-initsializatsiya">1.2. Объявление и инициализация</a></li><li><a class="study-toc-link" href="#konstanty-const-val">1.3. Константы const val</a></li><li><a class="study-toc-link" href="#oblast-vidimosti-peremennyh">1.4. Область видимости переменных</a></li><li><a class="study-toc-link" href="#pravila-imenovaniya">1.5. Правила именования</a></li><li><a class="study-toc-link" href="#lateinit-i-lazy">1.6. lateinit и lazy</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#tipy-dannyh">2. Типы данных</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#chislovye-tipy">2.1. Числовые типы</a></li><li><a class="study-toc-link" href="#char-i-boolean">2.2. Char и Boolean</a></li><li><a class="study-toc-link" href="#string-i-shablonnye-stroki">2.3. String и шаблонные строки</a></li><li><a class="study-toc-link" href="#array-i-spetsializirovannye-massivy">2.4. Array и специализированные массивы</a></li><li><a class="study-toc-link" href="#vyvedenie-tipa-type-inference">2.5. Выведение типа (Type inference)</a></li><li><a class="study-toc-link" href="#yavnoe-preobrazovanie-tipov">2.6. Явное преобразование типов</a></li><li><a class="study-toc-link" href="#unit-any-i-nothing">2.7. Unit, Any и Nothing</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#uslovnye-konstruktsii">3. Условные конструкции</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#if-else">3.1. if / else</a></li><li><a class="study-toc-link" href="#if-kak-vyrazhenie">3.2. if как выражение</a></li><li><a class="study-toc-link" href="#when-kak-vyrazhenie">3.3. when как выражение</a></li><li><a class="study-toc-link" href="#when-s-proizvolnymi-usloviyami">3.4. when с произвольными условиями</a></li><li><a class="study-toc-link" href="#proverka-prinadlezhnosti-diapazonu-in-in">3.5. Проверка принадлежности диапазону (in, !in)</a></li><li><a class="study-toc-link" href="#vlozhennye-usloviya">3.6. Вложенные условия</a></li><li><a class="study-toc-link" href="#logicheskie-operatory">3.7. Логические операторы (&amp;&amp;, ||, !)</a></li><li><a class="study-toc-link" href="#short-circuit-evaluation">3.8. Short-circuit evaluation</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#tsikly">4. Циклы</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#tsikl-for">4.1. Цикл for</a></li><li><a class="study-toc-link" href="#while-i-do-while">4.2. while и do-while</a></li><li><a class="study-toc-link" href="#diapazony-until-downto-step">4.3. Диапазоны (.., until, downTo, step)</a></li><li><a class="study-toc-link" href="#break-i-continue">4.4. break и continue</a></li><li><a class="study-toc-link" href="#metki-dlya-break-i-continue">4.5. Метки для break и continue</a></li><li><a class="study-toc-link" href="#vlozhennye-tsikly">4.6. Вложенные циклы</a></li><li><a class="study-toc-link" href="#iteratsiya-po-kollektsiyam">4.7. Итерация по коллекциям</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#funktsii">5. Функции</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#obyavlenie-i-vyzov-funktsiy">5.1. Объявление и вызов функций</a></li><li><a class="study-toc-link" href="#parametry-i-vozvraschaemye-znacheniya">5.2. Параметры и возвращаемые значения</a></li><li><a class="study-toc-link" href="#parametry-po-umolchaniyu">5.3. Параметры по умолчанию</a></li><li><a class="study-toc-link" href="#imenovannye-argumenty">5.4. Именованные аргументы</a></li><li><a class="study-toc-link" href="#unit-i-expression-body">5.5. Unit и expression body</a></li><li><a class="study-toc-link" href="#single-expression-functions">5.6. Single-expression functions</a></li><li><a class="study-toc-link" href="#vararg-i-spread-operator">5.7. vararg и spread operator</a></li><li><a class="study-toc-link" href="#lokalnye-funktsii">5.8. Локальные функции</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#oop-osnovy">6. ООП: основы</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#klassy-i-obekty">6.1. Классы и объекты</a></li><li><a class="study-toc-link" href="#pervichnyy-i-vtorichnye-konstruktory">6.2. Первичный и вторичные конструкторы</a></li><li><a class="study-toc-link" href="#initsializatory-init">6.3. Инициализаторы (init)</a></li><li><a class="study-toc-link" href="#nasledovanie-open-override-final-super">6.4. Наследование (open, override, final, super)</a></li><li><a class="study-toc-link" href="#interfeysy-i-ih-realizatsiya">6.5. Интерфейсы и их реализация</a></li><li><a class="study-toc-link" href="#abstraktnye-klassy">6.6. Абстрактные классы</a></li><li><a class="study-toc-link" href="#inkapsulyatsiya">6.7. Инкапсуляция</a></li><li><a class="study-toc-link" href="#polimorfizm">6.8. Полиморфизм</a></li><li><a class="study-toc-link" href="#kompozitsiya-obektov">6.9. Композиция объектов</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#kollektsii">7. Коллекции</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#list-i-mutablelist">7.1. List и MutableList</a></li><li><a class="study-toc-link" href="#set-i-mutableset">7.2. Set и MutableSet</a></li><li><a class="study-toc-link" href="#map-i-mutablemap">7.3. Map и MutableMap</a></li><li><a class="study-toc-link" href="#read-only-vs-mutable-collections">7.4. Read-only vs mutable collections</a></li><li><a class="study-toc-link" href="#iteratsiya-po-kollektsiyam-2">7.5. Итерация по коллекциям</a></li><li><a class="study-toc-link" href="#osnovnye-operatsii-filter-map-find-first-any-all">7.6. Основные операции (filter, map, find, first, any, all)</a></li><li><a class="study-toc-link" href="#dobavlenie-i-udalenie-elementov">7.7. Добавление и удаление элементов</a></li><li><a class="study-toc-link" href="#vybor-kollektsii-pod-zadachu">7.8. Выбор коллекции под задачу</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#obrabotka-oshibok">8. Обработка ошибок</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#ierarhiya-throwable-exception-i-error">8.1. Иерархия Throwable, Exception и Error</a></li><li><a class="study-toc-link" href="#try-catch-finally">8.2. try / catch / finally</a></li><li><a class="study-toc-link" href="#finally">8.3. finally</a></li><li><a class="study-toc-link" href="#operator-throw">8.4. Оператор throw</a></li><li><a class="study-toc-link" href="#nullable-tipy-i-bezopasnyy-dostup">8.5. Nullable-типы и безопасный доступ</a></li><li><a class="study-toc-link" href="#elvis-operator">8.6. Elvis operator (?:)</a></li><li><a class="study-toc-link" href="#not-null-assertion-i-svyazannye-riski">8.7. Not-null assertion (!!) и связанные риски</a></li><li><a class="study-toc-link" href="#runcatching">8.8. runCatching</a></li><li><a class="study-toc-link" href="#predstavlenie-rezultata-result-i-sealed-class">8.9. Представление результата: Result и sealed class</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#osnovy-algoritmov">9. Основы алгоритмов</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#lineynyy-poisk">9.1. Линейный поиск</a></li><li><a class="study-toc-link" href="#bazovye-operatsii-nad-massivami-i-strokami">9.2. Базовые операции над массивами и строками</a></li><li><a class="study-toc-link" href="#sortirovka-i-ee-naznachenie">9.3. Сортировка и её назначение</a></li><li><a class="study-toc-link" href="#vlozhennye-tsikly-i-otsenka-kolichestva-operatsiy">9.4. Вложенные циклы и оценка количества операций</a></li><li><a class="study-toc-link" href="#ponyatie-vremennoy-slozhnosti">9.5. Понятие временной сложности</a></li><li><a class="study-toc-link" href="#big-o-o-1-o-n-o-n">9.6. Big O: O(1), O(n), O(n²)</a></li><li><a class="study-toc-link" href="#prostye-zadachi-na-preobrazovanie-kollektsiy">9.7. Простые задачи на преобразование коллекций</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka-kategorii">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentatsiya">Источники и документация</a></li></ol></div><details class="study-toc-compact"><summary class="study-toc-summary">Содержание</summary><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#peremennye">1. Переменные</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#val-i-var">1.1. val и var</a></li><li><a class="study-toc-link" href="#obyavlenie-i-initsializatsiya">1.2. Объявление и инициализация</a></li><li><a class="study-toc-link" href="#konstanty-const-val">1.3. Константы const val</a></li><li><a class="study-toc-link" href="#oblast-vidimosti-peremennyh">1.4. Область видимости переменных</a></li><li><a class="study-toc-link" href="#pravila-imenovaniya">1.5. Правила именования</a></li><li><a class="study-toc-link" href="#lateinit-i-lazy">1.6. lateinit и lazy</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#tipy-dannyh">2. Типы данных</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#chislovye-tipy">2.1. Числовые типы</a></li><li><a class="study-toc-link" href="#char-i-boolean">2.2. Char и Boolean</a></li><li><a class="study-toc-link" href="#string-i-shablonnye-stroki">2.3. String и шаблонные строки</a></li><li><a class="study-toc-link" href="#array-i-spetsializirovannye-massivy">2.4. Array и специализированные массивы</a></li><li><a class="study-toc-link" href="#vyvedenie-tipa-type-inference">2.5. Выведение типа (Type inference)</a></li><li><a class="study-toc-link" href="#yavnoe-preobrazovanie-tipov">2.6. Явное преобразование типов</a></li><li><a class="study-toc-link" href="#unit-any-i-nothing">2.7. Unit, Any и Nothing</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#uslovnye-konstruktsii">3. Условные конструкции</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#if-else">3.1. if / else</a></li><li><a class="study-toc-link" href="#if-kak-vyrazhenie">3.2. if как выражение</a></li><li><a class="study-toc-link" href="#when-kak-vyrazhenie">3.3. when как выражение</a></li><li><a class="study-toc-link" href="#when-s-proizvolnymi-usloviyami">3.4. when с произвольными условиями</a></li><li><a class="study-toc-link" href="#proverka-prinadlezhnosti-diapazonu-in-in">3.5. Проверка принадлежности диапазону (in, !in)</a></li><li><a class="study-toc-link" href="#vlozhennye-usloviya">3.6. Вложенные условия</a></li><li><a class="study-toc-link" href="#logicheskie-operatory">3.7. Логические операторы (&amp;&amp;, ||, !)</a></li><li><a class="study-toc-link" href="#short-circuit-evaluation">3.8. Short-circuit evaluation</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#tsikly">4. Циклы</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#tsikl-for">4.1. Цикл for</a></li><li><a class="study-toc-link" href="#while-i-do-while">4.2. while и do-while</a></li><li><a class="study-toc-link" href="#diapazony-until-downto-step">4.3. Диапазоны (.., until, downTo, step)</a></li><li><a class="study-toc-link" href="#break-i-continue">4.4. break и continue</a></li><li><a class="study-toc-link" href="#metki-dlya-break-i-continue">4.5. Метки для break и continue</a></li><li><a class="study-toc-link" href="#vlozhennye-tsikly">4.6. Вложенные циклы</a></li><li><a class="study-toc-link" href="#iteratsiya-po-kollektsiyam">4.7. Итерация по коллекциям</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#funktsii">5. Функции</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#obyavlenie-i-vyzov-funktsiy">5.1. Объявление и вызов функций</a></li><li><a class="study-toc-link" href="#parametry-i-vozvraschaemye-znacheniya">5.2. Параметры и возвращаемые значения</a></li><li><a class="study-toc-link" href="#parametry-po-umolchaniyu">5.3. Параметры по умолчанию</a></li><li><a class="study-toc-link" href="#imenovannye-argumenty">5.4. Именованные аргументы</a></li><li><a class="study-toc-link" href="#unit-i-expression-body">5.5. Unit и expression body</a></li><li><a class="study-toc-link" href="#single-expression-functions">5.6. Single-expression functions</a></li><li><a class="study-toc-link" href="#vararg-i-spread-operator">5.7. vararg и spread operator</a></li><li><a class="study-toc-link" href="#lokalnye-funktsii">5.8. Локальные функции</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#oop-osnovy">6. ООП: основы</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#klassy-i-obekty">6.1. Классы и объекты</a></li><li><a class="study-toc-link" href="#pervichnyy-i-vtorichnye-konstruktory">6.2. Первичный и вторичные конструкторы</a></li><li><a class="study-toc-link" href="#initsializatory-init">6.3. Инициализаторы (init)</a></li><li><a class="study-toc-link" href="#nasledovanie-open-override-final-super">6.4. Наследование (open, override, final, super)</a></li><li><a class="study-toc-link" href="#interfeysy-i-ih-realizatsiya">6.5. Интерфейсы и их реализация</a></li><li><a class="study-toc-link" href="#abstraktnye-klassy">6.6. Абстрактные классы</a></li><li><a class="study-toc-link" href="#inkapsulyatsiya">6.7. Инкапсуляция</a></li><li><a class="study-toc-link" href="#polimorfizm">6.8. Полиморфизм</a></li><li><a class="study-toc-link" href="#kompozitsiya-obektov">6.9. Композиция объектов</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#kollektsii">7. Коллекции</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#list-i-mutablelist">7.1. List и MutableList</a></li><li><a class="study-toc-link" href="#set-i-mutableset">7.2. Set и MutableSet</a></li><li><a class="study-toc-link" href="#map-i-mutablemap">7.3. Map и MutableMap</a></li><li><a class="study-toc-link" href="#read-only-vs-mutable-collections">7.4. Read-only vs mutable collections</a></li><li><a class="study-toc-link" href="#iteratsiya-po-kollektsiyam-2">7.5. Итерация по коллекциям</a></li><li><a class="study-toc-link" href="#osnovnye-operatsii-filter-map-find-first-any-all">7.6. Основные операции (filter, map, find, first, any, all)</a></li><li><a class="study-toc-link" href="#dobavlenie-i-udalenie-elementov">7.7. Добавление и удаление элементов</a></li><li><a class="study-toc-link" href="#vybor-kollektsii-pod-zadachu">7.8. Выбор коллекции под задачу</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#obrabotka-oshibok">8. Обработка ошибок</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#ierarhiya-throwable-exception-i-error">8.1. Иерархия Throwable, Exception и Error</a></li><li><a class="study-toc-link" href="#try-catch-finally">8.2. try / catch / finally</a></li><li><a class="study-toc-link" href="#finally">8.3. finally</a></li><li><a class="study-toc-link" href="#operator-throw">8.4. Оператор throw</a></li><li><a class="study-toc-link" href="#nullable-tipy-i-bezopasnyy-dostup">8.5. Nullable-типы и безопасный доступ</a></li><li><a class="study-toc-link" href="#elvis-operator">8.6. Elvis operator (?:)</a></li><li><a class="study-toc-link" href="#not-null-assertion-i-svyazannye-riski">8.7. Not-null assertion (!!) и связанные риски</a></li><li><a class="study-toc-link" href="#runcatching">8.8. runCatching</a></li><li><a class="study-toc-link" href="#predstavlenie-rezultata-result-i-sealed-class">8.9. Представление результата: Result и sealed class</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#osnovy-algoritmov">9. Основы алгоритмов</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#lineynyy-poisk">9.1. Линейный поиск</a></li><li><a class="study-toc-link" href="#bazovye-operatsii-nad-massivami-i-strokami">9.2. Базовые операции над массивами и строками</a></li><li><a class="study-toc-link" href="#sortirovka-i-ee-naznachenie">9.3. Сортировка и её назначение</a></li><li><a class="study-toc-link" href="#vlozhennye-tsikly-i-otsenka-kolichestva-operatsiy">9.4. Вложенные циклы и оценка количества операций</a></li><li><a class="study-toc-link" href="#ponyatie-vremennoy-slozhnosti">9.5. Понятие временной сложности</a></li><li><a class="study-toc-link" href="#big-o-o-1-o-n-o-n">9.6. Big O: O(1), O(n), O(n²)</a></li><li><a class="study-toc-link" href="#prostye-zadachi-na-preobrazovanie-kollektsiy">9.7. Простые задачи на преобразование коллекций</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka-kategorii">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentatsiya">Источники и документация</a></li></ol></details></nav><div class="study-content"><header class="study-hero"><p class="study-eyebrow">Основы программирования · Junior</p><h1 class="study-title">Основы программирования на Kotlin</h1><p class="study-lead">Комплексный учебный конспект по основам программирования на Kotlin для уровня Junior.</p></header><section id="peremennye" class="study-section" aria-labelledby="peremennye-title"><h2 id="peremennye-title" class="study-section-title">1. Переменные</h2><p>Переменные позволяют хранить данные, обращаться к ним по имени и использовать в вычислениях. Практически любая программа работает с данными: получает их от пользователя, преобразует, сохраняет и передаёт другим частям приложения.</p>
+<p>В Kotlin переменные объявляются с помощью <code>val</code> и <code>var</code>. Разница между ними определяет, можно ли присвоить переменной новое значение после первоначального объявления.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Имя</p><p>Понятное имя описывает назначение переменной: <code>userName</code>, а не <code>x</code>.</p></div><div class="study-card"><p class="study-card-title">Значение</p><p>Значение можно вычислить, получить от пользователя, прочитать из ресурса или передать в функцию.</p></div><div class="study-card"><p class="study-card-title">Изменяемость</p><p>Нужно заранее решить, можно ли менять значение после создания переменной.</p></div><div class="study-card"><p class="study-card-title">Тип</p><p>Kotlin знает тип переменной: число, строка, булево значение, список, объект и другие.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> выбирайте <code>val</code> по умолчанию. Переходите на <code>var</code> только тогда, когда значение действительно должно меняться.</p></div><h3 id="val-i-var" class="study-subtitle">1.1. <code>val</code> и <code>var</code></h3>
 <h4 class="study-subtitle study-subtitle--minor"><code>val</code> — переменная только для чтения</h4>
 <p><code>val</code> (от <em>value</em>) объявляет переменную, которой можно присвоить значение только один раз.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name = <span class="hljs-string">&quot;Alex&quot;</span>
@@ -49,7 +49,7 @@ println(names) <span class="hljs-comment">// [Alex, Maria, John]</span>
 <span class="hljs-keyword">var</span> counter = <span class="hljs-number">0</span>
 counter++
 </code></pre></div>
-<h3 class="study-subtitle">1.2. Объявление и инициализация</h3>
+<h3 id="obyavlenie-i-initsializatsiya" class="study-subtitle">1.2. Объявление и инициализация</h3>
 <p>Объявление переменной — это создание переменной с определённым именем и типом.</p>
 <p>Инициализация — присваивание ей первоначального значения.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name: String = <span class="hljs-string">&quot;Alex&quot;</span>
@@ -115,7 +115,7 @@ counter++
 name = <span class="hljs-literal">null</span>
 </code></pre></div>
 <p>Подробнее nullable-типы рассматриваются в разделе «Обработка ошибок».</p>
-<h3 class="study-subtitle">1.3. Константы <code>const val</code></h3>
+<h3 id="konstanty-const-val" class="study-subtitle">1.3. Константы <code>const val</code></h3>
 <p>Для значений, которые известны уже во время компиляции и не должны изменяться, Kotlin предоставляет <code>const val</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">const</span> <span class="hljs-keyword">val</span> MAX_LOGIN_ATTEMPTS = <span class="hljs-number">3</span>
 <span class="hljs-keyword">const</span> <span class="hljs-keyword">val</span> APP_NAME = <span class="hljs-string">&quot;Study Platform&quot;</span>
@@ -163,7 +163,7 @@ name = <span class="hljs-literal">null</span>
 <p><code>currentTime</code> вычисляется во время выполнения программы.</p>
 <p><code>MAX_RETRIES</code> известно компилятору заранее.</p>
 <p>Используй <code>const val</code> для настоящих констант: фиксированных ключей, названий, числовых ограничений и других compile-time значений.</p>
-<h3 class="study-subtitle">1.4. Область видимости переменных</h3>
+<h3 id="oblast-vidimosti-peremennyh" class="study-subtitle">1.4. Область видимости переменных</h3>
 <p>Область видимости (<em>scope</em>) определяет, из какой части программы можно обратиться к переменной.</p>
 <h4 class="study-subtitle study-subtitle--minor">Локальные переменные</h4>
 <p>Переменные, объявленные внутри функции, доступны только внутри этой функции и вложенных в неё блоков.</p>
@@ -240,7 +240,7 @@ println(user.age)
 }
 </code></pre></div>
 <p>Внешний код не может напрямую прочитать <code>password</code>, но может воспользоваться публичным методом <code>checkPassword</code>.</p>
-<h3 class="study-subtitle">1.5. Правила именования</h3>
+<h3 id="pravila-imenovaniya" class="study-subtitle">1.5. Правила именования</h3>
 <p>Правильные имена помогают понимать код без дополнительных комментариев.</p>
 <p>В Kotlin принято использовать <code>camelCase</code> для функций, свойств и локальных переменных:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> userName = <span class="hljs-string">&quot;Alex&quot;</span>
@@ -291,7 +291,7 @@ println(user.age)
 <span class="hljs-keyword">val</span> hasInternetConnection = <span class="hljs-literal">false</span>
 <span class="hljs-keyword">val</span> canEditProfile = <span class="hljs-literal">true</span>
 </code></pre></div>
-<h3 class="study-subtitle">1.6. <code>lateinit</code> и <code>lazy</code></h3>
+<h3 id="lateinit-i-lazy" class="study-subtitle">1.6. <code>lateinit</code> и <code>lazy</code></h3>
 <p>Иногда значение нельзя или нежелательно создавать непосредственно в момент объявления свойства.</p>
 <p>В Kotlin есть два распространённых механизма отложенной инициализации:</p>
 <ul class="study-list">
@@ -438,7 +438,7 @@ println(report.content)
 <li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, что такое область видимости переменной.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Могу отличить <code>const val</code> от обычного <code>val</code>.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, как Kotlin работает с <code>null</code>.</li>
-</ul><div class="study-note"><p><strong>Запомнить:</strong> выбирайте <code>val</code> по умолчанию, давайте понятные имена и указывайте тип явно в публичном API.</p></div></section><section id="sec-2" class="study-section" aria-labelledby="sec-2-title"><h2 id="sec-2-title" class="study-section-title">2. Типы данных</h2><p>Тип данных определяет, какие значения может хранить переменная и какие операции можно над ними выполнять.</p>
+</ul><div class="study-note"><p><strong>Запомнить:</strong> выбирайте <code>val</code> по умолчанию, давайте понятные имена и указывайте тип явно в публичном API.</p></div></section><section id="tipy-dannyh" class="study-section" aria-labelledby="tipy-dannyh-title"><h2 id="tipy-dannyh-title" class="study-section-title">2. Типы данных</h2><p>Тип данных определяет, какие значения может хранить переменная и какие операции можно над ними выполнять.</p>
 <p>Kotlin — статически типизированный язык. Это означает, что типы переменных и выражений проверяются компилятором.</p>
 <p>Например, нельзя без преобразования присвоить строку переменной типа <code>Int</code>.</p><div class="study-note"><p><strong>Ключевая идея:</strong> тип — это контракт значения. Компилятор проверяет его до запуска программы и помогает избежать ошибок.</p></div><div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> age: <span class="hljs-built_in">Int</span> = <span class="hljs-number">25</span>
 
@@ -446,7 +446,7 @@ println(report.content)
 <span class="hljs-comment">// val name: String = age</span>
 </code></pre></div>
 <p>Система типов помогает обнаруживать большое количество ошибок ещё до запуска программы.</p>
-<h3 class="study-subtitle">2.1. Числовые типы</h3>
+<h3 id="chislovye-tipy" class="study-subtitle">2.1. Числовые типы</h3>
 <p>Kotlin предоставляет несколько типов для работы с числами.</p>
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Тип</th><th style="text-align:right">Размер</th><th>Назначение</th></tr></thead><tbody><tr><td><code>Byte</code></td><td style="text-align:right">8 бит</td><td>Небольшие целые числа</td></tr><tr><td><code>Short</code></td><td style="text-align:right">16 бит</td><td>Целые числа</td></tr><tr><td><code>Int</code></td><td style="text-align:right">32 бита</td><td>Основной целочисленный тип</td></tr><tr><td><code>Long</code></td><td style="text-align:right">64 бита</td><td>Большие целые числа</td></tr><tr><td><code>Float</code></td><td style="text-align:right">32 бита</td><td>Числа с плавающей точкой</td></tr><tr><td><code>Double</code></td><td style="text-align:right">64 бита</td><td>Числа с плавающей точкой повышенной точности</td></tr></tbody></table></div><div class="study-note"><p><strong>Практический совет:</strong> по умолчанию используйте <code>Int</code> и <code>Double</code>. Более узкие типы выбирайте только при реальных ограничениях памяти или совместимости.</p></div><h4 class="study-subtitle study-subtitle--minor">Целочисленные типы</h4>
 <p><code>Int</code> чаще всего используется для обычных целых чисел:</p>
@@ -502,7 +502,7 @@ printNumber(<span class="hljs-number">100L</span>)
 </code></pre></div>
 <p>Он позволяет передавать в функцию значения разных числовых типов.</p>
 <p>Однако <code>Number</code> не означает, что с любым числом можно выполнять все операции без преобразований. При необходимости конкретный тип можно получить через <code>toInt()</code>, <code>toDouble()</code> и другие функции.</p>
-<h3 class="study-subtitle">2.2. <code>Char</code> и <code>Boolean</code></h3>
+<h3 id="char-i-boolean" class="study-subtitle">2.2. <code>Char</code> и <code>Boolean</code></h3>
 <h4 class="study-subtitle study-subtitle--minor"><code>Char</code></h4>
 <p><code>Char</code> предназначен для хранения одного символа.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> letter: <span class="hljs-built_in">Char</span> = <span class="hljs-string">&#x27;A&#x27;</span>
@@ -548,7 +548,7 @@ println(copyright) <span class="hljs-comment">// ©</span>
 <span class="hljs-keyword">val</span> second = <span class="hljs-number">10</span> == <span class="hljs-number">5</span>     <span class="hljs-comment">// false</span>
 <span class="hljs-keyword">val</span> third = <span class="hljs-number">10</span> != <span class="hljs-number">5</span>      <span class="hljs-comment">// true</span>
 </code></pre></div>
-<h3 class="study-subtitle">2.3. <code>String</code> и шаблонные строки</h3>
+<h3 id="string-i-shablonnye-stroki" class="study-subtitle">2.3. <code>String</code> и шаблонные строки</h3>
 <p><code>String</code> — тип для хранения последовательности символов.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> language = <span class="hljs-string">&quot;Kotlin&quot;</span>
 <span class="hljs-keyword">val</span> message = <span class="hljs-string">&quot;Hello, world!&quot;</span>
@@ -628,7 +628,7 @@ println(first == second) <span class="hljs-comment">// true</span>
 </code></pre></div>
 <p>Оператор <code>===</code> проверяет, являются ли две ссылки ссылками на один и тот же объект.</p>
 <p>Для сравнения содержимого строк обычно используй <code>==</code>.</p>
-<h3 class="study-subtitle">2.4. <code>Array</code> и специализированные массивы</h3>
+<h3 id="array-i-spetsializirovannye-massivy" class="study-subtitle">2.4. <code>Array</code> и специализированные массивы</h3>
 <p>Массив — структура данных, которая хранит фиксированное количество элементов одного типа.</p>
 <h4 class="study-subtitle study-subtitle--minor">Создание массива</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> names = arrayOf(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;Maria&quot;</span>, <span class="hljs-string">&quot;John&quot;</span>)
@@ -699,7 +699,7 @@ println(squares.joinToString()) <span class="hljs-comment">// 0, 1, 4, 9, 16</sp
 <li>реализуется собственная структура данных.</li>
 </ul>
 <p>Для большинства обычных задач Kotlin предпочтительнее коллекции <code>List</code>, <code>Set</code> и <code>Map</code>.</p>
-<h3 class="study-subtitle">2.5. Выведение типа (Type inference)</h3>
+<h3 id="vyvedenie-tipa-type-inference" class="study-subtitle">2.5. Выведение типа (Type inference)</h3>
 <p>Type inference — механизм, при котором компилятор самостоятельно определяет тип переменной или выражения.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name = <span class="hljs-string">&quot;Alex&quot;</span> <span class="hljs-comment">// String</span>
 <span class="hljs-keyword">val</span> age = <span class="hljs-number">25</span>      <span class="hljs-comment">// Int</span>
@@ -730,7 +730,7 @@ println(squares.joinToString()) <span class="hljs-comment">// 0, 1, 4, 9, 16</sp
 </code></pre></div>
 <p>Хотя справа находится <code>Int</code>, переменная объявлена как <code>Number</code>.</p>
 <p>Это влияет на то, какие операции можно выполнять с ней непосредственно.</p>
-<h3 class="study-subtitle">2.6. Явное преобразование типов</h3>
+<h3 id="yavnoe-preobrazovanie-tipov" class="study-subtitle">2.6. Явное преобразование типов</h3>
 <p>Kotlin не выполняет автоматическое преобразование числовых типов между собой.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> number: <span class="hljs-built_in">Int</span> = <span class="hljs-number">10</span>
 
@@ -781,7 +781,7 @@ println(first)  <span class="hljs-comment">// 123</span>
 println(second) <span class="hljs-comment">// null</span>
 </code></pre></div>
 <p>Это позволяет обработать некорректный ввод без исключения.</p>
-<h3 class="study-subtitle">2.7. <code>Unit</code>, <code>Any</code> и <code>Nothing</code></h3>
+<h3 id="unit-any-i-nothing" class="study-subtitle">2.7. <code>Unit</code>, <code>Any</code> и <code>Nothing</code></h3>
 <p>Эти типы встречаются во многих частях Kotlin и важны для понимания системы типов языка.</p>
 <h4 class="study-subtitle study-subtitle--minor"><code>Unit</code></h4>
 <p><code>Unit</code> обозначает отсутствие полезного возвращаемого значения.</p>
@@ -880,7 +880,7 @@ println(value.equals(<span class="hljs-string">&quot;Kotlin&quot;</span>))
 <li><strong>Логическое значение</strong> — <code>Boolean</code></li>
 <li><strong>Массив</strong> — <code>Array&lt;T&gt;</code> или <code>IntArray</code></li>
 <li><strong>Отсутствие значения</strong> — <code>Unit</code></li>
-</ul><div class="study-note"><p><strong>Запомнить:</strong> не используйте <code>Float</code> без причины, не забывайте про переполнение целых чисел и предпочитайте <code>toIntOrNull()</code> при работе с внешним вводом.</p></div></section><section id="sec-3" class="study-section" aria-labelledby="sec-3-title"><h2 id="sec-3-title" class="study-section-title">3. Условные конструкции</h2><p>Условные конструкции позволяют программе выбирать разные действия в зависимости от текущих данных.</p>
+</ul><div class="study-note"><p><strong>Запомнить:</strong> не используйте <code>Float</code> без причины, не забывайте про переполнение целых чисел и предпочитайте <code>toIntOrNull()</code> при работе с внешним вводом.</p></div></section><section id="uslovnye-konstruktsii" class="study-section" aria-labelledby="uslovnye-konstruktsii-title"><h2 id="uslovnye-konstruktsii-title" class="study-section-title">3. Условные конструкции</h2><p>Условные конструкции позволяют программе выбирать разные действия в зависимости от текущих данных.</p>
 <p>Например, приложение может:</p>
 <ul class="study-list">
 <li>разрешить авторизацию, если пароль корректен;</li>
@@ -889,7 +889,7 @@ println(value.equals(<span class="hljs-string">&quot;Kotlin&quot;</span>))
 <li>определить статус пользователя;</li>
 <li>выполнить действие только при наличии необходимых условий.</li>
 </ul>
-<p>В Kotlin основные конструкции ветвления — <code>if</code> и <code>when</code>.</p><div class="study-note"><p><strong>Ключевая идея:</strong> условие должно быть булевым выражением. Если логика ветвления становится сложной, разбивайте её на функции и понятные переменные.</p></div><h3 class="study-subtitle">3.1. <code>if / else</code></h3>
+<p>В Kotlin основные конструкции ветвления — <code>if</code> и <code>when</code>.</p><div class="study-note"><p><strong>Ключевая идея:</strong> условие должно быть булевым выражением. Если логика ветвления становится сложной, разбивайте её на функции и понятные переменные.</p></div><h3 id="if-else" class="study-subtitle">3.1. <code>if / else</code></h3>
 <p><code>if</code> проверяет условие и выполняет блок кода, если условие истинно.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> age = <span class="hljs-number">20</span>
 
@@ -942,7 +942,7 @@ println(value.equals(<span class="hljs-string">&quot;Kotlin&quot;</span>))
     println(<span class="hljs-string">&quot;Несовершеннолетний&quot;</span>)
 }
 </code></pre></div>
-<h3 class="study-subtitle">3.2. <code>if</code> как выражение</h3>
+<h3 id="if-kak-vyrazhenie" class="study-subtitle">3.2. <code>if</code> как выражение</h3>
 <p>В Kotlin <code>if</code> может не только управлять выполнением кода, но и возвращать значение.</p>
 <p>Это называется использованием <code>if</code> как выражения (<em>expression</em>).</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> age = <span class="hljs-number">20</span>
@@ -978,7 +978,7 @@ println(status)
 }
 </code></pre></div>
 <p>Если <code>if</code> используется как выражение, обязательно должна быть ветвь <code>else</code>.</p>
-<h3 class="study-subtitle">3.3. <code>when</code> как выражение</h3>
+<h3 id="when-kak-vyrazhenie" class="study-subtitle">3.3. <code>when</code> как выражение</h3>
 <p><code>when</code> — более гибкая конструкция ветвления.</p>
 <p>Она позволяет сравнить значение с несколькими вариантами.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> day = <span class="hljs-number">3</span>
@@ -1028,7 +1028,7 @@ println(dayName)
 <p>Здесь <code>else</code> не требуется, потому что обработаны все варианты перечисления.</p>
 <p>Это называется <strong>exhaustive when</strong> — исчерпывающая проверка всех возможных вариантов.</p>
 <p>Если добавить новый элемент в <code>enum</code>, компилятор напомнит, что его необходимо обработать.</p>
-<h3 class="study-subtitle">3.4. <code>when</code> с произвольными условиями</h3>
+<h3 id="when-s-proizvolnymi-usloviyami" class="study-subtitle">3.4. <code>when</code> с произвольными условиями</h3>
 <p><code>when</code> можно использовать без аргумента.</p>
 <p>Тогда каждая ветвь содержит произвольное логическое условие.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> temperature = <span class="hljs-number">25</span>
@@ -1057,7 +1057,7 @@ println(message)
 }
 </code></pre></div>
 <p>После проверки <code>is</code> Kotlin выполняет smart cast: внутри соответствующей ветви компилятор знает более конкретный тип значения.</p>
-<h3 class="study-subtitle">3.5. Проверка принадлежности диапазону (<code>in</code>, <code>!in</code>)</h3>
+<h3 id="proverka-prinadlezhnosti-diapazonu-in-in" class="study-subtitle">3.5. Проверка принадлежности диапазону (<code>in</code>, <code>!in</code>)</h3>
 <p>Операторы <code>in</code> и <code>!in</code> проверяют принадлежность значения диапазону или коллекции.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> age = <span class="hljs-number">25</span>
 
@@ -1094,7 +1094,7 @@ println(message)
     println(<span class="hljs-string">&quot;Доступ разрешён&quot;</span>)
 }
 </code></pre></div>
-<h3 class="study-subtitle">3.6. Вложенные условия</h3>
+<h3 id="vlozhennye-usloviya" class="study-subtitle">3.6. Вложенные условия</h3>
 <p>Внутри <code>if</code> можно размещать другие условия.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> age = <span class="hljs-number">25</span>
 <span class="hljs-keyword">val</span> hasLicense = <span class="hljs-literal">true</span>
@@ -1124,7 +1124,7 @@ println(message)
 }
 </code></pre></div>
 <p>Такой стиль уменьшает вложенность и делает проверки последовательными.</p>
-<h3 class="study-subtitle">3.7. Логические операторы (<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>)</h3>
+<h3 id="logicheskie-operatory" class="study-subtitle">3.7. Логические операторы (<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>)</h3>
 <p>Kotlin предоставляет три основных логических оператора:</p>
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Оператор</th><th>Название</th><th>Значение</th></tr></thead><tbody><tr><td><code>&amp;&amp;</code></td><td>AND</td><td>И</td></tr><tr><td>||</td><td>OR</td><td>ИЛИ</td></tr><tr><td><code>!</code></td><td>NOT</td><td>НЕ</td></tr></tbody></table></div>
 <h4 class="study-subtitle study-subtitle--minor">AND (<code>&amp;&amp;</code>)</h4>
@@ -1165,7 +1165,7 @@ println(message)
 </code></pre></div>
 <p>Для сложных выражений рекомендуется использовать скобки, даже если приоритет операторов позволяет их опустить.</p>
 <p>Так код легче читать и сложнее интерпретировать неправильно.</p>
-<h3 class="study-subtitle">3.8. Short-circuit evaluation</h3>
+<h3 id="short-circuit-evaluation" class="study-subtitle">3.8. Short-circuit evaluation</h3>
 <p><code>&amp;&amp;</code> и <code>||</code> используют сокращённое вычисление (<em>short-circuit evaluation</em>).</p>
 <p>Это означает, что второй операнд может не вычисляться, если результат уже известен по первому.</p>
 <p>Для <code>&amp;&amp;</code>:</p>
@@ -1235,7 +1235,7 @@ println(counter) <span class="hljs-comment">// 0</span>
 <li><strong>Логическое И</strong> — <code>&amp;&amp;</code></li>
 <li><strong>Логическое ИЛИ</strong> — <code>\|\|</code></li>
 <li><strong>Отрицание</strong> — <code>!</code></li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> использовать слишком длинные условия в <code>if</code>. Если условие не помещается в одну строку, вынесите его в функцию с понятным именем.</p></div></section><section id="sec-4" class="study-section" aria-labelledby="sec-4-title"><h2 id="sec-4-title" class="study-section-title">4. Циклы</h2><p>Циклы позволяют многократно выполнять один и тот же блок кода.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> использовать слишком длинные условия в <code>if</code>. Если условие не помещается в одну строку, вынесите его в функцию с понятным именем.</p></div></section><section id="tsikly" class="study-section" aria-labelledby="tsikly-title"><h2 id="tsikly-title" class="study-section-title">4. Циклы</h2><p>Циклы позволяют многократно выполнять один и тот же блок кода.</p>
 <p>Они применяются, когда необходимо:</p>
 <ul class="study-list">
 <li>обработать все элементы коллекции;</li>
@@ -1249,7 +1249,7 @@ println(counter) <span class="hljs-comment">// 0</span>
 <li><code>for</code>;</li>
 <li><code>while</code>;</li>
 <li><code>do-while</code>.</li>
-</ul><div class="study-note"><p><strong>Ключевая идея:</strong> выбирайте цикл по характеру задачи: перебор диапазона или коллекции — <code>for</code>, ожидание условия — <code>while</code>, гарантированное выполнение хотя бы один раз — <code>do-while</code>.</p></div><h3 class="study-subtitle">4.1. Цикл <code>for</code></h3>
+</ul><div class="study-note"><p><strong>Ключевая идея:</strong> выбирайте цикл по характеру задачи: перебор диапазона или коллекции — <code>for</code>, ожидание условия — <code>while</code>, гарантированное выполнение хотя бы один раз — <code>do-while</code>.</p></div><h3 id="tsikl-for" class="study-subtitle">4.1. Цикл <code>for</code></h3>
 <p><code>for</code> используется для обхода диапазонов, массивов и коллекций.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">for</span> (number <span class="hljs-keyword">in</span> <span class="hljs-number">1.</span><span class="hljs-number">.5</span>) {
     println(number)
@@ -1304,7 +1304,7 @@ println(counter) <span class="hljs-comment">// 0</span>
 }
 </code></pre></div>
 <p>Здесь каждая запись <code>Map</code> разбирается на ключ и значение.</p>
-<h3 class="study-subtitle">4.2. <code>while</code> и <code>do-while</code></h3>
+<h3 id="while-i-do-while" class="study-subtitle">4.2. <code>while</code> и <code>do-while</code></h3>
 <h4 class="study-subtitle study-subtitle--minor"><code>while</code></h4>
 <p><code>while</code> повторяет выполнение блока, пока условие истинно.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">var</span> counter = <span class="hljs-number">0</span>
@@ -1353,7 +1353,7 @@ println(counter) <span class="hljs-comment">// 0</span>
 println(<span class="hljs-string">&quot;Привет, <span class="hljs-variable">$input</span>&quot;</span>)
 </code></pre></div>
 <p>Ввод запрашивается как минимум один раз.</p>
-<h3 class="study-subtitle">4.3. Диапазоны (<code>..</code>, <code>until</code>, <code>downTo</code>, <code>step</code>)</h3>
+<h3 id="diapazony-until-downto-step" class="study-subtitle">4.3. Диапазоны (<code>..</code>, <code>until</code>, <code>downTo</code>, <code>step</code>)</h3>
 <p>Kotlin позволяет легко создавать последовательности значений.</p>
 <h4 class="study-subtitle study-subtitle--minor"><code>..</code> — диапазон с включённой верхней границей</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">for</span> (number <span class="hljs-keyword">in</span> <span class="hljs-number">1.</span><span class="hljs-number">.5</span>) {
@@ -1412,7 +1412,7 @@ println(<span class="hljs-string">&quot;Привет, <span class="hljs-variable
 </code></pre></div>
 <p>Результат: <code>1, 2, 3, 4</code>.</p>
 <p>По смыслу он аналогичен <code>1 until 5</code>.</p>
-<h3 class="study-subtitle">4.4. <code>break</code> и <code>continue</code></h3>
+<h3 id="break-i-continue" class="study-subtitle">4.4. <code>break</code> и <code>continue</code></h3>
 <p>Эти операторы позволяют управлять выполнением цикла.</p>
 <h4 class="study-subtitle study-subtitle--minor"><code>break</code></h4>
 <p><code>break</code> немедленно завершает ближайший цикл.</p>
@@ -1460,7 +1460,7 @@ println(<span class="hljs-string">&quot;Привет, <span class="hljs-variable
 }
 </code></pre></div>
 <p>Отрицательные числа и ноль пропускаются.</p>
-<h3 class="study-subtitle">4.5. Метки для <code>break</code> и <code>continue</code></h3>
+<h3 id="metki-dlya-break-i-continue" class="study-subtitle">4.5. Метки для <code>break</code> и <code>continue</code></h3>
 <p>В обычном цикле <code>break</code> и <code>continue</code> относятся к ближайшему циклу.</p>
 <p>Если циклы вложенные, иногда необходимо управлять внешним циклом.</p>
 <p>Для этого применяются метки.</p>
@@ -1490,7 +1490,7 @@ println(<span class="hljs-string">&quot;Привет, <span class="hljs-variable
 </code></pre></div>
 <p><code>continue@outer</code> переходит к следующей итерации внешнего цикла.</p>
 <p>Метки полезны для сложных вложенных циклов, но чрезмерное их использование часто говорит о том, что алгоритм можно упростить.</p>
-<h3 class="study-subtitle">4.6. Вложенные циклы</h3>
+<h3 id="vlozhennye-tsikly" class="study-subtitle">4.6. Вложенные циклы</h3>
 <p>Вложенный цикл — цикл, расположенный внутри другого цикла.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1.</span><span class="hljs-number">.3</span>) {
     <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> <span class="hljs-number">1.</span><span class="hljs-number">.3</span>) {
@@ -1528,7 +1528,7 @@ println(<span class="hljs-string">&quot;Привет, <span class="hljs-variable
 <li>всего — 100 выполнений внутреннего тела.</li>
 </ul>
 <p>Это важно для понимания производительности алгоритмов. Подробно сложность рассматривается в разделе «Основы алгоритмов».</p>
-<h3 class="study-subtitle">4.7. Итерация по коллекциям</h3>
+<h3 id="iteratsiya-po-kollektsiyam" class="study-subtitle">4.7. Итерация по коллекциям</h3>
 <p>Чаще всего разработчик работает не с отдельными числами, а с коллекциями данных.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> users = listOf(
     <span class="hljs-string">&quot;Alex&quot;</span>,
@@ -1620,9 +1620,9 @@ println(numbers) <span class="hljs-comment">// [1, 3, 5]</span>
 <li><strong>Цикл минимум один раз</strong> — <code>do { ... } while (cond)</code></li>
 <li><strong>Выход из цикла</strong> — <code>break</code></li>
 <li><strong>Пропуск итерации</strong> — <code>continue</code></li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> изменять коллекцию во время её перебора. Если нужно удалить элементы, сначала соберите их, а затем измените коллекцию отдельно.</p></div></section><section id="sec-5" class="study-section" aria-labelledby="sec-5-title"><h2 id="sec-5-title" class="study-section-title">5. Функции</h2><p>Функция — именованный блок кода, который выполняет определённую задачу.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> изменять коллекцию во время её перебора. Если нужно удалить элементы, сначала соберите их, а затем измените коллекцию отдельно.</p></div></section><section id="funktsii" class="study-section" aria-labelledby="funktsii-title"><h2 id="funktsii-title" class="study-section-title">5. Функции</h2><p>Функция — именованный блок кода, который выполняет определённую задачу.</p>
 <p>Функции позволяют разделять большую программу на небольшие логические части, повторно использовать код и уменьшать дублирование.</p>
-<p>Например, вместо того чтобы каждый раз самостоятельно вычислять итоговую цену заказа, можно вынести расчёт в отдельную функцию.</p><div class="study-note"><p><strong>Ключевая идея:</strong> хорошая функция делает одно понятное действие, имеет осмысленное имя и явный результат.</p></div><h3 class="study-subtitle">5.1. Объявление и вызов функций</h3>
+<p>Например, вместо того чтобы каждый раз самостоятельно вычислять итоговую цену заказа, можно вынести расчёт в отдельную функцию.</p><div class="study-note"><p><strong>Ключевая идея:</strong> хорошая функция делает одно понятное действие, имеет осмысленное имя и явный результат.</p></div><h3 id="obyavlenie-i-vyzov-funktsiy" class="study-subtitle">5.1. Объявление и вызов функций</h3>
 <p>Для объявления функции используется ключевое слово <code>fun</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">sayHello</span><span class="hljs-params">()</span></span> {
     println(<span class="hljs-string">&quot;Hello, Kotlin!&quot;</span>)
@@ -1655,7 +1655,7 @@ println(numbers) <span class="hljs-comment">// [1, 3, 5]</span>
 }
 </code></pre></div>
 <p>Функция может выполнять несколько действий внутри себя.</p>
-<h3 class="study-subtitle">5.2. Параметры и возвращаемые значения</h3>
+<h3 id="parametry-i-vozvraschaemye-znacheniya" class="study-subtitle">5.2. Параметры и возвращаемые значения</h3>
 <p>Параметры позволяют передавать функции входные данные.</p>
 <p>Возвращаемое значение позволяет получить результат её работы.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">sum</span><span class="hljs-params">(a: <span class="hljs-type">Int</span>, b: <span class="hljs-type">Int</span>)</span></span>: <span class="hljs-built_in">Int</span> {
@@ -1703,7 +1703,7 @@ println(result) <span class="hljs-comment">// 30</span>
 </code></pre></div>
 <p>Функция получает копию ссылки на тот же объект, поэтому изменения его изменяемого состояния видны снаружи.</p>
 <p>Это важная особенность передачи объектов в функции.</p>
-<h3 class="study-subtitle">5.3. Параметры по умолчанию</h3>
+<h3 id="parametry-po-umolchaniyu" class="study-subtitle">5.3. Параметры по умолчанию</h3>
 <p>Kotlin позволяет указывать значения параметров по умолчанию.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">greet</span><span class="hljs-params">(
     name: <span class="hljs-type">String</span>,
@@ -1746,7 +1746,7 @@ createUser(<span class="hljs-string">&quot;Maria&quot;</span>, <span class="hljs
 createUser(<span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-number">30</span>, <span class="hljs-literal">false</span>)
 </code></pre></div>
 <p>Если нужно пропустить параметр в середине, используй именованные аргументы.</p>
-<h3 class="study-subtitle">5.4. Именованные аргументы</h3>
+<h3 id="imenovannye-argumenty" class="study-subtitle">5.4. Именованные аргументы</h3>
 <p>Именованные аргументы позволяют явно указать, какому параметру соответствует передаваемое значение.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">createUser</span><span class="hljs-params">(
     name: <span class="hljs-type">String</span>,
@@ -1793,7 +1793,7 @@ createUser(<span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-
 )
 </code></pre></div>
 <p>Важная особенность: Kotlin не поддерживает синтаксис именованных аргументов при вызове Java-методов, поскольку имена параметров Java не всегда сохраняются в байткоде.</p>
-<h3 class="study-subtitle">5.5. <code>Unit</code> и expression body</h3>
+<h3 id="unit-i-expression-body" class="study-subtitle">5.5. <code>Unit</code> и expression body</h3>
 <p>Если функция не должна возвращать полезное значение, она возвращает <code>Unit</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">printMessage</span><span class="hljs-params">(message: <span class="hljs-type">String</span>)</span></span> {
     println(message)
@@ -1824,7 +1824,7 @@ createUser(<span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">calculate</span><span class="hljs-params">(a: <span class="hljs-type">Int</span>, b: <span class="hljs-type">Int</span>)</span></span> = a + b
 </code></pre></div>
 <p>Expression body хорошо подходит для небольших функций, когда не требуется отдельная последовательность операций.</p>
-<h3 class="study-subtitle">5.6. Single-expression functions</h3>
+<h3 id="single-expression-functions" class="study-subtitle">5.6. Single-expression functions</h3>
 <p>Single-expression function — функция, тело которой состоит из одного выражения.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">square</span><span class="hljs-params">(number: <span class="hljs-type">Int</span>)</span></span> = number * number
 </code></pre></div>
@@ -1838,7 +1838,7 @@ createUser(<span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-
 </code></pre></div>
 <p>Такие функции удобны для небольших вычислений, проверок и преобразований.</p>
 <p>Но не стоит искусственно сокращать сложные функции. Если выражение становится трудным для понимания, лучше использовать обычное тело с несколькими понятными шагами.</p>
-<h3 class="study-subtitle">5.7. <code>vararg</code> и spread operator</h3>
+<h3 id="vararg-i-spread-operator" class="study-subtitle">5.7. <code>vararg</code> и spread operator</h3>
 <p>Иногда функции нужно передать произвольное количество аргументов.</p>
 <p>Для этого используется <code>vararg</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">printNames</span><span class="hljs-params">(<span class="hljs-keyword">vararg</span> names: <span class="hljs-type">String</span>)</span></span> {
@@ -1900,7 +1900,7 @@ printInfo(
 
 printNumbers(*values.toTypedArray())
 </code></pre></div>
-<h3 class="study-subtitle">5.8. Локальные функции</h3>
+<h3 id="lokalnye-funktsii" class="study-subtitle">5.8. Локальные функции</h3>
 <p>Функцию можно объявить внутри другой функции.</p>
 <p>Такая функция называется локальной.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">calculateOrderPrice</span><span class="hljs-params">(price: <span class="hljs-type">Double</span>, discount: <span class="hljs-type">Double</span>)</span></span>: <span class="hljs-built_in">Double</span> {
@@ -1966,7 +1966,7 @@ printNumbers(*values.toTypedArray())
 <li><strong>Именованный аргумент</strong> — <code>f(y = 10)</code></li>
 <li><strong>Произвольное количество аргументов</strong> — <code>fun f(vararg items: String)</code></li>
 <li><strong>Передача массива</strong> — <code>f(*array)</code></li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> делать функцию слишком длинной. Если функция не помещается на один экран, разбейте её на несколько функций с понятными именами.</p></div></section><section id="sec-6" class="study-section" aria-labelledby="sec-6-title"><h2 id="sec-6-title" class="study-section-title">6. ООП: основы</h2><p>Объектно-ориентированное программирование (ООП) — подход к разработке, в котором программа строится из объектов, объединяющих данные и поведение.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> делать функцию слишком длинной. Если функция не помещается на один экран, разбейте её на несколько функций с понятными именами.</p></div></section><section id="oop-osnovy" class="study-section" aria-labelledby="oop-osnovy-title"><h2 id="oop-osnovy-title" class="study-section-title">6. ООП: основы</h2><p>Объектно-ориентированное программирование (ООП) — подход к разработке, в котором программа строится из объектов, объединяющих данные и поведение.</p>
 <p>Вместо того чтобы хранить все данные отдельно и выполнять над ними произвольные операции, можно создать сущности, которые отвечают за собственное состояние и связанные с ним действия.</p>
 <p>Например, в приложении для обучения могут существовать:</p>
 <ul class="study-list">
@@ -1986,7 +1986,7 @@ printNumbers(*values.toTypedArray())
 <li>Полиморфизм.</li>
 <li>Композиция.</li>
 </ol>
-<h3 class="study-subtitle">6.1. Классы и объекты</h3>
+<h3 id="klassy-i-obekty" class="study-subtitle">6.1. Классы и объекты</h3>
 <h4 class="study-subtitle study-subtitle--minor">Класс</h4>
 <p>Класс — описание структуры и поведения будущих объектов.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
@@ -2056,7 +2056,7 @@ println(user.age)
 }
 </code></pre></div>
 <p>В этом примере <code>name</code> доступен во время инициализации класса, а <code>displayName</code> является свойством объекта.</p>
-<h3 class="study-subtitle">6.2. Первичный и вторичные конструкторы</h3>
+<h3 id="pervichnyy-i-vtorichnye-konstruktory" class="study-subtitle">6.2. Первичный и вторичные конструкторы</h3>
 <p>Конструктор определяет, как создаётся и первоначально настраивается объект.</p>
 <p>В Kotlin есть два основных вида конструкторов:</p>
 <ul class="study-list">
@@ -2102,7 +2102,7 @@ println(user.age)
 <h4 class="study-subtitle study-subtitle--minor">Когда использовать вторичные конструкторы</h4>
 <p>Они могут быть полезны, когда существуют разные способы создания объекта с разными наборами входных данных.</p>
 <p>Однако часто вместо множества вторичных конструкторов проще использовать значения параметров по умолчанию или отдельные фабричные функции.</p>
-<h3 class="study-subtitle">6.3. Инициализаторы (<code>init</code>)</h3>
+<h3 id="initsializatory-init" class="study-subtitle">6.3. Инициализаторы (<code>init</code>)</h3>
 <p><code>init</code> — блок инициализации, который выполняется при создании объекта.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(
     <span class="hljs-keyword">val</span> name: String,
@@ -2161,7 +2161,7 @@ println(user.age)
 }
 </code></pre></div>
 <p>Поэтому при проектировании класса важно учитывать порядок инициализации свойств.</p>
-<h3 class="study-subtitle">6.4. Наследование (<code>open</code>, <code>override</code>, <code>final</code>, <code>super</code>)</h3>
+<h3 id="nasledovanie-open-override-final-super" class="study-subtitle">6.4. Наследование (<code>open</code>, <code>override</code>, <code>final</code>, <code>super</code>)</h3>
 <p>Наследование позволяет создать класс на основе другого класса.</p>
 <p>Дочерний класс получает доступ к разрешённым членам родительского класса и может расширять или переопределять их поведение.</p>
 <h4 class="study-subtitle study-subtitle--minor">Почему нужен <code>open</code></h4>
@@ -2256,7 +2256,7 @@ animal.makeSound() <span class="hljs-comment">// Гав!</span>
 <p>Не следует без необходимости вызывать переопределяемые (<code>open</code>) методы из конструктора базового класса.</p>
 <p>При создании наследника реализация метода может обратиться к свойствам дочернего класса, которые ещё не инициализированы.</p>
 <p>Это способно привести к некорректному состоянию объекта.</p>
-<h3 class="study-subtitle">6.5. Интерфейсы и их реализация</h3>
+<h3 id="interfeysy-i-ih-realizatsiya" class="study-subtitle">6.5. Интерфейсы и их реализация</h3>
 <p>Интерфейс описывает контракт — набор свойств и функций, которые должен предоставить класс.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Printable</span> {
     <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">print</span><span class="hljs-params">()</span></span>
@@ -2337,7 +2337,7 @@ report.print()
 </code></pre></div>
 <p>Интерфейс может содержать абстрактные свойства и свойства с реализацией accessor, но не может хранить собственное состояние в backing field.</p>
 <p>Это важное отличие интерфейса от класса.</p>
-<h3 class="study-subtitle">6.6. Абстрактные классы</h3>
+<h3 id="abstraktnye-klassy" class="study-subtitle">6.6. Абстрактные классы</h3>
 <p>Абстрактный класс объявляется с помощью <code>abstract</code>.</p>
 <p>Он не предназначен для непосредственного создания объектов.</p>
 <p>Вместо этого он предоставляет общую основу для дочерних классов.</p>
@@ -2375,7 +2375,7 @@ dog.sleep()
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Абстрактный класс</th><th>Интерфейс</th></tr></thead><tbody><tr><td>Нельзя создать экземпляр напрямую</td><td>Нельзя создать экземпляр напрямую</td></tr><tr><td>Может содержать состояние и backing fields</td><td>Не хранит собственное состояние в backing fields</td></tr><tr><td>Может иметь конструктор</td><td>Не имеет конструктора класса</td></tr><tr><td>Класс может наследовать только один класс</td><td>Можно реализовать несколько интерфейсов</td></tr><tr><td>Подходит для общей базовой реализации</td><td>Подходит для описания контракта</td></tr></tbody></table></div>
 <p>Выбирай абстрактный класс, когда у группы сущностей есть общая базовая структура и состояние.</p>
 <p>Выбирай интерфейс, когда нужно описать способность или контракт, который могут реализовать разные классы.</p>
-<h3 class="study-subtitle">6.7. Инкапсуляция</h3>
+<h3 id="inkapsulyatsiya" class="study-subtitle">6.7. Инкапсуляция</h3>
 <p>Инкапсуляция — принцип сокрытия внутреннего состояния объекта и предоставления контролируемого доступа к нему.</p>
 <p>Предположим, есть банковский счёт.</p>
 <p>Плохой вариант:</p>
@@ -2427,7 +2427,7 @@ account.balance = -<span class="hljs-number">1_000_000.0</span>
 <li>менять внутреннюю реализацию без изменения внешнего API;</li>
 <li>делать поведение объекта более предсказуемым.</li>
 </ul>
-<h3 class="study-subtitle">6.8. Полиморфизм</h3>
+<h3 id="polimorfizm" class="study-subtitle">6.8. Полиморфизм</h3>
 <p>Полиморфизм — возможность работать с объектами разных типов через общий тип.</p>
 <p>Рассмотрим пример:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">open</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Animal</span> {
@@ -2490,7 +2490,7 @@ makeAnimalSpeak(Cat())
 </code></pre></div>
 <p>Теперь способ оплаты можно менять без изменения <code>processPayment</code>.</p>
 <p>Это один из ключевых способов уменьшить связанность между частями приложения.</p>
-<h3 class="study-subtitle">6.9. Композиция объектов</h3>
+<h3 id="kompozitsiya-obektov" class="study-subtitle">6.9. Композиция объектов</h3>
 <p>Композиция — построение объекта из других объектов.</p>
 <p>Вместо наследования один класс может содержать внутри себя экземпляры других классов и делегировать им часть работы.</p>
 <p>Например, автомобиль состоит из двигателя:</p>
@@ -2598,7 +2598,7 @@ cashService.checkout(<span class="hljs-number">200.0</span>)
 <li><strong>Композиция</strong> — «имеет»</li>
 <li><strong>Интерфейс</strong> — Контракт поведения</li>
 <li><strong>Инкапсуляция</strong> — Скрытие внутреннего состояния</li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> использовать наследование там, где достаточно композиции. Наследование делает классы жёстко связанными и усложняет изменения.</p></div></section><section id="sec-7" class="study-section" aria-labelledby="sec-7-title"><h2 id="sec-7-title" class="study-section-title">7. Коллекции</h2><p>Коллекции — структуры данных, которые позволяют хранить и обрабатывать группы элементов.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> использовать наследование там, где достаточно композиции. Наследование делает классы жёстко связанными и усложняет изменения.</p></div></section><section id="kollektsii" class="study-section" aria-labelledby="kollektsii-title"><h2 id="kollektsii-title" class="study-section-title">7. Коллекции</h2><p>Коллекции — структуры данных, которые позволяют хранить и обрабатывать группы элементов.</p>
 <p>В реальных приложениях почти всегда приходится работать с наборами данных:</p>
 <ul class="study-list">
 <li>списком пользователей;</li>
@@ -2615,7 +2615,7 @@ cashService.checkout(<span class="hljs-number">200.0</span>)
 <li><code>List</code>;</li>
 <li><code>Set</code>;</li>
 <li><code>Map</code>.</li>
-</ul><div class="study-note"><p><strong>Ключевая идея:</strong> выбирайте коллекцию по задаче: порядок — <code>List</code>, уникальность — <code>Set</code>, поиск по ключу — <code>Map</code>. По умолчанию предпочитайте read-only коллекции.</p></div><h3 class="study-subtitle">7.1. <code>List</code> и <code>MutableList</code></h3>
+</ul><div class="study-note"><p><strong>Ключевая идея:</strong> выбирайте коллекцию по задаче: порядок — <code>List</code>, уникальность — <code>Set</code>, поиск по ключу — <code>Map</code>. По умолчанию предпочитайте read-only коллекции.</p></div><h3 id="list-i-mutablelist" class="study-subtitle">7.1. <code>List</code> и <code>MutableList</code></h3>
 <h4 class="study-subtitle study-subtitle--minor"><code>List</code></h4>
 <p><code>List</code> представляет упорядоченную коллекцию элементов.</p>
 <p>Особенности:</p>
@@ -2684,7 +2684,7 @@ println(readOnlyNames) <span class="hljs-comment">// [Alex, Maria]</span>
 </code></pre></div>
 <p>Обе переменные ссылаются на один объект.</p>
 <p>Поэтому <code>List</code> следует понимать как read-only интерфейс, а не как абсолютную гарантию immutable-объекта.</p>
-<h3 class="study-subtitle">7.2. <code>Set</code> и <code>MutableSet</code></h3>
+<h3 id="set-i-mutableset" class="study-subtitle">7.2. <code>Set</code> и <code>MutableSet</code></h3>
 <p><code>Set</code> хранит уникальные элементы.</p>
 <p>Дубликаты не допускаются.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> numbers = setOf(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>)
@@ -2734,7 +2734,7 @@ visitedPages.add(<span class="hljs-string">&quot;/home&quot;</span>)
 
 println(visitedPages.size) <span class="hljs-comment">// 2</span>
 </code></pre></div>
-<h3 class="study-subtitle">7.3. <code>Map</code> и <code>MutableMap</code></h3>
+<h3 id="map-i-mutablemap" class="study-subtitle">7.3. <code>Map</code> и <code>MutableMap</code></h3>
 <p><code>Map</code> хранит пары «ключ — значение».</p>
 <p>Каждый ключ уникален, а значения могут повторяться.</p>
 <p>Например:</p>
@@ -2804,7 +2804,7 @@ println(users[<span class="hljs-number">1</span>]) <span class="hljs-comment">//
 <li><code>languageCode -&gt; locale</code>;</li>
 <li><code>settingKey -&gt; settingValue</code>.</li>
 </ul>
-<h3 class="study-subtitle">7.4. Read-only vs mutable collections</h3>
+<h3 id="read-only-vs-mutable-collections" class="study-subtitle">7.4. Read-only vs mutable collections</h3>
 <p>В Kotlin есть два основных набора интерфейсов коллекций:</p>
 <p><strong>Read-only:</strong></p>
 <ul class="study-list">
@@ -2854,7 +2854,7 @@ names.add(<span class="hljs-string">&quot;Maria&quot;</span>) <span class="hljs-
 </code></pre></div>
 <p><code>val</code> защищает переменную от повторного присваивания, но не запрещает операции над объектом.</p>
 <p>Для разработки рекомендуется предпочитать read-only интерфейсы там, где изменение коллекции не требуется.</p>
-<h3 class="study-subtitle">7.5. Итерация по коллекциям</h3>
+<h3 id="iteratsiya-po-kollektsiyam-2" class="study-subtitle">7.5. Итерация по коллекциям</h3>
 <p>Коллекции можно обходить с помощью <code>for</code>:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> names = listOf(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;Maria&quot;</span>, <span class="hljs-string">&quot;John&quot;</span>)
 
@@ -2893,7 +2893,7 @@ names.add(<span class="hljs-string">&quot;Maria&quot;</span>) <span class="hljs-
     println(value)
 }
 </code></pre></div>
-<h3 class="study-subtitle">7.6. Основные операции (<code>filter</code>, <code>map</code>, <code>find</code>, <code>first</code>, <code>any</code>, <code>all</code>)</h3>
+<h3 id="osnovnye-operatsii-filter-map-find-first-any-all" class="study-subtitle">7.6. Основные операции (<code>filter</code>, <code>map</code>, <code>find</code>, <code>first</code>, <code>any</code>, <code>all</code>)</h3>
 <p>Kotlin предоставляет большое количество готовых функций для обработки коллекций.</p>
 <p>Они позволяют писать преобразования без ручного создания циклов.</p>
 <h4 class="study-subtitle study-subtitle--minor"><code>filter</code></h4>
@@ -3005,7 +3005,7 @@ println(numbers) <span class="hljs-comment">// [1, 2, 3, 4]</span>
 
 println(filtered) <span class="hljs-comment">// [3, 4]</span>
 </code></pre></div>
-<h3 class="study-subtitle">7.7. Добавление и удаление элементов</h3>
+<h3 id="dobavlenie-i-udalenie-elementov" class="study-subtitle">7.7. Добавление и удаление элементов</h3>
 <p>Для изменения коллекции используются mutable-интерфейсы.</p>
 <h4 class="study-subtitle study-subtitle--minor">List</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> names = mutableListOf(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;Maria&quot;</span>)
@@ -3037,7 +3037,7 @@ users[<span class="hljs-number">1</span>] = <span class="hljs-string">&quot;John
 users.remove(<span class="hljs-number">2</span>)
 </code></pre></div>
 <p>Операции изменения недоступны через read-only интерфейсы.</p>
-<h3 class="study-subtitle">7.8. Выбор коллекции под задачу</h3>
+<h3 id="vybor-kollektsii-pod-zadachu" class="study-subtitle">7.8. Выбор коллекции под задачу</h3>
 <p>Выбор коллекции зависит от того, как программа будет использовать данные.</p>
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Задача</th><th>Подходящая коллекция</th><th>Причина</th></tr></thead><tbody><tr><td>Хранить список пользователей</td><td><code>List</code></td><td>Важен порядок, возможны повторения</td></tr><tr><td>Хранить список операций</td><td><code>List</code></td><td>Порядок выполнения имеет значение</td></tr><tr><td>Хранить уникальные роли</td><td><code>Set</code></td><td>Дубликаты не нужны</td></tr><tr><td>Хранить уникальные ID</td><td><code>Set</code></td><td>Требуется уникальность</td></tr><tr><td>Хранить пользователя по ID</td><td><code>Map</code></td><td>Доступ по ключу</td></tr><tr><td>Хранить настройки по ключу</td><td><code>Map</code></td><td>Связь ключ-значение</td></tr><tr><td>Нужен список с добавлением и удалением</td><td><code>MutableList</code></td><td>Изменяемая коллекция</td></tr><tr><td>Нужен набор уникальных изменяемых значений</td><td><code>MutableSet</code></td><td>Можно добавлять и удалять элементы</td></tr><tr><td>Нужны изменяемые пары ключ-значение</td><td><code>MutableMap</code></td><td>Можно менять записи</td></tr></tbody></table></div>
 <h4 class="study-subtitle study-subtitle--minor">Разница между массивом и списком</h4>
@@ -3071,7 +3071,7 @@ users.remove(<span class="hljs-number">2</span>)
 <li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю разницу между <code>find</code>, <code>first</code> и <code>firstOrNull</code>.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Умею использовать <code>any</code> и <code>all</code>.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Могу выбрать коллекцию под конкретную задачу.</li>
-</ul></section><section id="sec-8" class="study-section" aria-labelledby="sec-8-title"><h2 id="sec-8-title" class="study-section-title">8. Обработка ошибок</h2><p>Во время выполнения программы могут возникать ситуации, когда операция не может быть выполнена корректно.</p>
+</ul></section><section id="obrabotka-oshibok" class="study-section" aria-labelledby="obrabotka-oshibok-title"><h2 id="obrabotka-oshibok-title" class="study-section-title">8. Обработка ошибок</h2><p>Во время выполнения программы могут возникать ситуации, когда операция не может быть выполнена корректно.</p>
 <p>Например:</p>
 <ul class="study-list">
 <li>пользователь ввёл неправильные данные;</li>
@@ -3092,7 +3092,7 @@ users.remove(<span class="hljs-number">2</span>)
 <li><code>runCatching</code>;</li>
 <li><code>Result</code>;</li>
 <li>собственные типы результатов на основе <code>sealed class</code> или <code>sealed interface</code>.</li>
-</ul><div class="study-note"><p><strong>Ключевая идея:</strong> ошибка — это тоже ожидаемый сценарий. Обрабатывайте её на том уровне, где можно принять осмысленное решение: показать сообщение, повторить операцию или вернуть безопасный результат.</p></div><h3 class="study-subtitle">8.1. Иерархия <code>Throwable</code>, <code>Exception</code> и <code>Error</code></h3>
+</ul><div class="study-note"><p><strong>Ключевая идея:</strong> ошибка — это тоже ожидаемый сценарий. Обрабатывайте её на том уровне, где можно принять осмысленное решение: показать сообщение, повторить операцию или вернуть безопасный результат.</p></div><h3 id="ierarhiya-throwable-exception-i-error" class="study-subtitle">8.1. Иерархия <code>Throwable</code>, <code>Exception</code> и <code>Error</code></h3>
 <p>В Kotlin корнем иерархии исключений является <code>Throwable</code>.</p>
 <p>У него есть два основных наследника:</p>
 <ul class="study-list">
@@ -3138,7 +3138,7 @@ users.remove(<span class="hljs-number">2</span>)
 <p>В Kotlin исключения по умолчанию являются unchecked.</p>
 <p>Это означает, что функция не обязана объявлять исключения в своей сигнатуре и вызывающий код не обязан явно обрабатывать их.</p>
 <p>В отличие от Java, Kotlin не имеет механизма обязательного объявления checked exceptions.</p>
-<h3 class="study-subtitle">8.2. <code>try / catch / finally</code></h3>
+<h3 id="try-catch-finally" class="study-subtitle">8.2. <code>try / catch / finally</code></h3>
 <p>Для обработки исключений используется конструкция <code>try / catch</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">try</span> {
     <span class="hljs-keyword">val</span> result = <span class="hljs-number">10</span> / <span class="hljs-number">0</span>
@@ -3193,7 +3193,7 @@ users.remove(<span class="hljs-number">2</span>)
 <li>причину исключения, если она была передана.</li>
 </ul>
 <p>Не следует без необходимости показывать пользователю технический stack trace.</p>
-<h3 class="study-subtitle">8.3. <code>finally</code></h3>
+<h3 id="finally" class="study-subtitle">8.3. <code>finally</code></h3>
 <p>Блок <code>finally</code> выполняется после <code>try</code> и <code>catch</code> независимо от того, произошло исключение или нет.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">try</span> {
     println(<span class="hljs-string">&quot;Начало операции&quot;</span>)
@@ -3223,7 +3223,7 @@ users.remove(<span class="hljs-number">2</span>)
 <span class="hljs-comment">// }</span>
 </code></pre></div>
 <p><code>use</code> автоматически закрывает ресурс после выполнения блока.</p>
-<h3 class="study-subtitle">8.4. Оператор <code>throw</code></h3>
+<h3 id="operator-throw" class="study-subtitle">8.4. Оператор <code>throw</code></h3>
 <p><code>throw</code> позволяет самостоятельно выбросить исключение.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">withdraw</span><span class="hljs-params">(balance: <span class="hljs-type">Double</span>, amount: <span class="hljs-type">Double</span>)</span></span> {
     <span class="hljs-keyword">if</span> (amount &lt;= <span class="hljs-number">0</span>) {
@@ -3281,7 +3281,7 @@ users.remove(<span class="hljs-number">2</span>)
 }
 </code></pre></div>
 <p>Собственные исключения полезны, когда необходимо различать конкретные причины отказа.</p>
-<h3 class="study-subtitle">8.5. Nullable-типы и безопасный доступ</h3>
+<h3 id="nullable-tipy-i-bezopasnyy-dostup" class="study-subtitle">8.5. Nullable-типы и безопасный доступ</h3>
 <p>Одна из важных особенностей Kotlin — поддержка null safety на уровне системы типов.</p>
 <p>Обычная переменная не может содержать <code>null</code>:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name: String = <span class="hljs-string">&quot;Alex&quot;</span>
@@ -3332,7 +3332,7 @@ println(name?.length) <span class="hljs-comment">// null</span>
 }
 </code></pre></div>
 <p>Если имя отсутствует, функция ничего не вызовет и выведет <code>null</code>.</p>
-<h3 class="study-subtitle">8.6. Elvis operator (<code>?:</code>)</h3>
+<h3 id="elvis-operator" class="study-subtitle">8.6. Elvis operator (<code>?:</code>)</h3>
 <p>Elvis operator позволяет задать значение по умолчанию, если выражение слева равно <code>null</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name: String? = <span class="hljs-literal">null</span>
 
@@ -3373,7 +3373,7 @@ println(length) <span class="hljs-comment">// 0</span>
 }
 </code></pre></div>
 <p>Это удобно для проверки обязательных значений.</p>
-<h3 class="study-subtitle">8.7. Not-null assertion (<code>!!</code>) и связанные риски</h3>
+<h3 id="not-null-assertion-i-svyazannye-riski" class="study-subtitle">8.7. Not-null assertion (<code>!!</code>) и связанные риски</h3>
 <p>Оператор <code>!!</code> принудительно преобразует nullable-значение в non-nullable.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name: String? = <span class="hljs-string">&quot;Alex&quot;</span>
 
@@ -3405,7 +3405,7 @@ println(actualName.length)
 </code></pre></div>
 <p>Использование <code>!!</code> допустимо только тогда, когда есть надёжная гарантия, что значение не может быть <code>null</code>.</p>
 <p>Однако даже в этом случае часто существуют более безопасные способы выразить условие.</p>
-<h3 class="study-subtitle">8.8. <code>runCatching</code></h3>
+<h3 id="runcatching" class="study-subtitle">8.8. <code>runCatching</code></h3>
 <p><code>runCatching</code> позволяет выполнить блок кода и представить результат как объект <code>Result</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> result = runCatching {
     <span class="hljs-string">&quot;123&quot;</span>.toInt()
@@ -3475,7 +3475,7 @@ println(message)
 }
 </code></pre></div>
 <p>В дальнейшем при изучении корутин этот нюанс станет особенно важным.</p>
-<h3 class="study-subtitle">8.9. Представление результата: <code>Result</code> и <code>sealed class</code></h3>
+<h3 id="predstavlenie-rezultata-result-i-sealed-class" class="study-subtitle">8.9. Представление результата: <code>Result</code> и <code>sealed class</code></h3>
 <p>Не каждая неуспешная операция обязательно должна завершаться исключением.</p>
 <p>Например, при авторизации возможны разные результаты:</p>
 <ul class="study-list">
@@ -3602,7 +3602,7 @@ println(message)
 <li><strong>Значение по умолчанию</strong> — <code>value ?: default</code></li>
 <li><strong>Безопасное преобразование</strong> — <code>text.toIntOrNull()</code></li>
 <li><strong>Результат операции</strong> — <code>Result&lt;T&gt;</code></li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> перехватывать <code>Throwable</code> или <code>Exception</code> слишком рано. Перехватывайте только те ошибки, которые действительно можете обработать.</p></div></section><section id="sec-9" class="study-section" aria-labelledby="sec-9-title"><h2 id="sec-9-title" class="study-section-title">9. Основы алгоритмов</h2><p>Алгоритм — последовательность действий, которая приводит к решению определённой задачи.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> перехватывать <code>Throwable</code> или <code>Exception</code> слишком рано. Перехватывайте только те ошибки, которые действительно можете обработать.</p></div></section><section id="osnovy-algoritmov" class="study-section" aria-labelledby="osnovy-algoritmov-title"><h2 id="osnovy-algoritmov-title" class="study-section-title">9. Основы алгоритмов</h2><p>Алгоритм — последовательность действий, которая приводит к решению определённой задачи.</p>
 <p>В программировании алгоритмы используются постоянно:</p>
 <ul class="study-list">
 <li>поиск пользователя;</li>
@@ -3614,7 +3614,7 @@ println(message)
 <li>поиск дубликатов.</li>
 </ul>
 <p>Важно не просто написать код, который работает, а понимать, сколько ресурсов он потребляет и как ведёт себя при увеличении объёма данных.</p>
-<p>В этом разделе рассматриваются базовые операции над массивами и строками, линейный поиск, сортировка и временная сложность.</p><div class="study-note"><p><strong>Ключевая идея:</strong> сначала напишите понятный алгоритм, затем оцените его сложность и улучшайте только там, где это действительно нужно.</p></div><h3 class="study-subtitle">9.1. Линейный поиск</h3>
+<p>В этом разделе рассматриваются базовые операции над массивами и строками, линейный поиск, сортировка и временная сложность.</p><div class="study-note"><p><strong>Ключевая идея:</strong> сначала напишите понятный алгоритм, затем оцените его сложность и улучшайте только там, где это действительно нужно.</p></div><h3 id="lineynyy-poisk" class="study-subtitle">9.1. Линейный поиск</h3>
 <p>Линейный поиск (<em>Linear Search</em>) — алгоритм, который последовательно проверяет каждый элемент коллекции, пока не найдёт нужный или не достигнет конца.</p>
 <p>Предположим, у нас есть массив:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> numbers = intArrayOf(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>, <span class="hljs-number">50</span>)
@@ -3681,7 +3681,7 @@ println(result) <span class="hljs-comment">// 2</span>
 <p>Временная сложность:</p>
 <p><strong>O(n)</strong></p>
 <p>Линейный поиск подходит для небольших коллекций, а также для данных, которые не отсортированы и не имеют дополнительной структуры поиска.</p>
-<h3 class="study-subtitle">9.2. Базовые операции над массивами и строками</h3>
+<h3 id="bazovye-operatsii-nad-massivami-i-strokami" class="study-subtitle">9.2. Базовые операции над массивами и строками</h3>
 <h4 class="study-subtitle study-subtitle--minor">Доступ к элементу массива</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> numbers = intArrayOf(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>)
 
@@ -3753,7 +3753,7 @@ println(doubled) <span class="hljs-comment">// [2, 4, 6, 8]</span>
 <span class="hljs-keyword">val</span> result = builder.toString()
 </code></pre></div>
 <p><code>StringBuilder</code> особенно полезен, когда строка формируется большим количеством операций добавления.</p>
-<h3 class="study-subtitle">9.3. Сортировка и её назначение</h3>
+<h3 id="sortirovka-i-ee-naznachenie" class="study-subtitle">9.3. Сортировка и её назначение</h3>
 <p>Сортировка — упорядочивание элементов по определённому критерию.</p>
 <p>Примеры:</p>
 <ul class="study-list">
@@ -3829,7 +3829,7 @@ println(numbers) <span class="hljs-comment">// [1, 2, 3, 5, 8]</span>
 <p>Конкретная сложность зависит от алгоритма и входных данных.</p>
 <p>Не нужно самостоятельно реализовывать сортировку в обычном прикладном коде, если стандартная библиотека уже предоставляет подходящий метод.</p>
 <p>Но важно понимать, какие ресурсы требуются для сортировки.</p>
-<h3 class="study-subtitle">9.4. Вложенные циклы и оценка количества операций</h3>
+<h3 id="vlozhennye-tsikly-i-otsenka-kolichestva-operatsiy" class="study-subtitle">9.4. Вложенные циклы и оценка количества операций</h3>
 <p>Вложенные циклы часто используются для сравнения элементов или обработки двумерных структур.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> numbers = listOf(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
 
@@ -3877,7 +3877,7 @@ println(numbers) <span class="hljs-comment">// [1, 2, 3, 5, 8]</span>
 <p>Сложность:</p>
 <p><strong>O(n)</strong></p>
 <p>Поэтому при оценке алгоритма важно анализировать количество операций, а не просто считать вложенность циклов.</p>
-<h3 class="study-subtitle">9.5. Понятие временной сложности</h3>
+<h3 id="ponyatie-vremennoy-slozhnosti" class="study-subtitle">9.5. Понятие временной сложности</h3>
 <p>Временная сложность — оценка того, как изменяется количество вычислений алгоритма при увеличении входных данных.</p>
 <p>Обычно размер входа обозначается буквой <code>n</code>.</p>
 <p>Мы не пытаемся измерить время выполнения в миллисекундах.</p>
@@ -3895,7 +3895,7 @@ println(numbers) <span class="hljs-comment">// [1, 2, 3, 5, 8]</span>
 <p>На маленьком наборе данных разница может быть незаметна.</p>
 <p>На миллионах элементов — уже критична.</p>
 <p>Временная сложность помогает оценить масштабируемость алгоритма до запуска на реальных данных.</p>
-<h3 class="study-subtitle">9.6. Big O: O(1), O(n), O(n²)</h3>
+<h3 id="big-o-o-1-o-n-o-n" class="study-subtitle">9.6. Big O: O(1), O(n), O(n²)</h3>
 <p>Big O — обозначение порядка роста вычислительной сложности алгоритма.</p>
 <p>Для Junior важно уверенно различать несколько базовых вариантов.</p>
 <h4 class="study-subtitle study-subtitle--minor">O(1) — постоянная сложность</h4>
@@ -4005,7 +4005,7 @@ println(numbers) <span class="hljs-comment">// [1, 2, 3, 5, 8]</span>
 }
 </code></pre></div>
 <p>Здесь сложность — O(n²).</p>
-<h3 class="study-subtitle">9.7. Простые задачи на преобразование коллекций</h3>
+<h3 id="prostye-zadachi-na-preobrazovanie-kollektsiy" class="study-subtitle">9.7. Простые задачи на преобразование коллекций</h3>
 <p>В прикладной разработке очень часто встречается задача преобразовать одну коллекцию в другую.</p>
 <p>Для этого стандартная библиотека Kotlin предоставляет <code>map</code>, <code>filter</code> и другие функции.</p>
 <h4 class="study-subtitle study-subtitle--minor">Фильтрация</h4>
@@ -4143,7 +4143,7 @@ println(numbers) <span class="hljs-comment">// [1, 2, 3, 5, 8]</span>
 <li><strong>Линейный поиск</strong> — Проверка каждого элемента по очереди</li>
 <li><strong>Сортировка</strong> — Упорядочивание элементов</li>
 <li><strong>Базовые операции</strong> — <code>filter</code>, <code>map</code>, <code>find</code>, <code>any</code>, <code>all</code></li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> оптимизировать код до того, как измерили реальную проблему. Сначала сделайте решение понятным, затем улучшайте узкие места.</p></div></section><section id="sec-10" class="study-section" aria-labelledby="sec-10-title"><h2 id="sec-10-title" class="study-section-title">Итоговая самопроверка категории</h2><p>После изучения всех девяти тем Junior-разработчик должен уметь самостоятельно написать небольшую программу, которая получает данные, обрабатывает их, принимает решения, использует функции и классы, хранит информацию в коллекциях и корректно обрабатывает ошибки.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> оптимизировать код до того, как измерили реальную проблему. Сначала сделайте решение понятным, затем улучшайте узкие места.</p></div></section><section id="itogovaya-samoproverka-kategorii" class="study-section" aria-labelledby="itogovaya-samoproverka-kategorii-title"><h2 id="itogovaya-samoproverka-kategorii-title" class="study-section-title">Итоговая самопроверка категории</h2><p>После изучения всех девяти тем Junior-разработчик должен уметь самостоятельно написать небольшую программу, которая получает данные, обрабатывает их, принимает решения, использует функции и классы, хранит информацию в коллекциях и корректно обрабатывает ошибки.</p>
 <h3 class="study-subtitle">Общие знания</h3>
 <ul class="study-checklist">
 <li class="study-check-item"><input type="checkbox" disabled=""/> Умею объявлять переменные и константы.</li>
@@ -4224,7 +4224,7 @@ println(numbers) <span class="hljs-comment">// [1, 2, 3, 5, 8]</span>
 <li><code>filter</code>, <code>map</code>, <code>find</code> и <code>sortedBy</code> для обработки;</li>
 <li><code>require</code> или собственные исключения для проверки входных данных.</li>
 </ul>
-<p><strong>Критерий завершения:</strong> программа должна корректно работать с пустым списком, несколькими элементами, отсутствующими идентификаторами и некорректными входными данными.</p></section><section id="sec-11" class="study-section" aria-labelledby="sec-11-title"><h2 id="sec-11-title" class="study-section-title">Источники и документация</h2><p>Все ссылки ниже ведут на официальные материалы Kotlin. Основной конспект содержит необходимые для прохождения категории сведения; документация предназначена для уточнения синтаксиса, изучения дополнительных возможностей языка и поиска API.</p>
+<p><strong>Критерий завершения:</strong> программа должна корректно работать с пустым списком, несколькими элементами, отсутствующими идентификаторами и некорректными входными данными.</p></section><section id="istochniki-i-dokumentatsiya" class="study-section" aria-labelledby="istochniki-i-dokumentatsiya-title"><h2 id="istochniki-i-dokumentatsiya-title" class="study-section-title">Источники и документация</h2><p>Все ссылки ниже ведут на официальные материалы Kotlin. Основной конспект содержит необходимые для прохождения категории сведения; документация предназначена для уточнения синтаксиса, изучения дополнительных возможностей языка и поиска API.</p>
 <h3 class="study-subtitle">Переменные</h3>
 <ul class="study-pills">
 <li><a class="study-pill" href="https://kotlinlang.org/docs/properties.html" target="_blank" rel="noopener noreferrer">Properties</a></li>

@@ -1,7 +1,7 @@
-<div class="study-layout"><nav class="study-toc" aria-label="Содержание материала"><div class="study-toc-rail"><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#sec-1">1. Синтаксис Kotlin</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-2">2. Null Safety</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-3">3. Data Class</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-4">4. Properties и Accessors</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-5">5. Object и Companion Object</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-6">6. Extension Functions</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-7">7. Lambda</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-8">8. Higher Order Functions</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-9">9. Scope Functions</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-10">10. Enum</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-11">11. Sealed Class и Sealed Interface</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-12">12. Packages и Visibility Modifiers</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-13">13. Generics Basics</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-14">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-15">Итоговый проект</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-16">Итоговый список официальной документации Kotlin</a></li></ol></div><details class="study-toc-compact"><summary class="study-toc-summary">Содержание</summary><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#sec-1">1. Синтаксис Kotlin</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-2">2. Null Safety</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-3">3. Data Class</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-4">4. Properties и Accessors</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-5">5. Object и Companion Object</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-6">6. Extension Functions</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-7">7. Lambda</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-8">8. Higher Order Functions</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-9">9. Scope Functions</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-10">10. Enum</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-11">11. Sealed Class и Sealed Interface</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-12">12. Packages и Visibility Modifiers</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-13">13. Generics Basics</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-14">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-15">Итоговый проект</a></li><li class="study-toc-group"><a class="study-toc-link" href="#sec-16">Итоговый список официальной документации Kotlin</a></li></ol></details></nav><div class="study-content"><header class="study-hero"><p class="study-eyebrow">Kotlin Basics · Junior</p><h1 class="study-title">Kotlin Basics</h1><p class="study-lead">Учебный конспект по категории «Kotlin Basics» для уровня Junior.</p></header><section id="sec-1" class="study-section" aria-labelledby="sec-1-title"><h2 id="sec-1-title" class="study-section-title">1. Синтаксис Kotlin</h2><p>Kotlin — статически типизированный язык программирования, предназначенный для создания приложений под различные платформы, включая JVM, Android, JavaScript, Native и WebAssembly.</p>
+<div class="study-layout"><nav class="study-toc" aria-label="Содержание материала"><div class="study-toc-rail"><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#sintaksis-kotlin">1. Синтаксис Kotlin</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#struktura-kotlin-fayla">1.1. Структура Kotlin-файла</a></li><li><a class="study-toc-link" href="#stroki-i-shablonnye-stroki">1.2. Строки и шаблонные строки</a></li><li><a class="study-toc-link" href="#kommentarii">1.3. Комментарии</a></li><li><a class="study-toc-link" href="#tochka-s-zapyatoy-i-ee-neobyazatelnost">1.4. Точка с запятой и её необязательность</a></li><li><a class="study-toc-link" href="#vyrazheniya-i-instruktsii">1.5. Выражения и инструкции</a></li><li><a class="study-toc-link" href="#proverka-tipa-is-is">1.6. Проверка типа (is, !is)</a></li><li><a class="study-toc-link" href="#smart-casts">1.7. Smart Casts</a></li><li><a class="study-toc-link" href="#proverka-prinadlezhnosti-diapazonu-in-in">1.8. Проверка принадлежности диапазону (in, !in)</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#null-safety">2. Null Safety</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#nullable-i-non-null-tipy">2.1. Nullable и non-null типы</a></li><li><a class="study-toc-link" href="#safe-call-operator">2.2. Safe call operator (?.)</a></li><li><a class="study-toc-link" href="#elvis-operator">2.3. Elvis operator (?:)</a></li><li><a class="study-toc-link" href="#not-null-assertion">2.4. Not-null assertion (!!)</a></li><li><a class="study-toc-link" href="#safe-cast-as">2.5. Safe cast (as?)</a></li><li><a class="study-toc-link" href="#let-dlya-obrabotki-nullable-znacheniy">2.6. let для обработки nullable-значений</a></li><li><a class="study-toc-link" href="#smart-cast-i-proverka-na-null">2.7. Smart Cast и проверка на null</a></li><li><a class="study-toc-link" href="#platformennye-tipy-pri-vzaimodeystvii-s-java">2.8. Платформенные типы при взаимодействии с Java</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#data-class">3. Data Class</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#sintaksis-data-class">3.1. Синтаксис data class</a></li><li><a class="study-toc-link" href="#copy-i-kopirovanie-obektov">3.2. copy() и копирование объектов</a></li><li><a class="study-toc-link" href="#destrukturizatsiya-componentn">3.3. Деструктуризация (componentN)</a></li><li><a class="study-toc-link" href="#equals-i-sravnenie-po-znacheniyu">3.4. equals() и сравнение по значению</a></li><li><a class="study-toc-link" href="#hashcode-i-tostring">3.5. hashCode() и toString()</a></li><li><a class="study-toc-link" href="#pravila-generatsii-metodov">3.6. Правила генерации методов</a></li><li><a class="study-toc-link" href="#ogranicheniya-data-class">3.7. Ограничения data class</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#properties-i-accessors">4. Properties и Accessors</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#obyavlenie-svoystv-val-i-var">4.1. Объявление свойств (val и var)</a></li><li><a class="study-toc-link" href="#getter-i-setter">4.2. Getter и Setter</a></li><li><a class="study-toc-link" href="#custom-accessors">4.3. Custom accessors</a></li><li><a class="study-toc-link" href="#backing-field-field">4.4. Backing field (field)</a></li><li><a class="study-toc-link" href="#visibility-setter">4.5. Visibility setter</a></li><li><a class="study-toc-link" href="#raznitsa-mezhdu-svoystvom-i-polem">4.6. Разница между свойством и полем</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#object-i-companion-object">5. Object и Companion Object</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#object-declaration">5.1. Object declaration</a></li><li><a class="study-toc-link" href="#singleton-v-kotlin">5.2. Singleton в Kotlin</a></li><li><a class="study-toc-link" href="#object-expression">5.3. Object expression</a></li><li><a class="study-toc-link" href="#companion-object">5.4. Companion object</a></li><li><a class="study-toc-link" href="#obraschenie-k-chlenam-companion-object">5.5. Обращение к членам companion object</a></li><li><a class="study-toc-link" href="#imenovannyy-companion-object">5.6. Именованный companion object</a></li><li><a class="study-toc-link" href="#otlichie-object-ot-obychnogo-klassa">5.7. Отличие object от обычного класса</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#extension-functions">6. Extension Functions</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#sintaksis-extension-functions">6.1. Синтаксис extension functions</a></li><li><a class="study-toc-link" href="#receiver-i-receiver-type">6.2. Receiver и receiver type</a></li><li><a class="study-toc-link" href="#extension-properties">6.3. Extension properties</a></li><li><a class="study-toc-link" href="#nullable-receiver">6.4. Nullable receiver</a></li><li><a class="study-toc-link" href="#vyzov-extension-funktsiy">6.5. Вызов extension-функций</a></li><li><a class="study-toc-link" href="#ogranicheniya-extension-funktsiy">6.6. Ограничения extension-функций</a></li><li><a class="study-toc-link" href="#staticheskoe-razreshenie-rasshireniy">6.7. Статическое разрешение расширений</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#lambda">7. Lambda</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#sintaksis-lambda-expression">7.1. Синтаксис lambda expression</a></li><li><a class="study-toc-link" href="#tipy-funktsiy-function0-function1-function2-i-dr">7.2. Типы функций (Function0, Function1, Function2 и др.)</a></li><li><a class="study-toc-link" href="#neyavnyy-parametr-it">7.3. Неявный параметр it</a></li><li><a class="study-toc-link" href="#trailing-lambda">7.4. Trailing lambda</a></li><li><a class="study-toc-link" href="#zamykaniya-closures">7.5. Замыкания (closures)</a></li><li><a class="study-toc-link" href="#lyambdy-s-neskolkimi-parametrami">7.6. Лямбды с несколькими параметрами</a></li><li><a class="study-toc-link" href="#anonimnye-funktsii">7.7. Анонимные функции</a></li><li><a class="study-toc-link" href="#lokalnyy-i-nelokalnyy-return">7.8. Локальный и нелокальный return</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#higher-order-functions">8. Higher Order Functions</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#funktsiya-kak-parametr">8.1. Функция как параметр</a></li><li><a class="study-toc-link" href="#funktsiya-kak-vozvraschaemoe-znachenie">8.2. Функция как возвращаемое значение</a></li><li><a class="study-toc-link" href="#function-types">8.3. Function types</a></li><li><a class="study-toc-link" href="#peredacha-imenovannyh-funktsiy-po-ssylke">8.4. Передача именованных функций по ссылке (::)</a></li><li><a class="study-toc-link" href="#funktsii-obrabotchiki-kollektsiy">8.5. Функции-обработчики коллекций</a></li><li><a class="study-toc-link" href="#lambda-with-receiver-bazovoe-ponimanie">8.6. Lambda with receiver (базовое понимание)</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#scope-functions">9. Scope Functions</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#let">9.1. let</a></li><li><a class="study-toc-link" href="#run">9.2. run</a></li><li><a class="study-toc-link" href="#with">9.3. with</a></li><li><a class="study-toc-link" href="#apply">9.4. apply</a></li><li><a class="study-toc-link" href="#also">9.5. also</a></li><li><a class="study-toc-link" href="#kontekstnyy-obekt-this-vs-it">9.6. Контекстный объект: this vs it</a></li><li><a class="study-toc-link" href="#vozvraschaemoe-znachenie-kazhdoy-funktsii">9.7. Возвращаемое значение каждой функции</a></li><li><a class="study-toc-link" href="#vybor-funktsii-pod-konkretnuyu-zadachu">9.8. Выбор функции под конкретную задачу</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#enum">10. Enum</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#sintaksis-enum-class">10.1. Синтаксис enum class</a></li><li><a class="study-toc-link" href="#svoystva-i-konstruktory-enum">10.2. Свойства и конструкторы enum</a></li><li><a class="study-toc-link" href="#metody-enum">10.3. Методы enum</a></li><li><a class="study-toc-link" href="#realizatsiya-interfeysov">10.4. Реализация интерфейсов</a></li><li><a class="study-toc-link" href="#name-i-ordinal">10.5. name и ordinal</a></li><li><a class="study-toc-link" href="#perebor-znacheniy-entries">10.6. Перебор значений (entries)</a></li><li><a class="study-toc-link" href="#sravnenie-enum-s-drugimi-sposobami-modelirovaniya-sostoyaniy">10.7. Сравнение enum с другими способами моделирования состояний</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#sealed-class-i-sealed-interface">11. Sealed Class и Sealed Interface</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#sintaksis-sealed-class">11.1. Синтаксис sealed class</a></li><li><a class="study-toc-link" href="#sintaksis-sealed-interface">11.2. Синтаксис sealed interface</a></li><li><a class="study-toc-link" href="#ogranicheniya-nasledovaniya">11.3. Ограничения наследования</a></li><li><a class="study-toc-link" href="#exhaustive-when">11.4. Exhaustive when</a></li><li><a class="study-toc-link" href="#sravnenie-s-enum">11.5. Сравнение с enum</a></li><li><a class="study-toc-link" href="#modelirovanie-sostoyaniy-i-rezultatov-operatsiy">11.6. Моделирование состояний и результатов операций</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#packages-i-visibility-modifiers">12. Packages и Visibility Modifiers</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#obyavlenie-paketa">12.1. Объявление пакета</a></li><li><a class="study-toc-link" href="#importy-import">12.2. Импорты (import)</a></li><li><a class="study-toc-link" href="#aliasy-importa">12.3. Алиасы импорта</a></li><li><a class="study-toc-link" href="#public">12.4. public</a></li><li><a class="study-toc-link" href="#private">12.5. private</a></li><li><a class="study-toc-link" href="#protected">12.6. protected</a></li><li><a class="study-toc-link" href="#internal">12.7. internal</a></li><li><a class="study-toc-link" href="#vidimost-na-urovne-fayla-i-klassa">12.8. Видимость на уровне файла и класса</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#generics-basics">13. Generics Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#parametry-tipov-t-e-k-v">13.1. Параметры типов (T, E, K, V)</a></li><li><a class="study-toc-link" href="#generic-klassy">13.2. Generic-классы</a></li><li><a class="study-toc-link" href="#generic-funktsii">13.3. Generic-функции</a></li><li><a class="study-toc-link" href="#ogranicheniya-tipa-t-sometype">13.4. Ограничения типа (T : SomeType)</a></li><li><a class="study-toc-link" href="#ispolzovanie-generic-kollektsiy">13.5. Использование generic-коллекций</a></li><li><a class="study-toc-link" href="#preimuschestva-tipobezopasnosti">13.6. Преимущества типобезопасности</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka-kategorii">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovyy-proekt">Итоговый проект</a></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovyy-spisok-ofitsialnoy-dokumentatsii-kotlin">Итоговый список официальной документации Kotlin</a></li></ol></div><details class="study-toc-compact"><summary class="study-toc-summary">Содержание</summary><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#sintaksis-kotlin">1. Синтаксис Kotlin</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#struktura-kotlin-fayla">1.1. Структура Kotlin-файла</a></li><li><a class="study-toc-link" href="#stroki-i-shablonnye-stroki">1.2. Строки и шаблонные строки</a></li><li><a class="study-toc-link" href="#kommentarii">1.3. Комментарии</a></li><li><a class="study-toc-link" href="#tochka-s-zapyatoy-i-ee-neobyazatelnost">1.4. Точка с запятой и её необязательность</a></li><li><a class="study-toc-link" href="#vyrazheniya-i-instruktsii">1.5. Выражения и инструкции</a></li><li><a class="study-toc-link" href="#proverka-tipa-is-is">1.6. Проверка типа (is, !is)</a></li><li><a class="study-toc-link" href="#smart-casts">1.7. Smart Casts</a></li><li><a class="study-toc-link" href="#proverka-prinadlezhnosti-diapazonu-in-in">1.8. Проверка принадлежности диапазону (in, !in)</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#null-safety">2. Null Safety</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#nullable-i-non-null-tipy">2.1. Nullable и non-null типы</a></li><li><a class="study-toc-link" href="#safe-call-operator">2.2. Safe call operator (?.)</a></li><li><a class="study-toc-link" href="#elvis-operator">2.3. Elvis operator (?:)</a></li><li><a class="study-toc-link" href="#not-null-assertion">2.4. Not-null assertion (!!)</a></li><li><a class="study-toc-link" href="#safe-cast-as">2.5. Safe cast (as?)</a></li><li><a class="study-toc-link" href="#let-dlya-obrabotki-nullable-znacheniy">2.6. let для обработки nullable-значений</a></li><li><a class="study-toc-link" href="#smart-cast-i-proverka-na-null">2.7. Smart Cast и проверка на null</a></li><li><a class="study-toc-link" href="#platformennye-tipy-pri-vzaimodeystvii-s-java">2.8. Платформенные типы при взаимодействии с Java</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#data-class">3. Data Class</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#sintaksis-data-class">3.1. Синтаксис data class</a></li><li><a class="study-toc-link" href="#copy-i-kopirovanie-obektov">3.2. copy() и копирование объектов</a></li><li><a class="study-toc-link" href="#destrukturizatsiya-componentn">3.3. Деструктуризация (componentN)</a></li><li><a class="study-toc-link" href="#equals-i-sravnenie-po-znacheniyu">3.4. equals() и сравнение по значению</a></li><li><a class="study-toc-link" href="#hashcode-i-tostring">3.5. hashCode() и toString()</a></li><li><a class="study-toc-link" href="#pravila-generatsii-metodov">3.6. Правила генерации методов</a></li><li><a class="study-toc-link" href="#ogranicheniya-data-class">3.7. Ограничения data class</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#properties-i-accessors">4. Properties и Accessors</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#obyavlenie-svoystv-val-i-var">4.1. Объявление свойств (val и var)</a></li><li><a class="study-toc-link" href="#getter-i-setter">4.2. Getter и Setter</a></li><li><a class="study-toc-link" href="#custom-accessors">4.3. Custom accessors</a></li><li><a class="study-toc-link" href="#backing-field-field">4.4. Backing field (field)</a></li><li><a class="study-toc-link" href="#visibility-setter">4.5. Visibility setter</a></li><li><a class="study-toc-link" href="#raznitsa-mezhdu-svoystvom-i-polem">4.6. Разница между свойством и полем</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#object-i-companion-object">5. Object и Companion Object</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#object-declaration">5.1. Object declaration</a></li><li><a class="study-toc-link" href="#singleton-v-kotlin">5.2. Singleton в Kotlin</a></li><li><a class="study-toc-link" href="#object-expression">5.3. Object expression</a></li><li><a class="study-toc-link" href="#companion-object">5.4. Companion object</a></li><li><a class="study-toc-link" href="#obraschenie-k-chlenam-companion-object">5.5. Обращение к членам companion object</a></li><li><a class="study-toc-link" href="#imenovannyy-companion-object">5.6. Именованный companion object</a></li><li><a class="study-toc-link" href="#otlichie-object-ot-obychnogo-klassa">5.7. Отличие object от обычного класса</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#extension-functions">6. Extension Functions</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#sintaksis-extension-functions">6.1. Синтаксис extension functions</a></li><li><a class="study-toc-link" href="#receiver-i-receiver-type">6.2. Receiver и receiver type</a></li><li><a class="study-toc-link" href="#extension-properties">6.3. Extension properties</a></li><li><a class="study-toc-link" href="#nullable-receiver">6.4. Nullable receiver</a></li><li><a class="study-toc-link" href="#vyzov-extension-funktsiy">6.5. Вызов extension-функций</a></li><li><a class="study-toc-link" href="#ogranicheniya-extension-funktsiy">6.6. Ограничения extension-функций</a></li><li><a class="study-toc-link" href="#staticheskoe-razreshenie-rasshireniy">6.7. Статическое разрешение расширений</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#lambda">7. Lambda</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#sintaksis-lambda-expression">7.1. Синтаксис lambda expression</a></li><li><a class="study-toc-link" href="#tipy-funktsiy-function0-function1-function2-i-dr">7.2. Типы функций (Function0, Function1, Function2 и др.)</a></li><li><a class="study-toc-link" href="#neyavnyy-parametr-it">7.3. Неявный параметр it</a></li><li><a class="study-toc-link" href="#trailing-lambda">7.4. Trailing lambda</a></li><li><a class="study-toc-link" href="#zamykaniya-closures">7.5. Замыкания (closures)</a></li><li><a class="study-toc-link" href="#lyambdy-s-neskolkimi-parametrami">7.6. Лямбды с несколькими параметрами</a></li><li><a class="study-toc-link" href="#anonimnye-funktsii">7.7. Анонимные функции</a></li><li><a class="study-toc-link" href="#lokalnyy-i-nelokalnyy-return">7.8. Локальный и нелокальный return</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#higher-order-functions">8. Higher Order Functions</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#funktsiya-kak-parametr">8.1. Функция как параметр</a></li><li><a class="study-toc-link" href="#funktsiya-kak-vozvraschaemoe-znachenie">8.2. Функция как возвращаемое значение</a></li><li><a class="study-toc-link" href="#function-types">8.3. Function types</a></li><li><a class="study-toc-link" href="#peredacha-imenovannyh-funktsiy-po-ssylke">8.4. Передача именованных функций по ссылке (::)</a></li><li><a class="study-toc-link" href="#funktsii-obrabotchiki-kollektsiy">8.5. Функции-обработчики коллекций</a></li><li><a class="study-toc-link" href="#lambda-with-receiver-bazovoe-ponimanie">8.6. Lambda with receiver (базовое понимание)</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#scope-functions">9. Scope Functions</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#let">9.1. let</a></li><li><a class="study-toc-link" href="#run">9.2. run</a></li><li><a class="study-toc-link" href="#with">9.3. with</a></li><li><a class="study-toc-link" href="#apply">9.4. apply</a></li><li><a class="study-toc-link" href="#also">9.5. also</a></li><li><a class="study-toc-link" href="#kontekstnyy-obekt-this-vs-it">9.6. Контекстный объект: this vs it</a></li><li><a class="study-toc-link" href="#vozvraschaemoe-znachenie-kazhdoy-funktsii">9.7. Возвращаемое значение каждой функции</a></li><li><a class="study-toc-link" href="#vybor-funktsii-pod-konkretnuyu-zadachu">9.8. Выбор функции под конкретную задачу</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#enum">10. Enum</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#sintaksis-enum-class">10.1. Синтаксис enum class</a></li><li><a class="study-toc-link" href="#svoystva-i-konstruktory-enum">10.2. Свойства и конструкторы enum</a></li><li><a class="study-toc-link" href="#metody-enum">10.3. Методы enum</a></li><li><a class="study-toc-link" href="#realizatsiya-interfeysov">10.4. Реализация интерфейсов</a></li><li><a class="study-toc-link" href="#name-i-ordinal">10.5. name и ordinal</a></li><li><a class="study-toc-link" href="#perebor-znacheniy-entries">10.6. Перебор значений (entries)</a></li><li><a class="study-toc-link" href="#sravnenie-enum-s-drugimi-sposobami-modelirovaniya-sostoyaniy">10.7. Сравнение enum с другими способами моделирования состояний</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#sealed-class-i-sealed-interface">11. Sealed Class и Sealed Interface</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#sintaksis-sealed-class">11.1. Синтаксис sealed class</a></li><li><a class="study-toc-link" href="#sintaksis-sealed-interface">11.2. Синтаксис sealed interface</a></li><li><a class="study-toc-link" href="#ogranicheniya-nasledovaniya">11.3. Ограничения наследования</a></li><li><a class="study-toc-link" href="#exhaustive-when">11.4. Exhaustive when</a></li><li><a class="study-toc-link" href="#sravnenie-s-enum">11.5. Сравнение с enum</a></li><li><a class="study-toc-link" href="#modelirovanie-sostoyaniy-i-rezultatov-operatsiy">11.6. Моделирование состояний и результатов операций</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#packages-i-visibility-modifiers">12. Packages и Visibility Modifiers</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#obyavlenie-paketa">12.1. Объявление пакета</a></li><li><a class="study-toc-link" href="#importy-import">12.2. Импорты (import)</a></li><li><a class="study-toc-link" href="#aliasy-importa">12.3. Алиасы импорта</a></li><li><a class="study-toc-link" href="#public">12.4. public</a></li><li><a class="study-toc-link" href="#private">12.5. private</a></li><li><a class="study-toc-link" href="#protected">12.6. protected</a></li><li><a class="study-toc-link" href="#internal">12.7. internal</a></li><li><a class="study-toc-link" href="#vidimost-na-urovne-fayla-i-klassa">12.8. Видимость на уровне файла и класса</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#generics-basics">13. Generics Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#parametry-tipov-t-e-k-v">13.1. Параметры типов (T, E, K, V)</a></li><li><a class="study-toc-link" href="#generic-klassy">13.2. Generic-классы</a></li><li><a class="study-toc-link" href="#generic-funktsii">13.3. Generic-функции</a></li><li><a class="study-toc-link" href="#ogranicheniya-tipa-t-sometype">13.4. Ограничения типа (T : SomeType)</a></li><li><a class="study-toc-link" href="#ispolzovanie-generic-kollektsiy">13.5. Использование generic-коллекций</a></li><li><a class="study-toc-link" href="#preimuschestva-tipobezopasnosti">13.6. Преимущества типобезопасности</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka-kategorii">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovyy-proekt">Итоговый проект</a></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovyy-spisok-ofitsialnoy-dokumentatsii-kotlin">Итоговый список официальной документации Kotlin</a></li></ol></details></nav><div class="study-content"><header class="study-hero"><p class="study-eyebrow">Kotlin Basics · Junior</p><h1 class="study-title">Kotlin Basics</h1><p class="study-lead">Учебный конспект по категории «Kotlin Basics» для уровня Junior.</p></header><section id="sintaksis-kotlin" class="study-section" aria-labelledby="sintaksis-kotlin-title"><h2 id="sintaksis-kotlin-title" class="study-section-title">1. Синтаксис Kotlin</h2><p>Kotlin — статически типизированный язык программирования, предназначенный для создания приложений под различные платформы, включая JVM, Android, JavaScript, Native и WebAssembly.</p>
 <p>Его синтаксис сочетает объектно-ориентированный и функциональный подходы. Язык поддерживает классы, интерфейсы, функции, лямбды, свойства, расширения и другие конструкции.</p>
 <p>Понимание базового синтаксиса необходимо для чтения чужого кода и написания собственных программ.</p>
-<h3 class="study-subtitle">1.1. Структура Kotlin-файла</h3>
+<h3 id="struktura-kotlin-fayla" class="study-subtitle">1.1. Структура Kotlin-файла</h3>
 <p>Исходный код Kotlin обычно хранится в файлах с расширением <code>.kt</code>.</p>
 <p>В отличие от Java, Kotlin не требует размещать каждый класс в отдельном файле. Один файл может содержать несколько классов, интерфейсов, функций и переменных.</p>
 <p>Простейший Kotlin-файл:</p>
@@ -73,7 +73,7 @@ com.example.app.ui
 }
 </code></pre></div>
 <p>В Android-приложениях точкой входа приложения является не обычная функция <code>main</code>, а компоненты платформы, объявленные в AndroidManifest, например <code>Application</code> или <code>Activity</code>.</p>
-<h3 class="study-subtitle">1.2. Строки и шаблонные строки</h3>
+<h3 id="stroki-i-shablonnye-stroki" class="study-subtitle">1.2. Строки и шаблонные строки</h3>
 <p>Строковый тип Kotlin — <code>String</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> language = <span class="hljs-string">&quot;Kotlin&quot;</span>
 <span class="hljs-keyword">val</span> message = <span class="hljs-string">&quot;Hello, world!&quot;</span>
@@ -146,7 +146,7 @@ println(text)
 </code></pre></div>
 <p>Основные управляющие последовательности:</p>
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Последовательность</th><th>Значение</th></tr></thead><tbody><tr><td><code>\n</code></td><td>Перевод строки</td></tr><tr><td><code>\t</code></td><td>Табуляция</td></tr><tr><td><code>\r</code></td><td>Возврат каретки</td></tr><tr><td><code>\&quot;</code></td><td>Двойная кавычка</td></tr><tr><td><code>\&#x27;</code></td><td>Одинарная кавычка</td></tr><tr><td><code>\\</code></td><td>Обратная косая черта</td></tr><tr><td><code>\$</code></td><td>Символ <code>$</code> без шаблонизации</td></tr></tbody></table></div>
-<h3 class="study-subtitle">1.3. Комментарии</h3>
+<h3 id="kommentarii" class="study-subtitle">1.3. Комментарии</h3>
 <p>Комментарии — текст в исходном коде, который не участвует в выполнении программы.</p>
 <p>Они используются для объяснения сложных решений, указания важных ограничений и документирования API.</p>
 <h4 class="study-subtitle study-subtitle--minor">Однострочные комментарии</h4>
@@ -196,7 +196,7 @@ println(userName) <span class="hljs-comment">// Выводим имя.</span>
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Тег</th><th>Назначение</th></tr></thead><tbody><tr><td><code>@param</code></td><td>Описание параметра</td></tr><tr><td><code>@return</code></td><td>Описание возвращаемого значения</td></tr><tr><td><code>@throws</code></td><td>Описание исключения</td></tr><tr><td><code>@property</code></td><td>Описание свойства</td></tr><tr><td><code>@see</code></td><td>Ссылка на связанную декларацию</td></tr><tr><td><code>@sample</code></td><td>Ссылка на пример использования</td></tr></tbody></table></div>
 <p>KDoc особенно полезен для публичных классов, интерфейсов и функций, которыми будут пользоваться другие разработчики.</p>
 <p>Не стоит документировать очевидные вещи комментариями вроде <code>// Увеличиваем счётчик</code>. Комментарии должны объяснять причину решения или важные особенности поведения.</p>
-<h3 class="study-subtitle">1.4. Точка с запятой и её необязательность</h3>
+<h3 id="tochka-s-zapyatoy-i-ee-neobyazatelnost" class="study-subtitle">1.4. Точка с запятой и её необязательность</h3>
 <p>В Kotlin точка с запятой обычно не нужна.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name = <span class="hljs-string">&quot;Alex&quot;</span>
 <span class="hljs-keyword">val</span> age = <span class="hljs-number">25</span>
@@ -214,7 +214,7 @@ println(age)
 <span class="hljs-keyword">val</span> age = <span class="hljs-number">25</span>
 </code></pre></div>
 <p>Точку с запятой обычно используют только в редких случаях, когда несколько выражений действительно необходимо записать на одной строке.</p>
-<h3 class="study-subtitle">1.5. Выражения и инструкции</h3>
+<h3 id="vyrazheniya-i-instruktsii" class="study-subtitle">1.5. Выражения и инструкции</h3>
 <p>В Kotlin важно различать выражения (<em>expressions</em>) и инструкции (<em>statements</em>).</p>
 <p><strong>Выражение</strong> — конструкция, которая вычисляется и имеет значение.</p>
 <p>Например:</p>
@@ -295,7 +295,7 @@ count = <span class="hljs-number">10</span>
 <li>использовать как часть другого выражения.</li>
 </ul>
 <p>Понимание выражений позволяет использовать идиоматичный синтаксис Kotlin вместо механического переноса конструкций из Java.</p>
-<h3 class="study-subtitle">1.6. Проверка типа (<code>is</code>, <code>!is</code>)</h3>
+<h3 id="proverka-tipa-is-is" class="study-subtitle">1.6. Проверка типа (<code>is</code>, <code>!is</code>)</h3>
 <p>Оператор <code>is</code> проверяет, принадлежит ли объект определённому типу.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> value: Any = <span class="hljs-string">&quot;Kotlin&quot;</span>
 
@@ -333,7 +333,7 @@ count = <span class="hljs-number">10</span>
 }
 </code></pre></div>
 <p><code>is</code> учитывает наследование: объект наследника также является экземпляром базового типа.</p>
-<h3 class="study-subtitle">1.7. Smart Casts</h3>
+<h3 id="smart-casts" class="study-subtitle">1.7. Smart Casts</h3>
 <p>Smart Cast — механизм Kotlin, при котором компилятор автоматически уточняет тип значения после проверки.</p>
 <p>Без Smart Cast пришлось бы выполнять явное приведение:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">printLength</span><span class="hljs-params">(value: <span class="hljs-type">Any</span>)</span></span> {
@@ -419,7 +419,7 @@ count = <span class="hljs-number">10</span>
 }
 </code></pre></div>
 <p>Теперь <code>currentName</code> — локальный <code>val</code>, который не переназначается.</p>
-<h3 class="study-subtitle">1.8. Проверка принадлежности диапазону (<code>in</code>, <code>!in</code>)</h3>
+<h3 id="proverka-prinadlezhnosti-diapazonu-in-in" class="study-subtitle">1.8. Проверка принадлежности диапазону (<code>in</code>, <code>!in</code>)</h3>
 <p>Оператор <code>in</code> проверяет, принадлежит ли значение диапазону или коллекции.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> age = <span class="hljs-number">25</span>
 
@@ -516,11 +516,11 @@ count = <span class="hljs-number">10</span>
 <li><a href="https://kotlinlang.org/docs/ranges.html" target="_blank" rel="noopener noreferrer">Ranges and progressions</a></li>
 <li><a href="https://kotlinlang.org/docs/kotlin-doc.html" target="_blank" rel="noopener noreferrer">Documenting Kotlin code (KDoc)</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-2" class="study-section" aria-labelledby="sec-2-title"><h2 id="sec-2-title" class="study-section-title">2. Null Safety</h2><p>Null Safety — механизм Kotlin, который позволяет явно выражать возможность отсутствия значения и предотвращать большое количество ошибок, связанных с <code>null</code>.</p>
+<hr class="study-divider"/></section><section id="null-safety" class="study-section" aria-labelledby="null-safety-title"><h2 id="null-safety-title" class="study-section-title">2. Null Safety</h2><p>Null Safety — механизм Kotlin, который позволяет явно выражать возможность отсутствия значения и предотвращать большое количество ошибок, связанных с <code>null</code>.</p>
 <p>В Java и многих других языках переменная ссылочного типа может содержать <code>null</code>, даже если разработчик этого не ожидает. При обращении к такому объекту возникает <code>NullPointerException</code>.</p>
 <p>Kotlin включает информацию о nullable-значениях непосредственно в систему типов.</p>
 <p>Это позволяет обнаруживать многие потенциальные ошибки на этапе компиляции.</p>
-<h3 class="study-subtitle">2.1. Nullable и non-null типы</h3>
+<h3 id="nullable-i-non-null-tipy" class="study-subtitle">2.1. Nullable и non-null типы</h3>
 <p>В Kotlin типы по умолчанию non-nullable.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name: String = <span class="hljs-string">&quot;Alex&quot;</span>
 </code></pre></div>
@@ -574,7 +574,7 @@ count = <span class="hljs-number">10</span>
 </code></pre></div>
 <p>На JVM nullable-примитивы могут представляться boxed-объектами, потому что обычное примитивное значение не может содержать <code>null</code>.</p>
 <p>На уровне исходного кода Kotlin при этом сохраняет единый и понятный синтаксис.</p>
-<h3 class="study-subtitle">2.2. Safe call operator (<code>?.</code>)</h3>
+<h3 id="safe-call-operator" class="study-subtitle">2.2. Safe call operator (<code>?.</code>)</h3>
 <p>Safe call operator позволяет обращаться к свойству или методу nullable-объекта без риска вызвать функцию на <code>null</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name: String? = <span class="hljs-literal">null</span>
 
@@ -628,7 +628,7 @@ name?.let {
 }
 </code></pre></div>
 <p>Если <code>name</code> равен <code>null</code>, тело <code>let</code> не будет вызвано.</p>
-<h3 class="study-subtitle">2.3. Elvis operator (<code>?:</code>)</h3>
+<h3 id="elvis-operator" class="study-subtitle">2.3. Elvis operator (<code>?:</code>)</h3>
 <p>Elvis operator позволяет задать значение по умолчанию, если выражение слева равно <code>null</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name: String? = <span class="hljs-literal">null</span>
 
@@ -666,7 +666,7 @@ println(displayName) <span class="hljs-comment">// Unknown</span>
 }
 </code></pre></div>
 <p>Это полезно, когда значение обязательно для выполнения операции.</p>
-<h3 class="study-subtitle">2.4. Not-null assertion (<code>!!</code>)</h3>
+<h3 id="not-null-assertion" class="study-subtitle">2.4. Not-null assertion (<code>!!</code>)</h3>
 <p>Оператор <code>!!</code> принудительно преобразует nullable-значение в non-nullable.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name: String? = <span class="hljs-string">&quot;Alex&quot;</span>
 
@@ -705,7 +705,7 @@ println(actualName.length)
 </code></pre></div>
 <p><code>!!</code> следует использовать только в ситуациях, где отсутствие значения действительно невозможно и это обосновано архитектурой программы.</p>
 <p>В обычной прикладной логике чаще можно обойтись без него.</p>
-<h3 class="study-subtitle">2.5. Safe cast (<code>as?</code>)</h3>
+<h3 id="safe-cast-as" class="study-subtitle">2.5. Safe cast (<code>as?</code>)</h3>
 <p>Оператор <code>as</code> выполняет явное приведение типа.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> value: Any = <span class="hljs-string">&quot;Kotlin&quot;</span>
 
@@ -741,7 +741,7 @@ println(getStringLength(<span class="hljs-number">100</span>)) <span class="hljs
 <h4 class="study-subtitle study-subtitle--minor">Safe cast и обычный cast</h4>
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Оператор</th><th>Поведение при несовместимом типе</th></tr></thead><tbody><tr><td><code>as</code></td><td>Выбрасывает <code>ClassCastException</code></td></tr><tr><td><code>as?</code></td><td>Возвращает <code>null</code></td></tr></tbody></table></div>
 <p>Для ситуаций, в которых тип заранее неизвестен, обычно безопаснее использовать <code>as?</code> или проверку <code>is</code>.</p>
-<h3 class="study-subtitle">2.6. <code>let</code> для обработки nullable-значений</h3>
+<h3 id="let-dlya-obrabotki-nullable-znacheniy" class="study-subtitle">2.6. <code>let</code> для обработки nullable-значений</h3>
 <p><code>let</code> — функция стандартной библиотеки Kotlin, которая позволяет выполнить блок кода с объектом в качестве аргумента.</p>
 <p>В сочетании с <code>?.</code> она часто используется для работы с nullable-значениями.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name: String? = <span class="hljs-string">&quot;Alex&quot;</span>
@@ -786,7 +786,7 @@ println(length) <span class="hljs-comment">// 4</span>
 <li>избежать повторных обращений к nullable-переменной.</li>
 </ul>
 <p>Не следует использовать <code>let</code> для каждой операции с nullable-значениями. Иногда обычный <code>if</code> делает код понятнее.</p>
-<h3 class="study-subtitle">2.7. Smart Cast и проверка на null</h3>
+<h3 id="smart-cast-i-proverka-na-null" class="study-subtitle">2.7. Smart Cast и проверка на null</h3>
 <p>Kotlin умеет автоматически уточнять тип после проверки значения.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">printName</span><span class="hljs-params">(name: <span class="hljs-type">String</span>?)</span></span> {
     <span class="hljs-keyword">if</span> (name != <span class="hljs-literal">null</span>) {
@@ -841,7 +841,7 @@ println(length) <span class="hljs-comment">// 4</span>
     }
 }
 </code></pre></div>
-<h3 class="study-subtitle">2.8. Платформенные типы при взаимодействии с Java</h3>
+<h3 id="platformennye-tipy-pri-vzaimodeystvii-s-java" class="study-subtitle">2.8. Платформенные типы при взаимодействии с Java</h3>
 <p>Kotlin имеет строгую систему null safety, но при взаимодействии с Java не всегда может точно определить, может ли возвращаемое значение быть <code>null</code>.</p>
 <p>В Java типы ссылок по умолчанию не содержат такой информации.</p>
 <p>Рассмотрим Java-класс:</p>
@@ -955,7 +955,7 @@ println(length) <span class="hljs-comment">// 4</span>
 <li><a href="https://kotlinlang.org/docs/java-interop.html" target="_blank" rel="noopener noreferrer">Calling Java from Kotlin</a></li>
 <li><a href="https://kotlinlang.org/docs/java-to-kotlin-nullability-guide.html" target="_blank" rel="noopener noreferrer">Nullability annotations in Java and Kotlin</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-3" class="study-section" aria-labelledby="sec-3-title"><h2 id="sec-3-title" class="study-section-title">3. Data Class</h2><p><code>data class</code> — специальный вид класса Kotlin, предназначенный для представления данных.</p>
+<hr class="study-divider"/></section><section id="data-class" class="study-section" aria-labelledby="data-class-title"><h2 id="data-class-title" class="study-section-title">3. Data Class</h2><p><code>data class</code> — специальный вид класса Kotlin, предназначенный для представления данных.</p>
 <p>Он избавляет разработчика от необходимости вручную реализовывать стандартные методы сравнения, копирования и преобразования объекта в строку.</p>
 <p>Data-классы особенно часто встречаются в Android-разработке:</p>
 <ul class="study-list">
@@ -966,7 +966,7 @@ println(length) <span class="hljs-comment">// 4</span>
 <li>результаты операций;</li>
 <li>модели элементов списка.</li>
 </ul>
-<h3 class="study-subtitle">3.1. Синтаксис <code>data class</code></h3>
+<h3 id="sintaksis-data-class" class="study-subtitle">3.1. Синтаксис <code>data class</code></h3>
 <p>Для объявления класса данных используется ключевое слово <code>data</code>:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(
     <span class="hljs-keyword">val</span> name: String,
@@ -1037,7 +1037,7 @@ println(length) <span class="hljs-comment">// 4</span>
 </code></pre></div>
 <p>Во втором случае компилятор предоставляет дополнительные методы, основанные на свойствах первичного конструктора.</p>
 <p>Это избавляет от большого количества шаблонного кода.</p>
-<h3 class="study-subtitle">3.2. <code>copy()</code> и копирование объектов</h3>
+<h3 id="copy-i-kopirovanie-obektov" class="study-subtitle">3.2. <code>copy()</code> и копирование объектов</h3>
 <p>Data class автоматически получает метод <code>copy()</code>.</p>
 <p>Он создаёт новый объект того же класса, используя текущие значения свойств, если для них не переданы новые значения.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(
@@ -1115,7 +1115,7 @@ println(copiedUser.skills)
 <h4 class="study-subtitle study-subtitle--minor"><code>copy()</code> не делает объект immutable</h4>
 <p>Даже если все свойства объявлены через <code>val</code>, вложенные объекты могут оставаться изменяемыми.</p>
 <p>Поэтому неизменяемость data class зависит не только от <code>val</code>, но и от типов его свойств.</p>
-<h3 class="study-subtitle">3.3. Деструктуризация (<code>componentN</code>)</h3>
+<h3 id="destrukturizatsiya-componentn" class="study-subtitle">3.3. Деструктуризация (<code>componentN</code>)</h3>
 <p>Data class автоматически получает функции <code>componentN()</code>, которые соответствуют свойствам первичного конструктора.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(
     <span class="hljs-keyword">val</span> name: String,
@@ -1176,7 +1176,7 @@ println(city)
 </code></pre></div>
 <p>Порядок деструктуризации data class определяется порядком свойств в первичном конструкторе.</p>
 <p>Поэтому изменение порядка свойств может повлиять на существующий код с деструктуризацией.</p>
-<h3 class="study-subtitle">3.4. <code>equals()</code> и сравнение по значению</h3>
+<h3 id="equals-i-sravnenie-po-znacheniyu" class="study-subtitle">3.4. <code>equals()</code> и сравнение по значению</h3>
 <p>Обычный класс без переопределения <code>equals()</code> обычно сравнивается по идентичности объектов.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(
     <span class="hljs-keyword">val</span> name: String,
@@ -1238,7 +1238,7 @@ println(first == second) <span class="hljs-comment">// true</span>
     <span class="hljs-keyword">val</span> age: <span class="hljs-built_in">Int</span>
 )
 </code></pre></div>
-<h3 class="study-subtitle">3.5. <code>hashCode()</code> и <code>toString()</code></h3>
+<h3 id="hashcode-i-tostring" class="study-subtitle">3.5. <code>hashCode()</code> и <code>toString()</code></h3>
 <h4 class="study-subtitle study-subtitle--minor"><code>hashCode()</code></h4>
 <p><code>hashCode()</code> возвращает целочисленный хеш объекта.</p>
 <p>Он используется различными структурами данных, например <code>HashSet</code> и <code>HashMap</code>.</p>
@@ -1281,7 +1281,7 @@ println(user)
 </code></pre></div>
 <p>Это удобно при отладке и логировании.</p>
 <p>Но не следует бездумно использовать <code>toString()</code> для объектов, содержащих пароли, токены и другие чувствительные данные: их значения могут попасть в логи.</p>
-<h3 class="study-subtitle">3.6. Правила генерации методов</h3>
+<h3 id="pravila-generatsii-metodov" class="study-subtitle">3.6. Правила генерации методов</h3>
 <p>Компилятор генерирует методы data class по определённым правилам.</p>
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Метод</th><th>Назначение</th></tr></thead><tbody><tr><td><code>equals()</code></td><td>Структурное сравнение</td></tr><tr><td><code>hashCode()</code></td><td>Хеш-код объекта</td></tr><tr><td><code>toString()</code></td><td>Читаемое строковое представление</td></tr><tr><td><code>componentN()</code></td><td>Получение свойств по порядку</td></tr><tr><td><code>copy()</code></td><td>Создание копии объекта</td></tr></tbody></table></div>
 <p>В генерации участвуют свойства первичного конструктора.</p>
@@ -1298,7 +1298,7 @@ println(user)
 <p>Если в классе явно реализован <code>equals()</code>, <code>hashCode()</code> или <code>toString()</code> с подходящей сигнатурой, компилятор не генерирует собственную реализацию вместо него.</p>
 <p>Если соответствующая реализация унаследована как <code>final</code>, она также может определять поведение вместо автоматически сгенерированной.</p>
 <p>Для обычной разработки обычно не требуется вручную переопределять эти методы в data class.</p>
-<h3 class="study-subtitle">3.7. Ограничения data class</h3>
+<h3 id="ogranicheniya-data-class" class="study-subtitle">3.7. Ограничения data class</h3>
 <p>Data class предназначен прежде всего для представления данных.</p>
 <p>Он не может быть:</p>
 <ul class="study-list">
@@ -1390,11 +1390,11 @@ println(user)
 <li><a href="https://kotlinlang.org/docs/classes.html" target="_blank" rel="noopener noreferrer">Classes</a></li>
 <li><a href="https://kotlinlang.org/docs/equality.html" target="_blank" rel="noopener noreferrer">Equality</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-4" class="study-section" aria-labelledby="sec-4-title"><h2 id="sec-4-title" class="study-section-title">4. Properties и Accessors</h2><p>В Kotlin свойства (<em>properties</em>) используются для представления данных объекта.</p>
+<hr class="study-divider"/></section><section id="properties-i-accessors" class="study-section" aria-labelledby="properties-i-accessors-title"><h2 id="properties-i-accessors-title" class="study-section-title">4. Properties и Accessors</h2><p>В Kotlin свойства (<em>properties</em>) используются для представления данных объекта.</p>
 <p>На первый взгляд они похожи на обычные поля классов, но имеют более гибкую модель доступа.</p>
 <p>Каждое свойство может предоставлять getter, а изменяемое свойство — setter.</p>
 <p>Это позволяет контролировать чтение и изменение данных, выполнять проверки, вычислять значения и скрывать внутреннюю реализацию.</p>
-<h3 class="study-subtitle">4.1. Объявление свойств (<code>val</code> и <code>var</code>)</h3>
+<h3 id="obyavlenie-svoystv-val-i-var" class="study-subtitle">4.1. Объявление свойств (<code>val</code> и <code>var</code>)</h3>
 <p>Свойства можно объявлять:</p>
 <ul class="study-list">
 <li>внутри классов;</li>
@@ -1442,7 +1442,7 @@ println(user.age)
 </code></pre></div>
 <p>Это top-level properties.</p>
 <p>Они принадлежат пакету, а не отдельному экземпляру класса.</p>
-<h3 class="study-subtitle">4.2. Getter и Setter</h3>
+<h3 id="getter-i-setter" class="study-subtitle">4.2. Getter и Setter</h3>
 <p>Getter и Setter — аксессоры (<em>accessors</em>), через которые выполняется чтение и изменение свойств.</p>
 <h4 class="study-subtitle study-subtitle--minor">Getter</h4>
 <p>Getter вызывается при чтении свойства.</p>
@@ -1481,7 +1481,7 @@ println(user.age)
 </ul>
 <p>На JVM свойства обычно представлены методами доступа и хранящими значение полями в соответствии с правилами компиляции Kotlin.</p>
 <p>Важно: синтаксис свойства в Kotlin — это не просто другое написание обычного поля.</p>
-<h3 class="study-subtitle">4.3. Custom accessors</h3>
+<h3 id="custom-accessors" class="study-subtitle">4.3. Custom accessors</h3>
 <p>Пользовательские аксессоры позволяют определить собственное поведение при чтении или изменении свойства.</p>
 <h4 class="study-subtitle study-subtitle--minor">Custom getter</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Rectangle</span>(
@@ -1563,7 +1563,7 @@ println(user.name) <span class="hljs-comment">// Alex</span>
 <p>Getter и setter могут содержать различную логику.</p>
 <p>Но лучше не размещать в них тяжёлые операции, сетевые запросы или сложные побочные эффекты.</p>
 <p>Обращение к свойству должно оставаться предсказуемым.</p>
-<h3 class="study-subtitle">4.4. Backing field (<code>field</code>)</h3>
+<h3 id="backing-field-field" class="study-subtitle">4.4. Backing field (<code>field</code>)</h3>
 <p>Backing field — внутреннее поле, в котором хранится значение свойства.</p>
 <p>В пользовательском getter или setter к нему можно обратиться через специальное ключевое слово <code>field</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
@@ -1630,7 +1630,7 @@ println(user.name) <span class="hljs-comment">// Alex</span>
 <li>используется обычная инициализация хранимого свойства.</li>
 </ul>
 <p>Вычисляемое свойство, getter которого не использует <code>field</code>, не требует отдельного backing field.</p>
-<h3 class="study-subtitle">4.5. Visibility setter</h3>
+<h3 id="visibility-setter" class="study-subtitle">4.5. Visibility setter</h3>
 <p>Getter всегда имеет ту же видимость, что и само свойство.</p>
 <p>Но Setter можно сделать менее доступным.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
@@ -1678,7 +1678,7 @@ println(user.age)
 }
 </code></pre></div>
 <p>Это позволяет контролировать изменение свойства в зависимости от области видимости.</p>
-<h3 class="study-subtitle">4.6. Разница между свойством и полем</h3>
+<h3 id="raznitsa-mezhdu-svoystvom-i-polem" class="study-subtitle">4.6. Разница между свойством и полем</h3>
 <p>В Java поле — это непосредственно хранимое значение объекта.</p>
 <p>В Kotlin свойство — более высокий уровень абстракции.</p>
 <p>Свойство может:</p>
@@ -1755,7 +1755,7 @@ println(user.age)
 <li><a href="https://kotlinlang.org/docs/visibility-modifiers.html" target="_blank" rel="noopener noreferrer">Visibility modifiers</a></li>
 <li><a href="https://kotlinlang.org/docs/classes.html" target="_blank" rel="noopener noreferrer">Classes</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-5" class="study-section" aria-labelledby="sec-5-title"><h2 id="sec-5-title" class="study-section-title">5. Object и Companion Object</h2><p>Kotlin предоставляет специальный механизм <code>object</code>, который позволяет объявлять объекты без необходимости вручную создавать экземпляр класса.</p>
+<hr class="study-divider"/></section><section id="object-i-companion-object" class="study-section" aria-labelledby="object-i-companion-object-title"><h2 id="object-i-companion-object-title" class="study-section-title">5. Object и Companion Object</h2><p>Kotlin предоставляет специальный механизм <code>object</code>, который позволяет объявлять объекты без необходимости вручную создавать экземпляр класса.</p>
 <p>Он используется для реализации singleton-объектов, временных анонимных реализаций интерфейсов и членов, логически связанных с классом.</p>
 <p>Основные конструкции:</p>
 <ul class="study-list">
@@ -1763,7 +1763,7 @@ println(user.age)
 <li>object expression;</li>
 <li>companion object.</li>
 </ul>
-<h3 class="study-subtitle">5.1. Object declaration</h3>
+<h3 id="object-declaration" class="study-subtitle">5.1. Object declaration</h3>
 <p>Object declaration — объявление объекта с помощью ключевого слова <code>object</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">object</span> AppConfig {
     <span class="hljs-keyword">val</span> appName = <span class="hljs-string">&quot;Study Platform&quot;</span>
@@ -1812,7 +1812,7 @@ println(user.age)
 <p>Object declaration создаётся при первом обращении к нему.</p>
 <p>Инициализация потокобезопасна.</p>
 <p>Это означает, что при конкурентном первом доступе не должно возникнуть двух независимых экземпляров одного object declaration.</p>
-<h3 class="study-subtitle">5.2. Singleton в Kotlin</h3>
+<h3 id="singleton-v-kotlin" class="study-subtitle">5.2. Singleton в Kotlin</h3>
 <p>Singleton — паттерн проектирования, при котором существует только один экземпляр определённого типа.</p>
 <p>В Kotlin object declaration предоставляет готовый механизм реализации singleton.</p>
 <p>Без <code>object</code> пришлось бы самостоятельно контролировать создание единственного экземпляра.</p>
@@ -1866,7 +1866,7 @@ println(SessionManager.currentUserId)
 </ul>
 <p>Например, глобальный изменяемый <code>SessionManager</code> сложнее тестировать, чем отдельный объект с явно передаваемой зависимостью.</p>
 <p>В Android-приложениях для сложных зависимостей часто предпочтительнее использовать Dependency Injection, а не создавать всё через singleton.</p>
-<h3 class="study-subtitle">5.3. Object expression</h3>
+<h3 id="object-expression" class="study-subtitle">5.3. Object expression</h3>
 <p>Object expression — выражение, которое создаёт анонимный объект.</p>
 <p>В отличие от object declaration, оно не объявляет именованный singleton.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> logger = <span class="hljs-keyword">object</span> {
@@ -1946,7 +1946,7 @@ println(SessionManager.currentUserId)
 <li>является singleton;</li>
 <li>инициализируется при первом обращении.</li>
 </ul>
-<h3 class="study-subtitle">5.4. Companion object</h3>
+<h3 id="companion-object" class="study-subtitle">5.4. Companion object</h3>
 <p><code>companion object</code> — объект, объявленный внутри класса с ключевым словом <code>companion</code>.</p>
 <p>Он позволяет создавать свойства и функции, которые логически связаны с классом, а не с конкретным экземпляром.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
@@ -1984,7 +1984,7 @@ println(User.DEFAULT_AGE)
 <p>Обращение:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">println(ApiConfig.BASE_URL)
 </code></pre></div>
-<h3 class="study-subtitle">5.5. Обращение к членам companion object</h3>
+<h3 id="obraschenie-k-chlenam-companion-object" class="study-subtitle">5.5. Обращение к членам companion object</h3>
 <p>Члены <code>companion object</code> можно использовать через имя содержащего класса.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
 
@@ -2045,7 +2045,7 @@ println(User.DEFAULT_AGE)
 <span class="hljs-keyword">val</span> guest = User.createGuest()
 </code></pre></div>
 <p>Это позволяет скрыть конструктор и контролировать создание экземпляров.</p>
-<h3 class="study-subtitle">5.6. Именованный companion object</h3>
+<h3 id="imenovannyy-companion-object" class="study-subtitle">5.6. Именованный companion object</h3>
 <p>Имя companion object можно задать явно:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
 
@@ -2094,7 +2094,7 @@ println(User.DEFAULT_AGE)
 }
 </code></pre></div>
 <p>В реальных проектах фабричные методы и общие функции часто удобно размещать в companion object.</p>
-<h3 class="study-subtitle">5.7. Отличие object от обычного класса</h3>
+<h3 id="otlichie-object-ot-obychnogo-klassa" class="study-subtitle">5.7. Отличие object от обычного класса</h3>
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th><code>class</code></th><th><code>object declaration</code></th><th><code>object expression</code></th></tr></thead><tbody><tr><td>Описывает тип объектов</td><td>Создаёт единственный именованный объект</td><td>Создаёт анонимный объект</td></tr><tr><td>Можно создавать много экземпляров</td><td>Один экземпляр</td><td>Создаётся в месте использования</td></tr><tr><td>Есть имя класса</td><td>Есть имя объекта</td><td>Нет собственного имени типа</td></tr><tr><td>Может иметь конструктор</td><td>Не имеет обычного конструктора</td><td>Может реализовать типы через supertype</td></tr><tr><td>Обычное создание через конструктор</td><td>Обращение по имени объекта</td><td>Использование как выражения</td></tr></tbody></table></div>
 <p><code>companion object</code> — особый вариант object declaration, расположенный внутри класса.</p>
 <h4 class="study-subtitle study-subtitle--minor">Когда что использовать</h4>
@@ -2149,7 +2149,7 @@ println(User.DEFAULT_AGE)
 <li><a href="https://kotlinlang.org/docs/classes.html" target="_blank" rel="noopener noreferrer">Classes and objects</a></li>
 <li><a href="https://kotlinlang.org/docs/java-interop.html" target="_blank" rel="noopener noreferrer">Calling Java from Kotlin</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-6" class="study-section" aria-labelledby="sec-6-title"><h2 id="sec-6-title" class="study-section-title">6. Extension Functions</h2><p>Extension functions — механизм Kotlin, позволяющий добавлять функции к существующим типам без изменения исходного класса и без наследования.</p>
+<hr class="study-divider"/></section><section id="extension-functions" class="study-section" aria-labelledby="extension-functions-title"><h2 id="extension-functions-title" class="study-section-title">6. Extension Functions</h2><p>Extension functions — механизм Kotlin, позволяющий добавлять функции к существующим типам без изменения исходного класса и без наследования.</p>
 <p>Расширения особенно полезны, когда:</p>
 <ul class="study-list">
 <li>необходимо добавить удобный метод к стороннему классу;</li>
@@ -2159,7 +2159,7 @@ println(User.DEFAULT_AGE)
 <li>необходимо сгруппировать повторяющиеся операции.</li>
 </ul>
 <p>В Kotlin существуют extension functions и extension properties.</p>
-<h3 class="study-subtitle">6.1. Синтаксис extension functions</h3>
+<h3 id="sintaksis-extension-functions" class="study-subtitle">6.1. Синтаксис extension functions</h3>
 <p>Для объявления extension function перед именем функции указывается тип, который расширяется.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> String.<span class="hljs-title">firstChar</span><span class="hljs-params">()</span></span>: <span class="hljs-built_in">Char</span> {
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.first()
@@ -2204,7 +2204,7 @@ println(email.isValidEmail())
 println(user.fullName())
 </code></pre></div>
 <p>Теперь функция вызывается через объект <code>User</code>, хотя она не объявлена внутри класса.</p>
-<h3 class="study-subtitle">6.2. Receiver и receiver type</h3>
+<h3 id="receiver-i-receiver-type" class="study-subtitle">6.2. Receiver и receiver type</h3>
 <p>В extension function используется понятие receiver — объект, на котором вызывается расширение.</p>
 <p>В объявлении:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> String.<span class="hljs-title">isBlankOrShort</span><span class="hljs-params">()</span></span>: <span class="hljs-built_in">Boolean</span> {
@@ -2249,7 +2249,7 @@ println(user.fullName())
 </code></pre></div>
 <p>Все три функции расширяют <code>String</code>.</p>
 <p>Их можно разместить в одном файле или разделить по смыслу на отдельные файлы.</p>
-<h3 class="study-subtitle">6.3. Extension properties</h3>
+<h3 id="extension-properties" class="study-subtitle">6.3. Extension properties</h3>
 <p>Kotlin позволяет объявлять расширяющие свойства.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> String.firstCharacter: <span class="hljs-built_in">Char</span>
     <span class="hljs-keyword">get</span>() = first()
@@ -2295,7 +2295,7 @@ println(text.wordCount)
 </code></pre></div>
 <p>У расширения нет собственного места для хранения дополнительного состояния внутри расширяемого объекта.</p>
 <p>Оно может только вычислять значение через getter и setter или использовать внешнее хранилище.</p>
-<h3 class="study-subtitle">6.4. Nullable receiver</h3>
+<h3 id="nullable-receiver" class="study-subtitle">6.4. Nullable receiver</h3>
 <p>Extension function может расширять nullable-тип.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> String?.<span class="hljs-title">orDefault</span><span class="hljs-params">()</span></span>: String {
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span> ?: <span class="hljs-string">&quot;Unknown&quot;</span>
@@ -2320,7 +2320,7 @@ println(name.orDefault()) <span class="hljs-comment">// Unknown</span>
 name.printIfNotNull()
 </code></pre></div>
 <p>Даже если переменная равна <code>null</code>, вызов допустим, поскольку receiver type объявлен как <code>String?</code>.</p>
-<h3 class="study-subtitle">6.5. Вызов extension-функций</h3>
+<h3 id="vyzov-extension-funktsiy" class="study-subtitle">6.5. Вызов extension-функций</h3>
 <p>Расширения вызываются так же, как методы объекта:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-built_in">Int</span>.<span class="hljs-title">isPositive</span><span class="hljs-params">()</span></span>: <span class="hljs-built_in">Boolean</span> {
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span> &gt; <span class="hljs-number">0</span>
@@ -2350,7 +2350,7 @@ println(name.take(<span class="hljs-number">3</span>))
 println(name.reversed())
 </code></pre></div>
 <p>Многие привычные операции стандартной библиотеки реализованы как функции-расширения.</p>
-<h3 class="study-subtitle">6.6. Ограничения extension-функций</h3>
+<h3 id="ogranicheniya-extension-funktsiy" class="study-subtitle">6.6. Ограничения extension-функций</h3>
 <p>Главное ограничение — расширения не добавляют реальные члены в исходный класс.</p>
 <p>Они не получают особых привилегий и не меняют его структуру.</p>
 <h4 class="study-subtitle study-subtitle--minor">Extension function не может обращаться к private-членам</h4>
@@ -2394,7 +2394,7 @@ println(name.reversed())
 
 user.printInfo() <span class="hljs-comment">// Member function</span>
 </code></pre></div>
-<h3 class="study-subtitle">6.7. Статическое разрешение расширений</h3>
+<h3 id="staticheskoe-razreshenie-rasshireniy" class="study-subtitle">6.7. Статическое разрешение расширений</h3>
 <p>Extension functions разрешаются статически.</p>
 <p>Это означает, что компилятор выбирает расширение по объявленному типу receiver, а не по фактическому типу объекта во время выполнения.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">open</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Animal</span>
@@ -2490,7 +2490,7 @@ printType(Dog())
 <li><a href="https://kotlinlang.org/docs/properties.html" target="_blank" rel="noopener noreferrer">Properties</a></li>
 <li><a href="https://kotlinlang.org/docs/visibility-modifiers.html" target="_blank" rel="noopener noreferrer">Visibility modifiers</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-7" class="study-section" aria-labelledby="sec-7-title"><h2 id="sec-7-title" class="study-section-title">7. Lambda</h2><p>Lambda — анонимная функция, которую можно создать непосредственно в выражении, сохранить в переменную или передать другой функции.</p>
+<hr class="study-divider"/></section><section id="lambda" class="study-section" aria-labelledby="lambda-title"><h2 id="lambda-title" class="study-section-title">7. Lambda</h2><p>Lambda — анонимная функция, которую можно создать непосредственно в выражении, сохранить в переменную или передать другой функции.</p>
 <p>Лямбды являются одной из основ функционального программирования в Kotlin.</p>
 <p>Они широко применяются:</p>
 <ul class="study-list">
@@ -2501,7 +2501,7 @@ printType(Dog())
 <li>в Android UI;</li>
 <li>в API библиотек.</li>
 </ul>
-<h3 class="study-subtitle">7.1. Синтаксис lambda expression</h3>
+<h3 id="sintaksis-lambda-expression" class="study-subtitle">7.1. Синтаксис lambda expression</h3>
 <p>Простейшая лямбда:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> greet = {
     println(<span class="hljs-string">&quot;Hello!&quot;</span>)
@@ -2563,7 +2563,7 @@ printType(Dog())
 }
 </code></pre></div>
 <p>Последнее выражение <code>sum * 2</code> будет результатом лямбды.</p>
-<h3 class="study-subtitle">7.2. Типы функций (<code>Function0</code>, <code>Function1</code>, <code>Function2</code> и др.)</h3>
+<h3 id="tipy-funktsiy-function0-function1-function2-i-dr" class="study-subtitle">7.2. Типы функций (<code>Function0</code>, <code>Function1</code>, <code>Function2</code> и др.)</h3>
 <p>Kotlin поддерживает функциональные типы (<em>function types</em>).</p>
 <p>Они описывают параметры и результат функции.</p>
 <p>Основные формы:</p>
@@ -2619,7 +2619,7 @@ printType(Dog())
 </code></pre></div>
 <p>В первом случае может отсутствовать сама функция.</p>
 <p>Во втором функция существует, но её результат может быть <code>null</code>.</p>
-<h3 class="study-subtitle">7.3. Неявный параметр <code>it</code></h3>
+<h3 id="neyavnyy-parametr-it" class="study-subtitle">7.3. Неявный параметр <code>it</code></h3>
 <p>Если лямбда принимает ровно один параметр, его имя можно не объявлять явно.</p>
 <p>Kotlin предоставляет неявное имя <code>it</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> names = listOf(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;Maria&quot;</span>, <span class="hljs-string">&quot;John&quot;</span>)
@@ -2654,7 +2654,7 @@ printType(Dog())
     first + second
 }
 </code></pre></div>
-<h3 class="study-subtitle">7.4. Trailing lambda</h3>
+<h3 id="trailing-lambda" class="study-subtitle">7.4. Trailing lambda</h3>
 <p>Trailing lambda — синтаксис, позволяющий вынести лямбду за круглые скобки вызова функции, если лямбда является последним параметром.</p>
 <p>Например:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">execute</span><span class="hljs-params">(action: () -&gt; <span class="hljs-type">Unit</span>)</span></span> {
@@ -2695,7 +2695,7 @@ printType(Dog())
 }
 </code></pre></div>
 <p>Вызов выглядит компактно, потому что лямбда является последним аргументом метода.</p>
-<h3 class="study-subtitle">7.5. Замыкания (closures)</h3>
+<h3 id="zamykaniya-closures" class="study-subtitle">7.5. Замыкания (closures)</h3>
 <p>Замыкание — лямбда или другая функция, которая использует переменные из внешней области видимости.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">createCounter</span><span class="hljs-params">()</span></span>: () -&gt; <span class="hljs-built_in">Int</span> {
     <span class="hljs-keyword">var</span> counter = <span class="hljs-number">0</span>
@@ -2747,7 +2747,7 @@ println(total) <span class="hljs-comment">// 30</span>
 </ul>
 <p>При этом важно помнить, что замыкание может удерживать ссылки на внешние объекты.</p>
 <p>В Android-приложениях это имеет значение для управления временем жизни объектов и предотвращения утечек памяти.</p>
-<h3 class="study-subtitle">7.6. Лямбды с несколькими параметрами</h3>
+<h3 id="lyambdy-s-neskolkimi-parametrami" class="study-subtitle">7.6. Лямбды с несколькими параметрами</h3>
 <p>Лямбда может принимать несколько параметров.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> calculate: (<span class="hljs-built_in">Int</span>, <span class="hljs-built_in">Int</span>) -&gt; <span class="hljs-built_in">Int</span> = { a, b -&gt;
     a * b
@@ -2775,7 +2775,7 @@ map.forEach { (id, name) -&gt;
 }
 </code></pre></div>
 <p>Здесь лямбда получает одну пару <code>Map.Entry</code>, которая раскладывается на ключ и значение.</p>
-<h3 class="study-subtitle">7.7. Анонимные функции</h3>
+<h3 id="anonimnye-funktsii" class="study-subtitle">7.7. Анонимные функции</h3>
 <p>Анонимная функция — функция без имени, объявленная с помощью <code>fun</code> непосредственно в выражении.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> sum = <span class="hljs-function"><span class="hljs-title">fun</span><span class="hljs-params">(a: <span class="hljs-type">Int</span>, b: <span class="hljs-type">Int</span>)</span></span>: <span class="hljs-built_in">Int</span> {
     <span class="hljs-keyword">return</span> a + b
@@ -2811,7 +2811,7 @@ map.forEach { (id, name) -&gt;
 )
 </code></pre></div>
 <p>На практике обычные лямбды используются значительно чаще, но понимание анонимных функций помогает разобраться в поведении <code>return</code>.</p>
-<h3 class="study-subtitle">7.8. Локальный и нелокальный <code>return</code></h3>
+<h3 id="lokalnyy-i-nelokalnyy-return" class="study-subtitle">7.8. Локальный и нелокальный <code>return</code></h3>
 <p>В Kotlin поведение <code>return</code> зависит от того, где находится лямбда и какой функции она передана.</p>
 <h4 class="study-subtitle study-subtitle--minor">Локальный return с меткой</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> numbers = listOf(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>)
@@ -2956,7 +2956,7 @@ After action
 <li><a href="https://kotlinlang.org/docs/returns.html" target="_blank" rel="noopener noreferrer">Returns and jumps</a></li>
 <li><a href="https://kotlinlang.org/docs/coding-conventions.html" target="_blank" rel="noopener noreferrer">Coding conventions</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-8" class="study-section" aria-labelledby="sec-8-title"><h2 id="sec-8-title" class="study-section-title">8. Higher Order Functions</h2><p>Higher Order Function (HOF), или функция высшего порядка, — функция, которая принимает другую функцию в качестве параметра либо возвращает функцию в качестве результата.</p>
+<hr class="study-divider"/></section><section id="higher-order-functions" class="study-section" aria-labelledby="higher-order-functions-title"><h2 id="higher-order-functions-title" class="study-section-title">8. Higher Order Functions</h2><p>Higher Order Function (HOF), или функция высшего порядка, — функция, которая принимает другую функцию в качестве параметра либо возвращает функцию в качестве результата.</p>
 <p>Этот механизм позволяет передавать поведение как данные.</p>
 <p>Он лежит в основе многих возможностей Kotlin:</p>
 <ul class="study-list">
@@ -2967,7 +2967,7 @@ After action
 <li>функциональная композиция;</li>
 <li>асинхронные API.</li>
 </ul>
-<h3 class="study-subtitle">8.1. Функция как параметр</h3>
+<h3 id="funktsiya-kak-parametr" class="study-subtitle">8.1. Функция как параметр</h3>
 <p>Рассмотрим обычную функцию:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">calculate</span><span class="hljs-params">(a: <span class="hljs-type">Int</span>, b: <span class="hljs-type">Int</span>)</span></span>: <span class="hljs-built_in">Int</span> {
     <span class="hljs-keyword">return</span> a + b
@@ -3037,7 +3037,7 @@ After action
 </code></pre></div>
 <p>Функция не знает заранее, какие именно пользователи нужны.</p>
 <p>Она получает правило фильтрации снаружи.</p>
-<h3 class="study-subtitle">8.2. Функция как возвращаемое значение</h3>
+<h3 id="funktsiya-kak-vozvraschaemoe-znachenie" class="study-subtitle">8.2. Функция как возвращаемое значение</h3>
 <p>Функции могут не только принимать другие функции, но и возвращать их.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getOperation</span><span class="hljs-params">(
     type: <span class="hljs-type">String</span>
@@ -3076,7 +3076,7 @@ println(triple(<span class="hljs-number">10</span>)) <span class="hljs-comment">
 </code></pre></div>
 <p>Каждая возвращённая функция запоминает своё значение <code>factor</code>.</p>
 <p>Это пример совместного использования HOF и closures.</p>
-<h3 class="study-subtitle">8.3. Function types</h3>
+<h3 id="function-types" class="study-subtitle">8.3. Function types</h3>
 <p>Функциональный тип описывает сигнатуру функции.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">() -&gt; <span class="hljs-built_in">Unit</span>
 </code></pre></div>
@@ -3128,7 +3128,7 @@ greet()
 greet.invoke()
 </code></pre></div>
 <p>Обычно используется короткая запись с круглыми скобками.</p>
-<h3 class="study-subtitle">8.4. Передача именованных функций по ссылке (<code>::</code>)</h3>
+<h3 id="peredacha-imenovannyh-funktsiy-po-ssylke" class="study-subtitle">8.4. Передача именованных функций по ссылке (<code>::</code>)</h3>
 <p>Если функция уже объявлена, её можно передать в качестве значения через оператор <code>::</code>.</p>
 <p>Это называется callable reference.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">isEven</span><span class="hljs-params">(number: <span class="hljs-type">Int</span>)</span></span>: <span class="hljs-built_in">Boolean</span> {
@@ -3184,7 +3184,7 @@ action()
 <h4 class="study-subtitle study-subtitle--minor">Когда использовать callable references</h4>
 <p>Они удобны, когда существующая функция уже полностью соответствует требуемому функциональному типу.</p>
 <p>Если требуется дополнительная логика или преобразование параметров, лучше использовать лямбду.</p>
-<h3 class="study-subtitle">8.5. Функции-обработчики коллекций</h3>
+<h3 id="funktsii-obrabotchiki-kollektsiy" class="study-subtitle">8.5. Функции-обработчики коллекций</h3>
 <p>Стандартная библиотека Kotlin активно использует функции высшего порядка.</p>
 <h4 class="study-subtitle study-subtitle--minor"><code>forEach</code></h4>
 <p>Выполняет действие для каждого элемента:</p>
@@ -3273,7 +3273,7 @@ names.forEach { name -&gt;
 </code></pre></div>
 <p>Второй вариант компактнее и описывает, что нужно получить, а не последовательность ручных операций.</p>
 <p>Но функциональный стиль не всегда автоматически быстрее или эффективнее по памяти. Некоторые цепочки создают промежуточные коллекции.</p>
-<h3 class="study-subtitle">8.6. Lambda with receiver (базовое понимание)</h3>
+<h3 id="lambda-with-receiver-bazovoe-ponimanie" class="study-subtitle">8.6. Lambda with receiver (базовое понимание)</h3>
 <p>Обычный функциональный тип:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">(String) -&gt; <span class="hljs-built_in">Unit</span>
 </code></pre></div>
@@ -3383,7 +3383,7 @@ println(result) <span class="hljs-comment">// KOTLIN</span>
 <li><a href="https://kotlinlang.org/docs/collections-overview.html" target="_blank" rel="noopener noreferrer">Collections overview</a></li>
 <li><a href="https://kotlinlang.org/docs/collection-operations.html" target="_blank" rel="noopener noreferrer">Collection operations</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-9" class="study-section" aria-labelledby="sec-9-title"><h2 id="sec-9-title" class="study-section-title">9. Scope Functions</h2><p>Scope Functions — функции стандартной библиотеки Kotlin, которые позволяют выполнять блок кода в контексте определённого объекта.</p>
+<hr class="study-divider"/></section><section id="scope-functions" class="study-section" aria-labelledby="scope-functions-title"><h2 id="scope-functions-title" class="study-section-title">9. Scope Functions</h2><p>Scope Functions — функции стандартной библиотеки Kotlin, которые позволяют выполнять блок кода в контексте определённого объекта.</p>
 <p>Они создают временную область, внутри которой можно удобно обращаться к объекту и выполнять над ним операции.</p>
 <p>В Kotlin существуют пять основных scope functions:</p>
 <ul class="study-list">
@@ -3398,7 +3398,7 @@ println(result) <span class="hljs-comment">// KOTLIN</span>
 <li>Способом доступа к объекту: через <code>this</code> или <code>it</code>.</li>
 <li>Возвращаемым значением: результат блока или исходный объект.</li>
 </ol>
-<h3 class="study-subtitle">9.1. <code>let</code></h3>
+<h3 id="let" class="study-subtitle">9.1. <code>let</code></h3>
 <p><code>let</code> выполняет блок кода, передавая объект в качестве аргумента <code>it</code>.</p>
 <p>Результатом является последнее выражение блока.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> name = <span class="hljs-string">&quot;Kotlin&quot;</span>
@@ -3441,7 +3441,7 @@ name?.let {
 <li>Когда объект удобнее передавать как аргумент <code>it</code>.</li>
 <li>Для создания временного контекста.</li>
 </ul>
-<h3 class="study-subtitle">9.2. <code>run</code></h3>
+<h3 id="run" class="study-subtitle">9.2. <code>run</code></h3>
 <p><code>run</code> выполняет блок кода, в котором контекстный объект доступен через <code>this</code>.</p>
 <p>Возвращает результат последнего выражения блока.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> user = User(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-number">25</span>)
@@ -3484,7 +3484,7 @@ name?.let {
 <li>Для локальной группировки вычислений.</li>
 <li>Для настройки объекта с одновременным вычислением результата.</li>
 </ul>
-<h3 class="study-subtitle">9.3. <code>with</code></h3>
+<h3 id="with" class="study-subtitle">9.3. <code>with</code></h3>
 <p><code>with</code> похож на <code>run</code>, но является обычной функцией, а не extension function.</p>
 <p>Объект передаётся аргументом:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">with(user) {
@@ -3510,7 +3510,7 @@ name?.let {
 <h4 class="study-subtitle study-subtitle--minor">Когда использовать <code>with</code></h4>
 <p>Когда нужно выполнить несколько операций с одним объектом, а сам объект не требуется возвращать из блока.</p>
 <p>Например, при формировании строки или группировке обращений к свойствам и функциям объекта.</p>
-<h3 class="study-subtitle">9.4. <code>apply</code></h3>
+<h3 id="apply" class="study-subtitle">9.4. <code>apply</code></h3>
 <p><code>apply</code> выполняет блок кода с контекстным объектом через <code>this</code>, но возвращает сам объект.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> user = User(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-number">25</span>).apply {
     println(name)
@@ -3547,7 +3547,7 @@ name?.let {
 <li>Когда нужно изменить объект и вернуть его же.</li>
 <li>Для последовательной конфигурации свойств.</li>
 </ul>
-<h3 class="study-subtitle">9.5. <code>also</code></h3>
+<h3 id="also" class="study-subtitle">9.5. <code>also</code></h3>
 <p><code>also</code> передаёт контекстный объект через <code>it</code>, а возвращает исходный объект.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> user = User(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-number">25</span>)
 
@@ -3575,7 +3575,7 @@ numbers
 </ul>
 <h4 class="study-subtitle study-subtitle--minor">Когда использовать <code>also</code></h4>
 <p>Когда нужно выполнить дополнительное действие, не меняя результат выражения.</p>
-<h3 class="study-subtitle">9.6. Контекстный объект: <code>this</code> vs <code>it</code></h3>
+<h3 id="kontekstnyy-obekt-this-vs-it" class="study-subtitle">9.6. Контекстный объект: <code>this</code> vs <code>it</code></h3>
 <p>Основное отличие scope functions — способ доступа к объекту.</p>
 <h4 class="study-subtitle study-subtitle--minor"><code>this</code></h4>
 <p>Используется в:</p>
@@ -3621,7 +3621,7 @@ numbers
 }
 </code></pre></div>
 <p>А также когда нужно избежать неоднозначности нескольких вложенных контекстных объектов.</p>
-<h3 class="study-subtitle">9.7. Возвращаемое значение каждой функции</h3>
+<h3 id="vozvraschaemoe-znachenie-kazhdoy-funktsii" class="study-subtitle">9.7. Возвращаемое значение каждой функции</h3>
 <p>Это одно из главных различий, которое нужно знать.</p>
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Функция</th><th>Контекстный объект</th><th>Возвращаемое значение</th><th>Extension function</th></tr></thead><tbody><tr><td><code>let</code></td><td><code>it</code></td><td>Результат блока</td><td>Да</td></tr><tr><td><code>run</code></td><td><code>this</code></td><td>Результат блока</td><td>Да</td></tr><tr><td><code>run</code> без объекта</td><td>Нет</td><td>Результат блока</td><td>Нет</td></tr><tr><td><code>with</code></td><td><code>this</code></td><td>Результат блока</td><td>Нет</td></tr><tr><td><code>apply</code></td><td><code>this</code></td><td>Исходный объект</td><td>Да</td></tr><tr><td><code>also</code></td><td><code>it</code></td><td>Исходный объект</td><td>Да</td></tr></tbody></table></div>
 <p>Разберём разницу на одном объекте:</p>
@@ -3662,7 +3662,7 @@ numbers
 }
 </code></pre></div>
 <p>Результат — сам <code>User</code>.</p>
-<h3 class="study-subtitle">9.8. Выбор функции под конкретную задачу</h3>
+<h3 id="vybor-funktsii-pod-konkretnuyu-zadachu" class="study-subtitle">9.8. Выбор функции под конкретную задачу</h3>
 <p>Все пять функций выполняют похожую операцию, но каждая имеет наиболее подходящие сценарии.</p>
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Задача</th><th>Рекомендуемая функция</th></tr></thead><tbody><tr><td>Обработать nullable-значение</td><td><code>let</code></td></tr><tr><td>Преобразовать объект в результат</td><td><code>let</code></td></tr><tr><td>Вычислить результат в контексте объекта</td><td><code>run</code></td></tr><tr><td>Сгруппировать операции над объектом</td><td><code>with</code></td></tr><tr><td>Настроить объект при создании</td><td><code>apply</code></td></tr><tr><td>Выполнить дополнительное действие над объектом</td><td><code>also</code></td></tr></tbody></table></div>
 <h4 class="study-subtitle study-subtitle--minor">Пример: создание объекта</h4>
@@ -3749,7 +3749,7 @@ numbers
 <li><a href="https://kotlinlang.org/docs/lambdas.html" target="_blank" rel="noopener noreferrer">Higher-order functions and lambdas</a></li>
 <li><a href="https://kotlinlang.org/docs/null-safety.html" target="_blank" rel="noopener noreferrer">Null safety</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-10" class="study-section" aria-labelledby="sec-10-title"><h2 id="sec-10-title" class="study-section-title">10. Enum</h2><p><code>enum class</code> — специальный тип Kotlin, предназначенный для представления фиксированного набора возможных значений.</p>
+<hr class="study-divider"/></section><section id="enum" class="study-section" aria-labelledby="enum-title"><h2 id="enum-title" class="study-section-title">10. Enum</h2><p><code>enum class</code> — специальный тип Kotlin, предназначенный для представления фиксированного набора возможных значений.</p>
 <p>Перечисления полезны, когда переменная может находиться только в одном из заранее известных состояний или режимов.</p>
 <p>Примеры:</p>
 <ul class="study-list">
@@ -3760,7 +3760,7 @@ numbers
 <li>состояние загрузки;</li>
 <li>режим отображения.</li>
 </ul>
-<h3 class="study-subtitle">10.1. Синтаксис <code>enum class</code></h3>
+<h3 id="sintaksis-enum-class" class="study-subtitle">10.1. Синтаксис <code>enum class</code></h3>
 <p>Создание перечисления:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">enum</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Direction</span> {
     NORTH,
@@ -3790,7 +3790,7 @@ numbers
 Direction.SOUTH
 </code></pre></div>
 <p>Это фиксированные экземпляры, а не объекты, которые создаются произвольное количество раз.</p>
-<h3 class="study-subtitle">10.2. Свойства и конструкторы enum</h3>
+<h3 id="svoystva-i-konstruktory-enum" class="study-subtitle">10.2. Свойства и конструкторы enum</h3>
 <p>Enum может содержать конструктор и свойства.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">enum</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Difficulty</span>(
     <span class="hljs-keyword">val</span> title: String,
@@ -3835,7 +3835,7 @@ println(difficulty.points) <span class="hljs-comment">// 20</span>
 </code></pre></div>
 <p>Обрати внимание на точку с запятой после последней константы.</p>
 <p>Она необходима, если после списка enum-констант объявляется тело класса с другими членами.</p>
-<h3 class="study-subtitle">10.3. Методы enum</h3>
+<h3 id="metody-enum" class="study-subtitle">10.3. Методы enum</h3>
 <p>Enum может содержать обычные функции.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">enum</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Operation</span> {
     ADD,
@@ -3880,7 +3880,7 @@ println(result) <span class="hljs-comment">// 15</span>
 println(Operation.MULTIPLY.execute(<span class="hljs-number">10</span>, <span class="hljs-number">5</span>))
 </code></pre></div>
 <p>Этот подход позволяет связать поведение непосредственно с каждой константой.</p>
-<h3 class="study-subtitle">10.4. Реализация интерфейсов</h3>
+<h3 id="realizatsiya-interfeysov" class="study-subtitle">10.4. Реализация интерфейсов</h3>
 <p>Enum может реализовывать интерфейсы.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Describable</span> {
     <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getDescription</span><span class="hljs-params">()</span></span>: String
@@ -3907,7 +3907,7 @@ println(Operation.MULTIPLY.execute(<span class="hljs-number">10</span>, <span cl
 println(status.getDescription())
 </code></pre></div>
 <p>Enum может реализовывать несколько интерфейсов, но не может наследоваться от произвольного класса.</p>
-<h3 class="study-subtitle">10.5. <code>name</code> и <code>ordinal</code></h3>
+<h3 id="name-i-ordinal" class="study-subtitle">10.5. <code>name</code> и <code>ordinal</code></h3>
 <p>Каждая enum-константа имеет встроенные свойства:</p>
 <ul class="study-list">
 <li><code>name</code>;</li>
@@ -3960,7 +3960,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 }
 </code></pre></div>
 <p>Теперь порядок констант можно менять, не меняя внешний код статуса.</p>
-<h3 class="study-subtitle">10.6. Перебор значений (<code>entries</code>)</h3>
+<h3 id="perebor-znacheniy-entries" class="study-subtitle">10.6. Перебор значений (<code>entries</code>)</h3>
 <p>Kotlin предоставляет свойство <code>entries</code>, которое возвращает все значения enum в виде списка.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">enum</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Difficulty</span> {
     EASY,
@@ -4011,7 +4011,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> status = enumValueOf&lt;Status&gt;(<span class="hljs-string">&quot;COMPLETED&quot;</span>)
 </code></pre></div>
 <p>Она работает аналогично <code>valueOf()</code>.</p>
-<h3 class="study-subtitle">10.7. Сравнение enum с другими способами моделирования состояний</h3>
+<h3 id="sravnenie-enum-s-drugimi-sposobami-modelirovaniya-sostoyaniy" class="study-subtitle">10.7. Сравнение enum с другими способами моделирования состояний</h3>
 <p>Enum подходит для ограниченного набора значений, у которых одинаковая структура.</p>
 <p>Например:</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">enum</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LoadingStatus</span> {
@@ -4109,7 +4109,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 <li><a href="https://kotlinlang.org/docs/sealed-classes.html" target="_blank" rel="noopener noreferrer">Sealed classes and interfaces</a></li>
 <li><a href="https://kotlinlang.org/docs/control-flow.html" target="_blank" rel="noopener noreferrer">Control flow</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-11" class="study-section" aria-labelledby="sec-11-title"><h2 id="sec-11-title" class="study-section-title">11. Sealed Class и Sealed Interface</h2><p><code>sealed class</code> и <code>sealed interface</code> позволяют объявлять ограниченные иерархии типов.</p>
+<hr class="study-divider"/></section><section id="sealed-class-i-sealed-interface" class="study-section" aria-labelledby="sealed-class-i-sealed-interface-title"><h2 id="sealed-class-i-sealed-interface-title" class="study-section-title">11. Sealed Class и Sealed Interface</h2><p><code>sealed class</code> и <code>sealed interface</code> позволяют объявлять ограниченные иерархии типов.</p>
 <p>Это удобно, когда множество возможных вариантов заранее известно и должно контролироваться компилятором.</p>
 <p>В Android-разработке такие конструкции часто используются для представления:</p>
 <ul class="study-list">
@@ -4120,7 +4120,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 <li>типов навигации;</li>
 <li>результатов пользовательских действий.</li>
 </ul>
-<h3 class="study-subtitle">11.1. Синтаксис sealed class</h3>
+<h3 id="sintaksis-sealed-class" class="study-subtitle">11.1. Синтаксис sealed class</h3>
 <p><code>sealed class</code> объявляется с помощью ключевого слова <code>sealed</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserState</span>
 </code></pre></div>
@@ -4175,7 +4175,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 }
 </code></pre></div>
 <p>Теперь каждое состояние имеет собственную структуру данных.</p>
-<h3 class="study-subtitle">11.2. Синтаксис sealed interface</h3>
+<h3 id="sintaksis-sealed-interface" class="study-subtitle">11.2. Синтаксис sealed interface</h3>
 <p><code>sealed interface</code> работает по похожему принципу, но вместо наследования от класса используется реализация интерфейса.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">sealed</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">PaymentResult</span> {
 
@@ -4214,7 +4214,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 }
 </code></pre></div>
 <p>Класс <code>Success</code> одновременно является реализацией <code>Result</code> и <code>Loggable</code>.</p>
-<h3 class="study-subtitle">11.3. Ограничения наследования</h3>
+<h3 id="ogranicheniya-nasledovaniya" class="study-subtitle">11.3. Ограничения наследования</h3>
 <p>Главная особенность sealed-типов — ограниченное множество прямых наследников.</p>
 <p>Прямые наследники sealed class или реализации sealed interface должны находиться в том же пакете и модуле, где объявлен sealed-тип.</p>
 <p>Они должны иметь именованные объявления. Локальные классы и анонимные объекты не могут быть прямыми наследниками sealed-типа.</p>
@@ -4251,7 +4251,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 <p>У sealed class конструктор может быть <code>protected</code> или <code>private</code>.</p>
 <p>По умолчанию используется <code>protected</code>.</p>
 <p>Это ограничивает возможность создания произвольных экземпляров и наследников.</p>
-<h3 class="study-subtitle">11.4. Exhaustive when</h3>
+<h3 id="exhaustive-when" class="study-subtitle">11.4. Exhaustive when</h3>
 <p>Одно из важнейших преимуществ sealed-типов — возможность исчерпывающе обработать все варианты через <code>when</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">sealed</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserState</span> {
 
@@ -4301,7 +4301,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 }
 </code></pre></div>
 <p>Но sealed class предоставляет большую гибкость структуры вариантов.</p>
-<h3 class="study-subtitle">11.5. Сравнение с enum</h3>
+<h3 id="sravnenie-s-enum" class="study-subtitle">11.5. Сравнение с enum</h3>
 <p>Enum и sealed-типы решают похожие, но не одинаковые задачи.</p>
 <h4 class="study-subtitle study-subtitle--minor">Enum</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">enum</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LoadingStatus</span> {
@@ -4355,7 +4355,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 }
 </code></pre></div>
 <p>Здесь разные варианты содержат разные данные.</p>
-<h3 class="study-subtitle">11.6. Моделирование состояний и результатов операций</h3>
+<h3 id="modelirovanie-sostoyaniy-i-rezultatov-operatsiy" class="study-subtitle">11.6. Моделирование состояний и результатов операций</h3>
 <p>Sealed-типы особенно полезны при проектировании состояния приложения.</p>
 <h4 class="study-subtitle study-subtitle--minor">Состояние загрузки экрана</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">sealed</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UsersUiState</span> {
@@ -4519,10 +4519,10 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 <li><a href="https://kotlinlang.org/docs/enum-classes.html" target="_blank" rel="noopener noreferrer">Enum classes</a></li>
 <li><a href="https://kotlinlang.org/docs/control-flow.html" target="_blank" rel="noopener noreferrer">Control flow</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-12" class="study-section" aria-labelledby="sec-12-title"><h2 id="sec-12-title" class="study-section-title">12. Packages и Visibility Modifiers</h2><p>Packages и Visibility Modifiers позволяют организовывать исходный код и контролировать доступность классов, функций и свойств.</p>
+<hr class="study-divider"/></section><section id="packages-i-visibility-modifiers" class="study-section" aria-labelledby="packages-i-visibility-modifiers-title"><h2 id="packages-i-visibility-modifiers-title" class="study-section-title">12. Packages и Visibility Modifiers</h2><p>Packages и Visibility Modifiers позволяют организовывать исходный код и контролировать доступность классов, функций и свойств.</p>
 <p>Без разделения на пакеты большой проект быстро превращается в набор деклараций, в котором сложно ориентироваться.</p>
 <p>Модификаторы доступа позволяют скрывать внутреннюю реализацию компонентов и формировать публичный API.</p>
-<h3 class="study-subtitle">12.1. Объявление пакета</h3>
+<h3 id="obyavlenie-paketa" class="study-subtitle">12.1. Объявление пакета</h3>
 <p>Пакет определяется ключевым словом <code>package</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">package</span> com.example.app.<span class="hljs-keyword">data</span>
 </code></pre></div>
@@ -4565,7 +4565,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 <li>управлять видимостью top-level объявлений;</li>
 <li>улучшать читаемость проекта.</li>
 </ul>
-<h3 class="study-subtitle">12.2. Импорты (<code>import</code>)</h3>
+<h3 id="importy-import" class="study-subtitle">12.2. Импорты (<code>import</code>)</h3>
 <p>Для использования деклараций из другого пакета применяется <code>import</code>.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">package</span> com.example.app.ui
 
@@ -4620,7 +4620,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 <li><code>kotlin.math.*</code>.</li>
 </ul>
 <p>Для JVM дополнительно доступны импорты платформы, например <code>java.lang.*</code> и <code>kotlin.jvm.*</code>.</p>
-<h3 class="study-subtitle">12.3. Алиасы импорта</h3>
+<h3 id="aliasy-importa" class="study-subtitle">12.3. Алиасы импорта</h3>
 <p>Если в разных пакетах существуют декларации с одинаковыми именами, можно использовать alias.</p>
 <p>Для этого применяется <code>as</code>.</p>
 <p>Предположим, есть два класса <code>User</code>:</p>
@@ -4660,7 +4660,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 <li>Когда импортируемая функция имеет слишком общее имя.</li>
 <li>Для повышения читаемости в конкретном файле.</li>
 </ul>
-<h3 class="study-subtitle">12.4. <code>public</code></h3>
+<h3 id="public" class="study-subtitle">12.4. <code>public</code></h3>
 <p><code>public</code> — модификатор, который делает декларацию доступной из всех мест, где виден содержащий тип или пакет.</p>
 <p>В Kotlin это значение по умолчанию.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
@@ -4691,7 +4691,7 @@ println(Status.COMPLETED.ordinal) <span class="hljs-comment">// 2</span>
 }
 </code></pre></div>
 <p>Публичный API следует проектировать аккуратно, поскольку его изменения могут повлиять на множество потребителей.</p>
-<h3 class="study-subtitle">12.5. <code>private</code></h3>
+<h3 id="private" class="study-subtitle">12.5. <code>private</code></h3>
 <p><code>private</code> ограничивает доступ к декларации.</p>
 <h4 class="study-subtitle study-subtitle--minor">Private на уровне файла</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">package</span> com.example.app.utils
@@ -4743,7 +4743,7 @@ account.deposit(<span class="hljs-number">100.0</span>)
 <li>Сокращать публичный API.</li>
 <li>Ограничивать доступ к вспомогательным функциям.</li>
 </ul>
-<h3 class="study-subtitle">12.6. <code>protected</code></h3>
+<h3 id="protected" class="study-subtitle">12.6. <code>protected</code></h3>
 <p><code>protected</code> разрешает доступ внутри класса и его наследников.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">open</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Animal</span> {
 
@@ -4779,7 +4779,7 @@ dog.sayName()
 <li>Не является полностью публичным API.</li>
 </ul>
 <p><code>protected</code> часто используется для свойств и методов базовых классов, которые должны быть доступны при расширении поведения.</p>
-<h3 class="study-subtitle">12.7. <code>internal</code></h3>
+<h3 id="internal" class="study-subtitle">12.7. <code>internal</code></h3>
 <p><code>internal</code> делает декларацию доступной внутри одного Kotlin-модуля.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">internal</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserMapper</span> {
 
@@ -4808,7 +4808,7 @@ dog.sayName()
 <h4 class="study-subtitle study-subtitle--minor">Отличие internal от private</h4>
 <p><code>private</code> на top-level уровне ограничивает доступ текущим файлом.</p>
 <p><code>internal</code> разрешает доступ всему модулю.</p>
-<h3 class="study-subtitle">12.8. Видимость на уровне файла и класса</h3>
+<h3 id="vidimost-na-urovne-fayla-i-klassa" class="study-subtitle">12.8. Видимость на уровне файла и класса</h3>
 <p>Модификаторы доступа в Kotlin ведут себя немного по-разному в зависимости от места объявления.</p>
 <h4 class="study-subtitle study-subtitle--minor">Top-level declarations</h4>
 <p>Для функций, классов, свойств и объектов, объявленных на уровне файла:</p>
@@ -4885,7 +4885,7 @@ dog.sayName()
 <li><a href="https://kotlinlang.org/docs/visibility-modifiers.html" target="_blank" rel="noopener noreferrer">Visibility modifiers</a></li>
 <li><a href="https://kotlinlang.org/docs/coding-conventions.html" target="_blank" rel="noopener noreferrer">Coding conventions</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-13" class="study-section" aria-labelledby="sec-13-title"><h2 id="sec-13-title" class="study-section-title">13. Generics Basics</h2><p>Generics — механизм обобщённого программирования, позволяющий создавать классы и функции, которые работают с разными типами данных, сохраняя типобезопасность.</p>
+<hr class="study-divider"/></section><section id="generics-basics" class="study-section" aria-labelledby="generics-basics-title"><h2 id="generics-basics-title" class="study-section-title">13. Generics Basics</h2><p>Generics — механизм обобщённого программирования, позволяющий создавать классы и функции, которые работают с разными типами данных, сохраняя типобезопасность.</p>
 <p>Без generics пришлось бы создавать отдельные реализации для разных типов или использовать слишком общий тип <code>Any</code>.</p>
 <p>Generics позволяют написать одну реализацию, которая работает с различными типами без потери информации о типе данных.</p>
 <p>Они активно используются в стандартной библиотеке Kotlin:</p>
@@ -4898,7 +4898,7 @@ dog.sayName()
 <li><code>Pair&lt;A, B&gt;</code>.</li>
 </ul>
 <p>Также generics часто применяются при проектировании репозиториев, сервисов, контейнеров данных и API.</p>
-<h3 class="study-subtitle">13.1. Параметры типов (<code>T</code>, <code>E</code>, <code>K</code>, <code>V</code>)</h3>
+<h3 id="parametry-tipov-t-e-k-v" class="study-subtitle">13.1. Параметры типов (<code>T</code>, <code>E</code>, <code>K</code>, <code>V</code>)</h3>
 <p>Параметр типа — условное обозначение типа, который будет определён при использовании класса или функции.</p>
 <p>Обычно используют следующие имена:</p>
 <div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Обозначение</th><th>Типичное назначение</th></tr></thead><tbody><tr><td><code>T</code></td><td>Type — произвольный тип</td></tr><tr><td><code>E</code></td><td>Element — элемент коллекции</td></tr><tr><td><code>K</code></td><td>Key — ключ</td></tr><tr><td><code>V</code></td><td>Value — значение</td></tr><tr><td><code>R</code></td><td>Return — возвращаемый результат</td></tr></tbody></table></div>
@@ -4946,7 +4946,7 @@ println(intBox.value + <span class="hljs-number">10</span>)
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> box: Box&lt;String&gt;
 </code></pre></div>
 <p><code>String</code> — аргумент типа.</p>
-<h3 class="study-subtitle">13.2. Generic-классы</h3>
+<h3 id="generic-klassy" class="study-subtitle">13.2. Generic-классы</h3>
 <p>Generic-класс — класс, который принимает один или несколько параметров типа.</p>
 <h4 class="study-subtitle study-subtitle--minor">Простой контейнер</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Box</span>&lt;<span class="hljs-type">T</span>&gt;(
@@ -5021,7 +5021,7 @@ println(storage.value)
 )
 </code></pre></div>
 <p>Компилятор выводит тип <code>T</code> как <code>User</code>.</p>
-<h3 class="study-subtitle">13.3. Generic-функции</h3>
+<h3 id="generic-funktsii" class="study-subtitle">13.3. Generic-функции</h3>
 <p>Параметры типов могут использоваться не только в классах, но и в функциях.</p>
 <p>Для объявления generic-функции параметр типа указывается перед именем функции.</p>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-type">&lt;T&gt;</span> <span class="hljs-title">printValue</span><span class="hljs-params">(value: <span class="hljs-type">T</span>)</span></span> {
@@ -5078,7 +5078,7 @@ printValue(<span class="hljs-literal">true</span>)
 listOf(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;Maria&quot;</span>).printAll()
 </code></pre></div>
 <p>Одна функция работает со списками разных типов.</p>
-<h3 class="study-subtitle">13.4. Ограничения типа (<code>T : SomeType</code>)</h3>
+<h3 id="ogranicheniya-tipa-t-sometype" class="study-subtitle">13.4. Ограничения типа (<code>T : SomeType</code>)</h3>
 <p>Иногда generic-коду недостаточно просто знать, что он работает с произвольным типом.</p>
 <p>Например, нужно сравнивать значения или вызывать определённые методы.</p>
 <p>Для этого можно задать ограничение типа (<em>type constraint</em>).</p>
@@ -5142,7 +5142,7 @@ printId(User(<span class="hljs-number">100</span>))
 }
 </code></pre></div>
 <p><code>T</code> в этом случае не гарантирует non-nullable-значение.</p>
-<h3 class="study-subtitle">13.5. Использование generic-коллекций</h3>
+<h3 id="ispolzovanie-generic-kollektsiy" class="study-subtitle">13.5. Использование generic-коллекций</h3>
 <p>Стандартные коллекции Kotlin активно используют generics.</p>
 <h4 class="study-subtitle study-subtitle--minor">List</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> names: List&lt;String&gt; = listOf(
@@ -5235,7 +5235,7 @@ numbers.add(<span class="hljs-number">4</span>)
 )
 </code></pre></div>
 <p>Логика поиска переиспользуется, но типы данных остаются строгими.</p>
-<h3 class="study-subtitle">13.6. Преимущества типобезопасности</h3>
+<h3 id="preimuschestva-tipobezopasnosti" class="study-subtitle">13.6. Преимущества типобезопасности</h3>
 <p>Generics помогают избежать ошибок, связанных с неправильным типом данных.</p>
 <h4 class="study-subtitle study-subtitle--minor">Без generics</h4>
 <div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Storage</span> {
@@ -5379,7 +5379,7 @@ storage.add(<span class="hljs-string">&quot;Kotlin&quot;</span>)
 <li><a href="https://kotlinlang.org/docs/typecasts.html" target="_blank" rel="noopener noreferrer">Type checks and casts</a></li>
 <li><a href="https://kotlinlang.org/spec/type-system.html" target="_blank" rel="noopener noreferrer">Kotlin type system</a></li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-14" class="study-section" aria-labelledby="sec-14-title"><h2 id="sec-14-title" class="study-section-title">Итоговая самопроверка категории</h2><p>После изучения Kotlin Basics Junior-разработчик должен уметь читать и писать идиоматичный Kotlin-код, понимать ключевые возможности языка и применять их в небольших прикладных задачах.</p>
+<hr class="study-divider"/></section><section id="itogovaya-samoproverka-kategorii" class="study-section" aria-labelledby="itogovaya-samoproverka-kategorii-title"><h2 id="itogovaya-samoproverka-kategorii-title" class="study-section-title">Итоговая самопроверка категории</h2><p>После изучения Kotlin Basics Junior-разработчик должен уметь читать и писать идиоматичный Kotlin-код, понимать ключевые возможности языка и применять их в небольших прикладных задачах.</p>
 <h3 class="study-subtitle">Синтаксис и система типов</h3>
 <ul class="study-checklist">
 <li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю структуру Kotlin-файла.</li>
@@ -5453,7 +5453,7 @@ storage.add(<span class="hljs-string">&quot;Kotlin&quot;</span>)
 <li class="study-check-item"><input type="checkbox" disabled=""/> Знаю назначение <code>where</code>.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю преимущества типобезопасности generics.</li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-15" class="study-section" aria-labelledby="sec-15-title"><h2 id="sec-15-title" class="study-section-title">Итоговый проект</h2><h3 class="study-subtitle">Менеджер учебных навыков</h3>
+<hr class="study-divider"/></section><section id="itogovyy-proekt" class="study-section" aria-labelledby="itogovyy-proekt-title"><h2 id="itogovyy-proekt-title" class="study-section-title">Итоговый проект</h2><h3 class="study-subtitle">Менеджер учебных навыков</h3>
 <p>Создай небольшую консольную программу для управления учебными навыками пользователя.</p>
 <p>В проекте должны использоваться практически все возможности, рассмотренные в категории Kotlin Basics.</p>
 <h4 class="study-subtitle study-subtitle--minor">1. Модели данных</h4>
@@ -5611,7 +5611,7 @@ storage.add(<span class="hljs-string">&quot;Kotlin&quot;</span>)
 <li>все результаты операций обрабатываются явно;</li>
 <li>программа корректно работает с пустым списком и некорректным вводом.</li>
 </ul>
-<hr class="study-divider"/></section><section id="sec-16" class="study-section" aria-labelledby="sec-16-title"><h2 id="sec-16-title" class="study-section-title">Итоговый список официальной документации Kotlin</h2><p>Документация разбита по темам. Основной материал выше рассчитан на самостоятельное изучение, ссылки предназначены для уточнения поведения языка, знакомства с дополнительными возможностями и проверки API.</p>
+<hr class="study-divider"/></section><section id="itogovyy-spisok-ofitsialnoy-dokumentatsii-kotlin" class="study-section" aria-labelledby="itogovyy-spisok-ofitsialnoy-dokumentatsii-kotlin-title"><h2 id="itogovyy-spisok-ofitsialnoy-dokumentatsii-kotlin-title" class="study-section-title">Итоговый список официальной документации Kotlin</h2><p>Документация разбита по темам. Основной материал выше рассчитан на самостоятельное изучение, ссылки предназначены для уточнения поведения языка, знакомства с дополнительными возможностями и проверки API.</p>
 <h3 class="study-subtitle">Синтаксис Kotlin</h3>
 <ul class="study-list">
 <li><a href="https://kotlinlang.org/docs/basic-syntax.html" target="_blank" rel="noopener noreferrer">Basic syntax</a></li>

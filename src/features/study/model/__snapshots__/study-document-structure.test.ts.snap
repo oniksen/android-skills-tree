@@ -4,6 +4,7 @@ exports[`kotlin-basics: структура документа стабильна
 {
   "sections": [
     {
+      "anchor": "sintaksis-kotlin",
       "blocks": [
         "markdown",
       ],
@@ -11,6 +12,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "1. Синтаксис Kotlin",
     },
     {
+      "anchor": "null-safety",
       "blocks": [
         "markdown",
       ],
@@ -18,6 +20,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "2. Null Safety",
     },
     {
+      "anchor": "data-class",
       "blocks": [
         "markdown",
       ],
@@ -25,6 +28,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "3. Data Class",
     },
     {
+      "anchor": "properties-i-accessors",
       "blocks": [
         "markdown",
       ],
@@ -32,6 +36,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "4. Properties и Accessors",
     },
     {
+      "anchor": "object-i-companion-object",
       "blocks": [
         "markdown",
       ],
@@ -39,6 +44,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "5. Object и Companion Object",
     },
     {
+      "anchor": "extension-functions",
       "blocks": [
         "markdown",
       ],
@@ -46,6 +52,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "6. Extension Functions",
     },
     {
+      "anchor": "lambda",
       "blocks": [
         "markdown",
       ],
@@ -53,6 +60,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "7. Lambda",
     },
     {
+      "anchor": "higher-order-functions",
       "blocks": [
         "markdown",
       ],
@@ -60,6 +68,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "8. Higher Order Functions",
     },
     {
+      "anchor": "scope-functions",
       "blocks": [
         "markdown",
       ],
@@ -67,6 +76,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "9. Scope Functions",
     },
     {
+      "anchor": "enum",
       "blocks": [
         "markdown",
       ],
@@ -74,6 +84,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "10. Enum",
     },
     {
+      "anchor": "sealed-class-i-sealed-interface",
       "blocks": [
         "markdown",
       ],
@@ -81,6 +92,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "11. Sealed Class и Sealed Interface",
     },
     {
+      "anchor": "packages-i-visibility-modifiers",
       "blocks": [
         "markdown",
       ],
@@ -88,6 +100,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "12. Packages и Visibility Modifiers",
     },
     {
+      "anchor": "generics-basics",
       "blocks": [
         "markdown",
       ],
@@ -95,6 +108,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "13. Generics Basics",
     },
     {
+      "anchor": "itogovaya-samoproverka-kategorii",
       "blocks": [
         "markdown",
       ],
@@ -102,6 +116,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "Итоговая самопроверка категории",
     },
     {
+      "anchor": "itogovyy-proekt",
       "blocks": [
         "markdown",
       ],
@@ -109,6 +124,7 @@ exports[`kotlin-basics: структура документа стабильна
       "title": "Итоговый проект",
     },
     {
+      "anchor": "itogovyy-spisok-ofitsialnoy-dokumentatsii-kotlin",
       "blocks": [
         "markdown",
       ],
@@ -124,6 +140,7 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
 {
   "sections": [
     {
+      "anchor": "peremennye",
       "blocks": [
         "markdown",
         "cards",
@@ -137,6 +154,7 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
       "title": "1. Переменные",
     },
     {
+      "anchor": "tipy-dannyh",
       "blocks": [
         "markdown",
         "note",
@@ -149,6 +167,7 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
       "title": "2. Типы данных",
     },
     {
+      "anchor": "uslovnye-konstruktsii",
       "blocks": [
         "markdown",
         "note",
@@ -159,6 +178,7 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
       "title": "3. Условные конструкции",
     },
     {
+      "anchor": "tsikly",
       "blocks": [
         "markdown",
         "note",
@@ -169,6 +189,7 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
       "title": "4. Циклы",
     },
     {
+      "anchor": "funktsii",
       "blocks": [
         "markdown",
         "note",
@@ -179,6 +200,7 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
       "title": "5. Функции",
     },
     {
+      "anchor": "oop-osnovy",
       "blocks": [
         "markdown",
         "note",
@@ -189,6 +211,7 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
       "title": "6. ООП: основы",
     },
     {
+      "anchor": "kollektsii",
       "blocks": [
         "markdown",
         "note",
@@ -198,6 +221,7 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
       "title": "7. Коллекции",
     },
     {
+      "anchor": "obrabotka-oshibok",
       "blocks": [
         "markdown",
         "note",
@@ -208,6 +232,7 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
       "title": "8. Обработка ошибок",
     },
     {
+      "anchor": "osnovy-algoritmov",
       "blocks": [
         "markdown",
         "note",
@@ -218,6 +243,7 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
       "title": "9. Основы алгоритмов",
     },
     {
+      "anchor": "itogovaya-samoproverka-kategorii",
       "blocks": [
         "markdown",
       ],
@@ -225,6 +251,7 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
       "title": "Итоговая самопроверка категории",
     },
     {
+      "anchor": "istochniki-i-dokumentatsiya",
       "blocks": [
         "markdown",
       ],

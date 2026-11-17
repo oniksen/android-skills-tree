@@ -1,15 +1,21 @@
 import { expect, it } from "vitest";
+import { parseStudyHeadingAnchor } from "../components/markdown-components";
 import { parseStudyDocument, type StudyDocument } from "./parse-study-document";
 import { STUDY_MATERIALS } from "../study-materials.generated";
 
 function structure(document: StudyDocument) {
   return {
     title: document.meta.title,
-    sections: document.sections.map((section) => ({
-      title: section.title,
-      sources: section.isSources,
-      blocks: section.blocks.map((block) => block.type),
-    })),
+    sections: document.sections.map((section) => {
+      const heading = parseStudyHeadingAnchor(section.title);
+
+      return {
+        title: heading.text,
+        anchor: heading.anchor,
+        sources: section.isSources,
+        blocks: section.blocks.map((block) => block.type),
+      };
+    }),
   };
 }
 
