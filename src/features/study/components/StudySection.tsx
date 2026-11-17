@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { blockClass } from "../model/study-blocks";
 import type { StudySection as StudySectionData } from "../model/parse-study-document";
+import { parseStudyHeadingAnchor } from "./markdown-components";
 import { StudyBlockRenderer } from "./study-block-renderer";
 import StudyInline from "./StudyInline";
 
@@ -14,14 +15,17 @@ function StudySection({
 }: {
   section: StudySectionData;
 }) {
+  const { text, anchor } = parseStudyHeadingAnchor(section.title);
+  const id = anchor ?? section.id;
+
   return (
     <section
-      id={section.id}
+      id={id}
       className={SECTION}
-      aria-labelledby={`${section.id}-title`}
+      aria-labelledby={`${id}-title`}
     >
-      <h2 id={`${section.id}-title`} className={SECTION_TITLE}>
-        <StudyInline text={section.title} />
+      <h2 id={`${id}-title`} className={SECTION_TITLE}>
+        <StudyInline text={text} />
       </h2>
       {section.blocks.map((block, index) => (
         <StudyBlockRenderer
