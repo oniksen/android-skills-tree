@@ -17,6 +17,33 @@ export interface StudyTocGroup {
   items: StudyTocItem[];
 }
 
+/** One observed heading: DOM id and the TOC entry it highlights. */
+export interface StudyTocTarget {
+  domId: string;
+  tocId: string;
+}
+
+/**
+ * Picks the TOC entry for the reading position.
+ *
+ * Observed targets are non-nested: the section's own `<h2>` maps to the group
+ * id, and subsections map to themselves. The last visible target in document
+ * order wins, so a visible subsection beats the section heading that contains
+ * it. No visible heading clears the highlight instead of freezing the previous
+ * one on an unrelated part of the page.
+ */
+export function selectActiveId(
+  targets: readonly StudyTocTarget[],
+  visible: ReadonlySet<string>,
+): string | null {
+  for (let index = targets.length - 1; index >= 0; index -= 1) {
+    const target = targets[index];
+    if (visible.has(target.domId)) return target.tocId;
+  }
+
+  return null;
+}
+
 /**
  * Builds the table of contents from the parsed document.
  *

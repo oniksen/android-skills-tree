@@ -30,6 +30,15 @@ describe("parseStudyHeadingAnchor", () => {
       });
     },
   );
+
+  it("не считает якорем маркер внутри ссылки", () => {
+    const title = "[Текст {#id}](https://example.com)";
+
+    expect(parseStudyHeadingAnchor(title)).toEqual({
+      text: title,
+      anchor: null,
+    });
+  });
 });
 
 describe("заголовки Markdown с якорем", () => {
@@ -54,5 +63,33 @@ describe("заголовки Markdown с якорем", () => {
     );
 
     expect(html).toBe('<h3 class="study-subtitle">Кратко</h3>');
+  });
+
+  it("не ставит id, когда маркер оказался внутри ссылки", () => {
+    const html = renderToStaticMarkup(
+      <>
+        {renderMarkdown(
+          "### [Ссылка {#inside-link}](https://example.com)",
+          createStudyMarkdownComponents(),
+        )}
+      </>,
+    );
+
+    expect(html).not.toContain('id="inside-link"');
+    expect(html).toContain("{#inside-link}");
+  });
+
+  it("не ставит id, когда маркер оказался внутри форматирования", () => {
+    const html = renderToStaticMarkup(
+      <>
+        {renderMarkdown(
+          "### Заголовок **{#inside-strong}**",
+          createStudyMarkdownComponents(),
+        )}
+      </>,
+    );
+
+    expect(html).not.toContain('id="inside-strong"');
+    expect(html).toContain("{#inside-strong}");
   });
 });

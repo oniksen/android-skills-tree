@@ -570,6 +570,8 @@
   cursor: pointer;
   font-weight: 700;
   font-size: 0.9rem;
+  min-height: 44px;
+  padding: 12px 0;
 }
 
 .study-toc-list {

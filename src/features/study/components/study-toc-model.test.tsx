@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { parseStudyDocument } from "../model/parse-study-document";
 import StudySection from "./StudySection";
-import { buildStudyToc } from "./study-toc-model";
+import { buildStudyToc, selectActiveId } from "./study-toc-model";
 
 const DOC = `# Переменные
 
@@ -87,5 +87,37 @@ describe("buildStudyToc", () => {
     expect(html).toContain('aria-labelledby="peremennye-title"');
     expect(html).toContain('id="peremennye-title"');
     expect(html).not.toContain("{#");
+  });
+});
+
+describe("selectActiveId", () => {
+  const targets = [
+    { domId: "section-1-title", tocId: "section-1" },
+    { domId: "topic-1", tocId: "topic-1" },
+    { domId: "topic-2", tocId: "topic-2" },
+    { domId: "section-2-title", tocId: "section-2" },
+    { domId: "topic-3", tocId: "topic-3" },
+  ];
+
+  it("выбирает подпункт, когда видны и секция, и подпункт", () => {
+    const visible = new Set(["section-1-title", "topic-1"]);
+
+    expect(selectActiveId(targets, visible)).toBe("topic-1");
+  });
+
+  it("выбирает последний видимый заголовок в порядке документа", () => {
+    const visible = new Set(["topic-1", "topic-2"]);
+
+    expect(selectActiveId(targets, visible)).toBe("topic-2");
+  });
+
+  it("выбирает секцию, когда видны только её заголовок", () => {
+    expect(selectActiveId(targets, new Set(["section-2-title"]))).toBe(
+      "section-2",
+    );
+  });
+
+  it("сбрасывает подсветку, когда не видно ни одного заголовка", () => {
+    expect(selectActiveId(targets, new Set())).toBeNull();
   });
 });

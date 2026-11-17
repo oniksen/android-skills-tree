@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { blockClass } from "../model/study-blocks";
 import type { StudySection } from "../model/parse-study-document";
-import { buildStudyToc, type StudyTocGroup } from "./study-toc-model";
+import { buildStudyToc, selectActiveId, type StudyTocGroup, type StudyTocTarget } from "./study-toc-model";
 
 const TOC = blockClass("toc");
 const TOC_RAIL = blockClass("tocRail");
@@ -69,8 +69,15 @@ function TocGroups({
  */
 export default function StudyToc({ sections }: { sections: StudySection[] }) {
   const groups = useMemo(() => buildStudyToc(sections), [sections]);
-  const ids = useMemo(
-    () => groups.flatMap((group) => [group.id, ...group.items.map((item) => item.id)]),
+  const targets = useMemo<StudyTocTarget[]>(
+    () =>
+      groups.flatMap((group) => [
+        { domId: `${group.id}-title`, tocId: group.id },
+        ...group.items.map((item) => ({
+          domId: item.id,
+          tocId: item.id,
+        })),
+      ]),
     [groups],
   );
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -81,8 +88,8 @@ export default function StudyToc({ sections }: { sections: StudySection[] }) {
       return;
     }
 
-    const elements = ids
-      .map((id) => document.getElementById(id))
+    const elements = targets
+      .map((target) => document.getElementById(target.domId))
       .filter((element): element is HTMLElement => element !== null);
     if (elements.length === 0) return;
 
@@ -94,15 +101,16 @@ export default function StudyToc({ sections }: { sections: StudySection[] }) {
           else visible.delete(entry.target.id);
         }
 
-        const next = ids.find((id) => visible.has(id)) ?? null;
-        if (next) setActiveId(next);
+        // Targets are non-nested (h2 vs h3), so a subsection can win over its
+        // section even though the section element wraps it.
+        setActiveId(selectActiveId(targets, visible));
       },
       { rootMargin: "-72px 0px -60% 0px" },
     );
 
     for (const element of elements) observer.observe(element);
     return () => observer.disconnect();
-  }, [ids]);
+  }, [targets]);
 
   useEffect(() => {
     const rail = railRef.current;
