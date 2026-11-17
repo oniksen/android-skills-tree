@@ -146,7 +146,10 @@ function normalizeAssessment(key: string, raw: unknown): AssessmentData {
       ? (r.subtopics as Record<string, boolean>)
       : undefined;
   // keep score as stored; if missing but subtopics present, callers may have computed
-  const out: AssessmentData = { score, subtopics };
+  const out: AssessmentData = { score };
+  // Optional fields must stay absent rather than `undefined`: Firestore rejects
+  // documents that contain `undefined` field values.
+  if (subtopics) out.subtopics = subtopics;
   if (r.updatedAt !== undefined) out.updatedAt = toDate(r.updatedAt);
   // ensure id not needed on AssessmentData
   void key;
@@ -168,15 +171,17 @@ function normalizeAchievement(key: string, raw: unknown): Achievement {
     r.metadata && typeof r.metadata === "object" && !Array.isArray(r.metadata)
       ? (r.metadata as Record<string, unknown>)
       : {};
-  return {
+  const out: Achievement = {
     id: asString(r.id, key) || key,
     type: asString(r.type, ""),
     metadata,
     achievedAt: r.achievedAt !== undefined ? toDate(r.achievedAt) : new Date(),
-    tier: (r.tier as string | null | undefined) ?? null,
-    tierProgress:
-      typeof r.tierProgress === "number" ? r.tierProgress : undefined,
   };
+  // Firestore rejects `undefined` field values, so legacy values are copied
+  // only when they are actually present.
+  if (typeof r.tier === "string" || r.tier === null) out.tier = r.tier;
+  if (typeof r.tierProgress === "number") out.tierProgress = r.tierProgress;
+  return out;
 }
 
 export function normalizeUserState(raw: unknown): UserState {
@@ -225,13 +230,12 @@ export function normalizeUserState(raw: unknown): UserState {
         rc.items && typeof rc.items === "object" && !Array.isArray(rc.items)
           ? (rc.items as Record<string, number>)
           : {},
-      claimedSkills:
-        rc.claimedSkills && typeof rc.claimedSkills === "object" && !Array.isArray(rc.claimedSkills)
-          ? (rc.claimedSkills as Record<string, string>)
-          : undefined,
       updatedAt:
         rc.updatedAt !== undefined ? toDate(rc.updatedAt) : new Date(),
     };
+    if (rc.claimedSkills && typeof rc.claimedSkills === "object" && !Array.isArray(rc.claimedSkills)) {
+      currency.claimedSkills = rc.claimedSkills as Record<string, string>;
+    }
 
     // streak
     const rs = asObject(r.streak);
@@ -247,25 +251,20 @@ export function normalizeUserState(raw: unknown): UserState {
     // settings
     const rset = asObject(r.settings);
     const settings: UserSettings = {
-      groqApiKey: typeof rset.groqApiKey === "string" ? rset.groqApiKey : undefined,
-      groqKeyLast4: typeof rset.groqKeyLast4 === "string" ? rset.groqKeyLast4 : undefined,
       maxDailyQuestions: asNumber(rset.maxDailyQuestions, 5),
-      dailyCounts:
-        rset.dailyCounts && typeof rset.dailyCounts === "object" && !Array.isArray(rset.dailyCounts)
-          ? (rset.dailyCounts as Record<string, number>)
-          : undefined,
       updatedAt: rset.updatedAt !== undefined ? toDate(rset.updatedAt) : new Date(),
     };
+    if (typeof rset.groqApiKey === "string") settings.groqApiKey = rset.groqApiKey;
+    if (typeof rset.groqKeyLast4 === "string") settings.groqKeyLast4 = rset.groqKeyLast4;
+    if (rset.dailyCounts && typeof rset.dailyCounts === "object" && !Array.isArray(rset.dailyCounts)) {
+      settings.dailyCounts = rset.dailyCounts as Record<string, number>;
+    }
 
     const schemaVersion =
       typeof r.schemaVersion === "number" ? r.schemaVersion : STATE_SCHEMA_VERSION;
 
-    const migratedAt =
-      r.migratedAt !== undefined ? toDate(r.migratedAt) : undefined;
-
-    return {
+    const state: UserState = {
       schemaVersion,
-      migratedAt,
       progress,
       assessments,
       projects,
@@ -274,6 +273,8 @@ export function normalizeUserState(raw: unknown): UserState {
       streak,
       settings,
     };
+    if (r.migratedAt !== undefined) state.migratedAt = toDate(r.migratedAt);
+    return state;
   } catch {
     return defaultUserState();
   }
@@ -325,12 +326,11 @@ export async function readLegacyUserState(uid: string): Promise<UserState> {
         data.items && typeof data.items === "object" && !Array.isArray(data.items)
           ? (data.items as Record<string, number>)
           : {},
-      claimedSkills:
-        data.claimedSkills && typeof data.claimedSkills === "object" && !Array.isArray(data.claimedSkills)
-          ? (data.claimedSkills as Record<string, string>)
-          : undefined,
       updatedAt: data.updatedAt !== undefined ? toDate(data.updatedAt) : new Date(),
     };
+    if (data.claimedSkills && typeof data.claimedSkills === "object" && !Array.isArray(data.claimedSkills)) {
+      state.currency.claimedSkills = data.claimedSkills as Record<string, string>;
+    }
   }
 
   // streak
@@ -350,15 +350,14 @@ export async function readLegacyUserState(uid: string): Promise<UserState> {
   if (settingsSnap.exists()) {
     const data = settingsSnap.data() as Record<string, unknown>;
     state.settings = {
-      groqApiKey: typeof data.groqApiKey === "string" ? data.groqApiKey : undefined,
-      groqKeyLast4: typeof data.groqKeyLast4 === "string" ? data.groqKeyLast4 : undefined,
       maxDailyQuestions: asNumber(data.maxDailyQuestions, 5),
-      dailyCounts:
-        data.dailyCounts && typeof data.dailyCounts === "object" && !Array.isArray(data.dailyCounts)
-          ? (data.dailyCounts as Record<string, number>)
-          : undefined,
       updatedAt: data.updatedAt !== undefined ? toDate(data.updatedAt) : new Date(),
     };
+    if (typeof data.groqApiKey === "string") state.settings.groqApiKey = data.groqApiKey;
+    if (typeof data.groqKeyLast4 === "string") state.settings.groqKeyLast4 = data.groqKeyLast4;
+    if (data.dailyCounts && typeof data.dailyCounts === "object" && !Array.isArray(data.dailyCounts)) {
+      state.settings.dailyCounts = data.dailyCounts as Record<string, number>;
+    }
   }
 
   // assessments collection
@@ -376,7 +375,8 @@ export async function readLegacyUserState(uid: string): Promise<UserState> {
         score = 0;
       }
     }
-    const assessment: AssessmentData = { score, subtopics };
+    const assessment: AssessmentData = { score };
+    if (subtopics) assessment.subtopics = subtopics;
     if (data.updatedAt !== undefined) assessment.updatedAt = toDate(data.updatedAt);
     state.assessments[d.id] = assessment;
   });
@@ -400,16 +400,18 @@ export async function readLegacyUserState(uid: string): Promise<UserState> {
         ? (data.metadata as Record<string, unknown>)
         : {};
     const key = achievementKey(type, metadata);
-    state.achievements[key] = {
+    const achievement: Achievement = {
       id: key,
       type,
       metadata,
       achievedAt:
         data.achievedAt !== undefined ? toDate(data.achievedAt) : new Date(),
-      tier: (data.tier as string | null | undefined) ?? null,
-      tierProgress:
-        typeof data.tierProgress === "number" ? data.tierProgress : undefined,
     };
+    // Only values that actually exist are carried over; an absent value must
+    // not become an `undefined` field, which Firestore refuses to write.
+    if (typeof data.tier === "string" || data.tier === null) achievement.tier = data.tier;
+    if (typeof data.tierProgress === "number") achievement.tierProgress = data.tierProgress;
+    state.achievements[key] = achievement;
   });
 
   state.schemaVersion = STATE_SCHEMA_VERSION;

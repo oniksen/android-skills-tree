@@ -25,6 +25,23 @@ vi.mock("@/lib/firebase", () => ({
   db: { name: "mock-db" },
 }));
 
+/**
+ * Firestore rejects writes that contain `undefined` field values
+ * ("Unsupported field value: undefined"), so state payloads must not carry them.
+ */
+function findUndefinedPaths(value: unknown, path = ""): string[] {
+  if (value === undefined) return [path || "(root)"];
+  if (Array.isArray(value)) {
+    return value.flatMap((item, index) => findUndefinedPaths(item, `${path}[${index}]`));
+  }
+  if (value && typeof value === "object" && !(value instanceof Date)) {
+    return Object.entries(value as Record<string, unknown>).flatMap(([key, item]) =>
+      findUndefinedPaths(item, path ? `${path}.${key}` : key),
+    );
+  }
+  return [];
+}
+
 describe("state", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -72,6 +89,19 @@ describe("state", () => {
       expect(s.settings.updatedAt).toEqual(new Date("2024-06-01T12:00:00.000Z"));
       expect(s.achievements.ach.achievedAt).toEqual(new Date("2024-06-01T12:00:00.000Z"));
       expect(s.projects.pj.completedAt).toEqual(new Date("2024-06-01T12:00:00.000Z"));
+    });
+
+    it("omits optional fields that are absent instead of setting undefined", () => {
+      const s = normalizeUserState({
+        achievements: { a: { type: "t", metadata: {}, achievedAt: null } },
+        currency: { balance: 1, items: {}, updatedAt: null },
+        settings: { maxDailyQuestions: 5, updatedAt: null },
+      });
+      expect(findUndefinedPaths(s)).toEqual([]);
+      expect("tierProgress" in s.achievements.a).toBe(false);
+      expect("claimedSkills" in s.currency).toBe(false);
+      expect("groqApiKey" in s.settings).toBe(false);
+      expect("migratedAt" in s).toBe(false);
     });
 
     it("uses map key for missing achievement id and project projectId", () => {
@@ -171,6 +201,82 @@ describe("state", () => {
       await migrateUserState("u3");
       expect(mocks.runTransaction).toHaveBeenCalled();
       expect(setMock).toHaveBeenCalled();
+    });
+
+    it("writes a migration payload without undefined field values", async () => {
+      const ts = new Date("2024-05-05T00:00:00.000Z");
+      mocks.getDoc.mockImplementation(async (ref: { path: string }) => {
+        switch (ref.path) {
+          case "users/u-undef/progress/current":
+            return {
+              exists: () => true,
+              data: () => ({ currentLevelId: "junior", unlockedLevelIds: ["junior"], totalScore: 3 }),
+            };
+          case "users/u-undef/currency/current":
+            // no claimedSkills
+            return { exists: () => true, data: () => ({ balance: 4, items: {}, updatedAt: ts }) };
+          case "users/u-undef/settings/current":
+            // no groqApiKey / groqKeyLast4 / dailyCounts
+            return { exists: () => true, data: () => ({ maxDailyQuestions: 5, updatedAt: ts }) };
+          default:
+            return { exists: () => false };
+        }
+      });
+      mocks.getDocs.mockImplementation(async (ref: { path: string }) => {
+        if (ref.path === "users/u-undef/assessments") {
+          // no subtopics
+          return {
+            forEach: (cb: (d: unknown) => void) => {
+              cb({ id: "sk1", data: () => ({ score: 2, updatedAt: ts }) });
+            },
+          };
+        }
+        if (ref.path === "users/u-undef/achievements") {
+          // legacy achievement written without tierProgress
+          return {
+            forEach: (cb: (d: unknown) => void) => {
+              cb({
+                id: "auto",
+                data: () => ({
+                  type: "category_perfect",
+                  metadata: { category_id: "junior-android" },
+                  achievedAt: ts,
+                }),
+              });
+            },
+          };
+        }
+        return { forEach: () => {} };
+      });
+      const setMock = vi.fn();
+      mocks.runTransaction.mockImplementation(async (_db: unknown, cb: (tx: unknown) => Promise<void>) => {
+        const tx = { get: vi.fn().mockResolvedValue({ exists: () => false }), set: setMock };
+        return cb(tx);
+      });
+
+      await migrateUserState("u-undef");
+
+      expect(setMock).toHaveBeenCalledTimes(1);
+      const payload = setMock.mock.calls[0][1] as Record<string, unknown>;
+      expect(findUndefinedPaths(payload)).toEqual([]);
+
+      const achKey = "category_perfect::junior-android";
+      const achievement = (payload.achievements as Record<string, Record<string, unknown>>)[achKey];
+      expect(achievement).toEqual({
+        id: achKey,
+        type: "category_perfect",
+        metadata: { category_id: "junior-android" },
+        achievedAt: ts,
+      });
+      expect("tierProgress" in achievement).toBe(false);
+
+      const settings = payload.settings as Record<string, unknown>;
+      expect(settings.maxDailyQuestions).toBe(5);
+      expect("groqApiKey" in settings).toBe(false);
+      expect("dailyCounts" in settings).toBe(false);
+
+      const currency = payload.currency as Record<string, unknown>;
+      expect("claimedSkills" in currency).toBe(false);
     });
 
     it("rejects and does not write when a legacy read fails", async () => {
