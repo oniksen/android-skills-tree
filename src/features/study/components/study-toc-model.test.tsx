@@ -91,33 +91,33 @@ describe("buildStudyToc", () => {
 });
 
 describe("selectActiveId", () => {
-  const targets = [
-    { domId: "section-1-title", tocId: "section-1" },
-    { domId: "topic-1", tocId: "topic-1" },
-    { domId: "topic-2", tocId: "topic-2" },
-    { domId: "section-2-title", tocId: "section-2" },
-    { domId: "topic-3", tocId: "topic-3" },
+  const positions = [
+    { domId: "section-1-title", tocId: "section-1", top: 100 },
+    { domId: "topic-1", tocId: "topic-1", top: 300 },
+    { domId: "topic-2", tocId: "topic-2", top: 700 },
+    { domId: "section-2-title", tocId: "section-2", top: 1100 },
+    { domId: "topic-3", tocId: "topic-3", top: 1400 },
   ];
 
-  it("выбирает подпункт, когда видны и секция, и подпункт", () => {
-    const visible = new Set(["section-1-title", "topic-1"]);
-
-    expect(selectActiveId(targets, visible)).toBe("topic-1");
+  it("держит подпункт, пока линия чтения внутри его диапазона", () => {
+    expect(selectActiveId(positions, 500)).toBe("topic-1");
+    expect(selectActiveId(positions, 690)).toBe("topic-1");
+    expect(selectActiveId(positions, 800)).toBe("topic-2");
   });
 
-  it("выбирает последний видимый заголовок в порядке документа", () => {
-    const visible = new Set(["topic-1", "topic-2"]);
-
-    expect(selectActiveId(targets, visible)).toBe("topic-2");
+  it("не сбрасывает подсветку между заголовками", () => {
+    expect(selectActiveId(positions, 1000)).toBe("topic-2");
   });
 
-  it("выбирает секцию, когда видны только её заголовок", () => {
-    expect(selectActiveId(targets, new Set(["section-2-title"]))).toBe(
-      "section-2",
-    );
+  it("при скролле вверх возвращает предыдущий пункт", () => {
+    expect(selectActiveId(positions, 200)).toBe("section-1");
   });
 
-  it("сбрасывает подсветку, когда не видно ни одного заголовка", () => {
-    expect(selectActiveId(targets, new Set())).toBeNull();
+  it("до первого заголовка подсвечивает первый пункт", () => {
+    expect(selectActiveId(positions, 0)).toBe("section-1");
+  });
+
+  it("возвращает null для пустого документа", () => {
+    expect(selectActiveId([], 500)).toBeNull();
   });
 });

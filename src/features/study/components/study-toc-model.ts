@@ -23,25 +23,36 @@ export interface StudyTocTarget {
   tocId: string;
 }
 
+/** A heading measured against the viewport. */
+export interface StudyTocPosition extends StudyTocTarget {
+  /** `getBoundingClientRect().top` relative to the viewport. */
+  top: number;
+}
+
 /**
  * Picks the TOC entry for the reading position.
  *
- * Observed targets are non-nested: the section's own `<h2>` maps to the group
- * id, and subsections map to themselves. The last visible target in document
- * order wins, so a visible subsection beats the section heading that contains
- * it. No visible heading clears the highlight instead of freezing the previous
- * one on an unrelated part of the page.
+ * Positions arrive in document order. The last heading that has already
+ * crossed the reading line marks the section the reader is inside, so the
+ * highlight stays on it through the whole section body instead of clearing
+ * between two headings. Scrolling back up flips to the previous entry as soon
+ * as its heading is below the line again.
+ *
+ * Before the first heading reaches the line the first entry is returned, so
+ * the panel always answers "where am I" even on a very short page.
  */
 export function selectActiveId(
-  targets: readonly StudyTocTarget[],
-  visible: ReadonlySet<string>,
+  positions: readonly StudyTocPosition[],
+  readingLine: number,
 ): string | null {
-  for (let index = targets.length - 1; index >= 0; index -= 1) {
-    const target = targets[index];
-    if (visible.has(target.domId)) return target.tocId;
+  let active: string | null = null;
+
+  for (const position of positions) {
+    if (position.top <= readingLine) active = position.tocId;
+    else break;
   }
 
-  return null;
+  return active ?? positions[0]?.tocId ?? null;
 }
 
 /**

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { blockClass } from "../model/study-blocks";
 import type { StudySection } from "../model/parse-study-document";
-import { buildStudyToc, selectActiveId, type StudyTocGroup, type StudyTocTarget } from "./study-toc-model";
+import { buildStudyToc, selectActiveId, type StudyTocGroup, type StudyTocPosition, type StudyTocTarget } from "./study-toc-model";
 
 const TOC = blockClass("toc");
 const TOC_RAIL = blockClass("tocRail");
@@ -84,32 +84,45 @@ export default function StudyToc({ sections }: { sections: StudySection[] }) {
   const railRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
-      return;
-    }
+    if (typeof window === "undefined") return;
 
-    const elements = targets
-      .map((target) => document.getElementById(target.domId))
-      .filter((element): element is HTMLElement => element !== null);
-    if (elements.length === 0) return;
+    let frame = 0;
 
-    const visible = new Set<string>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target.id);
-          else visible.delete(entry.target.id);
-        }
+    const measure = () => {
+      frame = 0;
+      const positions: StudyTocPosition[] = [];
 
-        // Targets are non-nested (h2 vs h3), so a subsection can win over its
-        // section even though the section element wraps it.
-        setActiveId(selectActiveId(targets, visible));
-      },
-      { rootMargin: "-72px 0px -60% 0px" },
-    );
+      for (const target of targets) {
+        const element = document.getElementById(target.domId);
+        if (!element) continue;
 
-    for (const element of elements) observer.observe(element);
-    return () => observer.disconnect();
+        positions.push({
+          domId: target.domId,
+          tocId: target.tocId,
+          top: element.getBoundingClientRect().top,
+        });
+      }
+
+      if (positions.length === 0) return;
+
+      const readingLine = Math.max(120, window.innerHeight * 0.3);
+      setActiveId(selectActiveId(positions, readingLine));
+    };
+
+    const schedule = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(measure);
+    };
+
+    measure();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, [targets]);
 
   useEffect(() => {
