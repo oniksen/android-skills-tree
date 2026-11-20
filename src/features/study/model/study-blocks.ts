@@ -10,8 +10,8 @@ import type { JSX } from "react";
  */
 export const STUDY_BLOCK = {
   page: "study-page",
-  topbar: "study-topbar",
-  back: "study-back",
+  backFloat: "study-back-float",
+  backFloatLabel: "study-back-float-label",
   article: "study-article",
   markdown: "study-markdown",
   hero: "study-hero",
@@ -77,8 +77,12 @@ export interface StudyBlockDefinition {
 
 export const STUDY_BLOCK_MAP = {
   page: { tags: ["div"], className: STUDY_BLOCK.page, layout: "block" },
-  topbar: { tags: ["div"], className: STUDY_BLOCK.topbar, layout: "block" },
-  back: { tags: ["a"], className: STUDY_BLOCK.back, layout: "inline" },
+  backFloat: { tags: ["a"], className: STUDY_BLOCK.backFloat, layout: "block" },
+  backFloatLabel: {
+    tags: ["span"],
+    className: STUDY_BLOCK.backFloatLabel,
+    layout: "inline",
+  },
   article: { tags: ["article"], className: STUDY_BLOCK.article, layout: "block" },
   markdown: { tags: ["div"], className: STUDY_BLOCK.markdown, layout: "block" },
   hero: { tags: ["header"], className: STUDY_BLOCK.hero, layout: "block" },

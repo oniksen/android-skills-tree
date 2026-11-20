@@ -68,7 +68,7 @@ function uncoveredKinds(
 }
 
 collect(renderFixture());
-// Page shell: `page`, `topbar`, `back`, `article` never appear in the fragment.
+// Page shell: `page`, `backFloat`, `backFloatLabel`, `article` never appear in the fragment.
 collect(renderFixturePage());
 // Fallback for a file without H1: the `markdown` container.
 collect(renderToStaticMarkup(<StudyMarkdownRenderer content="просто текст" />));

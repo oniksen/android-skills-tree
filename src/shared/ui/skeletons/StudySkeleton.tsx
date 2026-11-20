@@ -4,8 +4,8 @@ import { Skeleton } from "./Skeleton";
 export default function StudySkeleton() {
   return (
     <div className={blockClass("page")} aria-busy>
-      <div className={blockClass("topbar")}>
-        <Skeleton className="h-4 w-32" />
+      <div className={blockClass("backFloat")} aria-hidden>
+        <Skeleton className="h-[18px] w-[18px] rounded-full" />
       </div>
       <div className={blockClass("article")}>
         <div className={blockClass("layout")}>
