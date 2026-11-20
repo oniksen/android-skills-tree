@@ -206,6 +206,8 @@ export default function Header({
   const activeHref = segment === "tree" ? "/tree/junior" : `/${segment}`;
   const isQuiz = (pathname ?? "").startsWith("/quiz");
   const isStudy = /\/study(\/|$)/.test(pathname ?? "");
+  const isTree = /^\/tree(\/|$)/.test(pathname ?? "") && !isStudy;
+  const headerWidthClass = isQuiz || isStudy ? "max-w-none" : isTree ? "max-w-[2000px]" : "max-w-6xl";
   const isActive = (href: string) =>
     href === "/profile" ? activeHref === "/profile" : href === activeHref;
   const showNav = !loading && Boolean(uid);
@@ -214,50 +216,55 @@ export default function Header({
     <div className="flex min-h-dvh">
       {showNav && (
         <nav
-          className="hidden nav-lg:flex sticky top-0 self-start h-dvh z-40 w-64 flex-col border-r border-slate-700/70 bg-slate-950/90 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] backdrop-blur-xl"
           aria-label="Основная навигация"
+          className="hidden nav-lg:flex sticky top-0 z-40 h-dvh w-[17.5rem] shrink-0 px-3 pt-[max(env(safe-area-inset-top),0.75rem)] pb-3"
         >
-          <div className="flex h-14 shrink-0 items-center border-b border-slate-700/70 px-4">
-            <Link href="/tree/junior" className="transition-opacity hover:opacity-80">
-              <Brand />
-            </Link>
-          </div>
-          <div className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
-            {NAV_ITEMS.map((item) => (
-              <div key={item.href} className="group">
-                <DesktopNavItem
-                  item={item}
-                  active={isActive(item.href)}
+          <div className="glass-panel flex h-full w-full flex-col overflow-hidden">
 
-                />
-              </div>
-            ))}
-          </div>
-          <div className="border-t border-slate-700/70 px-4 py-3 font-mono text-[10px] text-slate-600">
-            {`status: ${branch ?? "local"} · ${normalizeReleaseVersion(version)}`}
+            <div className="flex h-14 shrink-0 items-center border-b border-white/[0.06] px-4">
+              <Link href="/tree/junior" className="transition-opacity hover:opacity-80">
+                <Brand />
+              </Link>
+            </div>
+            <div className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
+              {NAV_ITEMS.map((item) => (
+                <div key={item.href} className="group">
+                  <DesktopNavItem
+                    item={item}
+                    active={isActive(item.href)}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="border-t border-white/[0.06] px-4 py-3 font-mono text-[10px] text-slate-600">
+              {`status: ${branch ?? "local"} · ${normalizeReleaseVersion(version)}`}
+            </div>
           </div>
         </nav>
       )}
 
       {showNav && (
         <nav
-          className="hidden nav-md:flex nav-lg:hidden sticky top-0 self-start h-dvh z-40 w-max flex-col items-stretch gap-1 border-r border-slate-700/70 bg-slate-950/90 px-3 pt-[max(env(safe-area-inset-top),1.25rem)] pb-[max(env(safe-area-inset-bottom),0.75rem)] backdrop-blur-xl"
           aria-label="Основная навигация"
+          className="hidden nav-md:flex nav-lg:hidden sticky top-0 z-40 h-dvh w-max shrink-0 p-3"
         >
-          {NAV_ITEMS.map((item) => (
-            <TabletNavItem
-              key={item.href}
-              item={item}
-              active={isActive(item.href)}
+          <div className="glass-panel flex h-full flex-col items-stretch gap-1 overflow-y-auto px-3 py-4">
 
-            />
-          ))}
+            {NAV_ITEMS.map((item) => (
+              <TabletNavItem
+                key={item.href}
+                item={item}
+                active={isActive(item.href)}
+              />
+            ))}
+          </div>
         </nav>
       )}
 
       <div className="flex min-h-dvh flex-1 min-w-0 flex-col">
-        <header className="sticky top-0 z-50 border-b border-slate-700/70 bg-slate-950/90 pt-[env(safe-area-inset-top)] backdrop-blur-xl header-blur">
-          <div className="h-14 flex items-center justify-between gap-4 pl-[max(env(safe-area-inset-left),1rem)] pr-[max(env(safe-area-inset-right),1rem)]">
+        <header className="sticky top-0 z-50 px-3 pt-[max(env(safe-area-inset-top),0.75rem)]">
+          <div className={`glass-panel mx-auto flex h-14 w-full items-center justify-between gap-4 px-4 ${headerWidthClass}`}>
+
             <div className="flex min-w-0 items-center gap-3">
               <Link
                 href="/tree/junior"
@@ -292,7 +299,6 @@ export default function Header({
                 )}
             </div>
           </div>
-          <div className="pointer-events-none h-px w-full bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
         </header>
 
         <main
@@ -300,8 +306,10 @@ export default function Header({
             isQuiz
               ? "flex w-full flex-1 flex-col"
               : isStudy
-                ? "w-full flex-1"
-                : `w-full max-w-6xl mx-auto flex-1 ${mainClassName}`
+                ? "w-full flex-1 p-3"
+                : isTree
+                  ? `w-full max-w-[2000px] mx-auto flex-1 nav-md:px-6 ${mainClassName}`
+                  : `w-full max-w-6xl mx-auto flex-1 ${mainClassName}`
           }
         >
           {children}
@@ -317,7 +325,8 @@ export default function Header({
           className="nav-md:hidden fixed inset-x-0 bottom-0 z-50 px-4 pb-[max(env(safe-area-inset-bottom),0.875rem)] pl-[max(env(safe-area-inset-left),1rem)] pr-[max(env(safe-area-inset-right),1rem)]"
           aria-label="Основная навигация"
         >
-          <div className="mx-auto max-w-sm rounded-2xl border border-slate-700/70 bg-slate-950/95 px-2 py-2 shadow-[0_18px_40px_rgba(26,25,21,0.28)] backdrop-blur-xl">
+          <div className="glass-panel mx-auto max-w-sm px-2 py-2">
+
             <ul className="grid grid-cols-6 gap-1">
               {MOBILE_NAV_ITEMS.map((item) => (
                 <li key={item.href}>
