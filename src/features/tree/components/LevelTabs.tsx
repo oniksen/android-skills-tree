@@ -55,7 +55,7 @@ export default function LevelTabs({ levels }: { levels: Level[] }) {
                 <motion.span
                   layoutId="level-tab"
                   className={`absolute inset-0 rounded-md border ${color.border} bg-slate-900`}
-                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  transition={{ type: "spring", stiffness: 520, damping: 40 }}
                   initial={false}
                 />
               )}

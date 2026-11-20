@@ -25,10 +25,9 @@ interface CategoryCardProps {
   assessments: Record<string, { subtopics?: Record<string, boolean> }>;
   isLocked?: boolean;
   disabled?: boolean;
-  index?: number;
 }
 
-export default function CategoryCard({ categoryId, name, skills, assessments, isLocked = false, disabled = false, index = 0 }: CategoryCardProps) {
+export default function CategoryCard({ categoryId, name, skills, assessments, isLocked = false, disabled = false }: CategoryCardProps) {
   const params = useParams();
   const slug = (params?.slug as string) ?? "";
   const sorted = [...skills].sort((a, b) => a.sortOrder - b.sortOrder);
@@ -40,10 +39,6 @@ export default function CategoryCard({ categoryId, name, skills, assessments, is
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px 0px -60px 0px" }}
-      transition={{ duration: 0.45, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -3 }}
       className={`group relative card-surface overflow-hidden rounded-lg p-5 transition-colors duration-200 ${
         isLocked

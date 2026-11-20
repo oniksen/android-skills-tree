@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useUserProgress, useAssessments } from "@/hooks";
 import { levels } from "@/data/levels";
 import { getCategoriesByLevelId } from "@/data/categories";
@@ -60,16 +60,25 @@ export default function TreeClient({ slug }: TreeClientProps) {
         </motion.div>
         <LevelTabs levels={levels} />
         <Legend />
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {levelCategories.map((cat) => (
-            <CategoryCardReadonly
-              key={cat.id}
-              categoryId={cat.id}
-              name={cat.name}
-              skills={cat.skills}
-            />
-          ))}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={slug}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            className="grid grid-cols-1 gap-4 lg:grid-cols-2"
+          >
+            {levelCategories.map((cat) => (
+              <CategoryCardReadonly
+                key={cat.id}
+                categoryId={cat.id}
+                name={cat.name}
+                skills={cat.skills}
+              />
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
     );
   }
@@ -100,72 +109,81 @@ export default function TreeClient({ slug }: TreeClientProps) {
       <LevelTabs levels={levels} />
       <Legend isAuthenticated={true} />
 
-      {!isCurrentOrPast && (
-        <>
-          <LevelGate
-            isUnlocked={false}
-            isCompleted={false}
-            requiredScore={getLevelMinScore(currentLevel.id)}
-            currentScore={currentScore}
-            levelName={currentLevel.name}
-          />
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {levelCategories.map((cat, index) => (
-              <CategoryCard
-                key={cat.id}
-                categoryId={cat.id}
-                name={cat.name}
-                skills={cat.skills}
-                assessments={assessmentMap}
-                isLocked={false}
-                disabled={true}
-                index={index}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={slug}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+          className="space-y-6"
+        >
+          {!isCurrentOrPast && (
+            <>
+              <LevelGate
+                isUnlocked={false}
+                isCompleted={false}
+                requiredScore={getLevelMinScore(currentLevel.id)}
+                currentScore={currentScore}
+                levelName={currentLevel.name}
               />
-            ))}
-          </div>
-        </>
-      )}
-      {isCompleted && (
-        <>
-          <LevelGate
-            isUnlocked={false}
-            isCompleted={true}
-            requiredScore={0}
-            currentScore={currentScore}
-            levelName={currentLevel.name}
-          />
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {levelCategories.map((cat) => (
-              <CategoryCardReadonly
-                key={cat.id}
-                categoryId={cat.id}
-                name={cat.name}
-                skills={cat.skills}
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {levelCategories.map((cat) => (
+                  <CategoryCard
+                    key={cat.id}
+                    categoryId={cat.id}
+                    name={cat.name}
+                    skills={cat.skills}
+                    assessments={assessmentMap}
+                    isLocked={false}
+                    disabled={true}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          {isCompleted && (
+            <>
+              <LevelGate
+                isUnlocked={false}
+                isCompleted={true}
+                requiredScore={0}
+                currentScore={currentScore}
+                levelName={currentLevel.name}
               />
-            ))}
-          </div>
-        </>
-      )}
-      {isCurrentOrPast && !isCompleted && (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {levelCategories.map((cat, index) => {
-            const catScore = calcCategoryScore(cat.id, assessmentMap);
-            const catMax = getCategoryMaxScore(cat.id);
-            return (
-              <CategoryCard
-                key={cat.id}
-                categoryId={cat.id}
-                name={cat.name}
-                skills={cat.skills}
-                assessments={assessmentMap}
-                isLocked={catScore >= catMax}
-                disabled={false}
-                index={index}
-              />
-            );
-          })}
-        </div>
-      )}
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {levelCategories.map((cat) => (
+                  <CategoryCardReadonly
+                    key={cat.id}
+                    categoryId={cat.id}
+                    name={cat.name}
+                    skills={cat.skills}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          {isCurrentOrPast && !isCompleted && (
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              {levelCategories.map((cat) => {
+                const catScore = calcCategoryScore(cat.id, assessmentMap);
+                const catMax = getCategoryMaxScore(cat.id);
+                return (
+                  <CategoryCard
+                    key={cat.id}
+                    categoryId={cat.id}
+                    name={cat.name}
+                    skills={cat.skills}
+                    assessments={assessmentMap}
+                    isLocked={catScore >= catMax}
+                    disabled={false}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
