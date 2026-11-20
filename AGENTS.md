@@ -56,20 +56,29 @@ server-rendered Next.js with client components talking to Firestore via hooks.
 
 ## Release workflow (GitHub)
 
-- `package.json` (`version`) — intended next stable base version; local UI shows `vX.Y.Z-dev+<sha>`.
+- **Semantic-release is the single source of truth for versions.** On push to `main`/`rc/*`
+  it reads the last stable git tag and the conventional commits since it
+  (breaking → major, `feat` → minor, `fix`/`perf` → patch).
+- `package.json` (`version`) is only the local/dev base shown by the UI as `vX.Y.Z-dev+<sha>`.
+  The release step never reads it. Keep it at the latest released tag; do not bump it by hand.
 - Local development: ordinary commits; no releases.
 - Vercel deploys every branch as preview; GitHub releases are created only from `main` and `rc/*`.
-- Release candidate: create branch `rc/X.Y.Z`, push it → Vercel preview deploy + GitHub pre-release `vX.Y.Z-rc.N`.
+- Release candidate: `npm run rc` creates `rc/<next version>` (the next version comes from the
+  last tag + commits, see `scripts/release-version.mjs`). Push it → GitHub pre-release
+  `vX.Y.Z-rc.N`.
 - Stable release: merge `rc/X.Y.Z` (or feature work) into `main` → GitHub release `vX.Y.Z`.
 - UI shows only the base `vX.Y.Z` (pre-release/build suffix is hidden).
 - Tags and releases are created by CI on push only; never create them locally.
 
 ## Automated feature cycle
 
-- Start feature: `npm run new:feat -- <slug>` (minor bump) or `npm run new:fix -- <slug>` (patch bump).
+- Start feature: `npm run new:feat -- <slug>` or `npm run new:fix -- <slug>` — creates the
+  branch from `main` (or `--base=<branch>`) without touching versions or `package.json`.
 - Develop locally; push the feature branch only if you need to save progress.
-- Create release candidate: `npm run rc` (creates/pushes `rc/X.Y.Z`; CI creates `vX.Y.Z-rc.N`).
-- Promote to stable: `npm run promote` (opens PR) or `npm run promote -- --merge` (merges; CI creates `vX.Y.Z`).
+- Create release candidate: `npm run rc` (creates/pushes `rc/<next>`; CI creates
+  `v<next>-rc.N`).
+- Promote to stable: `npm run promote` (uses the current `rc/*` branch, or the newest one;
+  opens a PR) or `npm run promote -- --merge` (merges; CI creates the stable release).
 
 ## Study material pipeline (Markdown → page)
 

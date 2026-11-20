@@ -1,5 +1,5 @@
-import fs from "node:fs";
 import { execSync } from "node:child_process";
+import { resolveNextVersion } from "./release-version.mjs";
 
 const args = process.argv.slice(2);
 const opts = {};
@@ -25,12 +25,18 @@ if (status) {
   process.exit(1);
 }
 
-const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-const version = pkg.version;
-const rcBranch = `rc/${version}`;
+const { current, next, level } = resolveNextVersion();
+if (!next) {
+  console.error(
+    `No feat/fix/perf commits since v${current}; nothing to release yet.`,
+  );
+  process.exit(1);
+}
 
-const current = sh("git branch --show-current");
-if (current !== rcBranch) {
+const rcBranch = `rc/${next}`;
+
+const branch = sh("git branch --show-current");
+if (branch !== rcBranch) {
   try {
     sh(`git show-ref --verify --quiet refs/heads/${rcBranch}`);
     run(`git checkout ${rcBranch}`);
@@ -39,10 +45,14 @@ if (current !== rcBranch) {
   }
 }
 
+console.log(`Last release: v${current} · next: v${next} (${level})`);
+
 if (push) {
   run(`git push -u origin ${rcBranch}`);
   console.log(`Release candidate branch pushed: ${rcBranch}`);
-  console.log(`CI will create v${version}-rc.N`);
+  console.log(`CI will create v${next}-rc.N`);
 } else {
-  console.log(`Created/checked out ${rcBranch}. Push with \`git push -u origin ${rcBranch}\` to trigger the pre-release.`);
+  console.log(
+    `Created/checked out ${rcBranch}. Push with \`git push -u origin ${rcBranch}\` to trigger the pre-release.`,
+  );
 }

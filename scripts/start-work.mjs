@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import { execSync } from "node:child_process";
 
 const args = process.argv.slice(2);
@@ -32,13 +31,6 @@ if (status) {
   process.exit(1);
 }
 
-const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-const [major, minor, patch] = pkg.version.split(".").map(Number);
-const nextVersion =
-  type === "feat"
-    ? `${major}.${minor + 1}.0`
-    : `${major}.${minor}.${patch + 1}`;
-
 const slug = (slugInput || `${type}-${Date.now()}`)
   .toLowerCase()
   .replace(/[^a-z0-9-]+/g, "-")
@@ -61,14 +53,14 @@ try {
 }
 run(`git checkout -b ${branch}`);
 
-pkg.version = nextVersion;
-fs.writeFileSync("package.json", `${JSON.stringify(pkg, null, 2)}\n`);
-run("git add package.json");
-run(`git commit -m "chore: start v${nextVersion}"`);
-
 if (push) {
   run(`git push -u origin ${branch}`);
 }
 
-console.log(`Started ${type} work: v${nextVersion} on branch ${branch}`);
-console.log("Next: develop locally, then run `npm run rc` to create a release candidate.");
+console.log(`Started ${type} work on branch ${branch}.`);
+console.log(
+  "Versioning is handled by semantic-release at release time; package.json is not bumped.",
+);
+console.log(
+  "Next: develop locally, then run `npm run rc` to create a release candidate.",
+);
