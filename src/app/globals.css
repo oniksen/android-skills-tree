@@ -631,16 +631,36 @@
 
 .study-toc-link {
   display: block;
-  padding: 4px 0;
+  padding: 4px 0 4px 8px;
+  border-left: 2px solid transparent;
+  border-radius: 0 6px 6px 0;
   font-size: 0.86rem;
   line-height: 1.35;
-  color: var(--fg);
+  color: var(--color-slate-500);
   text-decoration: none;
   overflow-wrap: anywhere;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+/* Theme: the group entry reads as a title. */
+.study-toc-group > .study-toc-link {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  border-left-color: var(--study-accent-text);
+}
+
+/* Subtopic: recessed, tied to its theme by a guide line. */
+.study-toc-list .study-toc-list .study-toc-link {
+  font-weight: 500;
+  color: var(--color-slate-500);
+  border-left-color: var(--surface-border);
 }
 
 .study-toc-link:hover {
   color: var(--study-accent-text);
+  border-left-color: var(--study-accent-text);
 }
 
 .study-toc-link:focus-visible {
@@ -652,6 +672,8 @@
 .study-toc-link[aria-current="location"] {
   color: var(--study-accent-text);
   font-weight: 700;
+  background: var(--study-accent-bg);
+  border-left-color: var(--study-accent-text);
 }
 
 @media (min-width: 1280px) {
