@@ -3,7 +3,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { blockClass } from "../model/study-blocks";
 import type { StudySection } from "../model/parse-study-document";
-import { buildStudyToc, selectActiveId, type StudyTocGroup, type StudyTocPosition, type StudyTocTarget } from "./study-toc-model";
+import {
+  buildStudyToc,
+  selectActiveId,
+  type StudyTocGroup,
+  type StudyTocPosition,
+  type StudyTocTarget,
+} from "./study-toc-model";
+import {
+  easeOutCubic,
+  scrollTargetTop,
+  TOC_SCROLL_DURATION,
+} from "./study-toc-scroll";
 
 const TOC = blockClass("toc");
 const TOC_RAIL = blockClass("tocRail");
@@ -12,6 +23,16 @@ const TOC_SUMMARY = blockClass("tocSummary");
 const TOC_LIST = blockClass("tocList");
 const TOC_GROUP = blockClass("tocGroup");
 const TOC_LINK = blockClass("tocLink");
+
+const SCROLL_KEYS = new Set([
+  "ArrowUp",
+  "ArrowDown",
+  "PageUp",
+  "PageDown",
+  "Home",
+  "End",
+  " ",
+]);
 
 function TocLink({
   id,
@@ -66,6 +87,11 @@ function TocGroups({
  * Desktop shows a sticky rail; narrow screens show one collapsible block.
  * Both render the same groups. The active entry follows the reader through
  * the document, so the panel answers "where am I" as well as "where can I go".
+ *
+ * Clicking an entry scrolls the page with a short custom animation and pins
+ * the indicator to the clicked entry immediately, so it never jumps back to
+ * the position the viewport is still leaving. The rail itself never scrolls
+ * on its own: only the indicator moves while the reader scrolls the page.
  */
 export default function StudyToc({ sections }: { sections: StudySection[] }) {
   const groups = useMemo(() => buildStudyToc(sections), [sections]);
@@ -81,15 +107,21 @@ export default function StudyToc({ sections }: { sections: StudySection[] }) {
     [groups],
   );
   const [activeId, setActiveId] = useState<string | null>(null);
-  const railRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    const nav = navRef.current;
+    if (typeof window === "undefined" || !nav) return;
 
     let frame = 0;
+    let animationFrame = 0;
+    let locked = false;
+    let restoreScrollBehavior: (() => void) | null = null;
 
     const measure = () => {
       frame = 0;
+      if (locked) return;
+
       const positions: StudyTocPosition[] = [];
 
       for (const target of targets) {
@@ -110,37 +142,145 @@ export default function StudyToc({ sections }: { sections: StudySection[] }) {
     };
 
     const schedule = () => {
-      if (frame) return;
+      if (locked || frame) return;
       frame = window.requestAnimationFrame(measure);
     };
 
+    const restoreSmoothness = () => {
+      restoreScrollBehavior?.();
+      restoreScrollBehavior = null;
+    };
+
+    const disableNativeSmoothScrolling = () => {
+      const root = document.documentElement;
+      const previous = root.style.scrollBehavior;
+      root.style.scrollBehavior = "auto";
+      restoreScrollBehavior = () => {
+        root.style.scrollBehavior = previous;
+      };
+    };
+
+    const stopAnimation = (resume: boolean) => {
+      if (animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+      }
+      restoreSmoothness();
+      locked = false;
+      if (resume) measure();
+    };
+
+    const animateTo = (target: HTMLElement) => {
+      const margin =
+        Number.parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+      const from = window.scrollY;
+      const to = scrollTargetTop(
+        target.getBoundingClientRect().top,
+        from,
+        margin,
+      );
+      const reduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (reduced || Math.abs(to - from) < 2) {
+        disableNativeSmoothScrolling();
+        window.scrollTo(0, to);
+        restoreSmoothness();
+        locked = false;
+        measure();
+        return;
+      }
+
+      disableNativeSmoothScrolling();
+      const start = window.performance.now();
+
+      const step = (now: number) => {
+        const progress = Math.min(1, (now - start) / TOC_SCROLL_DURATION);
+        window.scrollTo(0, from + (to - from) * easeOutCubic(progress));
+
+        if (progress < 1) {
+          animationFrame = window.requestAnimationFrame(step);
+        } else {
+          animationFrame = 0;
+          restoreSmoothness();
+          locked = false;
+          measure();
+        }
+      };
+
+      animationFrame = window.requestAnimationFrame(step);
+    };
+
+    const handleClick = (event: MouseEvent) => {
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      const source = event.target;
+      const link =
+        source instanceof Element
+          ? source.closest<HTMLAnchorElement>('a[href^="#"]')
+          : null;
+      if (!link) return;
+
+      let id: string;
+      try {
+        id = decodeURIComponent(link.hash.slice(1));
+      } catch {
+        return;
+      }
+
+      const target = id ? document.getElementById(id) : null;
+      if (!target) return;
+
+      event.preventDefault();
+      stopAnimation(false);
+      setActiveId(id);
+      locked = true;
+      window.history.pushState(null, "", link.hash);
+      animateTo(target);
+    };
+
+    const handleInterrupt = () => {
+      if (locked) stopAnimation(true);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (locked && SCROLL_KEYS.has(event.key)) stopAnimation(true);
+    };
+
     measure();
+    nav.addEventListener("click", handleClick);
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    window.addEventListener("wheel", handleInterrupt, { passive: true });
+    window.addEventListener("touchstart", handleInterrupt, { passive: true });
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      nav.removeEventListener("click", handleClick);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      window.removeEventListener("wheel", handleInterrupt);
+      window.removeEventListener("touchstart", handleInterrupt);
+      window.removeEventListener("keydown", handleKeyDown);
       if (frame) window.cancelAnimationFrame(frame);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+      restoreSmoothness();
     };
   }, [targets]);
 
-  useEffect(() => {
-    const rail = railRef.current;
-    if (!activeId || !rail) return;
-
-    const link = rail.querySelector<HTMLElement>(`a[href="#${activeId}"]`);
-    if (!link) return;
-
-    rail.scrollTop = Math.max(
-      0,
-      link.offsetTop - rail.clientHeight / 2 + link.offsetHeight / 2,
-    );
-  }, [activeId]);
-
   return (
-    <nav className={TOC} aria-label="Содержание материала">
-      <div ref={railRef} className={TOC_RAIL}>
+    <nav ref={navRef} className={TOC} aria-label="Содержание материала">
+      <div className={TOC_RAIL}>
         <TocGroups groups={groups} activeId={activeId} />
       </div>
       <details className={TOC_COMPACT}>
