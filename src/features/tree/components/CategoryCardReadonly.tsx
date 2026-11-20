@@ -46,7 +46,7 @@ export default function CategoryCardReadonly({ categoryId, name, skills, assessm
             </Link>
           )}
         </div>
-        <span className="font-mono text-sm text-slate-500">{catScore}/{maxScore} XP</span>
+        <span className="whitespace-nowrap font-mono text-sm text-slate-500">{catScore}/{maxScore} XP</span>
       </div>
       <ProgressBar current={catScore} max={maxScore} tone="coral" showLabel={false} />
       <div className="mt-3 space-y-0.5">

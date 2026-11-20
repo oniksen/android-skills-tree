@@ -37,7 +37,7 @@ export default function LevelTabs({ levels }: { levels: Level[] }) {
   const currentSlug = (params?.slug as string) || levels[0]?.slug;
 
   return (
-    <div className="flex gap-2 flex-nowrap overflow-x-auto nav-md:flex-wrap nav-md:overflow-x-visible border-b border-white/[0.06] pb-4">
+    <div className="flex gap-2 flex-nowrap overflow-x-auto nav-md:flex-wrap nav-md:overflow-x-visible">
       {[...levels]
         .sort((a, b) => a.levelOrder - b.levelOrder)
         .map((level) => {

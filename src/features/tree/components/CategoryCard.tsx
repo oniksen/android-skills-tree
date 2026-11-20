@@ -64,11 +64,11 @@ export default function CategoryCard({ categoryId, name, skills, assessments, is
             </Link>
           )}
         </div>
-        <span className="flex items-center gap-2">
+        <span className="flex shrink-0 items-center gap-2">
           {isLocked && catScore >= maxScore && (
             <span className="text-xs bg-yellow-600/20 text-yellow-500 px-2 py-0.5 rounded-full font-medium">макс</span>
           )}
-          <span className="font-mono text-sm text-slate-500">{catScore}/{maxScore} XP</span>
+          <span className="whitespace-nowrap font-mono text-sm text-slate-500">{catScore}/{maxScore} XP</span>
         </span>
       </div>
       <ProgressBar current={catScore} max={maxScore} tone={isLocked ? "amber" : "coral"} showLabel={false} />

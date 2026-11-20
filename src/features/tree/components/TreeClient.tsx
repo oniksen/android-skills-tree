@@ -5,13 +5,17 @@ import { useUserProgress, useAssessments } from "@/hooks";
 import { levels } from "@/data/levels";
 import { getCategoriesByLevelId } from "@/data/categories";
 import { getSkillsByCategoryId } from "@/data/skills";
-import LevelTabs from "@/features/tree/components/LevelTabs";
+import LevelHero from "@/features/tree/components/LevelHero";
+import TreeToolbar from "@/features/tree/components/TreeToolbar";
 import CategoryCard from "@/features/tree/components/CategoryCard";
 import CategoryCardReadonly from "@/features/tree/components/CategoryCardReadonly";
 import LevelGate from "@/features/tree/components/LevelGate";
-import Legend from "@/features/tree/components/Legend";
 import { TreeSkeleton } from "@/shared/ui/skeletons";
-import { calcCategoryScore } from "@/core/domain/scoring";
+import {
+  calcCategoryScore,
+  calcLevelCompletionPercent,
+  calcLevelScore,
+} from "@/core/domain/scoring";
 import { getCategoryMaxScore, getLevelMinScore } from "@/core/domain/weights";
 
 const LEVEL_ACCENT: Record<string, string> = {
@@ -40,6 +44,29 @@ export default function TreeClient({ slug }: TreeClientProps) {
   );
 
   const accent = LEVEL_ACCENT[currentLevel.slug] || "text-blue-400";
+  const levelIndex = levels.findIndex((l) => l.id === currentLevel.id);
+  const levelMaxScore = levelCategories.reduce(
+    (sum, category) => sum + getCategoryMaxScore(category.id),
+    0,
+  );
+  const categoriesDone = levelCategories.filter((category) => {
+    const maxScore = getCategoryMaxScore(category.id);
+    return maxScore > 0 && calcCategoryScore(category.id, assessmentMap) >= maxScore;
+  }).length;
+
+  const hero = (
+    <LevelHero
+      level={currentLevel}
+      accent={accent}
+      levelNumber={levelIndex + 1}
+      totalLevels={levels.length}
+      score={calcLevelScore(currentLevel.id, assessmentMap)}
+      maxScore={levelMaxScore}
+      categoriesDone={categoriesDone}
+      categoriesTotal={levelCategories.length}
+      subtopicPercent={calcLevelCompletionPercent(currentLevel.id, assessmentMap)}
+    />
+  );
 
   if (progressLoading || assessmentsLoading) {
     return <TreeSkeleton />;
@@ -48,18 +75,8 @@ export default function TreeClient({ slug }: TreeClientProps) {
   if (!progress) {
     return (
       <div className="space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <h1 className={`text-2xl font-bold tracking-tight mb-1 ${accent}`}>
-            <span className="text-slate-600">##</span> {currentLevel.name}
-          </h1>
-          <p className="text-sm text-slate-400">{currentLevel.description}</p>
-        </motion.div>
-        <LevelTabs levels={levels} />
-        <Legend />
+        {hero}
+        <TreeToolbar levels={levels} />
         <AnimatePresence mode="wait">
           <motion.div
             key={slug}
@@ -67,7 +84,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="grid grid-cols-1 gap-4 lg:grid-cols-2"
+            className="tree-grid"
           >
             {levelCategories.map((cat) => (
               <CategoryCardReadonly
@@ -85,29 +102,15 @@ export default function TreeClient({ slug }: TreeClientProps) {
 
   const currentLevelId = progress.currentLevelId || levels[0].id;
   const currentLevelIndex = levels.findIndex((l) => l.id === currentLevelId);
-  const levelIndex = levels.findIndex((l) => l.id === currentLevel.id);
   const isCurrentOrPast = levelIndex <= currentLevelIndex;
   const isCompleted = levelIndex < currentLevelIndex;
   const currentScore = progress.totalScore || 0;
 
   return (
     <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="min-w-0"
-      >
-        <div>
-          <h1 className={`text-2xl font-bold tracking-tight mb-1 ${accent}`}>
-            <span className="text-slate-600">##</span> {currentLevel.name}
-          </h1>
-          <p className="text-sm text-slate-400">{currentLevel.description}</p>
-        </div>
-      </motion.div>
+      {hero}
 
-      <LevelTabs levels={levels} />
-      <Legend isAuthenticated={true} />
+      <TreeToolbar levels={levels} isAuthenticated />
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -127,7 +130,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
                 currentScore={currentScore}
                 levelName={currentLevel.name}
               />
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <div className="tree-grid">
                 {levelCategories.map((cat) => (
                   <CategoryCard
                     key={cat.id}
@@ -151,7 +154,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
                 currentScore={currentScore}
                 levelName={currentLevel.name}
               />
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <div className="tree-grid">
                 {levelCategories.map((cat) => (
                   <CategoryCardReadonly
                     key={cat.id}
@@ -164,7 +167,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
             </>
           )}
           {isCurrentOrPast && !isCompleted && (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="tree-grid">
               {levelCategories.map((cat) => {
                 const catScore = calcCategoryScore(cat.id, assessmentMap);
                 const catMax = getCategoryMaxScore(cat.id);

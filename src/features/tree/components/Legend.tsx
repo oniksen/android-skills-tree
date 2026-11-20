@@ -1,72 +1,51 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+interface LegendProps {
+  isAuthenticated?: boolean;
+}
 
-export default function Legend({ isAuthenticated }: { isAuthenticated?: boolean }) {
-  const [open, setOpen] = useState(false);
-
+export default function Legend({ isAuthenticated }: LegendProps) {
   return (
-    <div className="card-surface rounded-xl p-4">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between py-2 pl-1 pr-2 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors"
-      >
-        <span>Условные обозначения</span>
-        <motion.span
-          animate={{ rotate: open ? 180 : 0 }}
-          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="text-xs"
-        >
-          ▼
-        </motion.span>
-      </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            key="body"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden"
-          >
-            <div className="px-5 pb-3 pt-3 border-t border-white/[0.06] space-y-1 text-sm">
-              <div className="flex items-start gap-3 pl-1">
-                <span className="text-xs bg-blue-600/20 text-blue-400 px-1.5 py-0.5 rounded font-medium shrink-0 mt-0.5">required</span>
-                <span className="text-slate-400 leading-snug">Обязательный навык для перехода на следующий уровень</span>
-              </div>
-              <div className="flex items-start gap-3 pl-1">
-                <span className="shrink-0 inline-flex items-center gap-1 rounded bg-amber-500/15 px-1.5 py-0.5 text-xs font-medium text-amber-400 mt-0.5">
-                  сложно <span className="font-mono opacity-80">30 XP</span>
-                </span>
-                <span className="text-slate-400 leading-snug">
-                  XP зависят от сложности навыка: у лёгких тем меньше, у сложных — больше.
-                  За полностью закрытый навык ещё начисляются 💎
-                </span>
-              </div>
-              <div className="flex items-start gap-3 pl-1">
-                <span className="w-6 h-6 rounded font-mono text-xs font-medium flex items-center justify-center text-slate-600 border border-blue-500/50 shrink-0">
-                  ✓
-                </span>
-                <span className="text-slate-400 leading-snug">
-                  Отмечайте подтемы — доля отмеченных даёт соответствующую долю XP навыка
-                </span>
-              </div>
-              <div className="flex items-start gap-3 pl-1">
-                <span className="text-xs text-slate-500 font-mono mt-0.5 shrink-0">(3/5)</span>
-                <span className="text-slate-400 leading-snug">Прогресс: выполнено подтем из общего количества</span>
-              </div>
-              {isAuthenticated && (
-                <div className="flex items-start gap-3 pl-1">
-                  <span className="text-emerald-400 text-xs mt-0.5 shrink-0">✓</span>
-                  <span className="text-slate-400 leading-snug">Автосохранение при нажатии чекбокса</span>
-                </div>
-              )}
-            </div>
-          </motion.div>
+    <div className="card-surface mt-3 rounded-lg p-4">
+      <div className="grid gap-x-6 gap-y-2.5 text-sm nav-md:grid-cols-2">
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 shrink-0 rounded bg-blue-600/20 px-1.5 py-0.5 text-xs font-medium text-blue-400">
+            required
+          </span>
+          <span className="leading-snug text-slate-400">
+            Обязательный навык для перехода на следующий уровень
+          </span>
+        </div>
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 rounded bg-amber-500/15 px-1.5 py-0.5 text-xs font-medium text-amber-400">
+            сложно <span className="font-mono opacity-80">30 XP</span>
+          </span>
+          <span className="leading-snug text-slate-400">
+            XP зависят от сложности навыка: у лёгких тем меньше, у сложных — больше. За полностью
+            закрытый навык ещё начисляются 💎
+          </span>
+        </div>
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-blue-500/50 font-mono text-xs font-medium text-slate-600">
+            ✓
+          </span>
+          <span className="leading-snug text-slate-400">
+            Отмечайте подтемы — доля отмеченных даёт соответствующую долю XP навыка
+          </span>
+        </div>
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 shrink-0 font-mono text-xs text-slate-500">(3/5)</span>
+          <span className="leading-snug text-slate-400">
+            Прогресс: выполнено подтем из общего количества
+          </span>
+        </div>
+        {isAuthenticated && (
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 shrink-0 text-xs text-emerald-400">✓</span>
+            <span className="leading-snug text-slate-400">Автосохранение при нажатии чекбокса</span>
+          </div>
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 }
