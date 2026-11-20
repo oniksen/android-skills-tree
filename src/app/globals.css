@@ -478,7 +478,7 @@
 .study-page {
   width: 100%;
   min-height: calc(100dvh - 56px - env(safe-area-inset-top));
-  padding: 56px 0 0;
+  padding: 0;
   background: var(--surface);
 }
 
@@ -1140,7 +1140,7 @@
 
 @media (max-width: 599px) {
   .study-page {
-    padding: 56px 0 0;
+    padding: 0;
   }
 
   .study-hero {
