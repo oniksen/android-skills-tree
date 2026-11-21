@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { gradeAnswer } from "@/features/quiz/actions/grade-answer";
 import { allQuizQuestions, getGradeLevelOrder } from "@/data/quiz-questions";
+import { getSkillById } from "@/data";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { levels } from "@/data/levels";
 import { useUserSettings } from "@/hooks/useUserSettings";
 import { useAssessments } from "@/hooks/useAssessments";
 import { useRouter } from "next/navigation";
+import QuizSessionPanel from "./QuizSessionPanel";
 
 type ChatMessage = {
   id: number;
@@ -121,6 +123,11 @@ export default function QuizConsole() {
           ? "text-amber-400"
           : "text-red-400";
 
+  const lastAssistant = [...messages]
+    .reverse()
+    .find((message) => message.role === "assistant");
+  const skillName = getSkillById(question.skillId)?.name ?? "";
+
   if (assessmentsLoading || settingsLoading) {
     return <div className="term-panel rounded-lg p-8 text-center font-mono text-sm text-slate-400">loading...</div>;
   }
@@ -134,9 +141,9 @@ export default function QuizConsole() {
   }
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-[1200px] flex-1 flex-col font-mono text-sm">
-      <div className="flex items-center justify-between px-4 pt-3 text-[10px] text-slate-500">
-        <div className="flex items-center gap-3">
+    <div className="mx-auto flex h-full w-full max-w-[1400px] flex-1 flex-col font-mono text-sm xl:flex-row xl:gap-4">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <div className="flex flex-wrap items-center gap-2 px-4 pt-3 text-[10px] text-slate-500 xl:hidden">
           <button
             type="button"
             onClick={() => router.push("/tree/junior")}
@@ -153,77 +160,107 @@ export default function QuizConsole() {
               [new]
             </button>
           )}
+          <span className="rounded border border-blue-500/40 bg-blue-500/10 px-1.5 py-0.5 text-blue-600">
+            {question.grade}
+          </span>
+          <span className="min-w-0 flex-1 truncate text-slate-400">
+            {question.topic}
+          </span>
+          {lastAssistant?.score !== undefined && (
+            <span className={`font-semibold ${scoreClass(lastAssistant.score)}`}>
+              {lastAssistant.score}%
+            </span>
+          )}
+          <span>
+            сегодня: {used}/{limit}
+          </span>
         </div>
-        <span>сегодня: {used}/{limit}</span>
-      </div>
-      <div ref={scrollRef} className="flex flex-1 flex-col justify-end space-y-2 overflow-y-auto px-4 py-3">
-        {messages.map((m) => (
-          <div key={m.id} className="whitespace-pre-wrap break-words">
-            {m.role === "system" && (
-              <div className="space-y-1">
-                {m.grade && (
-                  <span className="mr-2 inline-block align-middle rounded border border-blue-500/40 bg-blue-500/10 px-1.5 py-0.5 font-mono text-xs text-blue-600">
-                    {m.grade}
-                  </span>
-                )}
-                <span className="text-slate-300">{m.text}</span>
-              </div>
-            )}
-            {m.role === "user" && (
-              <span className="text-slate-200">
-                <span className="text-blue-600">&gt; </span>
-                {m.text}
-              </span>
-            )}
-            {m.role === "assistant" && (
-              <div className="space-y-1">
-                <span className={`font-semibold ${scoreClass(m.score)}`}>{m.text}</span>
-                {m.reason && <p className="pl-2 text-xs text-slate-400">{m.reason}</p>}
-              </div>
-            )}
-          </div>
-        ))}
-        {status === "sending" && <div className="text-slate-500">... thinking</div>}
-        {limitReached && <div className="text-xs text-red-400">! limit reached: {used}/{limit}</div>}
-        {error && <div className="text-xs text-red-400">! {error}</div>}
-      </div>
+        <div ref={scrollRef} className="flex flex-1 flex-col justify-end space-y-2 overflow-y-auto px-4 py-3">
+          {messages.map((m) => (
+            <div key={m.id} className="whitespace-pre-wrap break-words">
+              {m.role === "system" && (
+                <div className="space-y-1">
+                  {m.grade && (
+                    <span className="mr-2 inline-block align-middle rounded border border-blue-500/40 bg-blue-500/10 px-1.5 py-0.5 font-mono text-xs text-blue-600">
+                      {m.grade}
+                    </span>
+                  )}
+                  <span className="text-slate-300">{m.text}</span>
+                </div>
+              )}
+              {m.role === "user" && (
+                <span className="text-slate-200">
+                  <span className="text-blue-600">&gt; </span>
+                  {m.text}
+                </span>
+              )}
+              {m.role === "assistant" && (
+                <div className="space-y-1">
+                  <span className={`font-semibold ${scoreClass(m.score)}`}>{m.text}</span>
+                  {m.reason && <p className="pl-2 text-xs text-slate-400">{m.reason}</p>}
+                </div>
+              )}
+            </div>
+          ))}
+          {status === "sending" && <div className="text-slate-500">... thinking</div>}
+          {limitReached && <div className="text-xs text-red-400">! limit reached: {used}/{limit}</div>}
+          {error && <div className="text-xs text-red-400">! {error}</div>}
+        </div>
 
         <div className="mx-4 mb-3 mt-3 rounded-lg border border-slate-700/70 bg-slate-900/40 p-3">
-        {savedKey ? (
-          <div className="mb-2 text-xs text-slate-500">key: ...{savedLast4}</div>
-        ) : (
-          <input
-            type="password"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            className="mb-2 w-full min-w-0 rounded-md border border-slate-700/70 bg-transparent px-2 py-1 text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500/40"
-            placeholder="groq api key (optional)"
-          />
-        )}
-        <div className="flex min-w-0 items-end gap-2">
-          <span className="select-none py-0.5 leading-6 text-blue-600">&gt;</span>
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            disabled={status !== "idle" || limitReached}
-            rows={1}
-            className="max-h-[75%] min-w-0 w-full resize-none overflow-x-hidden overflow-y-hidden bg-transparent px-2 py-0.5 leading-6 text-slate-200 focus:outline-none disabled:opacity-60"
-            placeholder="ваш ответ"
-          />
-          <button
-            type="button"
-            onClick={handleSend}
-            disabled={status !== "idle" || !input.trim() || limitReached}
-            className="min-h-[32px] cursor-pointer px-2 py-0.5 text-blue-600 transition-colors hover:text-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            [send]
-          </button>
+          {savedKey ? (
+            <div className="mb-2 text-xs text-slate-500">key: ...{savedLast4}</div>
+          ) : (
+            <input
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              className="mb-2 w-full min-w-0 rounded-md border border-slate-700/70 bg-transparent px-2 py-1 text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500/40"
+              placeholder="groq api key (optional)"
+            />
+          )}
+          <div className="flex min-w-0 items-end gap-2">
+            <span className="select-none py-0.5 leading-6 text-blue-600">&gt;</span>
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={status !== "idle" || limitReached}
+              rows={1}
+              className="max-h-[75%] min-w-0 w-full resize-none overflow-x-hidden overflow-y-hidden bg-transparent px-2 py-0.5 leading-6 text-slate-200 focus:outline-none disabled:opacity-60"
+              placeholder="ваш ответ"
+            />
+            <button
+              type="button"
+              onClick={handleSend}
+              disabled={status !== "idle" || !input.trim() || limitReached}
+              className="min-h-[32px] cursor-pointer px-2 py-0.5 text-blue-600 transition-colors hover:text-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              [send]
+            </button>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-end gap-2 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] text-[10px] text-slate-500">
+          {limits && <span className="break-all">{limits}</span>}
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-end gap-2 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] text-[10px] text-slate-500">
-        {limits && <span className="break-all">{limits}</span>}
+      <div className="hidden xl:flex xl:w-[320px] xl:shrink-0 xl:flex-col">
+        <QuizSessionPanel
+          grade={question.grade}
+          topic={question.topic}
+          skillName={skillName}
+          used={used}
+          limit={limit}
+          score={lastAssistant?.score}
+          reason={lastAssistant?.reason}
+          rubric={question.rubric}
+          savedLast4={savedLast4}
+          canAskNew={status === "done" && !limitReached}
+          onNew={handleNewQuestion}
+          onExit={() => router.push("/tree/junior")}
+        />
       </div>
     </div>
   );
