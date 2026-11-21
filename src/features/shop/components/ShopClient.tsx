@@ -9,6 +9,8 @@ import { DIFFICULTY_WEIGHT, LEVEL_MULTIPLIER } from "@/core/domain/weights";
 import { levels } from "@/data/levels";
 import type { Difficulty } from "@/data/skills";
 import type { BuyResult } from "@/core/domain/currency";
+import PageHero from "@/shared/ui/PageHero";
+import PageSummaryCard from "@/shared/ui/PageSummaryCard";
 import { ShopSkeleton } from "@/shared/ui/skeletons";
 import ShopItemCard from "./ShopItemCard";
 
@@ -53,6 +55,8 @@ export default function ShopClient() {
     return <ShopSkeleton />;
   }
 
+  const freezeItem = SHOP_ITEMS[0];
+
   return (
     <div className="space-y-8">
       <motion.div
@@ -60,68 +64,82 @@ export default function ShopClient() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: EASE }}
       >
-        <h1 className="text-2xl font-bold tracking-tight text-white">
-          <span className="text-blue-600">#</span> Магазин
-        </h1>
-        <p className="mt-1 text-sm text-slate-400">
-          Трать {CURRENCY_ICON} на бонусы за прогресс в обучении.
-        </p>
+        <PageHero
+          title="Магазин"
+          description={`Трать ${CURRENCY_ICON} на бонусы за прогресс в обучении.`}
+          aside={
+            <PageSummaryCard
+              title="Баланс"
+              value={`${balance} ${CURRENCY_ICON}`}
+              valueLabel="кристаллы"
+              stats={[
+                {
+                  label: "Заморозки",
+                  value: `${freezes}/${freezeItem.maxOwned}`,
+                },
+                { label: "Цена", value: `${freezeItem.price} ${CURRENCY_ICON}` },
+              ]}
+            />
+          }
+        />
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.05, ease: EASE }}
-        className="grid gap-4 sm:grid-cols-2"
-      >
-        {SHOP_ITEMS.map((item) => (
-          <ShopItemCard
-            key={item.id}
-            item={item}
-            owned={item.id === "streak_freeze" ? freezes : 0}
-            balance={balance}
-            buying={buying}
-            onBuy={handleBuy}
-          />
-        ))}
-      </motion.div>
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)] xl:items-start">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.05, ease: EASE }}
+          className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1"
+        >
+          {SHOP_ITEMS.map((item) => (
+            <ShopItemCard
+              key={item.id}
+              item={item}
+              owned={item.id === "streak_freeze" ? freezes : 0}
+              balance={balance}
+              buying={buying}
+              onBuy={handleBuy}
+            />
+          ))}
+        </motion.div>
 
-      <motion.section
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.1, ease: EASE }}
-        className="card-surface rounded-lg p-4"
-      >
-        <h2 className="font-mono text-sm font-semibold text-slate-500 uppercase tracking-wide">Как заработать {CURRENCY_ICON}</h2>
-        <p className="mt-1 text-xs leading-relaxed text-slate-400">
-          {CURRENCY_ICON} начисляются один раз за полностью закрытый навык: закрой все его
-          подпункты. Чем сложнее навык и выше уровень — тем больше награда.
-        </p>
-        <table className="mt-3 w-full text-xs">
-          <thead>
-            <tr>
-              <th className="pb-1 text-left font-medium text-slate-500">Сложность</th>
-              {levels.map((level) => (
-                <th key={level.id} className="pb-1 text-right font-medium text-slate-500">
-                  {level.name}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {DIFFICULTY_ROWS.map((row) => (
-              <tr key={row.difficulty}>
-                <td className="py-0.5 text-slate-400">{row.label}</td>
+        <motion.section
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1, ease: EASE }}
+          className="card-surface rounded-lg p-4"
+        >
+          <h2 className="font-mono text-sm font-semibold text-slate-500 uppercase tracking-wide">Как заработать {CURRENCY_ICON}</h2>
+          <p className="mt-1 text-xs leading-relaxed text-slate-400">
+            {CURRENCY_ICON} начисляются один раз за полностью закрытый навык: закрой все его
+            подпункты. Чем сложнее навык и выше уровень — тем больше награда.
+          </p>
+          <table className="mt-3 w-full text-xs">
+            <thead>
+              <tr>
+                <th className="pb-1 text-left font-medium text-slate-500">Сложность</th>
                 {levels.map((level) => (
-                  <td key={level.id} className="py-0.5 text-right font-mono text-slate-200">
-                    +{rewardFor(row.difficulty, level.id)} {CURRENCY_ICON}
-                  </td>
+                  <th key={level.id} className="pb-1 text-right font-medium text-slate-500">
+                    {level.name}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </motion.section>
+            </thead>
+            <tbody>
+              {DIFFICULTY_ROWS.map((row) => (
+                <tr key={row.difficulty}>
+                  <td className="py-0.5 text-slate-400">{row.label}</td>
+                  {levels.map((level) => (
+                    <td key={level.id} className="py-0.5 text-right font-mono text-slate-200">
+                      +{rewardFor(row.difficulty, level.id)} {CURRENCY_ICON}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </motion.section>
+      </div>
 
       <AnimatePresence>
         {error && (

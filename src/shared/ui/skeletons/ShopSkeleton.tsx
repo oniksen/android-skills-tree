@@ -3,14 +3,26 @@ import { Skeleton } from "./Skeleton";
 export default function ShopSkeleton() {
   return (
     <div className="space-y-8" aria-busy>
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-white">Магазин</h1>
-        <Skeleton className="mt-2 h-4 w-64" />
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,380px)] xl:items-start">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            Магазин
+          </h1>
+          <Skeleton className="mt-2 h-4 w-64" />
+        </div>
+        <div className="card-surface rounded-lg p-5">
+          <Skeleton className="h-3 w-20" />
+          <div className="mt-3 flex items-baseline justify-between">
+            <Skeleton className="h-3 w-20" />
+            <Skeleton className="h-5 w-20" />
+          </div>
+          <Skeleton className="mt-4 h-4 w-32" />
+        </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {Array.from({ length: 2 }).map((_, i) => (
-          <div key={i} className="card-surface flex items-start gap-4 rounded-xl p-4">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)] xl:items-start">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+          <div className="card-surface flex items-start gap-4 rounded-lg p-4">
             <Skeleton className="h-14 w-14 shrink-0 rounded-xl" />
             <div className="min-w-0 flex-1 space-y-2">
               <div className="flex items-center justify-between gap-2">
@@ -25,19 +37,19 @@ export default function ShopSkeleton() {
               </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      <section className="card-surface rounded-xl p-4">
-        <Skeleton className="h-4 w-48" />
-        <Skeleton className="mt-2 h-3 w-full" />
-        <Skeleton className="mt-1.5 h-3 w-3/4" />
-        <div className="mt-4 grid grid-cols-5 gap-2">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-3 w-full" />
-          ))}
         </div>
-      </section>
+
+        <section className="card-surface rounded-xl p-4">
+          <Skeleton className="h-4 w-48" />
+          <Skeleton className="mt-2 h-3 w-full" />
+          <Skeleton className="mt-1.5 h-3 w-3/4" />
+          <div className="mt-4 grid grid-cols-5 gap-2">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-3 w-full" />
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
