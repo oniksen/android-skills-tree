@@ -95,7 +95,11 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
             >
               <X className="h-4 w-4" />
             </button>
-            <ProfileContent onClose={onClose} headingId="profile-modal-heading" />
+            <ProfileContent
+              onClose={onClose}
+              headingId="profile-modal-heading"
+              variant="modal"
+            />
           </motion.div>
         </motion.div>
       )}
