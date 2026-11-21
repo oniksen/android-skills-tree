@@ -9,7 +9,9 @@ import { levels } from "@/data/levels";
 import { useUserSettings } from "@/hooks/useUserSettings";
 import { useAssessments } from "@/hooks/useAssessments";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/shared/ui/skeletons";
 import QuizSessionPanel from "./QuizSessionPanel";
+import QuizShell from "./QuizShell";
 
 type ChatMessage = {
   id: number;
@@ -19,6 +21,18 @@ type ChatMessage = {
   score?: number;
   reason?: string;
 };
+
+function QuizPanelSkeleton() {
+  return (
+    <div className="card-surface h-full space-y-4 rounded-lg p-4">
+      <Skeleton className="h-4 w-24" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-2/3" />
+      <Skeleton className="h-8 w-20" />
+      <Skeleton className="h-12 w-full rounded-md" />
+    </div>
+  );
+}
 
 export default function QuizConsole() {
   const router = useRouter();
@@ -128,22 +142,46 @@ export default function QuizConsole() {
     .find((message) => message.role === "assistant");
   const skillName = getSkillById(question.skillId)?.name ?? "";
 
+  const sessionPanel = (
+    <QuizSessionPanel
+      grade={question.grade}
+      topic={question.topic}
+      skillName={skillName}
+      used={used}
+      limit={limit}
+      score={lastAssistant?.score}
+      reason={lastAssistant?.reason}
+      rubric={question.rubric}
+      savedLast4={savedLast4}
+      canAskNew={status === "done" && !limitReached}
+      onNew={handleNewQuestion}
+      onExit={() => router.push("/tree/junior")}
+    />
+  );
+
   if (assessmentsLoading || settingsLoading) {
-    return <div className="term-panel rounded-lg p-8 text-center font-mono text-sm text-slate-400">loading...</div>;
+    return (
+      <QuizShell panel={<QuizPanelSkeleton />}>
+        <div className="term-panel m-4 rounded-lg p-8 text-center font-mono text-sm text-slate-400">
+          loading...
+        </div>
+      </QuizShell>
+    );
   }
 
   if (!hasCompletedSubtopic) {
     return (
-      <div className="term-panel rounded-lg p-8 text-center font-mono text-sm text-slate-400">
-        Нужно пройти хотя бы одну подтему, чтобы использовать проверку.
-      </div>
+      <QuizShell panel={sessionPanel}>
+        <div className="term-panel m-4 rounded-lg p-8 text-center font-mono text-sm text-slate-400">
+          Нужно пройти хотя бы одну подтему, чтобы использовать проверку.
+        </div>
+      </QuizShell>
     );
   }
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-[1400px] flex-1 flex-col font-mono text-sm xl:flex-row xl:gap-4">
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <div className="flex flex-wrap items-center gap-2 px-4 pt-3 text-[10px] text-slate-500 xl:hidden">
+    <QuizShell panel={sessionPanel}>
+      <div className="flex flex-wrap items-center gap-2 px-4 pt-3 text-[10px] text-slate-500 xl:hidden">
           <button
             type="button"
             onClick={() => router.push("/tree/junior")}
@@ -244,24 +282,6 @@ export default function QuizConsole() {
         <div className="flex flex-wrap items-center justify-end gap-2 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] text-[10px] text-slate-500">
           {limits && <span className="break-all">{limits}</span>}
         </div>
-      </div>
-
-      <div className="hidden xl:flex xl:w-[320px] xl:shrink-0 xl:flex-col">
-        <QuizSessionPanel
-          grade={question.grade}
-          topic={question.topic}
-          skillName={skillName}
-          used={used}
-          limit={limit}
-          score={lastAssistant?.score}
-          reason={lastAssistant?.reason}
-          rubric={question.rubric}
-          savedLast4={savedLast4}
-          canAskNew={status === "done" && !limitReached}
-          onNew={handleNewQuestion}
-          onExit={() => router.push("/tree/junior")}
-        />
-      </div>
-    </div>
+    </QuizShell>
   );
 }

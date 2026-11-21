@@ -33,7 +33,7 @@ export default function PageSummaryCard({
   children,
 }: PageSummaryCardProps) {
   return (
-    <div className="card-surface relative overflow-hidden rounded-lg p-5">
+    <div className="card-surface relative flex h-full flex-col overflow-hidden rounded-lg p-5">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
 
       <div className="flex items-baseline justify-between gap-3">
@@ -74,7 +74,7 @@ export default function PageSummaryCard({
       {children}
 
       {stats && stats.length > 0 && (
-        <dl className="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/[0.06] pt-3 text-sm">
+        <dl className="mt-auto flex flex-wrap gap-x-6 gap-y-2 border-t border-white/[0.06] pt-3 text-sm">
           {stats.map((stat) => (
             <div key={stat.label} className="flex items-baseline gap-2">
               <dt className="text-slate-500">{stat.label}</dt>

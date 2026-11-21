@@ -18,7 +18,7 @@ export default function StreakCard() {
   const { freezes } = useCurrency();
 
   return (
-    <div className="group relative card-surface overflow-hidden rounded-lg p-6 transition-colors duration-200 hover:border-orange-500/40">
+    <div className="group relative card-surface flex h-full flex-col overflow-hidden rounded-lg p-6 transition-colors duration-200 hover:border-orange-500/40">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
       <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">Стрик</h2>
       <div className="flex items-center gap-3.5 mb-5">
@@ -48,7 +48,7 @@ export default function StreakCard() {
           </span>
         </div>
       )}
-      <div className="flex justify-between gap-1">
+      <div className="mt-auto flex justify-between gap-1">
         {week.map((d) => (
           <div key={d.date} className="flex flex-col items-center gap-1 flex-1">
             <span

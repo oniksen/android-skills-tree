@@ -41,7 +41,7 @@ export default function ProfileAchievements({
     .slice(0, limit ?? undefined);
 
   return (
-    <section className="card-surface rounded-lg p-5">
+    <section className="card-surface flex h-full flex-col rounded-lg p-5">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h2 className="font-mono text-sm font-semibold text-slate-300">
           <span className="text-slate-600">##</span> Достижения{" "}
