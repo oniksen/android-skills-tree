@@ -43,7 +43,7 @@ export default function SkillDetailPageClient({ slug, skillId }: SkillDetailPage
   const readonly = !progress || isPast;
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-4">
+    <div className="mx-auto w-full max-w-4xl space-y-4 2xl:max-w-5xl">
       <Link
         href={`/tree/${slug}`}
         className="inline-flex items-center gap-1.5 text-sm text-slate-400 transition-colors hover:text-slate-200"
@@ -70,6 +70,7 @@ export default function SkillDetailPageClient({ slug, skillId }: SkillDetailPage
             award={award}
             onToggleSubtopic={toggle}
             studyHref={skill.studyMaterial ? `/tree/${slug}/skill/${skillId}/study` : undefined}
+            wide
           />
         )}
       </div>
