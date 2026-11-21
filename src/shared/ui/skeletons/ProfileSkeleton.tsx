@@ -1,22 +1,47 @@
 import { Skeleton } from "./Skeleton";
 
-export default function ProfileSkeleton({
-  variant = "page",
-}: {
-  variant?: "page" | "modal";
-}) {
-  const stats = (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-      {Array.from({ length: 8 }).map((_, index) => (
-        <div key={index} className="card-surface rounded-lg p-4">
-          <Skeleton className="h-3.5 w-20" />
-          <Skeleton className="mt-3 h-6 w-14" />
+function HeroSkeleton() {
+  return (
+    <div className="card-surface rounded-2xl p-5 sm:p-6">
+      <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-20 w-20 rounded-2xl" />
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-3.5 w-56" />
+            <Skeleton className="h-3 w-24" />
+          </div>
         </div>
-      ))}
+        <div className="flex items-center gap-6">
+          <Skeleton className="h-24 w-24 rounded-full" />
+          <div className="space-y-3">
+            <Skeleton className="h-8 w-16" />
+            <Skeleton className="h-8 w-20" />
+            <Skeleton className="h-8 w-24" />
+          </div>
+        </div>
+      </div>
+      <Skeleton className="mt-4 h-3 w-64" />
     </div>
   );
+}
 
-  const achievements = (
+function StatSkeleton() {
+  return (
+    <div className="card-surface rounded-lg p-5">
+      <Skeleton className="h-3 w-20" />
+      <div className="mt-3 flex items-baseline justify-between">
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-5 w-14" />
+      </div>
+      <Skeleton className="mt-3 h-2 w-full" />
+      <Skeleton className="mt-4 h-4 w-24" />
+    </div>
+  );
+}
+
+function AchievementsSkeleton() {
+  return (
     <div className="card-surface rounded-lg p-5">
       <Skeleton className="h-5 w-40" />
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -32,80 +57,76 @@ export default function ProfileSkeleton({
       </div>
     </div>
   );
+}
 
-  const links = (
+function SettingsSkeleton() {
+  return (
     <div className="card-surface rounded-lg p-5">
-      <Skeleton className="h-5 w-24" />
-      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, index) => (
-          <Skeleton key={index} className="h-8 w-full rounded-md" />
-        ))}
+      <Skeleton className="h-5 w-28" />
+      <Skeleton className="mt-4 h-9 w-full rounded-md" />
+      <Skeleton className="mt-4 h-3 w-24" />
+      <div className="mt-6 border-t border-white/[0.06] pt-4">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="mt-3 h-10 w-full rounded-md" />
       </div>
+      <Skeleton className="mt-5 h-10 w-full rounded-md" />
     </div>
   );
+}
 
-  const settings = (
-    <>
-      <div className="card-surface rounded-lg p-5">
-        <Skeleton className="h-5 w-28" />
-        <Skeleton className="mt-4 h-9 w-full rounded-md" />
-      </div>
-      <div className="card-surface rounded-lg p-5">
-        <Skeleton className="h-5 w-32" />
-        <Skeleton className="mt-4 h-10 w-full rounded-md" />
-      </div>
-    </>
-  );
-
+export default function ProfileSkeleton({
+  variant = "page",
+}: {
+  variant?: "page" | "modal";
+}) {
   if (variant === "modal") {
     return (
       <div className="space-y-6" aria-busy>
-        <div className="flex items-center gap-4">
-          <Skeleton className="h-14 w-14 rounded-2xl" />
-          <div className="space-y-2">
-            <Skeleton className="h-5 w-40" />
-            <Skeleton className="h-3.5 w-56" />
-          </div>
-        </div>
-        {stats}
-        {achievements}
-        {links}
-        {settings}
+        <HeroSkeleton />
+        <ProfileBodySkeleton />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6" aria-busy>
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,380px)] xl:items-start">
-        <div className="flex items-center gap-4">
-          <Skeleton className="h-14 w-14 rounded-2xl" />
-          <div className="space-y-2">
-            <Skeleton className="h-5 w-40" />
-            <Skeleton className="h-3.5 w-56" />
-          </div>
-        </div>
-        <div className="card-surface rounded-lg p-5">
-          <Skeleton className="h-3 w-24" />
-          <div className="mt-3 flex items-baseline justify-between">
-            <Skeleton className="h-3 w-20" />
-            <Skeleton className="h-5 w-24" />
-          </div>
-          <Skeleton className="mt-3 h-2 w-full" />
-          <Skeleton className="mt-4 h-4 w-32" />
-        </div>
+    <div
+      className="grid gap-4 md:grid-cols-2 xl:grid-cols-12"
+      aria-busy
+    >
+      <div className="md:col-span-2 xl:col-span-12">
+        <HeroSkeleton />
       </div>
-
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] xl:items-start">
-        <div className="space-y-6">
-          {stats}
-          {achievements}
-        </div>
-        <div className="space-y-6">
-          {links}
-          {settings}
-        </div>
+      <div className="xl:col-span-4">
+        <StatSkeleton />
+      </div>
+      <div className="xl:col-span-4">
+        <StatSkeleton />
+      </div>
+      <div className="xl:col-span-4">
+        <StatSkeleton />
+      </div>
+      <div className="md:col-span-2 xl:col-span-8 xl:row-span-2">
+        <AchievementsSkeleton />
+      </div>
+      <div className="xl:col-span-4">
+        <StatSkeleton />
+      </div>
+      <div className="md:col-span-2 xl:col-span-4">
+        <SettingsSkeleton />
       </div>
     </div>
+  );
+}
+
+function ProfileBodySkeleton() {
+  return (
+    <>
+      <StatSkeleton />
+      <StatSkeleton />
+      <StatSkeleton />
+      <AchievementsSkeleton />
+      <StatSkeleton />
+      <SettingsSkeleton />
+    </>
   );
 }

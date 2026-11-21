@@ -14,6 +14,8 @@ interface ProfileAchievementsProps {
   achievements: Achievement[];
   assessmentMap: Record<string, { subtopics?: Record<string, boolean> }>;
   longestStreak: number;
+  /** Show only the most recent badges (page bento); omit to show all. */
+  limit?: number;
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -24,9 +26,19 @@ export default function ProfileAchievements({
   achievements,
   assessmentMap,
   longestStreak,
+  limit,
 }: ProfileAchievementsProps) {
   const earned = new Set(earnedIds);
-  const earnedDefs = catalog.filter((def) => earned.has(def.id));
+  const earnedDefs = catalog
+    .filter((def) => earned.has(def.id))
+    .sort((a, b) => {
+      const aTime =
+        achievements.find((item) => a.matches(item))?.achievedAt?.getTime() ?? 0;
+      const bTime =
+        achievements.find((item) => b.matches(item))?.achievedAt?.getTime() ?? 0;
+      return bTime - aTime;
+    })
+    .slice(0, limit ?? undefined);
 
   return (
     <section className="card-surface rounded-lg p-5">
@@ -82,6 +94,11 @@ export default function ProfileAchievements({
           })}
         </ul>
       )}
+      {limit && earned.size > earnedDefs.length ? (
+        <p className="mt-3 font-mono text-xs text-slate-500">
+          ещё {earned.size - earnedDefs.length} — на странице достижений
+        </p>
+      ) : null}
     </section>
   );
 }
