@@ -5,6 +5,8 @@ import { useAchievements, useStreak } from "@/hooks";
 import { useAssessments } from "@/hooks/useAssessments";
 import AchievementCard from "@/features/achievements/components/AchievementCard";
 import TierIcon from "@/features/achievements/components/TierIcon";
+import PageHero from "@/shared/ui/PageHero";
+import PageSummaryCard from "@/shared/ui/PageSummaryCard";
 import { AchievementsSkeleton } from "@/shared/ui/skeletons";
 import {
   getAchievementCatalog,
@@ -49,12 +51,21 @@ export default function AchievementsClient() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: EASE }}
       >
-        <h1 className="text-2xl font-bold tracking-tight text-white">
-          <span className="text-blue-600">#</span> Достижения
-        </h1>
-        <p className="mt-1 font-mono text-sm text-slate-400">
-          [{earnedIds.size}/{catalog.length}]
-        </p>
+        <PageHero
+          title="Достижения"
+          description="Награды за пройденные уровни, идеальные темы и серии дней."
+          aside={
+            <PageSummaryCard
+              title="Открыто"
+              value={`${earnedIds.size}/${catalog.length}`}
+              valueLabel="достижений"
+              progress={{ current: earnedIds.size, max: catalog.length || 1 }}
+              stats={[
+                { label: "Осталось", value: catalog.length - earnedIds.size },
+              ]}
+            />
+          }
+        />
       </motion.div>
       {GROUPS.map((group) => {
         const items = catalog.filter((def) => groupKeyOf(def) === group.key);
@@ -65,7 +76,7 @@ export default function AchievementsClient() {
             <h2 className="mb-4 font-mono text-lg font-semibold text-slate-300">
               <span className="text-slate-600">##</span> {group.label}
             </h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="content-grid">
               {items.map((def, index) => {
                 const earned = earnedIds.has(def.id);
                 const achievement = achievements.find((a) => def.matches(a));
