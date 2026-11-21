@@ -10,3 +10,7 @@ export function isDesktopViewport(): boolean {
 export function skillDetailHref(slug: string, skillId: string): string {
   return `/tree/${slug}/skill/${skillId}`;
 }
+
+export function treeSkillHref(slug: string, skillId: string): string {
+  return `/tree/${slug}?skill=${encodeURIComponent(skillId)}`;
+}

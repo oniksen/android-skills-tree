@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { MOBILE_BREAKPOINT, isDesktopViewport, skillDetailHref } from "./viewport";
+import {
+  MOBILE_BREAKPOINT,
+  isDesktopViewport,
+  skillDetailHref,
+  treeSkillHref,
+} from "./viewport";
 
 function mockMatchMedia(matches: boolean) {
   const matchMedia = vi.fn().mockReturnValue({ matches });
@@ -37,6 +42,14 @@ describe("skillDetailHref", () => {
   it("builds the nested skill detail path", () => {
     expect(skillDetailHref("junior", "junior-kotlin-sintaks")).toBe(
       "/tree/junior/skill/junior-kotlin-sintaks",
+    );
+  });
+});
+
+describe("treeSkillHref", () => {
+  it("points to the tree page with the skill deep link", () => {
+    expect(treeSkillHref("junior", "junior-kotlin-sintaks")).toBe(
+      "/tree/junior?skill=junior-kotlin-sintaks",
     );
   });
 });
