@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { login } from "@/features/auth/actions/login";
+import BrandMark from "@/shared/ui/BrandMark";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -62,13 +63,41 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-dvh items-center justify-center px-4 py-10">
-      <motion.div
-        key={shakeKey}
-        variants={container}
-        initial="hidden"
-        animate="visible"
-        className="relative w-full max-w-md"
-      >
+      <div className="grid w-full max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_28rem] lg:items-center">
+        <div className="hidden lg:block">
+          <BrandMark className="h-12 w-12" />
+          <p className="mt-5 text-3xl font-bold tracking-tight">
+            <span className="text-gradient">android</span>
+            <span className="text-slate-500">/</span>
+            <span className="text-white">skill-tree</span>
+          </p>
+          <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-400">
+            Интерактивное дерево навыков Android-разработчика: отмечайте
+            подтемы, получайте опыт и кристаллы, держите стрик.
+          </p>
+          <ul className="mt-6 space-y-2 font-mono text-sm text-slate-400">
+            <li>
+              <span className="text-blue-600">&gt;</span> дерево навыков от
+              junior до senior
+            </li>
+            <li>
+              <span className="text-blue-600">&gt;</span> опыт, кристаллы и
+              стрики
+            </li>
+            <li>
+              <span className="text-blue-600">&gt;</span> учебные материалы и
+              проверка ответов
+            </li>
+          </ul>
+        </div>
+
+        <motion.div
+          key={shakeKey}
+          variants={container}
+          initial="hidden"
+          animate="visible"
+          className="relative mx-auto w-full max-w-md lg:max-w-none"
+        >
         <motion.div
           variants={item}
           className="term-panel overflow-hidden rounded-lg shadow-[0_20px_60px_rgba(26,25,21,0.12)]"
@@ -176,6 +205,7 @@ export default function LoginPage() {
           </div>
         </motion.div>
       </motion.div>
+      </div>
     </div>
   );
 }
