@@ -8,7 +8,7 @@ import { projects } from "@/data/projects";
 import LevelProgressCard from "@/features/dashboard/components/LevelProgressCard";
 import QuickStats from "@/features/dashboard/components/QuickStats";
 import NextMilestone from "@/features/dashboard/components/NextMilestone";
-import StreakCard from "@/features/dashboard/components/StreakCard";
+import StreakCard from "@/shared/ui/StreakCard";
 import PageHero from "@/shared/ui/PageHero";
 import { DashboardSkeleton } from "@/shared/ui/skeletons";
 import { getLevelMinScore } from "@/core/domain/weights";
