@@ -12,4 +12,16 @@ describe("wide-screen layout css", () => {
   it("keeps the shared wide content grid", () => {
     expect(css).toContain("@utility content-grid-wide");
   });
+
+  it("keeps two columns on tablets before switching to auto-fill", () => {
+    for (const file of [
+      ["src", "features", "achievements", "components", "AchievementsClient.tsx"],
+      ["src", "features", "projects", "components", "ProjectsClient.tsx"],
+    ]) {
+      const source = readFileSync(resolve(process.cwd(), ...file), "utf8");
+      expect(source).toContain(
+        "md:grid-cols-2 xl:grid-cols-[repeat(auto-fill,minmax(min(24rem,100%),1fr))]",
+      );
+    }
+  });
 });
