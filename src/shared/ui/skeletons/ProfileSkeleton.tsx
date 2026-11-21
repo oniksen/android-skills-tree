@@ -105,11 +105,11 @@ export default function ProfileSkeleton({
       <div className="xl:col-span-4">
         <StatSkeleton />
       </div>
-      <div className="md:col-span-2 xl:col-span-8 xl:row-span-2">
-        <AchievementsSkeleton />
-      </div>
       <div className="xl:col-span-4">
         <StatSkeleton />
+      </div>
+      <div className="md:col-span-2 xl:col-span-8 xl:row-span-2">
+        <AchievementsSkeleton />
       </div>
       <div className="md:col-span-2 xl:col-span-4">
         <SettingsSkeleton />

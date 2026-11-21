@@ -208,8 +208,8 @@ export default function ProfileContent({
         {streakCard}
         {skillsCard}
         {projectsCard}
-        {achievementsCard}
         {crystalsCard}
+        {achievementsCard}
         {settingsCard}
       </div>
     );
@@ -226,10 +226,10 @@ export default function ProfileContent({
       <div className="xl:col-span-4">{streakCard}</div>
       <div className="xl:col-span-4">{skillsCard}</div>
       <div className="xl:col-span-4">{projectsCard}</div>
+      <div className="xl:col-span-4">{crystalsCard}</div>
       <div className="md:col-span-2 xl:col-span-8 xl:row-span-2">
         {achievementsCard}
       </div>
-      <div className="xl:col-span-4">{crystalsCard}</div>
       <div className="md:col-span-2 xl:col-span-4">{settingsCard}</div>
     </motion.div>
   );
