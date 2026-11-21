@@ -134,7 +134,7 @@ export default function QuizConsole() {
   }
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col font-mono text-sm">
+    <div className="mx-auto flex h-full w-full max-w-[1200px] flex-1 flex-col font-mono text-sm">
       <div className="flex items-center justify-between px-4 pt-3 text-[10px] text-slate-500">
         <div className="flex items-center gap-3">
           <button
