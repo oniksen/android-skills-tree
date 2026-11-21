@@ -9,6 +9,7 @@ import LevelProgressCard from "@/features/dashboard/components/LevelProgressCard
 import QuickStats from "@/features/dashboard/components/QuickStats";
 import NextMilestone from "@/features/dashboard/components/NextMilestone";
 import StreakCard from "@/features/dashboard/components/StreakCard";
+import PageHero from "@/shared/ui/PageHero";
 import { DashboardSkeleton } from "@/shared/ui/skeletons";
 import { getLevelMinScore } from "@/core/domain/weights";
 
@@ -42,6 +43,14 @@ export default function DashboardClient() {
   const completedProjects = Object.values(projectMap).filter(Boolean).length;
   const totalProjects = projects.length;
   const canLevelUp = nextLevel ? currentScore >= getLevelMinScore(nextLevel.id) : false;
+  const cardVariants = {
+    hidden: { opacity: 0, y: 16 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.45, ease: EASE },
+    },
+  };
 
   return (
     <div className="space-y-6">
@@ -50,31 +59,27 @@ export default function DashboardClient() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: EASE }}
       >
-        <h1 className="text-2xl font-bold tracking-tight text-white">
-          <span className="text-blue-600">#</span> Дашборд
-        </h1>
-        <p className="mt-1 text-sm text-slate-400">Ваш прогресс на пути к senior.</p>
+        <PageHero
+          title="Дашборд"
+          description="Ваш прогресс на пути к senior."
+          aside={
+            <LevelProgressCard
+              currentLevel={currentLevel.name}
+              currentScore={currentScore}
+              nextLevel={nextLevel?.name || null}
+              nextThreshold={nextLevel ? getLevelMinScore(nextLevel.id) : null}
+              levelColor={levelColors[currentLevel.slug] || "text-blue-400"}
+            />
+          }
+        />
       </motion.div>
       <motion.div
         initial="hidden"
         animate="visible"
         variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
-        className="grid gap-6 md:grid-cols-2"
+        className="grid items-start gap-4 md:grid-cols-2 2xl:grid-cols-3"
       >
-        <motion.div
-          variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } } }}
-        >
-          <LevelProgressCard
-            currentLevel={currentLevel.name}
-            currentScore={currentScore}
-            nextLevel={nextLevel?.name || null}
-            nextThreshold={nextLevel ? getLevelMinScore(nextLevel.id) : null}
-            levelColor={levelColors[currentLevel.slug] || "text-blue-400"}
-          />
-        </motion.div>
-        <motion.div
-          variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } } }}
-        >
+        <motion.div variants={cardVariants}>
           <QuickStats
             totalSkills={totalSkills}
             assessedSkills={assessedSkills}
@@ -82,32 +87,24 @@ export default function DashboardClient() {
             totalProjects={totalProjects}
           />
         </motion.div>
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: 0.1, ease: EASE }}
-      >
-        <StreakCard />
-      </motion.div>
-      {nextLevel && (
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.16, ease: EASE }}
-        >
-          <NextMilestone
-            items={[
-              {
-                label: `Набрать ${getLevelMinScore(nextLevel.id)} XP`,
-                done: currentScore >= getLevelMinScore(nextLevel.id),
-              },
-            ]}
-            canLevelUp={canLevelUp}
-            nextLevelName={nextLevel.name}
-          />
+        <motion.div variants={cardVariants}>
+          <StreakCard />
         </motion.div>
-      )}
+        {nextLevel && (
+          <motion.div variants={cardVariants}>
+            <NextMilestone
+              items={[
+                {
+                  label: `Набрать ${getLevelMinScore(nextLevel.id)} XP`,
+                  done: currentScore >= getLevelMinScore(nextLevel.id),
+                },
+              ]}
+              canLevelUp={canLevelUp}
+              nextLevelName={nextLevel.name}
+            />
+          </motion.div>
+        )}
+      </motion.div>
     </div>
   );
 }
