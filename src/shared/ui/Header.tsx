@@ -4,6 +4,7 @@ import Link, { useLinkStatus } from "next/link";
 import { motion } from "motion/react";
 import { normalizeReleaseVersion } from "@/lib/version";
 import { usePathname } from "next/navigation";
+import { pageWidthFor } from "@/lib/layout";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import StreakBadge from "@/shared/ui/StreakBadge";
 import CurrencyBadge from "@/shared/ui/CurrencyBadge";
@@ -205,9 +206,15 @@ export default function Header({
   const segment = (pathname ?? "").split("/")[1] || "";
   const activeHref = segment === "tree" ? "/tree/junior" : `/${segment}`;
   const isQuiz = (pathname ?? "").startsWith("/quiz");
-  const isStudy = /\/study(\/|$)/.test(pathname ?? "");
-  const isTree = /^\/tree(\/|$)/.test(pathname ?? "") && !isStudy;
-  const headerWidthClass = isQuiz || isStudy ? "max-w-none" : isTree ? "max-w-[2000px]" : "max-w-6xl";
+  const width = pageWidthFor(pathname ?? "");
+  const headerWidthClass =
+    width === "study"
+      ? "max-w-none"
+      : width === "quiz"
+        ? "max-w-[1200px]"
+        : width === "wide"
+          ? "max-w-[2000px]"
+          : "max-w-6xl";
   const isActive = (href: string) =>
     href === "/profile" ? activeHref === "/profile" : href === activeHref;
   const showNav = !loading && Boolean(uid);
@@ -304,10 +311,10 @@ export default function Header({
         <main
           className={
             isQuiz
-              ? "flex w-full flex-1 flex-col"
-              : isStudy
+              ? "w-full max-w-[1200px] mx-auto flex-1 p-3"
+              : width === "study"
                 ? "w-full flex-1 p-3"
-                : isTree
+                : width === "wide"
                   ? `w-full max-w-[2000px] mx-auto flex-1 nav-md:px-6 ${mainClassName}`
                   : `w-full max-w-6xl mx-auto flex-1 ${mainClassName}`
           }

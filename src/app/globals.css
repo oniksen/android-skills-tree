@@ -493,6 +493,20 @@
   gap: 1rem;
 }
 
+@utility content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(24rem, 100%), 1fr));
+  align-items: start;
+  gap: 1rem;
+}
+
+@utility content-grid-wide {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(34rem, 100%), 1fr));
+  align-items: start;
+  gap: 0.5rem;
+}
+
 @utility term-panel {
   background-color: var(--surface);
   border: 1px dashed var(--panel-border);
