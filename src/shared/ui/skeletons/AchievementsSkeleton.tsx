@@ -24,7 +24,7 @@ export default function AchievementsSkeleton() {
       {Array.from({ length: 3 }).map((_, group) => (
         <div key={group}>
           <Skeleton className="mb-4 h-6 w-40" />
-          <div className="content-grid">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-[repeat(auto-fill,minmax(min(24rem,100%),1fr))]">
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}

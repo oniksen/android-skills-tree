@@ -1,6 +1,6 @@
 import { Skeleton } from "./Skeleton";
 
-export default function SkillDetailSkeleton({ wide = false }: { wide?: boolean }) {
+export default function SkillDetailSkeleton() {
   const header = (
     <div className="space-y-2">
       <Skeleton className="h-3 w-24" />
@@ -40,17 +40,10 @@ export default function SkillDetailSkeleton({ wide = false }: { wide?: boolean }
   return (
     <div className="space-y-4" aria-busy>
       {header}
-      {wide ? (
-        <div className="xl:grid xl:grid-cols-2 xl:items-start xl:gap-6">
-          {description}
-          {subtopics}
-        </div>
-      ) : (
-        <>
-          {description}
-          {subtopics}
-        </>
-      )}
+      <div className="xl:grid xl:grid-cols-2 xl:items-start xl:gap-6">
+        {description}
+        {subtopics}
+      </div>
     </div>
   );
 }

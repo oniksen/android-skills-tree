@@ -793,6 +793,8 @@
 @media (min-width: 1280px) {
   .study-layout {
     grid-template-columns: 280px minmax(0, 1fr);
+    max-width: calc(72rem + 280px);
+    margin-inline: auto;
   }
 
   .study-toc {
