@@ -53,8 +53,8 @@ export default function GapList({
   }
 
   return (
-    <div className="space-y-2">
-            {gaps.map((gap, i) => {
+    <div className="content-grid-wide">
+      {gaps.map((gap, i) => {
         const done = gap.completionPercent === 100;
         const critical = !done && gap.currentScore === 0;
         return (

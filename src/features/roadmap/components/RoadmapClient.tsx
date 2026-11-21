@@ -8,6 +8,8 @@ import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import GapList from "@/features/roadmap/components/GapList";
+import PageHero from "@/shared/ui/PageHero";
+import PageSummaryCard from "@/shared/ui/PageSummaryCard";
 import { RoadmapSkeleton } from "@/shared/ui/skeletons";
 import { calcSkillCompletionPercent } from "@/core/domain/scoring";
 import { getSkillWeight } from "@/core/domain/weights";
@@ -77,6 +79,17 @@ export default function RoadmapClient() {
       ? "Все навыки текущего грейда пройдены"
       : "Нет навыков для текущего грейда";
 
+  const completedSkills = items.filter(
+    (item) => item.completionPercent === 100,
+  ).length;
+  const averagePercent =
+    items.length > 0
+      ? Math.round(
+          items.reduce((sum, item) => sum + item.completionPercent, 0) /
+            items.length,
+        )
+      : 0;
+
   return (
     <div className="space-y-6">
       <motion.div
@@ -84,59 +97,75 @@ export default function RoadmapClient() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: EASE }}
       >
-        <h1 className="mb-2 text-2xl font-bold tracking-tight text-white">
-          <span className="text-blue-600">#</span> Roadmap
-        </h1>
-        <p className="text-sm text-slate-400">
-          Все навыки текущего грейда и прогресс по ним. Выберите порядок
-          сортировки.
-        </p>
-        {currentLevel && (
-          <p className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-blue-500/40 bg-blue-500/10 px-3 py-1 font-mono text-sm font-medium text-blue-600">
-            focus: {currentLevel.name}
-          </p>
-        )}
-        <div className="mt-4 flex flex-wrap gap-2">
-          {SORT_OPTIONS.map((option) => {
-            const active = sortKey === option.key;
-            const Icon = option.icon;
-            return (
-              <button
-                key={option.key}
-                type="button"
-                onClick={() => setSortKey(option.key)}
-                aria-pressed={active}
-                className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-mono text-sm transition-colors ${
-                  active
-                    ? "border-blue-500/60 bg-blue-500/15 text-blue-600"
-                    : "border-white/[0.08] bg-white/[0.03] text-slate-400 hover:border-blue-500/40 hover:text-blue-500"
-                }`}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                {option.label}
-              </button>
-            );
-          })}
-          <button
-            type="button"
-            role="checkbox"
-            aria-checked={hideCompleted}
-            onClick={() => setHideCompleted((v) => !v)}
-            className="group inline-flex items-center gap-2 rounded-md px-1 py-1.5 font-mono text-sm text-slate-400 transition-colors hover:text-blue-500"
-          >
-            <span
-              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors duration-200 ${
-                hideCompleted
-                  ? "border-blue-600 bg-blue-600 text-[#faf9f5]"
-                  : "border-slate-600 group-hover:border-slate-400"
+        <PageHero
+          title="Roadmap"
+          description="Все навыки текущего грейда и прогресс по ним. Выберите порядок сортировки."
+          meta={
+            currentLevel ? (
+              <p className="inline-flex items-center gap-1.5 rounded-md border border-blue-500/40 bg-blue-500/10 px-3 py-1 font-mono text-sm font-medium text-blue-600">
+                focus: {currentLevel.name}
+              </p>
+            ) : undefined
+          }
+          aside={
+            <PageSummaryCard
+              title="Прогресс грейда"
+              meta={currentLevel?.name}
+              value={`${completedSkills}/${items.length}`}
+              valueLabel="навыков"
+              progress={{
+                current: completedSkills,
+                max: items.length || 1,
+              }}
+              stats={[
+                { label: "Средний прогресс", value: `${averagePercent}%` },
+              ]}
+            />
+          }
+        />
+      </motion.div>
+
+      <div className="flex flex-wrap items-center gap-3 border-b border-white/[0.06] pb-4">
+        {SORT_OPTIONS.map((option) => {
+          const active = sortKey === option.key;
+          const Icon = option.icon;
+          return (
+            <button
+              key={option.key}
+              type="button"
+              onClick={() => setSortKey(option.key)}
+              aria-pressed={active}
+              className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-mono text-sm transition-colors ${
+                active
+                  ? "border-blue-500/60 bg-blue-500/15 text-blue-600"
+                  : "border-white/[0.08] bg-white/[0.03] text-slate-400 hover:border-blue-500/40 hover:text-blue-500"
               }`}
             >
-              {hideCompleted && <Check className="h-3.5 w-3.5" strokeWidth={3.5} />}
-            </span>
-            Скрыть пройденные
-          </button>
-        </div>
-      </motion.div>
+              <Icon className="h-3.5 w-3.5" />
+              {option.label}
+            </button>
+          );
+        })}
+        <button
+          type="button"
+          role="checkbox"
+          aria-checked={hideCompleted}
+          onClick={() => setHideCompleted((v) => !v)}
+          className="group inline-flex items-center gap-2 rounded-md px-1 py-1.5 font-mono text-sm text-slate-400 transition-colors hover:text-blue-500"
+        >
+          <span
+            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors duration-200 ${
+              hideCompleted
+                ? "border-blue-600 bg-blue-600 text-[#faf9f5]"
+                : "border-slate-600 group-hover:border-slate-400"
+            }`}
+          >
+            {hideCompleted && <Check className="h-3.5 w-3.5" strokeWidth={3.5} />}
+          </span>
+          Скрыть пройденные
+        </button>
+      </div>
+
       <motion.div
         initial="hidden"
         animate="visible"
