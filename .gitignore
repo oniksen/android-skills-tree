@@ -55,6 +55,7 @@ opencode.json
 
 # local agent scratch (plans, sdd briefs/reports)
 .opencode/
+.superpowers/
 
 # git worktrees used for isolated feature work
 .worktrees/
