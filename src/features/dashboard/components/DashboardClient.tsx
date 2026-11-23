@@ -1,12 +1,10 @@
 "use client";
 
 import { motion } from "motion/react";
-import Link from "next/link";
 import {
   useUserProgress,
   useAssessments,
   useProjectProgress,
-  useCurrency,
 } from "@/hooks";
 import { levels } from "@/data/levels";
 import { skills } from "@/data/skills";
@@ -14,9 +12,7 @@ import { projects } from "@/data/projects";
 import LevelProgressCard from "@/features/dashboard/components/LevelProgressCard";
 import QuickStats from "@/features/dashboard/components/QuickStats";
 import LevelRequirementsCard from "@/features/dashboard/components/LevelRequirementsCard";
-import StreakCard from "@/shared/ui/StreakCard";
 import PageHero from "@/shared/ui/PageHero";
-import PageSummaryCard from "@/shared/ui/PageSummaryCard";
 import { DashboardSkeleton } from "@/shared/ui/skeletons";
 import { getLevelMinScore } from "@/core/domain/weights";
 import {
@@ -37,14 +33,8 @@ export default function DashboardClient() {
   const { progress, loading: progressLoading } = useUserProgress();
   const { assessmentMap, loading: assessmentsLoading } = useAssessments();
   const { projectMap, loading: projectsLoading } = useProjectProgress();
-  const { balance, loading: currencyLoading } = useCurrency();
 
-  if (
-    progressLoading ||
-    assessmentsLoading ||
-    projectsLoading ||
-    currencyLoading
-  ) {
+  if (progressLoading || assessmentsLoading || projectsLoading) {
     return <DashboardSkeleton />;
   }
 
@@ -115,23 +105,6 @@ export default function DashboardClient() {
             completedProjects={completedProjects}
             totalProjects={totalProjects}
           />
-        </motion.div>
-        <motion.div variants={cardVariants}>
-          <StreakCard />
-        </motion.div>
-        <motion.div variants={cardVariants}>
-          <PageSummaryCard
-            title="Кристаллы"
-            value={`${balance} 💎`}
-            valueLabel="баланс"
-          >
-            <Link
-              href="/shop"
-              className="mt-auto pt-3 font-mono text-xs text-blue-600 underline-offset-4 hover:underline"
-            >
-              в магазин →
-            </Link>
-          </PageSummaryCard>
         </motion.div>
       </motion.div>
     </div>

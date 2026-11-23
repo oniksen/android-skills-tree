@@ -23,7 +23,7 @@ export default function DashboardSkeleton() {
       </div>
 
       <div className="grid items-start gap-4 md:grid-cols-2 2xl:grid-cols-3">
-        {Array.from({ length: 4 }).map((_, i) => (
+        {Array.from({ length: 2 }).map((_, i) => (
           <div key={i} className="card-surface rounded-lg p-5">
             <Skeleton className="h-3 w-28" />
             <Skeleton className="mt-4 h-8 w-40" />
