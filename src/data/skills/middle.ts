@@ -64,7 +64,7 @@ export const middleSkills: Skill[] = [
     ],
     difficulty: "medium",
     sortOrder: 3,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "middle-kotlin-inline",
@@ -358,7 +358,7 @@ export const middleSkills: Skill[] = [
     ],
     difficulty: "medium",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "middle-components-fragment",
@@ -400,7 +400,7 @@ export const middleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 3,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "middle-components-services",
@@ -596,7 +596,7 @@ export const middleSkills: Skill[] = [
     ],
     difficulty: "medium",
     sortOrder: 6,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "middle-ui-sideeffects",
@@ -618,7 +618,7 @@ export const middleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 7,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "middle-ui-navcompose",
@@ -706,7 +706,7 @@ export const middleSkills: Skill[] = [
     ],
     difficulty: "medium",
     sortOrder: 3,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "middle-arch-state",
@@ -819,7 +819,7 @@ export const middleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 2,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "middle-data-paging",
@@ -1001,7 +1001,7 @@ export const middleSkills: Skill[] = [
     ],
     difficulty: "medium",
     sortOrder: 3,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "middle-networking-errors",
@@ -1178,7 +1178,7 @@ export const middleSkills: Skill[] = [
     ],
     difficulty: "medium",
     sortOrder: 3,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "middle-di-scopes",
@@ -1448,7 +1448,7 @@ export const middleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 3,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "middle-tools-proguard",

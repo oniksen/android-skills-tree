@@ -174,7 +174,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "medium",
     sortOrder: 8,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
 
   // ============================
@@ -224,7 +224,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 2,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-flow-buffer",
@@ -246,7 +246,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 3,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-flow-conflate",
@@ -387,7 +387,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 2,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-compose-snapshot",
@@ -435,7 +435,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 4,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-compose-derived",
@@ -532,7 +532,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "medium",
     sortOrder: 2,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-arch-multi",
@@ -580,7 +580,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "medium",
     sortOrder: 4,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-arch-ddd",
@@ -632,7 +632,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-data-proto",
@@ -681,7 +681,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 3,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-data-conflict",
@@ -705,7 +705,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 4,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
 
   // ============================
@@ -734,7 +734,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-security-encryption",
@@ -784,7 +784,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 3,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-security-biometric",
@@ -838,7 +838,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-perf-startup",
@@ -889,7 +889,7 @@ export const strongMiddleSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 3,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "strong-perf-macro",

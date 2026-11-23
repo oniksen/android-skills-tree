@@ -196,6 +196,14 @@ The `/roadmap` page is designed to show **all** skills of the current grade as a
   `requiredForLevelUp` skills** plus `nextLevel.requiredProjectCount` projects. The 80%
   category/XP thresholds are not part of the gate; `getLevelUpRequirements` mirrors the two
   conditions for the dashboard checklist.
+- **Required-skill coverage:** every grade marks at least 30% of its skills as
+  `requiredForLevelUp`, and every category contributes at least one required skill
+  (`src/data/skills.test.ts`). Keep the sets a deliberate spine of the grade, not a
+  byproduct of whichever skills were edited last.
+- **Senior has no next grade:** its `requiredForLevelUp` set is the core of the final
+  grade, not a gate. It drives the solid roadmap nodes, the "обязательный" badge and the
+  "обязательно N XP" marker in `GradeXpBar`; closing Senior still means 100% of its skills
+  (`grade_complete`).
 - **Full grade:** 100% of every skill in the grade. `grade_complete` is the hard full-grade
   achievement; `level_master` remains the tiered progress achievement (unlocks at 7% and
   shows tiers). `level_up` progress = required skills + projects (min), so it reaches 100%

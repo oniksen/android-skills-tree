@@ -28,7 +28,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-kotlin-memory",
@@ -54,7 +54,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 2,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-kotlin-multiplatform",
@@ -194,7 +194,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-concurrency-dispatchers",
@@ -221,7 +221,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 2,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-concurrency-statemachine",
@@ -331,7 +331,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-platform-binder",
@@ -358,7 +358,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 2,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-platform-zygote",
@@ -487,7 +487,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 7,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
 
   // ============================
@@ -517,7 +517,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-compose-slot",
@@ -542,7 +542,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 2,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-compose-recomposer",
@@ -627,7 +627,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-arch-event",
@@ -655,7 +655,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 2,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-arch-cqrs",
@@ -765,7 +765,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-data-query",
@@ -847,7 +847,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 4,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
 
   // ============================
@@ -878,7 +878,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-networking-http3",
@@ -1023,7 +1023,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-di-graph",
@@ -1109,7 +1109,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-perf-framemetrics",
@@ -1166,7 +1166,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 3,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-perf-battery",
@@ -1224,7 +1224,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-test-integration",
@@ -1339,7 +1339,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-cicd-fastlane",
@@ -1455,7 +1455,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 1,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-security-encryption",
@@ -1486,7 +1486,7 @@ export const seniorSkills: Skill[] = [
     ],
     difficulty: "hard",
     sortOrder: 2,
-    requiredForLevelUp: false,
+    requiredForLevelUp: true,
   },
   {
     id: "senior-security-root",

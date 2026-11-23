@@ -125,8 +125,14 @@ describe("обязательный XP грейда", () => {
     });
   });
 
+  it("у каждого грейда есть обязательный XP", () => {
+    for (const level of levels) {
+      expect(getRequiredSkillsScore(level.id), `грейд ${level.id}`).toBeGreaterThan(0);
+    }
+  });
+
   it("без обязательных навыков даёт ноль", () => {
-    expect(getRequiredSkillsScore("senior")).toBe(0);
+    expect(getRequiredSkillsScore("no-such-level")).toBe(0);
     expect(getRequiredSkillsScore("no-such-level")).toBe(0);
   });
 });

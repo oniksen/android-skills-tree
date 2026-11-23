@@ -143,7 +143,7 @@ describe("getLevelUpRequirements", () => {
     };
 
     const requirements = getLevelUpRequirements({
-      currentLevelId: "senior",
+      currentLevelId: "synthetic-current",
       nextLevel: synthetic,
       assessmentMap: {},
       projectMap: {},
@@ -163,7 +163,7 @@ describe("getLevelUpRequirements", () => {
     };
 
     const requirements = getLevelUpRequirements({
-      currentLevelId: "senior",
+      currentLevelId: "synthetic-current",
       nextLevel: synthetic,
       assessmentMap: {},
       projectMap: { first: true },
