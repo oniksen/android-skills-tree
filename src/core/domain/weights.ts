@@ -90,6 +90,19 @@ export function getLevelMinScore(levelId: string): number {
   return levelMinScores.get(levelId) ?? 0;
 }
 
+/**
+ * Minimum total XP to finish `levelId`: previous levels plus 80% of the
+ * level's own maximum. This is the level-up gate; `getLevelMinScore` is the
+ * minimum to be considered at the level (and is 0 for the first level).
+ */
+export function getLevelCompletionMinScore(levelId: string): number {
+  const index = levels.findIndex((level) => level.id === levelId);
+  if (index === -1) return 0;
+  const previousMax = index === 0 ? 0 : getLevelMaxScore(levels[index - 1].id);
+  const ownMax = getLevelMaxScore(levelId) - previousMax;
+  return previousMax + Math.round(ownMax * LEVEL_UP_THRESHOLD);
+}
+
 export function getTotalMaxScore(): number {
   return getLevelMaxScore(levels[levels.length - 1]?.id ?? "");
 }

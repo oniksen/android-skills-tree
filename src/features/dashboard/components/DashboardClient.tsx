@@ -14,7 +14,7 @@ import QuickStats from "@/features/dashboard/components/QuickStats";
 import LevelRequirementsCard from "@/features/dashboard/components/LevelRequirementsCard";
 import PageHero from "@/shared/ui/PageHero";
 import { DashboardSkeleton } from "@/shared/ui/skeletons";
-import { getLevelMinScore } from "@/core/domain/weights";
+import { getLevelCompletionMinScore } from "@/core/domain/weights";
 import {
   getLevelUpRequirements,
   getNextLevel,
@@ -41,7 +41,7 @@ export default function DashboardClient() {
   const currentLevelId = progress?.currentLevelId || levels[0].id;
   const currentLevel = levels.find((l) => l.id === currentLevelId) || levels[0];
   const nextLevel = getNextLevel(currentLevel.id);
-  const nextThreshold = nextLevel ? getLevelMinScore(nextLevel.id) : null;
+  const nextThreshold = getLevelCompletionMinScore(currentLevel.id);
 
   const currentScore = progress?.totalScore || 0;
   const totalSkills = skills.length;

@@ -56,12 +56,11 @@ function completedSkill(skill: Skill, score = 1): AssessmentData {
 
 function completedLevelAssessment(
   levelId: string,
-  scoreFor: (skill: Skill) => number = () => 1,
 ): Record<string, AssessmentData> {
   return Object.fromEntries(
     getSkillsByLevelId(levelId).map((skill) => [
       skill.id,
-      completedSkill(skill, scoreFor(skill)),
+      completedSkill(skill),
     ]),
   );
 }
@@ -91,60 +90,59 @@ type LevelUpFixture = {
 };
 
 function levelUpFixtures(nextLevel: NonNullable<ReturnType<typeof getNextLevel>>): LevelUpFixture[] {
-  const requiredMiddleSkills = getSkillsByLevelId(nextLevel.id).filter(
-    (skill) => skill.requiredForLevelUp,
-  );
-  const requiredMiddleSkillIds = new Set(requiredMiddleSkills.map((skill) => skill.id));
+  const allJunior = completedLevelAssessment(JUNIOR);
 
-  // Drop the smallest-scoring junior category entirely: its score stays below
-  // the level-up threshold even though nothing else is missing.
-  const failingCategory = getCategoriesByLevelId(JUNIOR).reduce((weakest, category) =>
-    getCategoryMaxScore(category.id) < getCategoryMaxScore(weakest.id)
-      ? category
-      : weakest,
+  // Keep the weakest category's required skill complete but drop its optional
+  // skills, so the category gate fails while the required-skill gate stays
+  // satisfied.
+  const weakestCategory = getCategoriesByLevelId(JUNIOR).reduce(
+    (weakest, category) =>
+      getCategoryMaxScore(category.id) < getCategoryMaxScore(weakest.id)
+        ? category
+        : weakest,
   );
-  const assessmentsWithoutFailingCategory = Object.fromEntries(
+  const categoryBelowThreshold = Object.fromEntries(
     getSkillsByLevelId(JUNIOR)
-      .filter((skill) => skill.categoryId !== failingCategory.id)
+      .filter(
+        (skill) =>
+          skill.categoryId !== weakestCategory.id || skill.requiredForLevelUp,
+      )
       .map((skill) => [skill.id, completedSkill(skill)]),
+  );
+
+  // All subtopics stay complete (categories pass) but the required skills of
+  // one category report score 0, so only the skills gate fails.
+  const missingRequiredSkills = Object.fromEntries(
+    getSkillsByLevelId(JUNIOR).map((skill) => [
+      skill.id,
+      skill.categoryId === "junior-kotlin" && skill.requiredForLevelUp
+        ? { ...completedSkill(skill), score: 0 }
+        : completedSkill(skill),
+    ]),
   );
 
   return [
     {
       name: "all gates are met",
-      assessments: {
-        ...completedLevelAssessment(JUNIOR),
-        ...completedLevelAssessment(nextLevel.id),
-      },
+      assessments: allJunior,
       projects: completedProjects(nextLevel.requiredProjectCount),
       expectedUnmet: [],
     },
     {
-      name: `the XP gate passes but ${failingCategory.id} stays below the category threshold`,
-      assessments: {
-        ...assessmentsWithoutFailingCategory,
-        ...completedLevelAssessment(nextLevel.id),
-      },
+      name: `the XP gate passes but ${weakestCategory.id} stays below the category threshold`,
+      assessments: categoryBelowThreshold,
       projects: completedProjects(nextLevel.requiredProjectCount),
       expectedUnmet: ["categories"],
     },
     {
-      name: "required next-level skills have no score",
-      assessments: {
-        ...completedLevelAssessment(JUNIOR),
-        ...completedLevelAssessment(nextLevel.id, (skill) =>
-          requiredMiddleSkillIds.has(skill.id) ? 0 : 1,
-        ),
-      },
+      name: "required current-level skills have no score",
+      assessments: missingRequiredSkills,
       projects: completedProjects(nextLevel.requiredProjectCount),
       expectedUnmet: ["skills"],
     },
     {
       name: "fewer projects are completed than required",
-      assessments: {
-        ...completedLevelAssessment(JUNIOR),
-        ...completedLevelAssessment(nextLevel.id),
-      },
+      assessments: allJunior,
       projects: completedProjects(nextLevel.requiredProjectCount - 1),
       expectedUnmet: ["projects"],
     },

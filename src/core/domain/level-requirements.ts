@@ -9,7 +9,7 @@ import type { AssessmentData } from "@/types";
 import { calcCategoryScore, calcTotalScore } from "./scoring";
 import {
   getCategoryMaxScore,
-  getLevelMinScore,
+  getLevelCompletionMinScore,
   LEVEL_UP_THRESHOLD,
 } from "./weights";
 
@@ -55,7 +55,7 @@ export function getLevelUpRequirements(params: {
   });
 
   const totalScore = calcTotalScore(assessmentMap);
-  const xpTarget = getLevelMinScore(nextLevel.id);
+  const xpTarget = getLevelCompletionMinScore(currentLevelId);
 
   requirements.push({
     id: "xp",
@@ -65,7 +65,7 @@ export function getLevelUpRequirements(params: {
     target: xpTarget,
   });
 
-  const requiredSkills = getSkillsByLevelId(nextLevel.id).filter(
+  const requiredSkills = getSkillsByLevelId(currentLevelId).filter(
     (skill) => skill.requiredForLevelUp,
   );
 
@@ -76,7 +76,7 @@ export function getLevelUpRequirements(params: {
 
     requirements.push({
       id: "skills",
-      label: "Обязательные навыки следующего уровня",
+      label: "Обязательные навыки текущего грейда",
       done: passedSkills === requiredSkills.length,
       current: passedSkills,
       target: requiredSkills.length,

@@ -9,7 +9,7 @@ import { syncStreak } from "@/adapters/firestore-client/streak-commands";
 import { calcCategoryScore, calcTotalScore } from "@/core/domain/scoring";
 import {
   getCategoryMaxScore,
-  getLevelMinScore,
+  getLevelCompletionMinScore,
   LEVEL_UP_THRESHOLD,
 } from "@/core/domain/weights";
 import {
@@ -119,12 +119,14 @@ export async function checkLevelUp() {
   }
 
   const totalScore = calcTotalScore(assessmentMap);
-  if (totalScore < getLevelMinScore(nextLevel.id)) return null;
+  if (totalScore < getLevelCompletionMinScore(currentLevelId)) return null;
 
+  // Required skills belong to the grade being completed, so they are reachable
+  // through the normal tree before the next grade is unlocked.
   const requiredSkills = skills.filter(
     (s) =>
       categories.some(
-        (c) => c.id === s.categoryId && c.levelId === nextLevel.id,
+        (c) => c.id === s.categoryId && c.levelId === currentLevelId,
       ) && s.requiredForLevelUp,
   );
 

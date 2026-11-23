@@ -7,6 +7,7 @@ import {
   LEVEL_MULTIPLIER,
   LEVEL_UP_THRESHOLD,
   getCategoryMaxScore,
+  getLevelCompletionMinScore,
   getLevelMaxScore,
   getLevelMinScore,
   getSkillDifficulty,
@@ -131,6 +132,26 @@ describe("пороги уровней", () => {
       const ownMax = getLevelMaxScore(level.id) - previousMax;
       expect(getLevelMinScore(level.id)).toBe(previousMax + Math.round(ownMax * LEVEL_UP_THRESHOLD));
     });
+  });
+
+  it("порог завершения уровня = предыдущий потолок + 80% своего", () => {
+    const sorted = [...levels].sort((a, b) => a.levelOrder - b.levelOrder);
+
+    sorted.forEach((level, index) => {
+      const previousMax = index === 0 ? 0 : getLevelMaxScore(sorted[index - 1].id);
+      const ownMax = getLevelMaxScore(level.id) - previousMax;
+      expect(getLevelCompletionMinScore(level.id)).toBe(
+        previousMax + Math.round(ownMax * LEVEL_UP_THRESHOLD),
+      );
+    });
+  });
+
+  it("порог завершения junior — 80% своего уровня, а не ноль", () => {
+    const ownMax = getLevelMaxScore("junior");
+    expect(getLevelCompletionMinScore("junior")).toBe(
+      Math.round(ownMax * LEVEL_UP_THRESHOLD),
+    );
+    expect(getLevelCompletionMinScore("junior")).toBeGreaterThan(0);
   });
 
   it("порог перехода всегда ниже потолка своего уровня", () => {

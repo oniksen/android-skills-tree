@@ -16,7 +16,10 @@ import {
   calcLevelCompletionPercent,
   calcLevelScore,
 } from "@/core/domain/scoring";
-import { getCategoryMaxScore, getLevelMinScore } from "@/core/domain/weights";
+import {
+  getCategoryMaxScore,
+  getLevelCompletionMinScore,
+} from "@/core/domain/weights";
 
 const LEVEL_ACCENT: Record<string, string> = {
   junior: "text-green-400",
@@ -126,7 +129,7 @@ export default function TreeClient({ slug }: TreeClientProps) {
               <LevelGate
                 isUnlocked={false}
                 isCompleted={false}
-                requiredScore={getLevelMinScore(currentLevel.id)}
+                requiredScore={getLevelCompletionMinScore(currentLevelId)}
                 currentScore={currentScore}
                 levelName={currentLevel.name}
               />

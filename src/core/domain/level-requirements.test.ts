@@ -4,7 +4,7 @@ import { getCategoriesByLevelId } from "@/data/categories";
 import { getSkillsByLevelId } from "@/data/skills";
 import {
   getCategoryMaxScore,
-  getLevelMinScore,
+  getLevelCompletionMinScore,
   LEVEL_UP_THRESHOLD,
 } from "./weights";
 import { calcCategoryScore, calcTotalScore } from "./scoring";
@@ -16,17 +16,6 @@ function fullyDone(subtopics: string[]): AssessmentData {
     score: 0,
     subtopics: Object.fromEntries(subtopics.map((name) => [name, true])),
   };
-}
-
-function completedLevelAssessments(
-  levelId: string,
-): Record<string, AssessmentData> {
-  return Object.fromEntries(
-    getSkillsByLevelId(levelId).map((skill) => [
-      skill.id,
-      fullyDone(skill.subtopics),
-    ]),
-  );
 }
 
 describe("getNextLevel", () => {
@@ -79,12 +68,12 @@ describe("getLevelUpRequirements", () => {
     });
     expect(byId.xp).toMatchObject({
       current: 0,
-      target: getLevelMinScore("middle"),
+      target: getLevelCompletionMinScore("junior"),
       done: false,
     });
     expect(byId.skills).toMatchObject({
       current: 0,
-      target: getSkillsByLevelId("middle").filter((s) => s.requiredForLevelUp)
+      target: getSkillsByLevelId("junior").filter((s) => s.requiredForLevelUp)
         .length,
       done: false,
     });
@@ -125,7 +114,7 @@ describe("getLevelUpRequirements", () => {
   });
 
   it("marks required skills done when each has a score of at least 1", () => {
-    const required = getSkillsByLevelId("middle").filter(
+    const required = getSkillsByLevelId("junior").filter(
       (skill) => skill.requiredForLevelUp,
     );
     const assessmentMap = Object.fromEntries(
@@ -179,8 +168,13 @@ describe("getLevelUpRequirements", () => {
   });
 
   it("reports partial XP progress between zero and the target", () => {
-    const assessmentMap = completedLevelAssessments("junior");
-    const target = getLevelMinScore("middle");
+    const juniorSkills = getSkillsByLevelId("junior");
+    const assessmentMap = Object.fromEntries(
+      juniorSkills
+        .slice(0, Math.ceil(juniorSkills.length / 2))
+        .map((skill) => [skill.id, fullyDone(skill.subtopics)]),
+    );
+    const target = getLevelCompletionMinScore("junior");
 
     const item = getLevelUpRequirements({
       currentLevelId: "junior",
@@ -196,7 +190,7 @@ describe("getLevelUpRequirements", () => {
   });
 
   it("reports partial required-skill progress between zero and the target", () => {
-    const required = getSkillsByLevelId("middle").filter(
+    const required = getSkillsByLevelId("junior").filter(
       (skill) => skill.requiredForLevelUp,
     );
     const passed = required.slice(0, required.length - 1);
@@ -232,7 +226,7 @@ describe("getLevelUpRequirements", () => {
     expect(item).toMatchObject({ done: false, target });
   });
 
-  it("omits requirements whose target is zero", () => {
+  it("omits the skills and project requirements when their target is zero", () => {
     const synthetic: Level = {
       id: "synthetic",
       name: "Synthetic",
@@ -243,7 +237,7 @@ describe("getLevelUpRequirements", () => {
     };
 
     const requirements = getLevelUpRequirements({
-      currentLevelId: "junior",
+      currentLevelId: "senior",
       nextLevel: synthetic,
       assessmentMap: {},
       projectMap: {},
