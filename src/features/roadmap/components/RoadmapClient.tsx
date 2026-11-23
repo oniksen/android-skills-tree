@@ -100,7 +100,7 @@ export default function RoadmapClient() {
       : 0;
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -177,7 +177,7 @@ export default function RoadmapClient() {
         </div>
       </div>
 
-      <div className="hidden xl:mb-0 xl:block">
+      <div className="hidden xl:block">
         <RoadmapDiagram graph={graph} levelSlug={currentLevel.slug} />
       </div>
 
