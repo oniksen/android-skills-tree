@@ -1,0 +1,97 @@
+import { getCategoriesByLevelId } from "@/data/categories";
+import { levels, type Level } from "@/data/levels";
+import { getSkillsByLevelId } from "@/data/skills";
+import type { AssessmentData } from "@/types";
+import { calcCategoryScore, calcTotalScore } from "./scoring";
+import {
+  getCategoryMaxScore,
+  getLevelMinScore,
+  LEVEL_UP_THRESHOLD,
+} from "./weights";
+
+export interface LevelRequirement {
+  id: "categories" | "xp" | "skills" | "projects";
+  label: string;
+  done: boolean;
+  current?: number;
+  target?: number;
+}
+
+export function getNextLevel(currentLevelId: string): Level | null {
+  const index = levels.findIndex((level) => level.id === currentLevelId);
+  if (index === -1 || index >= levels.length - 1) return null;
+  return levels[index + 1];
+}
+
+export function getLevelUpRequirements(params: {
+  currentLevelId: string;
+  nextLevel: Level | null;
+  assessmentMap: Record<string, AssessmentData>;
+  projectMap: Record<string, boolean>;
+}): LevelRequirement[] {
+  const { currentLevelId, nextLevel, assessmentMap, projectMap } = params;
+
+  if (!nextLevel) return [];
+
+  const requirements: LevelRequirement[] = [];
+
+  const currentCategories = getCategoriesByLevelId(currentLevelId);
+  const passedCategories = currentCategories.filter(
+    (category) =>
+      calcCategoryScore(category.id, assessmentMap) >=
+      getCategoryMaxScore(category.id) * LEVEL_UP_THRESHOLD,
+  ).length;
+
+  requirements.push({
+    id: "categories",
+    label: "Категории текущего уровня",
+    done: passedCategories === currentCategories.length,
+    current: passedCategories,
+    target: currentCategories.length,
+  });
+
+  const totalScore = calcTotalScore(assessmentMap);
+  const xpTarget = getLevelMinScore(nextLevel.id);
+
+  requirements.push({
+    id: "xp",
+    label: "Общий XP",
+    done: totalScore >= xpTarget,
+    current: totalScore,
+    target: xpTarget,
+  });
+
+  const requiredSkills = getSkillsByLevelId(nextLevel.id).filter(
+    (skill) => skill.requiredForLevelUp,
+  );
+
+  if (requiredSkills.length > 0) {
+    const passedSkills = requiredSkills.filter(
+      (skill) => (assessmentMap[skill.id]?.score ?? 0) >= 1,
+    ).length;
+
+    requirements.push({
+      id: "skills",
+      label: "Обязательные навыки следующего уровня",
+      done: passedSkills === requiredSkills.length,
+      current: passedSkills,
+      target: requiredSkills.length,
+    });
+  }
+
+  const projectTarget = nextLevel.requiredProjectCount;
+
+  if (projectTarget > 0) {
+    const completedProjects = Object.values(projectMap).filter(Boolean).length;
+
+    requirements.push({
+      id: "projects",
+      label: "Проекты",
+      done: completedProjects >= projectTarget,
+      current: completedProjects,
+      target: projectTarget,
+    });
+  }
+
+  return requirements;
+}
