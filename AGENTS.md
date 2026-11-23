@@ -173,11 +173,15 @@ The `/roadmap` page is designed to show **all** skills of the current grade as a
   columns as hand-rolled SVG (no graph library, no pan/zoom; horizontal scroll). Nodes
   are `<g role="link">` and use `treeSkillHref` / `skillDetailHref`; status colors are
   emerald / blue / slate. A non-required skill (`requiredForLevelUp === false`) gets a
-  dashed stroke; required skills are solid. Empty graphs render a message, not an empty
-  `<svg>`.
+  dashed stroke; required skills are solid. Names wrap to up to three lines and the node
+  grows with them; arrows use 60px control offsets. Empty graphs render a message, not an
+  empty `<svg>`. The native horizontal scrollbar is hidden and replaced by
+  `RoadmapScrollbar` — a `glass-panel`, fixed-bottom, `xl+` bar with drag and arrow-key
+  support, synced through `scrollRef`.
 - **Responsive:** `RoadmapClient` renders the diagram in `hidden xl:block` and the
   `GapList` in `xl:hidden`; the sort toolbar is `xl:hidden` because it only sorts the
-  list. The skeleton is unchanged.
+  list. The diagram wrapper uses `xl:-mr-6` to cancel the page's right padding, and the
+  root reserves `pb-16` for the fixed scrollbar. The skeleton is unchanged.
 - **Invariants/tests:** every `from`/`to` must exist in `skills`, edges must be unique,
   same-grade and acyclic (`src/data/roadmap-links.test.ts`); graph behavior is covered by
   `src/core/domain/roadmap-graph.test.ts`; the diagram by `RoadmapDiagram.test.tsx`.
