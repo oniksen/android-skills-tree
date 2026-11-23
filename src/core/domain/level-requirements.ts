@@ -1,3 +1,7 @@
+// Mirrors the write-path gate in checkLevelUp (src/lib/firestore-actions.ts):
+// same category threshold, XP target, required-skill and project checks. Both
+// implementations must change together; firestore-actions-levelup.test.ts
+// cross-checks them so the checklist cannot drift from the actual level-up.
 import { getCategoriesByLevelId } from "@/data/categories";
 import { levels, type Level } from "@/data/levels";
 import { getSkillsByLevelId } from "@/data/skills";

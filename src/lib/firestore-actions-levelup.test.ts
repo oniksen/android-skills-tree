@@ -1,4 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { AssessmentData, ProjectProgress } from "@/types";
+import type { Skill } from "@/data/skills";
+import { getSkillsByLevelId } from "@/data/skills";
+import { getCategoriesByLevelId } from "@/data/categories";
+import { getCategoryMaxScore } from "@/core/domain/weights";
+import {
+  getLevelUpRequirements,
+  getNextLevel,
+} from "@/core/domain/level-requirements";
 
 const mocks = vi.hoisted(() => ({
   collection: vi.fn(),
@@ -36,7 +45,111 @@ vi.mock("@/adapters/firestore-client/state", () => ({
   ensureUserState: vi.fn(),
 }));
 
+const JUNIOR = "junior";
 
+function completedSkill(skill: Skill, score = 1): AssessmentData {
+  return {
+    score,
+    subtopics: Object.fromEntries(skill.subtopics.map((name) => [name, true])),
+  };
+}
+
+function completedLevelAssessment(
+  levelId: string,
+  scoreFor: (skill: Skill) => number = () => 1,
+): Record<string, AssessmentData> {
+  return Object.fromEntries(
+    getSkillsByLevelId(levelId).map((skill) => [
+      skill.id,
+      completedSkill(skill, scoreFor(skill)),
+    ]),
+  );
+}
+
+function project(projectId: string, completed: boolean): ProjectProgress {
+  return {
+    projectId,
+    completed,
+    completedAt: completed ? new Date(0) : null,
+  };
+}
+
+function completedProjects(count: number): Record<string, ProjectProgress> {
+  return Object.fromEntries(
+    Array.from({ length: count }, (_, index) => {
+      const projectId = `project-${index + 1}`;
+      return [projectId, project(projectId, true)];
+    }),
+  );
+}
+
+type LevelUpFixture = {
+  name: string;
+  assessments: Record<string, AssessmentData>;
+  projects: Record<string, ProjectProgress>;
+  expectedUnmet: string[];
+};
+
+function levelUpFixtures(nextLevel: NonNullable<ReturnType<typeof getNextLevel>>): LevelUpFixture[] {
+  const requiredMiddleSkills = getSkillsByLevelId(nextLevel.id).filter(
+    (skill) => skill.requiredForLevelUp,
+  );
+  const requiredMiddleSkillIds = new Set(requiredMiddleSkills.map((skill) => skill.id));
+
+  // Drop the smallest-scoring junior category entirely: its score stays below
+  // the level-up threshold even though nothing else is missing.
+  const failingCategory = getCategoriesByLevelId(JUNIOR).reduce((weakest, category) =>
+    getCategoryMaxScore(category.id) < getCategoryMaxScore(weakest.id)
+      ? category
+      : weakest,
+  );
+  const assessmentsWithoutFailingCategory = Object.fromEntries(
+    getSkillsByLevelId(JUNIOR)
+      .filter((skill) => skill.categoryId !== failingCategory.id)
+      .map((skill) => [skill.id, completedSkill(skill)]),
+  );
+
+  return [
+    {
+      name: "all gates are met",
+      assessments: {
+        ...completedLevelAssessment(JUNIOR),
+        ...completedLevelAssessment(nextLevel.id),
+      },
+      projects: completedProjects(nextLevel.requiredProjectCount),
+      expectedUnmet: [],
+    },
+    {
+      name: `the XP gate passes but ${failingCategory.id} stays below the category threshold`,
+      assessments: {
+        ...assessmentsWithoutFailingCategory,
+        ...completedLevelAssessment(nextLevel.id),
+      },
+      projects: completedProjects(nextLevel.requiredProjectCount),
+      expectedUnmet: ["categories"],
+    },
+    {
+      name: "required next-level skills have no score",
+      assessments: {
+        ...completedLevelAssessment(JUNIOR),
+        ...completedLevelAssessment(nextLevel.id, (skill) =>
+          requiredMiddleSkillIds.has(skill.id) ? 0 : 1,
+        ),
+      },
+      projects: completedProjects(nextLevel.requiredProjectCount),
+      expectedUnmet: ["skills"],
+    },
+    {
+      name: "fewer projects are completed than required",
+      assessments: {
+        ...completedLevelAssessment(JUNIOR),
+        ...completedLevelAssessment(nextLevel.id),
+      },
+      projects: completedProjects(nextLevel.requiredProjectCount - 1),
+      expectedUnmet: ["projects"],
+    },
+  ];
+}
 
 describe("checkLevelUp", () => {
   beforeEach(() => {
@@ -80,4 +193,48 @@ describe("checkLevelUp", () => {
     const res = await checkLevelUp();
     expect(res).toBeNull();
   });
+
+  const nextLevel = getNextLevel(JUNIOR);
+  if (!nextLevel) throw new Error("junior must have a next level");
+
+  it.each(levelUpFixtures(nextLevel))(
+    "agrees with getLevelUpRequirements when $name",
+    async (fixture) => {
+      const stateMod = await import("@/adapters/firestore-client/state");
+      (stateMod.readUserState as ReturnType<typeof vi.fn>).mockResolvedValue({
+        progress: {
+          currentLevelId: JUNIOR,
+          unlockedLevelIds: [JUNIOR],
+          totalScore: 0,
+        },
+        assessments: fixture.assessments,
+        projects: fixture.projects,
+      });
+
+      const requirements = getLevelUpRequirements({
+        currentLevelId: JUNIOR,
+        nextLevel,
+        assessmentMap: fixture.assessments,
+        projectMap: Object.fromEntries(
+          Object.entries(fixture.projects).map(([id, progress]) => [
+            id,
+            progress.completed,
+          ]),
+        ),
+      });
+
+      expect(
+        requirements
+          .filter((requirement) => !requirement.done)
+          .map((requirement) => requirement.id),
+      ).toEqual(fixture.expectedUnmet);
+
+      const allDone = requirements.every((requirement) => requirement.done);
+
+      const { checkLevelUp } = await import("./firestore-actions");
+      const result = await checkLevelUp();
+
+      expect(result !== null).toBe(allDone);
+    },
+  );
 });
