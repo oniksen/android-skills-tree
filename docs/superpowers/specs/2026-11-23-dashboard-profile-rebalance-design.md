@@ -297,3 +297,16 @@ Dashboard в свалку.
 Следствие: `ProfileContent` по-прежнему вызывает `useCurrency`/`useStreak` только
 для полей `summarizeProfile`, которые не рендерятся. Это невизуальный запас, а не
 дублирование на экране; отдельного изменения не требует.
+
+## 12. Обновление (2026-11-23): гейт уровня — текущий грейд
+
+По итогам проверки `checkLevelUp` и `getLevelUpRequirements` переведены на текущий грейд:
+
+- обязательные навыки берутся из `getSkillsByLevelId(currentLevelId)`, а не из следующего
+  уровня;
+- XP-порог — `getLevelCompletionMinScore(currentLevelId)` (предыдущие уровни + 80% своего
+  максимума), а не `getLevelMinScore(nextLevel.id)`.
+
+Причина: следующий грейд заблокирован до повышения, поэтому его навыки и XP нельзя набрать
+заранее. Dashboard (`LevelProgressCard`, `LevelRequirementsCard`) и `LevelGate` обновлены
+под тот же порог.
