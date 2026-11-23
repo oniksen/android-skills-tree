@@ -112,7 +112,7 @@ function edgePath(from: NodeBox, to: NodeBox): string {
     const y1 = from.y + from.h / 2;
     const x2 = to.x + to.w;
     const y2 = to.y + to.h / 2;
-    const bow = x1 + 60;
+    const bow = x1 + 40;
     return `M ${x1} ${y1} C ${bow} ${y1}, ${bow} ${y2}, ${x2} ${y2}`;
   }
 
@@ -121,8 +121,8 @@ function edgePath(from: NodeBox, to: NodeBox): string {
   const y1 = from.y + from.h / 2;
   const x2 = leftToRight ? to.x : to.x + to.w;
   const y2 = to.y + to.h / 2;
-  const c1 = leftToRight ? x1 + 60 : x1 - 60;
-  const c2 = leftToRight ? x2 - 60 : x2 + 60;
+  const c1 = leftToRight ? x1 + 40 : x1 - 40;
+  const c2 = leftToRight ? x2 - 40 : x2 + 40;
   return `M ${x1} ${y1} C ${c1} ${y1}, ${c2} ${y2}, ${x2} ${y2}`;
 }
 
@@ -179,6 +179,11 @@ export default function RoadmapDiagram({
       <div
         ref={scrollRef}
         id="roadmap-diagram-scroll"
+        style={{
+          marginLeft: "calc(-1 * var(--roadmap-bleed-left, 0px))",
+          paddingLeft: "var(--roadmap-bleed-left, 0px)",
+          marginRight: "calc(-1 * var(--roadmap-bleed-right, 0px))",
+        }}
         className="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         <svg

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowDown, ArrowUp, Check, type LucideIcon } from "lucide-react";
 import { useUserProgress, useAssessments } from "@/hooks";
@@ -32,6 +32,31 @@ export default function RoadmapClient() {
   const [sortKey, setSortKey] = useState<RoadmapSortKey>("xp-desc");
   const [hideCompleted, setHideCompleted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const bleedRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (progressLoading || assessmentsLoading) return;
+    const element = bleedRef.current;
+    if (!element) return;
+
+    const measure = () => {
+      const rect = element.getBoundingClientRect();
+      if (rect.width === 0) return;
+      const viewportWidth = document.documentElement.clientWidth;
+      element.style.setProperty(
+        "--roadmap-bleed-left",
+        `${Math.max(0, rect.left)}px`,
+      );
+      element.style.setProperty(
+        "--roadmap-bleed-right",
+        `${Math.max(0, viewportWidth - rect.right)}px`,
+      );
+    };
+
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [progressLoading, assessmentsLoading]);
 
   if (progressLoading || assessmentsLoading) {
     return <RoadmapSkeleton />;
@@ -179,7 +204,7 @@ export default function RoadmapClient() {
         </div>
       </div>
 
-      <div className="hidden xl:block xl:-mr-6">
+      <div ref={bleedRef} className="hidden xl:block">
         <RoadmapDiagram
           graph={graph}
           levelSlug={currentLevel.slug}

@@ -62,6 +62,12 @@ describe("RoadmapDiagram", () => {
     expect((html.match(/stroke-dasharray="5 4"/g) ?? []).length).toBe(1);
   });
 
+  it("makes the scroll container full-bleed via the measured CSS vars", () => {
+    const html = renderToStaticMarkup(<RoadmapDiagram graph={graph} levelSlug="junior" />);
+    expect(html).toContain("--roadmap-bleed-left");
+    expect(html).toContain("--roadmap-bleed-right");
+  });
+
   it("explains the arrow styles in the legend", () => {
     const html = renderToStaticMarkup(<RoadmapDiagram graph={graph} levelSlug="junior" />);
     expect(html).toContain(
