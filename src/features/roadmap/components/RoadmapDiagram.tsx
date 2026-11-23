@@ -112,6 +112,9 @@ export default function RoadmapDiagram({
           </li>
         ))}
       </ul>
+      <p className="text-xs text-slate-500">
+        Сплошная стрелка — обязательная связь, пунктирная — рекомендация.
+      </p>
 
       <div className="overflow-x-auto">
         <svg
@@ -142,7 +145,7 @@ export default function RoadmapDiagram({
               x={PADDING + index * COL_W + NODE_W / 2}
               y={PADDING + 20}
               textAnchor="middle"
-              className="fill-slate-500 text-sm font-medium"
+              className="fill-slate-400 text-sm font-medium"
             >
               {column.categoryName}
             </text>

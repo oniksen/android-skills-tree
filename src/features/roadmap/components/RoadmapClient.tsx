@@ -108,7 +108,7 @@ export default function RoadmapClient() {
       >
         <PageHero
           title="Roadmap"
-          description="Все навыки текущего грейда и прогресс по ним. Выберите порядок сортировки."
+          description="Все навыки текущего грейда и прогресс по ним."
           meta={
             currentLevel ? (
               <p className="inline-flex items-center gap-1.5 rounded-md border border-blue-500/40 bg-blue-500/10 px-3 py-1 font-mono text-sm font-medium text-blue-600">
@@ -177,7 +177,7 @@ export default function RoadmapClient() {
         </div>
       </div>
 
-      <div className="hidden xl:block">
+      <div className="hidden xl:mb-0 xl:block">
         <RoadmapDiagram graph={graph} levelSlug={currentLevel.slug} />
       </div>
 

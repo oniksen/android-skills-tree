@@ -92,9 +92,9 @@ export function buildRoadmapGraph(params: {
   });
 
   const levelSkillIds = new Set(levelSkills.map((skill) => skill.id));
-  const edges: RoadmapGraphEdge[] = links.filter(
-    (edge) => levelSkillIds.has(edge.from) && levelSkillIds.has(edge.to),
-  );
+  const edges: RoadmapGraphEdge[] = links
+    .filter((edge) => levelSkillIds.has(edge.from) && levelSkillIds.has(edge.to))
+    .map(({ from, to, kind }) => ({ from, to, kind }));
 
   return { levelId, levelName: level.name, nodes, edges, columns };
 }

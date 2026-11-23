@@ -50,9 +50,23 @@ describe("RoadmapDiagram", () => {
     expect(html).toContain("marker-end");
   });
 
+  it("labels a node with its name and completion percent", () => {
+    const html = renderToStaticMarkup(<RoadmapDiagram graph={graph} levelSlug="junior" />);
+    expect(html).toContain('aria-label="Переменные, 100%"');
+    expect(html).toContain('aria-label="Типы данных, 0%, дополнительный навык"');
+  });
+
   it("marks an optional skill with a dashed stroke and keeps required solid", () => {
     const html = renderToStaticMarkup(<RoadmapDiagram graph={graph} levelSlug="junior" />);
     expect(html).toContain('stroke-dasharray="5 4"');
+    expect((html.match(/stroke-dasharray="5 4"/g) ?? []).length).toBe(1);
+  });
+
+  it("explains the arrow styles in the legend", () => {
+    const html = renderToStaticMarkup(<RoadmapDiagram graph={graph} levelSlug="junior" />);
+    expect(html).toContain(
+      "Сплошная стрелка — обязательная связь, пунктирная — рекомендация.",
+    );
   });
 
   it("shows a message for an empty graph", () => {

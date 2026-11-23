@@ -9,8 +9,7 @@ export default function RoadmapSkeleton() {
             Roadmap
           </h1>
           <p className="text-sm text-slate-400">
-            Все навыки текущего грейда и прогресс по ним. Выберите порядок
-            сортировки.
+            Все навыки текущего грейда и прогресс по ним.
           </p>
           <Skeleton className="mt-3 h-7 w-40 rounded-md" />
         </div>

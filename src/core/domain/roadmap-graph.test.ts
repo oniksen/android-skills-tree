@@ -74,6 +74,27 @@ describe("buildRoadmapGraph", () => {
     ]);
   });
 
+  it("returns no edges for an empty links list but keeps the nodes", () => {
+    const graph = buildRoadmapGraph({ levelId: "junior", assessmentMap: {}, links: [] });
+    expect(graph.edges).toEqual([]);
+    expect(graph.nodes).toHaveLength(getSkillsByLevelId("junior").length);
+  });
+
+  it("does not alias caller link objects", () => {
+    const link: RoadmapLink = {
+      from: "junior-osnovy-perem",
+      to: "junior-osnovy-tipy",
+      kind: "requires",
+    };
+    const graph = buildRoadmapGraph({
+      levelId: "junior",
+      assessmentMap: {},
+      links: [link],
+    });
+    expect(graph.edges[0]).toEqual(link);
+    expect(graph.edges[0]).not.toBe(link);
+  });
+
   it("returns an empty graph for an unknown level", () => {
     const graph = buildRoadmapGraph({ levelId: "unknown", assessmentMap: {}, links: [] });
     expect(graph.nodes).toEqual([]);
