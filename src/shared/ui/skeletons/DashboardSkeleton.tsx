@@ -11,15 +11,19 @@ export default function DashboardSkeleton() {
           <p className="mt-1 text-slate-400">Ваш прогресс на пути к senior.</p>
         </div>
         <div className="card-surface rounded-lg p-5">
-          <Skeleton className="h-3 w-28" />
-          <Skeleton className="mt-3 h-8 w-40" />
-          <Skeleton className="mt-4 h-4 w-full" />
-          <Skeleton className="mt-4 h-4 w-32" />
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <Skeleton className="h-3 w-28" />
+              <Skeleton className="mt-3 h-8 w-40" />
+            </div>
+            <Skeleton className="h-24 w-24 shrink-0 rounded-full" />
+          </div>
+          <Skeleton className="mt-4 h-4 w-40" />
         </div>
       </div>
 
       <div className="grid items-start gap-4 md:grid-cols-2 2xl:grid-cols-3">
-        {Array.from({ length: 3 }).map((_, i) => (
+        {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="card-surface rounded-lg p-5">
             <Skeleton className="h-3 w-28" />
             <Skeleton className="mt-4 h-8 w-40" />

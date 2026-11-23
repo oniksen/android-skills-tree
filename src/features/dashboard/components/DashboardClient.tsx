@@ -1,17 +1,28 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useUserProgress, useAssessments, useProjectProgress } from "@/hooks";
+import Link from "next/link";
+import {
+  useUserProgress,
+  useAssessments,
+  useProjectProgress,
+  useCurrency,
+} from "@/hooks";
 import { levels } from "@/data/levels";
 import { skills } from "@/data/skills";
 import { projects } from "@/data/projects";
 import LevelProgressCard from "@/features/dashboard/components/LevelProgressCard";
 import QuickStats from "@/features/dashboard/components/QuickStats";
-import NextMilestone from "@/features/dashboard/components/NextMilestone";
+import LevelRequirementsCard from "@/features/dashboard/components/LevelRequirementsCard";
 import StreakCard from "@/shared/ui/StreakCard";
 import PageHero from "@/shared/ui/PageHero";
+import PageSummaryCard from "@/shared/ui/PageSummaryCard";
 import { DashboardSkeleton } from "@/shared/ui/skeletons";
 import { getLevelMinScore } from "@/core/domain/weights";
+import {
+  getLevelUpRequirements,
+  getNextLevel,
+} from "@/core/domain/level-requirements";
 
 const levelColors: Record<string, string> = {
   junior: "text-green-400",
@@ -26,23 +37,33 @@ export default function DashboardClient() {
   const { progress, loading: progressLoading } = useUserProgress();
   const { assessmentMap, loading: assessmentsLoading } = useAssessments();
   const { projectMap, loading: projectsLoading } = useProjectProgress();
+  const { balance, loading: currencyLoading } = useCurrency();
 
-  if (progressLoading || assessmentsLoading || projectsLoading) {
+  if (
+    progressLoading ||
+    assessmentsLoading ||
+    projectsLoading ||
+    currencyLoading
+  ) {
     return <DashboardSkeleton />;
   }
 
   const currentLevelId = progress?.currentLevelId || levels[0].id;
   const currentLevel = levels.find((l) => l.id === currentLevelId) || levels[0];
-  const currentIndex = levels.findIndex((l) => l.id === currentLevelId);
-  const nextLevel =
-    currentIndex < levels.length - 1 ? levels[currentIndex + 1] : null;
+  const nextLevel = getNextLevel(currentLevel.id);
+  const nextThreshold = nextLevel ? getLevelMinScore(nextLevel.id) : null;
 
   const currentScore = progress?.totalScore || 0;
   const totalSkills = skills.length;
   const assessedSkills = Object.keys(assessmentMap).length;
   const completedProjects = Object.values(projectMap).filter(Boolean).length;
   const totalProjects = projects.length;
-  const canLevelUp = nextLevel ? currentScore >= getLevelMinScore(nextLevel.id) : false;
+  const requirements = getLevelUpRequirements({
+    currentLevelId: currentLevel.id,
+    nextLevel,
+    assessmentMap,
+    projectMap,
+  });
   const cardVariants = {
     hidden: { opacity: 0, y: 16 },
     visible: {
@@ -67,7 +88,7 @@ export default function DashboardClient() {
               currentLevel={currentLevel.name}
               currentScore={currentScore}
               nextLevel={nextLevel?.name || null}
-              nextThreshold={nextLevel ? getLevelMinScore(nextLevel.id) : null}
+              nextThreshold={nextThreshold}
               levelColor={levelColors[currentLevel.slug] || "text-blue-400"}
             />
           }
@@ -79,6 +100,14 @@ export default function DashboardClient() {
         variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
         className="grid items-start gap-4 md:grid-cols-2 2xl:grid-cols-3"
       >
+        {nextLevel && (
+          <motion.div variants={cardVariants}>
+            <LevelRequirementsCard
+              requirements={requirements}
+              nextLevelName={nextLevel.name}
+            />
+          </motion.div>
+        )}
         <motion.div variants={cardVariants}>
           <QuickStats
             totalSkills={totalSkills}
@@ -90,20 +119,20 @@ export default function DashboardClient() {
         <motion.div variants={cardVariants}>
           <StreakCard />
         </motion.div>
-        {nextLevel && (
-          <motion.div variants={cardVariants}>
-            <NextMilestone
-              items={[
-                {
-                  label: `Набрать ${getLevelMinScore(nextLevel.id)} XP`,
-                  done: currentScore >= getLevelMinScore(nextLevel.id),
-                },
-              ]}
-              canLevelUp={canLevelUp}
-              nextLevelName={nextLevel.name}
-            />
-          </motion.div>
-        )}
+        <motion.div variants={cardVariants}>
+          <PageSummaryCard
+            title="Кристаллы"
+            value={`${balance} 💎`}
+            valueLabel="баланс"
+          >
+            <Link
+              href="/shop"
+              className="mt-auto pt-3 font-mono text-xs text-blue-600 underline-offset-4 hover:underline"
+            >
+              в магазин →
+            </Link>
+          </PageSummaryCard>
+        </motion.div>
       </motion.div>
     </div>
   );
