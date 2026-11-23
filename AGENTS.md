@@ -190,6 +190,22 @@ The `/roadmap` page is designed to show **all** skills of the current grade as a
   Never add a graph library for this feature.
 - **Verify:** `npm run lint`, `npm run typecheck`, `npm test`.
 
+## Grade completion and achievements
+
+- **Base grade / level-up gate:** `checkLevelUp` requires **100% of the current grade's
+  `requiredForLevelUp` skills** plus `nextLevel.requiredProjectCount` projects. The 80%
+  category/XP thresholds are not part of the gate; `getLevelUpRequirements` mirrors the two
+  conditions for the dashboard checklist.
+- **Full grade:** 100% of every skill in the grade. `grade_complete` is the hard full-grade
+  achievement; `level_master` remains the tiered progress achievement (unlocks at 7% and
+  shows tiers). `level_up` progress = required skills + projects (min), so it reaches 100%
+  only when the base grade is ready.
+- **XP ring:** `getLevelCompletionMinScore` is used for the Dashboard's overall XP progress
+  ring, not for the level-up gate.
+- **Sources:** `src/lib/firestore-actions.ts` (`checkLevelUp`),
+  `src/core/domain/level-requirements.ts`, `src/core/domain/achievement-conditions.ts`,
+  `src/data/achievements.ts`.
+
 ## Firestore data model and listeners
 
 - Source of truth: single state document `users/{uid}/state/current` (`UserState`).

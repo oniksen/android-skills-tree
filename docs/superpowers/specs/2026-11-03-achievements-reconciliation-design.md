@@ -477,8 +477,9 @@ with current progress instead of only being added once. Legacy documents are
 normalized to stable ids and invalid ones are removed.
 ```
 
-## Update (2026-11-23): level_up progress
+## Update (2026-11-23): base and full grade achievements
 
-`getAchievementProgress` now uses `getLevelCompletionMinScore(fromLevelId)` for
-`level_up` achievements — the same threshold as the level-up gate — instead of
-`getLevelMinScore(toLevel)`.
+- `level_up` progress = min(required skills of `fromLevelId`, required projects of
+  `toLevelId`); it reaches 100% only when the base grade is ready.
+- `grade_complete` is awarded at 100% of every skill in a grade.
+- `level_master` remains the tiered progress achievement (7% unlock).

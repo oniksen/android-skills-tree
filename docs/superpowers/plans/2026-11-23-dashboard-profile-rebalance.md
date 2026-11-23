@@ -541,9 +541,9 @@ git commit -m "fix: align dashboard and profile after rebalance"
 
 If nothing changed, no commit is needed.
 
-## Update (2026-11-23): level gate uses the current grade
+## Update (2026-11-23): base and full grade
 
-`checkLevelUp` and `getLevelUpRequirements` now read required skills from the current
-grade (`currentLevelId`), and the XP target is `getLevelCompletionMinScore(currentLevelId)`.
-The dashboard's progress threshold and `LevelGate` follow the same value. This supersedes
-the `getLevelMinScore(nextLevel.id)` / next-level skill references above.
+`checkLevelUp` and `getLevelUpRequirements` now require 100% of the current grade's
+required skills plus projects; the 80% category/XP gates are gone. Achievement model:
+`level_up` = base grade (skills + projects), `grade_complete` = 100% all skills,
+`level_master` = tiered progress. This supersedes the four-condition references above.
