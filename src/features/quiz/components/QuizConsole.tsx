@@ -245,7 +245,7 @@ export default function QuizConsole() {
           {error && <div className="text-xs text-red-400">! {error}</div>}
         </div>
 
-        <div className="mx-4 mb-3 mt-3 rounded-lg border border-slate-700/70 bg-slate-900/40 p-3">
+        <div className="mx-4 mb-[max(env(safe-area-inset-bottom),0.75rem)] mt-3 rounded-lg border border-slate-700/70 bg-slate-900/40 p-3 xl:mb-3">
           {savedKey ? (
             <div className="mb-2 text-xs text-slate-500">key: ...{savedLast4}</div>
           ) : (
@@ -277,10 +277,11 @@ export default function QuizConsole() {
               [send]
             </button>
           </div>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-end gap-2 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] text-[10px] text-slate-500">
-          {limits && <span className="break-all">{limits}</span>}
+          {limits && (
+            <p className="mt-2 break-all text-right text-[10px] text-slate-500">
+              {limits}
+            </p>
+          )}
         </div>
     </QuizShell>
   );
