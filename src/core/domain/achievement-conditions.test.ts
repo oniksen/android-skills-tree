@@ -5,12 +5,15 @@ import { levels } from "@/data/levels";
 import {
   achievementKey,
   evaluateAchievements,
+  getAchievementProgress,
   getAssessmentAwardKeys,
   isCategoryPerfect,
   isLevelMastered,
   selectMissingAwards,
   type AssessmentMap,
 } from "@/core/domain/achievement-conditions";
+import { calcTotalScore } from "@/core/domain/scoring";
+import { getLevelCompletionMinScore } from "@/core/domain/weights";
 const OSNOVY = "junior-osnovy";
 
 function allCheckedMap(categoryIds: string[]): AssessmentMap {
@@ -351,5 +354,28 @@ describe("getAssessmentAwardKeys", () => {
     const map = allCheckedMap(categories.map((c) => c.id));
     const keys = getAssessmentAwardKeys(map);
     expect(keys.has("path_complete")).toBe(true);
+  });
+});
+
+describe("getAchievementProgress level_up", () => {
+  const def = {
+    type: "level_up",
+    id: "level-up:junior-middle",
+    fromLevelId: "junior",
+    toLevelId: "middle",
+  };
+
+  it("uses the current grade completion threshold", () => {
+    const map = allCheckedMap(
+      categories.filter((category) => category.levelId === "junior").map((category) => category.id),
+    );
+    expect(calcTotalScore(map)).toBeGreaterThanOrEqual(
+      getLevelCompletionMinScore("junior"),
+    );
+    expect(getAchievementProgress(def, { assessmentMap: map }).progress).toBe(100);
+  });
+
+  it("is zero without XP", () => {
+    expect(getAchievementProgress(def, { assessmentMap: {} }).progress).toBe(0);
   });
 });

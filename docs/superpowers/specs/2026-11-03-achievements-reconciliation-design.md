@@ -476,3 +476,9 @@ Achievements now unlock at the first progress tier (7%) and are reconciled
 with current progress instead of only being added once. Legacy documents are
 normalized to stable ids and invalid ones are removed.
 ```
+
+## Update (2026-11-23): level_up progress
+
+`getAchievementProgress` now uses `getLevelCompletionMinScore(fromLevelId)` for
+`level_up` achievements — the same threshold as the level-up gate — instead of
+`getLevelMinScore(toLevel)`.

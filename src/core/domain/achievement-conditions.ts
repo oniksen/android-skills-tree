@@ -2,7 +2,7 @@ import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import { calcTotalScore, isSkillComplete, calcCategoryCompletionPercent, calcLevelCompletionPercent, calcTotalCompletionPercent } from "@/core/domain/scoring";
-import { getLevelMinScore } from "@/core/domain/weights";
+import { getLevelCompletionMinScore } from "@/core/domain/weights";
 import { ACHIEVEMENT_TIERS, getAchievementTier, getTierProgress } from "@/core/domain/achievement-tiers";
 import { STREAK_ACHIEVEMENT_DAYS } from "@/core/domain/streak";
 
@@ -163,7 +163,7 @@ export function selectMissingAwards(
 
 
 export function getAchievementProgress(
-  def: { type: string; id: string; toLevelId?: string },
+  def: { type: string; id: string; fromLevelId?: string; toLevelId?: string },
   context: AchievementProgressContext,
 ): { progress: number; tier: string | null; tierProgress: number } {
   let progress = 0;
@@ -180,10 +180,9 @@ export function getAchievementProgress(
     const days = Number(def.id.split(":")[1]);
     progress = days > 0 ? Math.min(((context.streakDays ?? 0) / days) * 100, 100) : 0;
   } else if (def.type === "level_up") {
-    const nextLevel = def.toLevelId
-      ? levels.find((level) => level.id === def.toLevelId)
-      : undefined;
-    const threshold = nextLevel ? getLevelMinScore(nextLevel.id) : 0;
+    const threshold = def.fromLevelId
+      ? getLevelCompletionMinScore(def.fromLevelId)
+      : 0;
     const totalScore = calcTotalScore(context.assessmentMap);
     progress = threshold > 0 ? Math.min((totalScore / threshold) * 100, 100) : 100;
   }
