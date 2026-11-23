@@ -194,8 +194,11 @@ export function buildRoadmapGraph(params: {
 - Тулбар сортировки и «Скрыть пройденные» относится только к списку, поэтому
   скрывается на `xl+` (`xl:hidden`).
 - `graph = buildRoadmapGraph({ levelId: currentLevel.id, assessmentMap, links: ROADMAP_LINKS })`.
-- Выше `xl`: `<div className="hidden xl:block xl:-mr-6"><RoadmapDiagram ... scrollRef={scrollRef} /></div>`.
-  `-mr-6` снимает 24px правый паддинг страницы, чтобы был виден обрез диаграммы.
+- Выше `xl`: `<div ref={bleedRef} className="hidden xl:block"><RoadmapDiagram ... scrollRef={scrollRef} /></div>`.
+- `RoadmapClient` измеряет `bleedRef` и выставляет `--roadmap-bleed-left/right`; контейнер
+  прокрутки внутри диаграммы получает отрицательные margin и `padding-left`, поэтому
+  стартует с обычного левого края, но при скролле уходит под боковое меню и за правый
+  край экрана.
 - Ниже `xl`: `<div className="xl:hidden"><GapList ... /></div>`.
 - `RoadmapScrollbar` — прямой ребёнок корневого div (вне motion-обёрток): `glass-panel`,
   `fixed bottom-0`, только `xl+`, track + thumb, синхронизирован со `scrollRef`.
@@ -272,9 +275,11 @@ export function buildRoadmapGraph(params: {
 ## 12. Обновление (2026-11-23): расстояние, многострочность и полоса прокрутки
 
 - Увеличены зазоры (`COL_W = 300`, `VERTICAL_GAP = 40`), control-точки стрелок вынесены
-  на 60px — стрелки читаются и скругляются.
+  на 40px — стрелки читаются, но остаются умеренно скруглёнными.
 - Названия до 3 строк; высота узла растёт, `y` в колонке накопительный.
-- Правый паддинг страницы снят на `xl` через `-mr-6`.
+- Контейнер прокрутки сделан full-bleed: `RoadmapClient` измеряет левый/правый край и
+  выставляет `--roadmap-bleed-left/right`; контейнер стартует с обычного левого края, но
+  при скролле уходит под боковое меню и за правый край экрана.
 - Добавлен `RoadmapScrollbar`: `glass-panel`, `fixed bottom-0`, `xl+`, `role="scrollbar"`,
   перетаскивание и стрелки клавиатуры, `aria-valuenow/min/max`; нативный бар скрыт.
 - `RoadmapScrollbarView` — чистая разметка для тестов; `RoadmapScrollbar` — состояние и
