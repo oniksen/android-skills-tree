@@ -1,0 +1,733 @@
+<div class="study-layout"><nav class="study-toc" aria-label="Содержание материала"><div class="study-toc-rail"><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#thread-i-concurrency">1. Thread и Concurrency Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#thread-concept">Понятие Thread</a></li><li><a class="study-toc-link" href="#thread-create-runnable">Создание потока и Runnable</a></li><li><a class="study-toc-link" href="#thread-start-finish">Запуск и завершение потока</a></li><li><a class="study-toc-link" href="#thread-join-isalive">join() и isAlive</a></li><li><a class="study-toc-link" href="#thread-concurrency-parallelism">Concurrency vs Parallelism</a></li><li><a class="study-toc-link" href="#thread-shared-data">Проблемы доступа к общим данным</a></li><li><a class="study-toc-link" href="#thread-blocking-nonblocking">Blocking vs Non-blocking operations</a></li><li><a class="study-toc-link" href="#thread-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#handler">2. Handler</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#handler-purpose">Handler и его назначение</a></li><li><a class="study-toc-link" href="#handler-post">Handler.post()</a></li><li><a class="study-toc-link" href="#handler-post-delayed">Handler.postDelayed()</a></li><li><a class="study-toc-link" href="#handler-remove-callbacks">removeCallbacks()</a></li><li><a class="study-toc-link" href="#handler-looper-link">Связь Handler с Looper</a></li><li><a class="study-toc-link" href="#handler-main-thread">Передача выполнения в Main Thread</a></li><li><a class="study-toc-link" href="#handler-typical-scenarios">Типичные сценарии использования</a></li><li><a class="study-toc-link" href="#handler-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#looper-i-messagequeue">3. Looper и MessageQueue</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#looper-purpose">Назначение Looper</a></li><li><a class="study-toc-link" href="#message-queue">MessageQueue</a></li><li><a class="study-toc-link" href="#main-looper">Main Looper</a></li><li><a class="study-toc-link" href="#looper-handler-queue">Связь Looper, Handler и MessageQueue</a></li><li><a class="study-toc-link" href="#message-loop">Цикл обработки сообщений</a></li><li><a class="study-toc-link" href="#looper-manual">Почему не требуется вручную создавать Looper для обычной разработки</a></li><li><a class="study-toc-link" href="#looper-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#coroutines-basics">4. Coroutines Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#coroutines-purpose">Назначение Kotlin Coroutines</a></li><li><a class="study-toc-link" href="#coroutines-launch">launch</a></li><li><a class="study-toc-link" href="#coroutines-async-await">async и await</a></li><li><a class="study-toc-link" href="#coroutines-runblocking">runBlocking и область его применения</a></li><li><a class="study-toc-link" href="#coroutines-scope">CoroutineScope</a></li><li><a class="study-toc-link" href="#coroutines-job">Job</a></li><li><a class="study-toc-link" href="#coroutines-cancel-join">cancel() и join()</a></li><li><a class="study-toc-link" href="#coroutines-structured-concurrency">Structured Concurrency</a></li><li><a class="study-toc-link" href="#coroutines-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#dispatchers">5. Dispatchers</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#dispatchers-main">5.1. Dispatchers.Main</a></li><li><a class="study-toc-link" href="#dispatchers-io">5.2. Dispatchers.IO</a></li><li><a class="study-toc-link" href="#dispatchers-default">5.3. Dispatchers.Default</a></li><li><a class="study-toc-link" href="#withcontext">5.4. withContext</a></li><li><a class="study-toc-link" href="#cpu-bound-i-io-bound">5.5. CPU-bound и I/O-bound задачи</a></li><li><a class="study-toc-link" href="#pereklyuchenie-konteksta">5.6. Переключение контекста выполнения</a></li><li><a class="study-toc-link" href="#pochemu-suspend-ne-pereklyuchaet">5.7. Почему suspend-функция сама по себе не переключает поток</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#suspend-functions-i-cancellation">6. Suspend Functions и Cancellation</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#klyuchevoe-slovo-suspend">6.1. Ключевое слово suspend</a></li><li><a class="study-toc-link" href="#vyzov-suspend-funkcij">6.2. Вызов suspend-функций</a></li><li><a class="study-toc-link" href="#suspension-vs-blocking">6.3. Suspension vs Blocking</a></li><li><a class="study-toc-link" href="#continuation">6.4. Continuation (общее понимание)</a></li><li><a class="study-toc-link" href="#kooperativnaya-otmena">6.5. Кооперативная отмена корутин</a></li><li><a class="study-toc-link" href="#cancellation-exception">6.6. CancellationException</a></li><li><a class="study-toc-link" href="#proverka-otmeni">6.7. Проверка отмены в длительных операциях</a></li><li><a class="study-toc-link" href="#rasprostranenie-oshibok">6.8. Базовое распространение ошибок между дочерними корутинами</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#flow-basics">7. Flow Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#reaktivnyj-potok">7.1. Реактивный поток данных</a></li><li><a class="study-toc-link" href="#flow-emit">7.2. flow { emit() }</a></li><li><a class="study-toc-link" href="#operator-collect">7.3. Оператор collect</a></li><li><a class="study-toc-link" href="#flow-vs-suspend">7.4. Flow vs suspend-функция</a></li><li><a class="study-toc-link" href="#holodnyj-i-goryachij">7.5. Холодный и горячий поток (обзорно)</a></li><li><a class="study-toc-link" href="#map-i-filter-flow">7.6. map и filter для Flow (базово)</a></li><li><a class="study-toc-link" href="#stateflow-vvodnoe">7.7. StateFlow (вводное понятие)</a></li><li><a class="study-toc-link" href="#sbor-vo-viewmodel">7.8. Сбор во ViewModel</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></div><details class="study-toc-compact"><summary class="study-toc-summary">Содержание</summary><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#thread-i-concurrency">1. Thread и Concurrency Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#thread-concept">Понятие Thread</a></li><li><a class="study-toc-link" href="#thread-create-runnable">Создание потока и Runnable</a></li><li><a class="study-toc-link" href="#thread-start-finish">Запуск и завершение потока</a></li><li><a class="study-toc-link" href="#thread-join-isalive">join() и isAlive</a></li><li><a class="study-toc-link" href="#thread-concurrency-parallelism">Concurrency vs Parallelism</a></li><li><a class="study-toc-link" href="#thread-shared-data">Проблемы доступа к общим данным</a></li><li><a class="study-toc-link" href="#thread-blocking-nonblocking">Blocking vs Non-blocking operations</a></li><li><a class="study-toc-link" href="#thread-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#handler">2. Handler</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#handler-purpose">Handler и его назначение</a></li><li><a class="study-toc-link" href="#handler-post">Handler.post()</a></li><li><a class="study-toc-link" href="#handler-post-delayed">Handler.postDelayed()</a></li><li><a class="study-toc-link" href="#handler-remove-callbacks">removeCallbacks()</a></li><li><a class="study-toc-link" href="#handler-looper-link">Связь Handler с Looper</a></li><li><a class="study-toc-link" href="#handler-main-thread">Передача выполнения в Main Thread</a></li><li><a class="study-toc-link" href="#handler-typical-scenarios">Типичные сценарии использования</a></li><li><a class="study-toc-link" href="#handler-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#looper-i-messagequeue">3. Looper и MessageQueue</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#looper-purpose">Назначение Looper</a></li><li><a class="study-toc-link" href="#message-queue">MessageQueue</a></li><li><a class="study-toc-link" href="#main-looper">Main Looper</a></li><li><a class="study-toc-link" href="#looper-handler-queue">Связь Looper, Handler и MessageQueue</a></li><li><a class="study-toc-link" href="#message-loop">Цикл обработки сообщений</a></li><li><a class="study-toc-link" href="#looper-manual">Почему не требуется вручную создавать Looper для обычной разработки</a></li><li><a class="study-toc-link" href="#looper-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#coroutines-basics">4. Coroutines Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#coroutines-purpose">Назначение Kotlin Coroutines</a></li><li><a class="study-toc-link" href="#coroutines-launch">launch</a></li><li><a class="study-toc-link" href="#coroutines-async-await">async и await</a></li><li><a class="study-toc-link" href="#coroutines-runblocking">runBlocking и область его применения</a></li><li><a class="study-toc-link" href="#coroutines-scope">CoroutineScope</a></li><li><a class="study-toc-link" href="#coroutines-job">Job</a></li><li><a class="study-toc-link" href="#coroutines-cancel-join">cancel() и join()</a></li><li><a class="study-toc-link" href="#coroutines-structured-concurrency">Structured Concurrency</a></li><li><a class="study-toc-link" href="#coroutines-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#dispatchers">5. Dispatchers</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#dispatchers-main">5.1. Dispatchers.Main</a></li><li><a class="study-toc-link" href="#dispatchers-io">5.2. Dispatchers.IO</a></li><li><a class="study-toc-link" href="#dispatchers-default">5.3. Dispatchers.Default</a></li><li><a class="study-toc-link" href="#withcontext">5.4. withContext</a></li><li><a class="study-toc-link" href="#cpu-bound-i-io-bound">5.5. CPU-bound и I/O-bound задачи</a></li><li><a class="study-toc-link" href="#pereklyuchenie-konteksta">5.6. Переключение контекста выполнения</a></li><li><a class="study-toc-link" href="#pochemu-suspend-ne-pereklyuchaet">5.7. Почему suspend-функция сама по себе не переключает поток</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#suspend-functions-i-cancellation">6. Suspend Functions и Cancellation</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#klyuchevoe-slovo-suspend">6.1. Ключевое слово suspend</a></li><li><a class="study-toc-link" href="#vyzov-suspend-funkcij">6.2. Вызов suspend-функций</a></li><li><a class="study-toc-link" href="#suspension-vs-blocking">6.3. Suspension vs Blocking</a></li><li><a class="study-toc-link" href="#continuation">6.4. Continuation (общее понимание)</a></li><li><a class="study-toc-link" href="#kooperativnaya-otmena">6.5. Кооперативная отмена корутин</a></li><li><a class="study-toc-link" href="#cancellation-exception">6.6. CancellationException</a></li><li><a class="study-toc-link" href="#proverka-otmeni">6.7. Проверка отмены в длительных операциях</a></li><li><a class="study-toc-link" href="#rasprostranenie-oshibok">6.8. Базовое распространение ошибок между дочерними корутинами</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#flow-basics">7. Flow Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#reaktivnyj-potok">7.1. Реактивный поток данных</a></li><li><a class="study-toc-link" href="#flow-emit">7.2. flow { emit() }</a></li><li><a class="study-toc-link" href="#operator-collect">7.3. Оператор collect</a></li><li><a class="study-toc-link" href="#flow-vs-suspend">7.4. Flow vs suspend-функция</a></li><li><a class="study-toc-link" href="#holodnyj-i-goryachij">7.5. Холодный и горячий поток (обзорно)</a></li><li><a class="study-toc-link" href="#map-i-filter-flow">7.6. map и filter для Flow (базово)</a></li><li><a class="study-toc-link" href="#stateflow-vvodnoe">7.7. StateFlow (вводное понятие)</a></li><li><a class="study-toc-link" href="#sbor-vo-viewmodel">7.8. Сбор во ViewModel</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></details></nav><div class="study-content"><header class="study-hero"><p class="study-eyebrow">Асинхронность · Junior</p><h1 class="study-title">Асинхронность в Android</h1><p class="study-lead">Почему интерфейс нельзя блокировать и как Android-приложение выполняет работу в фоне — от потоков и Looper до корутин.</p></header><section id="thread-i-concurrency" class="study-section" aria-labelledby="thread-i-concurrency-title"><h2 id="thread-i-concurrency-title" class="study-section-title">1. Thread и Concurrency Basics</h2><p>Пользовательский интерфейс Android работает в одном специальном потоке — Main Thread (UI Thread). Если этот поток занят долгой операцией: сетевым запросом, чтением базы данных, сложными вычислениями — интерфейс перестаёт отвечать на касания, а через пять секунд система показывает диалог «Приложение не отвечает» (ANR). Поэтому любую работу, которая длится дольше нескольких миллисекунд, нужно выносить из главного потока в фоновый. Базовым примитивом для этого в JVM служит <code>Thread</code> — поток исполнения. Понимание потоков, конкуренции и параллелизма — фундамент, на котором строятся Handler, Looper и корутины.</p>
+<p>Поток — это независимая последовательность инструкций, выполняющаяся внутри процесса. Все потоки одного процесса разделяют общую память (кучу), но у каждого есть свой стек вызовов и набор локальных переменных. В Android процесс приложения содержит минимум один поток — главный, а при необходимости создаются дополнительные. Планировщик операционной системы решает, какой поток выполняется в каждый момент времени; на многоядерном процессоре несколько потоков могут работать одновременно.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Главный поток</p><p>единственный поток, в котором можно менять UI.</p></div><div class="study-card"><p class="study-card-title">Фоновый поток</p><p>выполняет тяжёлую работу, не блокируя интерфейс.</p></div><div class="study-card"><p class="study-card-title">Общая память</p><p>все потоки видят одни и те же объекты в куче.</p></div><div class="study-card"><p class="study-card-title">ANR</p><p>результат блокировки главного потока дольше 5 секунд.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> Главный поток — это «лицо» приложения. Любая долгая работа на нём превращается в зависание интерфейса. Фоновый поток — способ дать приложению «думать», не мешая пользователю.</p></div><h3 id="thread-concept" class="study-subtitle">Понятие Thread</h3>
+<p>Класс <code>java.lang.Thread</code> представляет поток исполнения в JVM. Каждый объект <code>Thread</code> связан с реальным потоком операционной системы (на Android — с pthread). Поток имеет имя, приоритет, состояние и может быть помечен как демон (daemon): демон-потоки не мешают JVM завершить работу, если остались только они.</p>
+<p>Состояния потока описаны перечислением <code>Thread.State</code>: <code>NEW</code> (создан, но не запущен), <code>RUNNABLE</code> (готов к выполнению или выполняется), <code>BLOCKED</code> (ожидает монитор), <code>WAITING</code> (бесконечное ожидание), <code>TIMED_WAITING</code> (ожидание с таймаутом), <code>TERMINATED</code> (завершён). Эти состояния видны в отладчике, а <code>Thread.dumpStack()</code> выводит стек текущего потока — полезно при поиске зависаний.</p>
+<p>В Android напрямую создавать <code>Thread</code> для каждой задачи не рекомендуется: это дорого по памяти (стек по умолчанию ~1 МБ на поток) и неудобно управлять жизненным циклом. Но понимать, как работает <code>Thread</code>, необходимо, потому что все высокоуровневые механизмы (Executor, Handler, корутины) в конечном счёте опираются на потоки.</p>
+<h3 id="thread-create-runnable" class="study-subtitle">Создание потока и Runnable</h3>
+<p>Есть два способа создать поток. Первый — наследоваться от <code>Thread</code> и переопределить <code>run()</code>. Второй, более гибкий — реализовать интерфейс <code>Runnable</code> и передать его в конструктор <code>Thread</code>. Второй подход предпочтительнее: он разделяет «что делать» (задача) и «как запускать» (поток), позволяя переиспользовать одну задачу в разных потоках или исполнителях.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// Наследование от Thread</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">WorkerThread</span> : <span class="hljs-type">Thread</span>() {
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">run</span><span class="hljs-params">()</span></span> {
+        println(<span class="hljs-string">&quot;Работаю в потоке <span class="hljs-subst">${currentThread().name}</span>&quot;</span>)
+    }
+}
+
+<span class="hljs-comment">// Runnable — предпочтительный способ</span>
+<span class="hljs-keyword">val</span> task = Runnable {
+    println(<span class="hljs-string">&quot;Задача в потоке <span class="hljs-subst">${Thread.currentThread().name}</span>&quot;</span>)
+}
+<span class="hljs-keyword">val</span> thread = Thread(task, <span class="hljs-string">&quot;MyWorker&quot;</span>)
+</code></pre></div>
+<p>Интерфейс <code>Runnable</code> содержит один метод <code>run()</code> без возвращаемого значения и без checked-исключений. Если задаче нужно вернуть результат, используют <code>Callable&lt;V&gt;</code> и <code>Future&lt;V&gt;</code> через <code>ExecutorService</code>. В Kotlin лямбда автоматически преобразуется в <code>Runnable</code>, поэтому запись <code>Thread { ... }</code> работает напрямую.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> thread = Thread {
+    <span class="hljs-keyword">val</span> <span class="hljs-keyword">data</span> = loadFromNetwork()
+    println(<span class="hljs-string">&quot;Загружено <span class="hljs-subst">${data.size}</span> байт&quot;</span>)
+}
+</code></pre></div>
+<h3 id="thread-start-finish" class="study-subtitle">Запуск и завершение потока</h3>
+<p>Поток запускается вызовом <code>start()</code>, а не <code>run()</code>. Вызов <code>run()</code> просто выполнит метод в текущем потоке, как обычную функцию, и не создаст новый поток. После <code>start()</code> JVM планирует поток, и его <code>run()</code> начнёт выполняться асинхронно. Повторный вызов <code>start()</code> на уже запущенном потоке бросает <code>IllegalThreadStateException</code>.</p>
+<p>Завершение потока происходит естественным путём: когда <code>run()</code> возвращает управление, поток переходит в состояние <code>TERMINATED</code>. Принудительно остановить поток методом <code>stop()</code> нельзя — он устарел и опасен, потому что может оставить объекты в неконсистентном состоянии. Современный подход — кооперативная отмена: поток сам периодически проверяет флаг прерывания через <code>Thread.currentThread().isInterrupted</code> или <code>Thread.interrupted()</code> и завершается сам.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> thread = Thread {
+    <span class="hljs-keyword">while</span> (!Thread.currentThread().isInterrupted) {
+        doWork()
+    }
+    println(<span class="hljs-string">&quot;Поток завершён корректно&quot;</span>)
+}
+thread.start()
+<span class="hljs-comment">// ... позже</span>
+thread.interrupt()
+</code></pre></div>
+<p>Метод <code>interrupt()</code> не убивает поток, а лишь устанавливает флаг прерывания (и выводит из <code>wait</code>/<code>sleep</code>/<code>join</code> с <code>InterruptedException</code>). Именно поэтому долгие операции должны регулярно проверять этот флаг.</p>
+<h3 id="thread-join-isalive" class="study-subtitle">join() и isAlive</h3>
+<p><code>isAlive()</code> возвращает <code>true</code>, если поток был запущен и ещё не завершился. Это простой способ проверить состояние, но его результат устаревает сразу после вызова — не полагайтесь на него для синхронизации.</p>
+<p><code>join()</code> заставляет вызывающий поток ждать завершения целевого потока. Перегрузки с таймаутом (<code>join(millis)</code>) позволяют не ждать вечно. <code>join()</code> бросает <code>InterruptedException</code>, если ожидающий поток был прерван.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> worker = Thread {
+    Thread.sleep(<span class="hljs-number">1000</span>)
+    println(<span class="hljs-string">&quot;Готово&quot;</span>)
+}
+worker.start()
+worker.join() <span class="hljs-comment">// главный поток ждёт 1 секунду</span>
+println(<span class="hljs-string">&quot;Поток завершился: <span class="hljs-subst">${!worker.isAlive}</span>&quot;</span>)
+</code></pre></div>
+<p><code>join()</code> — базовый инструмент композиции потоков: запустили несколько фоновых задач и дождались их всех перед тем, как продолжить. В корутинах аналогом служит <code>job.join()</code>.</p>
+<h3 id="thread-concurrency-parallelism" class="study-subtitle">Concurrency vs Parallelism</h3>
+<p>Конкурентность (concurrency) и параллелизм (parallelism) — разные понятия, хотя их часто путают. Конкурентность — это способность программы управлять несколькими задачами, переключаясь между ними; задачи могут выполняться по очереди на одном ядре. Параллелизм — одновременное выполнение нескольких задач на разных ядрах процессора.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Concurrency</p><p>несколько задач делаются «вперемешку», даже на одном ядре.</p></div><div class="study-card"><p class="study-card-title">Parallelism</p><p>несколько задач выполняются буквально одновременно.</p></div><div class="study-card"><p class="study-card-title">Concurrency без parallelism</p><p>один поток на одно ядро переключается между задачами.</p></div><div class="study-card"><p class="study-card-title">Требование параллелизма</p><p>несколько ядер и потоков.</p></div></div><p>Пример: скачивание файла и отрисовка анимации — конкурентная задача. Если обе выполняются одновременно на двух ядрах — это ещё и параллельно. В Android корутины дают конкурентность (многие задачи на ограниченном числе потоков), а <code>Dispatchers.Default</code> — параллелизм на пуле потоков.</p>
+<p>Различие важно для выбора инструмента: если задачи I/O-bound (сеть, диск), достаточно конкурентности и небольшого пула потоков; если CPU-bound (обработка изображений, вычисления), нужен параллелизм на нескольких ядрах.</p>
+<h3 id="thread-shared-data" class="study-subtitle">Проблемы доступа к общим данным</h3>
+<p>Общая память потоков — источник главных багов многопоточности. Два потока, одновременно меняющие один объект, могут получить состояние, которое невозможно при последовательном выполнении. Классические проблемы:</p>
+<ul class="study-list">
+<li><strong>Race condition</strong> — результат зависит от порядка выполнения потоков.</li>
+<li><strong>Data race</strong> — чтение и запись одного поля без синхронизации; в Java/Kotlin чтение может увидеть частично записанное значение (для <code>long</code>/<code>double</code> без <code>@Volatile</code>).</li>
+<li><strong>Deadlock</strong> — два потока ждут друг друга, каждый держит ресурс, нужный другому.</li>
+<li><strong>Livelock</strong> — потоки активно работают, но не продвигаются.</li>
+<li><strong>Starvation</strong> — поток никогда не получает ресурс из-за других.</li>
+</ul>
+<p>Пример гонки:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">var</span> counter = <span class="hljs-number">0</span>
+repeat(<span class="hljs-number">1000</span>) {
+    Thread {
+        counter++ <span class="hljs-comment">// не атомарно: прочитать, увеличить, записать</span>
+    }.start()
+}
+<span class="hljs-comment">// counter почти наверняка меньше 1000</span>
+</code></pre></div>
+<p>Способы защиты: <code>synchronized { }</code>-блоки, <code>@Volatile</code> для видимости изменений, атомарные классы <code>AtomicInteger</code>, <code>ConcurrentHashMap</code>, неизменяемые данные, акторы. В корутинах используют <code>Mutex</code> и однопоточные контексты. Лучший способ избежать проблем — не разделять изменяемое состояние: передавать данные через сообщения и каналы.</p>
+<h3 id="thread-blocking-nonblocking" class="study-subtitle">Blocking vs Non-blocking operations</h3>
+<p>Блокирующая операция заставляет поток ждать завершения: <code>Thread.sleep</code>, чтение из сокета, <code>Future.get()</code>. Пока поток заблокирован, он не выполняет ничего полезного, но занимает ресурсы (стек, слот в пуле). Неблокирующая операция возвращает управление сразу, а результат приходит позже через коллбэк, Future или suspend-функцию.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// Блокировка: поток спит 2 секунды</span>
+Thread.sleep(<span class="hljs-number">2000</span>)
+
+<span class="hljs-comment">// Неблокировка: запрос уходит, поток свободен</span>
+httpClient.newCall(request).enqueue(<span class="hljs-keyword">object</span> : Callback {
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onResponse</span><span class="hljs-params">(call: <span class="hljs-type">Call</span>, response: <span class="hljs-type">Response</span>)</span></span> {
+        <span class="hljs-comment">// результат пришёл позже</span>
+    }
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onFailure</span><span class="hljs-params">(call: <span class="hljs-type">Call</span>, e: <span class="hljs-type">IOException</span>)</span></span> {}
+})
+</code></pre></div>
+<p>В Android главный поток никогда не должен выполнять блокирующие операции. Даже короткий <code>Thread.sleep(100)</code> на главном потоке вызывает подёргивание анимации. Правило: если операция может ждать (сеть, диск, блокировка), она должна быть либо в фоновом потоке, либо неблокирующей с коллбэком.</p>
+<p>Блокирующие вызовы в корутинах (<code>runBlocking</code>, <code>Thread.sleep</code> внутри корутины) тоже опасны: они блокируют поток диспетчера и могут «заморозить» другие корутины, работающие на том же пуле.</p>
+<h3 id="thread-errors" class="study-subtitle">Типичные ошибки</h3>
+<ul class="study-list">
+<li>Вызывать <code>run()</code> вместо <code>start()</code> и удивляться, что новый поток не появился.</li>
+<li>Повторно вызывать <code>start()</code> на завершённом потоке.</li>
+<li>Использовать устаревшие <code>stop()</code>/<code>suspend()</code>/<code>resume()</code>.</li>
+<li>Менять View из фонового потока — крах или непредсказуемое поведение.</li>
+<li>Считать <code>isAlive()</code> надёжным условием синхронизации.</li>
+<li>Делить изменяемое состояние между потоками без синхронизации.</li>
+<li>Блокировать главный поток даже на короткое время.</li>
+</ul>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Чем <code>start()</code> отличается от <code>run()</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Зачем нужен <code>join()</code> и что он делает с текущим потоком?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> В чём разница между concurrency и parallelism?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Почему <code>counter++</code> в нескольких потоках даёт неверный результат?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Что произойдёт, если выполнить сетевой запрос на главном потоке?</li>
+</ul></section><section id="handler" class="study-section" aria-labelledby="handler-title"><h2 id="handler-title" class="study-section-title">2. Handler</h2><p><code>Handler</code> — механизм отправки и обработки сообщений и задач (<code>Runnable</code>) в потоке, у которого есть <code>Looper</code>. Он нужен для того, чтобы фоновый поток мог безопасно передать результат работы в главный поток и обновить UI, либо запланировать действие на будущее. Handler появился ещё до корутин и остаётся фундаментом Android: на его основе построены <code>View.post</code>, <code>Choreographer</code>, <code>Messenger</code>, <code>AsyncTask</code> (устарел) и многие системные механизмы. Понимание Handler необходимо для чтения старого кода и для отладки проблем с потоками.</p>
+<p>Handler привязывается к <code>Looper</code> конкретного потока в момент создания. Все сообщения, отправленные через этот Handler, попадают в очередь того потока и обрабатываются им. Если Handler создан конструктором без аргументов (устарел с API 30), он привязывается к Looper текущего потока — что часто приводило к крахам, если текущий поток не имел Looper.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Сообщение</p><p>объект <code>Message</code> с данными и кодом what.</p></div><div class="study-card"><p class="study-card-title">Runnable</p><p>задача, которую Handler выполнит в своём потоке.</p></div><div class="study-card"><p class="study-card-title">Очередь</p><p><code>MessageQueue</code> потока-хоста.</p></div><div class="study-card"><p class="study-card-title">Looper</p><p>цикл, который разбирает очередь.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> Handler — это «почтовый ящик» потока. Любой поток может положить письмо в чужой ящик, а владелец ящика разберёт его, когда освободится. Главный поток имеет такой ящик по умолчанию.</p></div><h3 id="handler-purpose" class="study-subtitle">Handler и его назначение</h3>
+<p>Назначение Handler — две задачи. Первая: планирование кода на выполнение в потоке, владеющем Looper&#x27;ом. Вторая: обмен сообщениями между потоками без явной синхронизации. Handler инкапсулирует и очередь, и диспетчеризацию: вызывающий код не знает, когда именно выполнится задача — только то, что она выполнится в правильном потоке.</p>
+<p>Создание Handler для главного потока:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> mainHandler = Handler(Looper.getMainLooper())
+</code></pre></div>
+<p>В старом коде встречается <code>Handler()</code> без аргументов — он использует Looper текущего потока. На главном потоке это работает, но в фоновом потоке без Looper бросит исключение. Всегда явно указывайте Looper, чтобы код был предсказуемым.</p>
+<p>Handler может обрабатывать сообщения через переопределение <code>handleMessage(msg: Message)</code>. Это полезно, когда нужно передавать структурированные данные с кодом <code>what</code> и payload в <code>obj</code>/<code>data</code>. Для простых задач чаще используют <code>post(Runnable)</code>.</p>
+<h3 id="handler-post" class="study-subtitle">Handler.post()</h3>
+<p><code>post(runnable)</code> ставит задачу в очередь Looper&#x27;а и возвращает <code>true</code>, если сообщение успешно поставлено. Задача выполнится, когда Looper дойдёт до неё — обычно в течение нескольких миллисекунд, но не мгновенно и не в момент вызова.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> handler = Handler(Looper.getMainLooper())
+
+thread {
+    <span class="hljs-keyword">val</span> result = doHeavyWork()
+    handler.post {
+        textView.text = result <span class="hljs-comment">// безопасно: выполняется в Main Thread</span>
+    }
+}
+</code></pre></div>
+<p><code>post</code> не блокирует вызывающий поток. Если нужно выполнить задачу немедленно и дождаться результата, используйте <code>runOnUiThread</code> или корутины с <code>withContext(Dispatchers.Main)</code>. Важно: <code>post</code> не гарантирует порядок выполнения относительно других источников сообщений, только FIFO внутри одной очереди.</p>
+<h3 id="handler-post-delayed" class="study-subtitle">Handler.postDelayed()</h3>
+<p><code>postDelayed(runnable, delayMillis)</code> планирует задачу на выполнение через указанную задержку. Это базовый механизм таймеров, анимаций и отложенных действий в Android. Задержка отсчитывается от момента вызова, но реальное выполнение может сдвинуться, если главный поток занят.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> handler = Handler(Looper.getMainLooper())
+
+handler.postDelayed({
+    showSnackbar(<span class="hljs-string">&quot;Сессия истекла&quot;</span>)
+}, <span class="hljs-number">30_000L</span>) <span class="hljs-comment">// через 30 секунд</span>
+</code></pre></div>
+<p>Типичные применения: автоскрытие подсказки, повторная попытка после ошибки, debounce ввода, периодический опрос. Для повторяющихся задач используют <code>postDelayed</code> внутри самого Runnable, создавая цикл. Но для регулярной фоновой работы лучше <code>WorkManager</code>, а для анимаций — <code>Choreographer</code>/<code>ViewPropertyAnimator</code>.</p>
+<h3 id="handler-remove-callbacks" class="study-subtitle">removeCallbacks()</h3>
+<p><code>removeCallbacks(runnable)</code> удаляет из очереди запланированную задачу, если она ещё не выполнена. Это критически важно для предотвращения утечек памяти и выполнения кода для уничтоженных экранов. Если Activity закрылась, а отложенная задача всё ещё в очереди — она выполнится и обратится к уничтоженному View.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyActivity</span> : <span class="hljs-type">AppCompatActivity</span>() {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> handler = Handler(Looper.getMainLooper())
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> tick = Runnable { updateTimer() }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onResume</span><span class="hljs-params">()</span></span> {
+        <span class="hljs-keyword">super</span>.onResume()
+        handler.postDelayed(tick, <span class="hljs-number">1000</span>)
+    }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onPause</span><span class="hljs-params">()</span></span> {
+        <span class="hljs-keyword">super</span>.onPause()
+        handler.removeCallbacks(tick) <span class="hljs-comment">// обязательно</span>
+    }
+}
+</code></pre></div>
+<p>Есть перегрузка <code>removeCallbacks(runnable, token)</code> для удаления по токену, и <code>removeMessages(what)</code> для сообщений. Правило: каждому <code>postDelayed</code> должен соответствовать <code>removeCallbacks</code> в подходящем коллбэке жизненного цикла. Забыть это — одна из частых причин утечек в старом коде.</p>
+<h3 id="handler-looper-link" class="study-subtitle">Связь Handler с Looper</h3>
+<p>Handler не работает сам по себе: он всегда привязан к <code>Looper</code> одного потока. При создании Handler получает Looper (явно или неявно) и использует его <code>MessageQueue</code>. Все <code>post</code>/<code>sendMessage</code> кладут элементы в эту очередь, а Looper разбирает их и вызывает <code>dispatchMessage</code> Handler&#x27;а.</p>
+<p>Один Looper может обслуживать несколько Handler&#x27;ов — все они пишут в одну очередь, и Looper вызывает нужный Handler на основе поля <code>target</code> сообщения. Наоборот, один Handler привязан ровно к одному Looper на всё время жизни. Сменить Looper нельзя — создайте новый Handler.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// Handler для фонового потока с его Looper</span>
+<span class="hljs-keyword">val</span> thread = HandlerThread(<span class="hljs-string">&quot;worker&quot;</span>)
+thread.start()
+<span class="hljs-keyword">val</span> workerHandler = Handler(thread.looper)
+
+workerHandler.post {
+    <span class="hljs-comment">// выполняется в потоке &quot;worker&quot;</span>
+}
+</code></pre></div>
+<p><code>HandlerThread</code> — удобная обёртка: поток с Looper, готовый к использованию. После завершения работы вызовите <code>thread.quitSafely()</code>.</p>
+<h3 id="handler-main-thread" class="study-subtitle">Передача выполнения в Main Thread</h3>
+<p>Частая задача: фоновая работа завершилась, нужно обновить UI. Handler с <code>Looper.getMainLooper()</code> — классический способ. Альтернативы: <code>view.post { }</code>, <code>Activity.runOnUiThread { }</code>, <code>LiveData.postValue</code>, корутины с <code>withContext(Dispatchers.Main)</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> mainHandler = Handler(Looper.getMainLooper())
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">fetchUser</span><span class="hljs-params">(id: <span class="hljs-type">Long</span>, onResult: (<span class="hljs-type">User</span>) -&gt; <span class="hljs-type">Unit</span>)</span></span> {
+    thread {
+        <span class="hljs-keyword">val</span> user = api.getUser(id) <span class="hljs-comment">// фоновый поток</span>
+        mainHandler.post {
+            onResult(user) <span class="hljs-comment">// главный поток</span>
+        }
+    }
+}
+</code></pre></div>
+<p>Важно: не передавайте тяжёлые объекты через замыкание, если они могут измениться. Захватывайте финальное значение. И не забывайте отменять отложенные задачи при уничтожении экрана.</p>
+<p>В современном Kotlin-коде Handler для перехода на Main Thread чаще заменяют корутинами: <code>withContext(Dispatchers.Main) { ... }</code> читается линейно и управляется структурированной конкуренцией. Но Handler всё ещё нужен для низкоуровневых сценариев и интеграции с Java-библиотеками.</p>
+<h3 id="handler-typical-scenarios" class="study-subtitle">Типичные сценарии использования</h3>
+<p>Handler применяют в следующих случаях:</p>
+<ul class="study-list">
+<li>Обновление UI после фоновой работы, если не используются корутины/LiveData.</li>
+<li>Отложенные действия: таймаут, автоскрытие, повтор.</li>
+<li>Периодические задачи через цикл <code>postDelayed</code>.</li>
+<li>Обмен сообщениями между процессами через <code>Messenger</code> (Handler на стороне сервиса).</li>
+<li>Интеграция с API, принимающими <code>Handler</code> (например, <code>SensorManager</code>).</li>
+<li>Управление очередью задач в собственном потоке с Looper.</li>
+</ul>
+<p>Для новых проектов большинство этих задач решают корутины, Flow и WorkManager. Handler остаётся важным для понимания того, как работает Android под капотом, и для поддержки легаси-кода.</p>
+<h3 id="handler-errors" class="study-subtitle">Типичные ошибки</h3>
+<ul class="study-list">
+<li>Создавать <code>Handler()</code> в фоновом потоке без Looper — крах с <code>RuntimeException</code>.</li>
+<li>Забывать <code>removeCallbacks</code> при уничтожении Activity/Fragment — утечка и краш.</li>
+<li>Обращаться к View из <code>handleMessage</code>, если Handler привязан не к главному потоку.</li>
+<li>Предполагать, что <code>post</code> выполняется мгновенно — он ставится в очередь.</li>
+<li>Создавать множество Handler&#x27;ов вместо одного на Looper.</li>
+<li>Использовать Handler для CPU-тяжёлых задач — он не создаёт потоков, только диспетчеризует.</li>
+<li>Захватывать <code>this</code> Activity в Runnable и не отменять — утечка.</li>
+</ul>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> К какому потоку привязан <code>Handler(Looper.getMainLooper())</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Чем <code>post</code> отличается от <code>postDelayed</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Зачем нужен <code>removeCallbacks</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Можно ли использовать один Looper для нескольких Handler?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Когда Handler уместнее корутин?</li>
+</ul></section><section id="looper-i-messagequeue" class="study-section" aria-labelledby="looper-i-messagequeue-title"><h2 id="looper-i-messagequeue-title" class="study-section-title">3. Looper и MessageQueue</h2><p><code>Looper</code> — это цикл обработки сообщений потока: бесконечный цикл, который читает сообщения из очереди и передаёт их Handler&#x27;ам. <code>MessageQueue</code> — сама очередь. Вместе они образуют event loop Android: главный поток — это Looper, который бесконечно разбирает очередь событий (касания, отрисовка, таймеры, сообщения от Handler). Понимание этой пары объясняет, почему UI не может «сам по себе» выполнять код параллельно и почему <code>post</code> не мгновенный.</p>
+<p>Каждый поток может иметь не более одного Looper. Looper создаётся через <code>Looper.prepare()</code>, который создаёт <code>MessageQueue</code> и привязывает Looper к текущему потоку. Затем вызывается <code>Looper.loop()</code> — бесконечный цикл. Поток, в котором вызван <code>loop()</code>, блокируется навсегда (до <code>quit()</code>), поэтому Looper-поток — это отдельный поток, посвящённый обработке сообщений.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Looper</p><p>цикл <code>loop()</code>, читающий сообщения из очереди.</p></div><div class="study-card"><p class="study-card-title">MessageQueue</p><p>связный список сообщений, отсортированный по времени.</p></div><div class="study-card"><p class="study-card-title">Main Looper</p><p>Looper главного потока, создаётся системой.</p></div><div class="study-card"><p class="study-card-title">ThreadLocal</p><p>Looper хранится в потоке через ThreadLocal.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> Главный поток Android — это просто поток с Looper&#x27;ом, который бесконечно разбирает очередь. Ваш код, запущенный на главном потоке, — это одно из сообщений в этой очереди.</p></div><h3 id="looper-purpose" class="study-subtitle">Назначение Looper</h3>
+<p>Назначение Looper — дать потоку способность получать и обрабатывать асинхронные сообщения. Без Looper поток выполняет свою функцию <code>run()</code> и завершается. С Looper поток живёт до явного вызова <code>quit()</code> и может принимать задачи извне. Это превращает поток из «одноразового исполнителя» в «сервер сообщений».</p>
+<p>Looper используется внутри Android повсеместно: главный поток, <code>HandlerThread</code>, <code>IntentService</code> (устарел), <code>Messenger</code>, <code>Choreographer</code> (синхронизация с VSYNC), рендеринг. В обычной разработке приложений вы редко создаёте Looper вручную — система и библиотеки делают это за вас. Но понимание Looper необходимо для отладки «зависаний» главного потока: если в очереди скопилось много тяжёлых сообщений, каждое следующее ждёт.</p>
+<h3 id="message-queue" class="study-subtitle">MessageQueue</h3>
+<p><code>MessageQueue</code> — очередь сообщений потока. Внутри это не обычная FIFO-очередь, а связный список <code>Message</code>, отсортированный по полю <code>when</code> (время выполнения в миллисекундах системного времени). Сообщения с одинаковым временем выполняются в порядке поступления. <code>MessageQueue</code> управляется Looper&#x27;ом и Handler&#x27;ами; напрямую с ней работают редко.</p>
+<p>Когда вы вызываете <code>postDelayed(runnable, 1000)</code>, Handler создаёт <code>Message</code> с <code>when = now + 1000</code> и вставляет в очередь в нужное место. Looper в <code>loop()</code> вызывает <code>queue.next()</code>, который блокируется, если ближайшее сообщение ещё не готово (через native-ожидание на файловом дескрипторе). Как только время приходит, <code>next()</code> возвращает сообщение, и Looper вызывает <code>msg.target.dispatchMessage(msg)</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// Низкоуровневый доступ (обычно не нужен)</span>
+<span class="hljs-keyword">val</span> queue = Looper.myQueue()
+queue.addIdleHandler {
+    <span class="hljs-comment">// вызывается, когда очередь пуста</span>
+    <span class="hljs-literal">true</span> <span class="hljs-comment">// вернуть true, чтобы оставаться idle-обработчиком</span>
+}
+</code></pre></div>
+<p><code>addIdleHandler</code> полезен для отложенной инициализации: выполнить работу, когда главный поток свободен.</p>
+<h3 id="main-looper" class="study-subtitle">Main Looper</h3>
+<p>Главный поток приложения имеет Looper, создаваемый системой до вызова <code>Application.onCreate</code>. Получить его можно через <code>Looper.getMainLooper()</code>. Это единственный Looper, который гарантированно существует в любом приложении. Все операции с UI должны выполняться в потоке этого Looper&#x27;а.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> isMainThread = Looper.myLooper() == Looper.getMainLooper()
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">ensureMainThread</span><span class="hljs-params">()</span></span> {
+    check(Looper.myLooper() == Looper.getMainLooper()) {
+        <span class="hljs-string">&quot;Вызов только из главного потока&quot;</span>
+    }
+}
+</code></pre></div>
+<p>Система использует Main Looper для доставки всех UI-событий: касания, отрисовка кадров, жизненный цикл Activity/Fragment. Если главный поток занят долгой операцией, очередь растёт, события обрабатываются с задержкой — интерфейс «зависает». Отсюда правило: главный поток должен быть свободен всегда, а тяжёлая работа — в фоне.</p>
+<h3 id="looper-handler-queue" class="study-subtitle">Связь Looper, Handler и MessageQueue</h3>
+<p>Три класса образуют единую систему:</p>
+<ul class="study-list">
+<li><code>Looper</code> — владеет <code>MessageQueue</code> и запускает цикл.</li>
+<li><code>MessageQueue</code> — хранит <code>Message</code> и <code>Runnable</code> (упакованные в <code>Message</code>).</li>
+<li><code>Handler</code> — интерфейс для отправки в очередь и обработки сообщений.</li>
+</ul>
+<p>Связь: Handler при создании получает Looper (и через него MessageQueue). При <code>post</code>/<code>sendMessage</code> Handler создаёт <code>Message</code>, устанавливает <code>msg.target = this</code> (сам Handler) и кладёт в очередь Looper&#x27;а. Looper в цикле достаёт сообщение и вызывает <code>target.dispatchMessage(msg)</code>, который либо вызывает <code>handleMessage</code>, либо <code>run()</code> Runnable&#x27;а.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> looper = Looper.getMainLooper()
+<span class="hljs-keyword">val</span> queue = looper.queue <span class="hljs-comment">// MessageQueue</span>
+<span class="hljs-keyword">val</span> handler = Handler(looper) <span class="hljs-comment">// привязан к этому Looper и queue</span>
+</code></pre></div>
+<p>Один Looper — одна очередь — много Handler&#x27;ов. Все Handler&#x27;ы, привязанные к одному Looper, пишут в одну очередь, и Looper разбирает их в порядке времени. Это гарантирует, что задачи на главном потоке выполняются последовательно, без гонок.</p>
+<h3 id="message-loop" class="study-subtitle">Цикл обработки сообщений</h3>
+<p>Метод <code>Looper.loop()</code> — бесконечный цикл:</p>
+<ol class="study-list">
+<li>Вызвать <code>queue.next()</code> — получить следующее сообщение (блокируется, если очередь пуста или ближайшее сообщение не готово).</li>
+<li>Если сообщение <code>null</code> — очередь завершена (<code>quit()</code>), выйти из цикла.</li>
+<li>Вызвать <code>msg.target.dispatchMessage(msg)</code>.</li>
+<li>Переработать сообщение (<code>msg.recycle()</code>).</li>
+<li>Повторить.</li>
+</ol>
+<p>Вся работа главного потока — это выполнение шага 3 для очередного сообщения. Когда вы вызываете <code>textView.text = &quot;...&quot;</code>, это происходит внутри одного из таких сообщений. Если внутри шага 3 выполняется долгая операция, следующее сообщение (например, касание пользователя) ждёт — интерфейс зависает.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// Псевдокод loop()</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
+        <span class="hljs-keyword">val</span> msg = queue.next() ?: <span class="hljs-keyword">break</span>
+        msg.target.dispatchMessage(msg)
+        msg.recycle()
+    }
+}
+</code></pre></div>
+<p>Именно поэтому нельзя «запустить фоновую работу» на главном потоке и ожидать, что система сама её распараллелит. Главный поток выполняет одну задачу за раз.</p>
+<h3 id="looper-manual" class="study-subtitle">Почему не требуется вручную создавать Looper для обычной разработки</h3>
+<p>В обычной разработке приложений Looper создаётся системой: главный поток получает его автоматически, а для фоновых задач используют готовые механизмы — <code>HandlerThread</code>, <code>ExecutorService</code>, корутины с диспетчерами. Ручной <code>Looper.prepare()</code> + <code>Looper.loop()</code> нужен только в специальных случаях: собственный поток-сервер сообщений, интеграция с <code>Messenger</code>, низкоуровневая работа с системными API.</p>
+<p>Создание Looper вручную требует аккуратности: нужно вызвать <code>prepare()</code> в потоке, затем <code>loop()</code>, а при завершении — <code>quit()</code>/<code>quitSafely()</code>. Забыть <code>quit()</code> — утечка потока. Вызвать <code>prepare()</code> дважды в одном потоке — <code>RuntimeException</code>. Использовать Looper из другого потока без синхронизации — ошибки видимости.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// Так делать обычно не нужно</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MyLooperThread</span> : <span class="hljs-type">Thread</span>() {
+    <span class="hljs-keyword">lateinit</span> <span class="hljs-keyword">var</span> handler: Handler
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">run</span><span class="hljs-params">()</span></span> {
+        Looper.prepare()
+        handler = Handler(Looper.myLooper()!!)
+        Looper.loop() <span class="hljs-comment">// блокирует поток навсегда</span>
+    }
+}
+</code></pre></div>
+<p>Для фоновой работы с сообщениями используйте <code>HandlerThread</code> — он инкапсулирует <code>prepare</code>/<code>loop</code> и корректно завершается через <code>quitSafely()</code>.</p>
+<h3 id="looper-errors" class="study-subtitle">Типичные ошибки</h3>
+<ul class="study-list">
+<li>Вызывать <code>Looper.prepare()</code> в потоке, где Looper уже есть.</li>
+<li>Забывать <code>quit()</code>/<code>quitSafely()</code> для собственного Looper-потока — утечка.</li>
+<li>Предполагать, что <code>post</code> выполняется немедленно — сообщение ждёт своей очереди.</li>
+<li>Блокировать главный поток долгой операцией — очередь растёт, ANR.</li>
+<li>Обращаться к <code>Looper.myLooper()</code> в потоке без Looper — вернёт <code>null</code>.</li>
+<li>Создавать Looper для задач, которые лучше решают корутины или Executor.</li>
+<li>Путать <code>quit()</code> (немедленно) и <code>quitSafely()</code> (после обработки текущих сообщений).</li>
+</ul>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Что делает <code>Looper.loop()</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Как сообщения сортируются в <code>MessageQueue</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Как получить Main Looper?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Почему главный поток «зависает» при долгой операции?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Когда нужно создавать Looper вручную?</li>
+</ul></section><section id="coroutines-basics" class="study-section" aria-labelledby="coroutines-basics-title"><h2 id="coroutines-basics-title" class="study-section-title">4. Coroutines Basics</h2><p>Kotlin Coroutines — библиотека для асинхронного и неблокирующего программирования. Корутина — это вычисление, которое можно приостановить и возобновить, не блокируя поток. В отличие от потоков, корутины дешёвые: можно запустить тысячи корутин на нескольких потоках. Они пишутся как обычный синхронный код с <code>suspend</code>-функциями, но выполняются асинхронно. В Android корутины — основной инструмент для фоновой работы с 2019 года (после объявления Google о поддержке).</p>
+<p>Корутины решают три проблемы потоков: дорогостоящее создание, сложное управление жизненным циклом и «ад коллбэков». Код с корутинами читается линейно: <code>val user = api.getUser(id)</code> выглядит как синхронный вызов, но под капотом приостанавливается, пока идёт сеть, и возобновляется с результатом. Это делает асинхронный код похожим на синхронный, но без блокировки потоков.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Дёшево</p><p>тысячи корутин на нескольких потоках.</p></div><div class="study-card"><p class="study-card-title">Линейно</p><p>асинхронный код читается как синхронный.</p></div><div class="study-card"><p class="study-card-title">Структурированно</p><p>корутины образуют дерево с автоматической отменой.</p></div><div class="study-card"><p class="study-card-title">Интеграция</p><p>работает с Flow, Room, Retrofit, ViewModel.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> Корутина — это не поток, а задача, которая умеет «засыпать» и «просыпаться» на потоке. Потоки — рабочие, корутины — задачи, которые они выполняют.</p></div><h3 id="coroutines-purpose" class="study-subtitle">Назначение Kotlin Coroutines</h3>
+<p>Назначение корутин — сделать асинхронный код простым, безопасным и управляемым. Они заменяют коллбэки, <code>AsyncTask</code>, <code>RxJava</code> (частично) и ручное управление потоками. Корутины интегрированы в язык (ключевое слово <code>suspend</code>), а официальная библиотека <code>kotlinx.coroutines</code> не требует сторонних фреймворков.</p>
+<p>Корутины подходят для: сетевых запросов, работы с базой данных, файловыми операциями, таймеров, анимаций, обработки потоков данных (Flow). Они не подходят для CPU-тяжёлых задач без правильного диспетчера — для этого используют <code>Dispatchers.Default</code>.</p>
+<p>Библиотека <code>kotlinx.coroutines</code> предоставляет строительные блоки: <code>launch</code>, <code>async</code>, <code>runBlocking</code>, <code>coroutineScope</code>, <code>supervisorScope</code>, <code>flow</code>, диспетчеры. В Android добавляются <code>viewModelScope</code>, <code>lifecycleScope</code>, <code>Dispatchers.Main.immediate</code>.</p>
+<h3 id="coroutines-launch" class="study-subtitle">launch</h3>
+<p><code>launch</code> запускает новую корутину «выстрелил и забыл» (fire-and-forget): возвращает <code>Job</code>, не возвращает результат. Используется, когда нужно выполнить действие без ожидания результата: сохранить данные, отправить аналитику, обновить UI.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">viewModelScope.launch {
+    <span class="hljs-keyword">val</span> user = repository.getUser(id) <span class="hljs-comment">// suspend-функция</span>
+    _uiState.value = UiState.Success(user)
+}
+</code></pre></div>
+<p><code>launch</code> должен вызываться в контексте <code>CoroutineScope</code>. Сам по себе <code>launch</code> — это функция-расширение <code>CoroutineScope</code>, поэтому без scope его не вызвать. Блок кода внутри <code>launch</code> — это тело корутины; внутри можно вызывать suspend-функции.</p>
+<p><code>launch</code> не блокирует вызывающий код: он планирует корутину и сразу возвращает <code>Job</code>. Если нужен результат, используйте <code>async</code>.</p>
+<h3 id="coroutines-async-await" class="study-subtitle">async и await</h3>
+<p><code>async</code> запускает корутину, которая вычисляет и возвращает значение типа <code>Deferred&lt;T&gt;</code>. Чтобы получить значение, вызывают <code>await()</code> — suspend-функцию, которая приостанавливается до завершения вычисления. <code>async</code> полезен для параллельного запуска нескольких независимых задач.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loadDashboard</span><span class="hljs-params">()</span></span>: Dashboard = coroutineScope {
+    <span class="hljs-keyword">val</span> userDeferred = async { api.getUser() }
+    <span class="hljs-keyword">val</span> ordersDeferred = async { api.getOrders() }
+    Dashboard(
+        user = userDeferred.await(),
+        orders = ordersDeferred.await()
+    )
+}
+</code></pre></div>
+<p>Здесь два запроса выполняются параллельно, а <code>await()</code> собирает результаты. Если один из них упадёт с исключением, <code>await()</code> пробросит его. <code>async</code> без <code>await</code> — утечка: корутина выполнится, но результат потеряется, а исключение может быть проглочено (в зависимости от scope).</p>
+<p>Разница с <code>launch</code>: <code>launch</code> для побочных эффектов, <code>async</code> для вычисления значения. Не используйте <code>async</code> там, где не нужен результат.</p>
+<h3 id="coroutines-runblocking" class="study-subtitle">runBlocking и область его применения</h3>
+<p><code>runBlocking</code> создаёт корутину и блокирует текущий поток до её завершения. Используется как мост между синхронным и асинхронным кодом: в <code>main()</code>, в тестах, в инициализации. В Android-приложении <code>runBlocking</code> почти никогда не нужен на главном потоке — он заблокирует UI.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> = runBlocking {
+    <span class="hljs-keyword">val</span> <span class="hljs-keyword">data</span> = fetchData() <span class="hljs-comment">// suspend</span>
+    println(<span class="hljs-keyword">data</span>)
+}
+</code></pre></div>
+<p>В тестах <code>runBlocking</code> удобен:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `loadUser returns user`<span class="hljs-params">()</span></span> = runBlocking {
+    <span class="hljs-keyword">val</span> user = repository.getUser(<span class="hljs-number">1L</span>)
+    assertEquals(<span class="hljs-string">&quot;Ada&quot;</span>, user.name)
+}
+</code></pre></div>
+<p>Правило: <code>runBlocking</code> — только на границе с синхронным миром (main, тесты, скрипты). Внутри приложения используйте scope&#x27;ы (<code>viewModelScope</code>, <code>lifecycleScope</code>) и suspend-функции. Блокировать поток внутри корутины через <code>runBlocking</code> — анти-паттерн.</p>
+<h3 id="coroutines-scope" class="study-subtitle">CoroutineScope</h3>
+<p><code>CoroutineScope</code> определяет область жизни корутин: все корутины, запущенные в scope, принадлежат ему и отменяются вместе с ним. Scope содержит <code>CoroutineContext</code> (диспетчер, Job, обработчик исключений). В Android готовые scope&#x27;ы привязаны к жизненному циклу: <code>viewModelScope</code> (очищается при <code>onCleared</code>), <code>lifecycleScope</code> (отменяется при уничтожении), <code>rememberCoroutineScope</code> в Compose.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyViewModel</span> : <span class="hljs-type">ViewModel</span>() {
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">load</span><span class="hljs-params">()</span></span> {
+        viewModelScope.launch {
+            <span class="hljs-comment">// отменится автоматически при очистке ViewModel</span>
+            <span class="hljs-keyword">val</span> <span class="hljs-keyword">data</span> = repository.load()
+            _state.value = <span class="hljs-keyword">data</span>
+        }
+    }
+}
+</code></pre></div>
+<p>Можно создать собственный scope: <code>CoroutineScope(SupervisorJob() + Dispatchers.Main)</code>. Но тогда нужно вручную вызывать <code>scope.cancel()</code> при уничтожении владельца, иначе — утечка. Поэтому предпочтительны готовые scope&#x27;ы.</p>
+<h3 id="coroutines-job" class="study-subtitle">Job</h3>
+<p><code>Job</code> представляет выполняющуюся корутину. Каждый <code>launch</code>/<code>async</code> возвращает Job (или Deferred, который наследует Job). Job образует дерево: родительский Job содержит дочерние. Состояния Job (основные): <code>New</code>, активный (active), завершающийся (completing), отменяющийся (cancelling), завершён (completed), отменён (cancelled). Job можно отменить через <code>cancel()</code>, дождаться завершения через <code>join()</code>, проверить <code>isActive</code>, <code>isCompleted</code>, <code>isCancelled</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> job = viewModelScope.launch {
+    repeat(<span class="hljs-number">1000</span>) { i -&gt;
+        delay(<span class="hljs-number">100</span>)
+        println(<span class="hljs-string">&quot;шаг <span class="hljs-variable">$i</span>&quot;</span>)
+    }
+}
+<span class="hljs-comment">// позже</span>
+job.cancel()
+</code></pre></div>
+<p>Job — единица управления жизненным циклом. Хранение Job позволяет отменить конкретную задачу, не трогая другие корутины scope&#x27;а. В структурированной конкуренции Job родителя отменяет всех детей при своей отмене.</p>
+<h3 id="coroutines-cancel-join" class="study-subtitle">cancel() и join()</h3>
+<p><code>cancel()</code> запрашивает отмену корутины. Отмена кооперативная: корутина должна сама проверять отмену (через <code>isActive</code>, <code>ensureActive()</code>, или при вызове suspend-функций, которые проверяют отмену). <code>cancel()</code> не прерывает поток принудительно.</p>
+<p><code>join()</code> приостанавливает вызывающую корутину до завершения Job. Комбинация <code>cancel()</code> + <code>join()</code> — стандартный способ «остановить и дождаться»:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">job.cancel()
+job.join() <span class="hljs-comment">// дождаться завершения (с отменой)</span>
+<span class="hljs-comment">// или</span>
+job.cancelAndJoin()
+</code></pre></div>
+<p>После отмены корутина выбрасывает <code>CancellationException</code> (или завершается нормально, если уже завершилась). <code>CancellationException</code> не считается ошибкой и не пробрасывается родителю. Долгие циклы должны вызывать <code>yield()</code> или <code>ensureActive()</code>, чтобы отмена сработала вовремя:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">process</span><span class="hljs-params">(items: <span class="hljs-type">List</span>&lt;<span class="hljs-type">Item</span>&gt;)</span></span> {
+    <span class="hljs-keyword">for</span> (item <span class="hljs-keyword">in</span> items) {
+        ensureActive() <span class="hljs-comment">// бросит CancellationException, если отменено</span>
+        processItem(item)
+    }
+}
+</code></pre></div>
+<h3 id="coroutines-structured-concurrency" class="study-subtitle">Structured Concurrency</h3>
+<p>Структурированная конкуренция (structured concurrency) — принцип: корутины образуют дерево, и родитель не завершится, пока не завершатся все дети. Отмена родителя отменяет всех детей. Исключение в ребёнке пробрасывается родителю (если не использовать <code>SupervisorJob</code>). Это делает утечки и «висящие» корутины невозможными по конструкции.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loadAll</span><span class="hljs-params">()</span></span> = coroutineScope {
+    <span class="hljs-keyword">val</span> a = async { fetchA() }
+    <span class="hljs-keyword">val</span> b = async { fetchB() }
+    a.await() + b.await()
+} <span class="hljs-comment">// scope завершится только когда обе async завершатся</span>
+</code></pre></div>
+<p>Если <code>fetchA()</code> бросит исключение, <code>coroutineScope</code> отменит <code>fetchB()</code> и пробросит исключение наружу. Это предсказуемое поведение, в отличие от коллбэков, где ошибка могла потеряться.</p>
+<p><code>supervisorScope</code> — вариант, где сбой одного ребёнка не отменяет остальных. Используется, когда задачи независимы (например, загрузка нескольких виджетов). В обычном коде предпочитайте <code>coroutineScope</code>.</p>
+<h3 id="coroutines-errors" class="study-subtitle">Типичные ошибки</h3>
+<ul class="study-list">
+<li>Вызывать suspend-функции вне корутины или другой suspend-функции.</li>
+<li>Использовать <code>GlobalScope</code> — корутины не привязаны к жизненному циклу, утечки.</li>
+<li>Забывать <code>await()</code> у <code>async</code> — потеря результата и исключений.</li>
+<li>Блокировать поток внутри корутины (<code>Thread.sleep</code>, <code>runBlocking</code>) — блокирует диспетчер.</li>
+<li>Не проверять отмену в долгих циклах — корутина не отменится.</li>
+<li>Ловить <code>CancellationException</code> и не пробрасывать — ломает отмену.</li>
+<li>Путать <code>launch</code> (нет результата) и <code>async</code> (есть результат).</li>
+</ul>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Чем корутина отличается от потока?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Когда использовать <code>launch</code>, а когда <code>async</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Зачем нужен <code>runBlocking</code> и где его нельзя использовать?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Что такое <code>Job</code> и как отменить корутину?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> В чём суть structured concurrency?</li>
+</ul></section><section id="dispatchers" class="study-section" aria-labelledby="dispatchers-title"><h2 id="dispatchers-title" class="study-section-title">5. Dispatchers</h2><p>Диспетчер (Dispatcher) определяет, в каком потоке (или пуле потоков) выполняется корутина и её продолжения. Выбор диспетчера — это выбор ресурса: главный поток UI, пул для блокирующего ввода-вывода или пул для вычислений. Правильный выбор влияет на отзывчивость интерфейса и на то, не «съест» ли фоновая задача все потоки приложения.</p>
+<h3 id="dispatchers-main" class="study-subtitle">5.1. Dispatchers.Main</h3>
+<p><code>Dispatchers.Main</code> привязан к главному (UI) потоку Android. На нём можно трогать View, обновлять Compose-состояние, показывать Toast и диалоги. Тяжёлую работу на нём делать нельзя: любая блокировка заморозит интерфейс и приведёт к ANR.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> kotlinx.coroutines.Dispatchers
+<span class="hljs-keyword">import</span> kotlinx.coroutines.withContext
+
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">updateUi</span><span class="hljs-params">(text: <span class="hljs-type">String</span>)</span></span> {
+    withContext(Dispatchers.Main) {
+        textView.text = text
+    }
+}
+</code></pre></div>
+<p>В Android <code>Dispatchers.Main</code> предоставляется артефактом <code>kotlinx-coroutines-android</code>, который нужно подключить как зависимость. В unit-тестах без Android-окружения его подменяют через <code>Dispatchers.setMain(...)</code> из <code>kotlinx-coroutines-test</code>, а после теста восстанавливают через <code>Dispatchers.resetMain()</code>. Есть вариант <code>Dispatchers.Main.immediate</code>: если корутина уже выполняется в главном потоке, продолжение выполняется сразу, без постановки в очередь, что снижает задержки при обновлении UI.</p>
+<h3 id="dispatchers-io" class="study-subtitle">5.2. Dispatchers.IO</h3>
+<p><code>Dispatchers.IO</code> — пул потоков для блокирующих операций: сетевые запросы, чтение/запись файлов, запросы к SQLite/Room (если не использовать suspend-DAO), работа с SharedPreferences в больших объёмах. Пул эластичный: по умолчанию не меньше 64 потоков — <code>max(64, число ядер)</code>, поэтому на многоядерных машинах их больше 64, потоки создаются по требованию и переиспользуются.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">readConfig</span><span class="hljs-params">(file: <span class="hljs-type">File</span>)</span></span>: String = withContext(Dispatchers.IO) {
+    file.readText()
+}
+</code></pre></div>
+<p>Не запускайте на <code>IO</code> CPU-интенсивные циклы: они займут потоки, предназначенные для ожидания I/O, и замедлят реальные операции ввода-вывода. Для вычислений есть <code>Dispatchers.Default</code>.</p>
+<h3 id="dispatchers-default" class="study-subtitle">5.3. Dispatchers.Default</h3>
+<p><code>Dispatchers.Default</code> — пул потоков размером с число ядер CPU (минимум 2). Предназначен для CPU-bound работы: сортировка, фильтрация больших списков, парсинг JSON, криптография, сложные вычисления. Потоки не блокируются ожиданием — они должны быть заняты вычислениями.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">sortItems</span><span class="hljs-params">(items: <span class="hljs-type">List</span>&lt;<span class="hljs-type">Item</span>&gt;)</span></span>: List&lt;Item&gt; =
+    withContext(Dispatchers.Default) {
+        items.sortedBy { it.priority }
+    }
+</code></pre></div>
+<p>Если запустить на <code>Default</code> блокирующую операцию (например, <code>Thread.sleep</code> или синхронный сетевой вызов), один из немногих потоков пула будет простаивать, и параллелизм вычислений упадёт. Для блокировок используйте <code>IO</code>.</p>
+<h3 id="withcontext" class="study-subtitle">5.4. withContext</h3>
+<p><code>withContext(dispatcher)</code> — suspend-функция, которая переключает контекст выполнения текущей корутины на указанный диспетчер, выполняет блок и возвращает результат. Она не создаёт новую корутину и не нарушает structured concurrency: родительская Job остаётся той же, отмена распространяется.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loadUser</span><span class="hljs-params">(id: <span class="hljs-type">Int</span>)</span></span>: User {
+    <span class="hljs-keyword">val</span> dto = withContext(Dispatchers.IO) {
+        api.getUser(id) <span class="hljs-comment">// сетевой вызов</span>
+    }
+    <span class="hljs-keyword">return</span> withContext(Dispatchers.Default) {
+        dto.toDomain() <span class="hljs-comment">// преобразование</span>
+    }
+}
+</code></pre></div>
+<p>Результат блока становится результатом <code>withContext</code>. Если блок бросает исключение, оно пробрасывается наружу, а диспетчер восстанавливается. <code>withContext</code> — основной инструмент тонкой настройки потоков внутри одной корутины.</p>
+<h3 id="cpu-bound-i-io-bound" class="study-subtitle">5.5. CPU-bound и I/O-bound задачи</h3>
+<p>Классификация задач по типу нагрузки определяет выбор диспетчера.</p>
+<ul class="study-list">
+<li>I/O-bound: время выполнения определяется ожиданием внешнего ресурса (сеть, диск, БД). Поток большую часть времени простаивает. Примеры: загрузка картинки, запись файла, SQL-запрос. Подходит <code>Dispatchers.IO</code>.</li>
+<li>CPU-bound: время выполнения определяется вычислениями на процессоре. Поток загружен на 100%. Примеры: сортировка, сериализация, фильтрация, расчёт хэша. Подходит <code>Dispatchers.Default</code>.</li>
+</ul>
+<p>Ошибка классификации приводит к двум проблемам. CPU-работа на <code>IO</code> создаёт лишние потоки (до 64) и тратит память. I/O-работа на <code>Default</code> блокирует один из немногих потоков вычислений, и другие корутины ждут. При сомнении разбивайте задачу: сначала I/O на <code>IO</code>, затем обработка на <code>Default</code>.</p>
+<h3 id="pereklyuchenie-konteksta" class="study-subtitle">5.6. Переключение контекста выполнения</h3>
+<p>Переключение контекста — это смена потока, на котором продолжается корутина после suspend-точки. Оно происходит в двух случаях: при явном <code>withContext</code> и при вызове suspend-функции, внутри которой есть <code>withContext</code> или встроенный переключатель (например, <code>delay</code> возобновляет на том же диспетчере, а <code>flowOn</code> меняет upstream).</p>
+<p>Частые переключения стоят дёшево, но не бесплатны: каждое включает планирование задачи в пул потоков. На горячих путях (например, в цикле по тысячам элементов) переключаться на каждый элемент не нужно — лучше собрать данные в один <code>withContext</code> и обработать разом.</p>
+<p>Контекст (включая Job и диспетчер) наследуется дочерними корутинами. <code>launch</code> и <code>async</code> по умолчанию используют диспетчер родителя, если не указан явно. Это позволяет централизованно задать диспетчер для целой области.</p>
+<h3 id="pochemu-suspend-ne-pereklyuchaet" class="study-subtitle">5.7. Почему suspend-функция сама по себе не переключает поток</h3>
+<p>Ключевое слово <code>suspend</code> означает «эту функцию можно приостановить», но не «она выполняется в другом потоке». Suspend-функция по умолчанию работает на диспетчере вызывающего кода. Если её вызвали из корутины на <code>Dispatchers.Main</code>, тело функции (до первой suspend-точки) тоже выполняется на главном потоке.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">fetchUser</span><span class="hljs-params">(id: <span class="hljs-type">Int</span>)</span></span>: User {
+    <span class="hljs-comment">// на диспетчере вызывающего кода!</span>
+    <span class="hljs-keyword">val</span> response = api.<span class="hljs-keyword">get</span>(id) <span class="hljs-comment">// suspend+withContext(IO) переключит</span>
+    <span class="hljs-keyword">return</span> response.toUser()
+}
+</code></pre></div>
+<p>Распространённая ошибка: написать <code>suspend fun</code> и считать, что сеть автоматически уйдёт в фон. Если внутри нет <code>withContext(Dispatchers.IO)</code> или suspend-вызова с переключением, блокирующий код (например, <code>execute()</code> OkHttp) заблокирует главный поток. Правило: suspend-функция, делающая блокирующий вызов, обязана сама переключить диспетчер через <code>withContext</code>.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Выполнение сетевого или файлового I/O на <code>Dispatchers.Default</code> или <code>Dispatchers.Main</code>.</li>
+<li>Предположение, что <code>suspend</code> автоматически уводит код в фоновый поток.</li>
+<li>Создание слишком многих корутин на <code>Dispatchers.IO</code> без необходимости.</li>
+<li>Частые <code>withContext</code> внутри циклов.</li>
+<li>Использование <code>Dispatchers.Main</code> в unit-тестах без замены.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею выбрать диспетчер для I/O и CPU-задач.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю разницу <code>Dispatchers.IO</code> и <code>Dispatchers.Default</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Использую <code>withContext</code> для переключения потока внутри suspend-функции.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, что <code>suspend</code> сам по себе не меняет поток.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Помню про <code>Dispatchers.Main.immediate</code> и тестирование.</li>
+</ul></section><section id="suspend-functions-i-cancellation" class="study-section" aria-labelledby="suspend-functions-i-cancellation-title"><h2 id="suspend-functions-i-cancellation-title" class="study-section-title">6. Suspend Functions и Cancellation</h2><p>Suspend-функции — центральный механизм корутин: они позволяют писать асинхронный код последовательно, без коллбэков. Отмена корутин кооперативная: код сам должен проверять, не отменена ли задача. Понимание этих двух идей отличает рабочий код от кода, который «зависает» или игнорирует отмену.</p>
+<h3 id="klyuchevoe-slovo-suspend" class="study-subtitle">6.1. Ключевое слово suspend</h3>
+<p><code>suspend</code> помечает функцию как приостанавливаемую. Такую функцию можно вызвать только из другой suspend-функции или из корутины (внутри <code>launch</code>/<code>async</code>/<code>runBlocking</code>). Компилятор преобразует её в функцию с дополнительным параметром-продолжением (continuation) и генерирует конечный автомат.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">fetchPosts</span><span class="hljs-params">()</span></span>: List&lt;Post&gt; {
+    delay(<span class="hljs-number">1000</span>) <span class="hljs-comment">// suspend-точка</span>
+    <span class="hljs-keyword">return</span> api.getPosts()
+}
+</code></pre></div>
+<p><code>suspend</code> не делает функцию асинхронной «магически»: если внутри нет suspend-вызовов, она выполняется синхронно на текущем диспетчере. Аннотация лишь разрешает использовать внутри другие suspend-функции и быть приостановленной.</p>
+<h3 id="vyzov-suspend-funkcij" class="study-subtitle">6.2. Вызов suspend-функций</h3>
+<p>Suspend-функции вызываются как обычные: <code>val posts = fetchPosts()</code>. Выполнение приостанавливается на каждой suspend-точке (вызове другой suspend-функции или <code>delay</code>), освобождая поток, и возобновляется, когда результат готов. По умолчанию вызовы последовательны: вторая функция начнётся только после завершения первой.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">launch {
+    <span class="hljs-keyword">val</span> user = fetchUser(id)   <span class="hljs-comment">// ждём</span>
+    <span class="hljs-keyword">val</span> posts = fetchPosts()    <span class="hljs-comment">// потом этот</span>
+    show(user, posts)
+}
+</code></pre></div>
+<p>Для параллельного выполнения используют <code>async</code> + <code>await</code>. Suspend-функция может вернуть значение, бросить исключение или быть отменена — в последнем случае бросается <code>CancellationException</code>.</p>
+<h3 id="suspension-vs-blocking" class="study-subtitle">6.3. Suspension vs Blocking</h3>
+<ul class="study-list">
+<li>Suspension (приостановка): корутина «засыпает», а поток возвращается в пул и может выполнять другие корутины. Ресурсы не простаивают. Пример: <code>delay(1000)</code>, ожидание ответа сети через suspend-вызов.</li>
+<li>Blocking (блокировка): поток занят ожиданием и ничего другого делать не может. Пример: <code>Thread.sleep(1000)</code>, синхронный <code>execute()</code>.</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// плохо: блокирует поток на секунду</span>
+Thread.sleep(<span class="hljs-number">1000</span>)
+
+<span class="hljs-comment">// хорошо: корутина приостанавливается</span>
+delay(<span class="hljs-number">1000</span>)
+</code></pre></div>
+<p>Использование блокирующих вызовов внутри корутин на <code>Dispatchers.Main</code> или <code>Dispatchers.Default</code> приводит к зависаниям и ANR. Если блокирующий API неизбежен (старая библиотека), оборачивайте его в <code>withContext(Dispatchers.IO)</code>.</p>
+<h3 id="continuation" class="study-subtitle">6.4. Continuation (общее понимание)</h3>
+<p>Continuation (продолжение) — объект, представляющий «что делать дальше» после приостановки. На уровне языка suspend-функция компилируется в конечный автомат: локальные переменные и точка возобновления сохраняются в полях класса-continuation. Когда результат готов, вызывается <code>resumeWith(result)</code>, и функция продолжает с нужного места.</p>
+<p>Разработчику обычно не нужно работать с <code>Continuation</code> напрямую. Но понимание помогает читать стектрейсы (в них появляются <code>ContinuationImpl</code>, <code>resumeWith</code>) и понимать, почему suspend-функция может возобновиться на другом потоке: продолжение планируется диспетчером, связанным с контекстом.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// низкоуровневый пример</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">example</span><span class="hljs-params">()</span></span> = suspendCoroutine { cont -&gt;
+    someAsyncApi { result -&gt; cont.resume(result) }
+}
+</code></pre></div>
+<p><code>suspendCoroutine</code>/<code>suspendCancellableCoroutine</code> — мост между корутинами и коллбэк-API. В обычном коде предпочитают готовые suspend-обёртки.</p>
+<h3 id="kooperativnaya-otmena" class="study-subtitle">6.5. Кооперативная отмена корутин</h3>
+<p>Отмена в корутинах кооперативная: вызов <code>job.cancel()</code> не прерывает код насильно, а выставляет флаг отмены. Реальная остановка происходит в suspend-точках: <code>delay</code>, <code>yield</code>, операции с каналами/Flow проверяют флаг и бросают <code>CancellationException</code>. Если корутина выполняет долгий CPU-цикл без suspend-точек, она не отменится, пока не дойдёт до такой точки.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> job = scope.launch {
+    repeat(<span class="hljs-number">1_000_000</span>) { i -&gt;
+        <span class="hljs-comment">// нет suspend-точки</span>
+        doWork(i)
+    }
+}
+job.cancel() <span class="hljs-comment">// флаг установлен</span>
+</code></pre></div>
+<p>Чтобы цикл был отменяемым, добавляйте проверки (см. 6.7). Это ключевое отличие от <code>Thread.interrupt()</code>, который пытается прервать поток.</p>
+<h3 id="cancellation-exception" class="study-subtitle">6.6. CancellationException</h3>
+<p><code>CancellationException</code> — специальное исключение, сигнализирующее об отмене корутины. Оно не должно перехватываться как обычная ошибка: если поймать <code>Exception</code> и не пробросить <code>CancellationException</code>, отмена сломается, и корутина продолжит работу после отмены.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">try</span> {
+    doWork()
+} <span class="hljs-keyword">catch</span> (e: CancellationException) {
+    <span class="hljs-keyword">throw</span> e <span class="hljs-comment">// обязательно пробросить</span>
+} <span class="hljs-keyword">catch</span> (e: Exception) {
+    handleError(e)
+}
+</code></pre></div>
+<p>Или проверяйте тип: <code>if (e is CancellationException) throw e</code>. В <code>runCatching</code> и общих обработчиках это особенно важно. <code>CancellationException</code> также не считается сбоем родительской корутины: она означает штатное завершение по отмене, а не ошибку.</p>
+<h3 id="proverka-otmeni" class="study-subtitle">6.7. Проверка отмены в длительных операциях</h3>
+<p>Для долгих вычислений используйте явные проверки:</p>
+<ul class="study-list">
+<li><code>ensureActive()</code> — бросает <code>CancellationException</code>, если корутина отменена. Удобно вставлять в циклы.</li>
+<li><code>isActive</code> — свойство <code>CoroutineScope</code>/<code>Job</code>; можно проверить и выйти из цикла вручную.</li>
+<li><code>yield()</code> — suspend-точка, которая также проверяет отмену и даёт другим корутинам шанс выполниться.</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">scope.launch(Dispatchers.Default) {
+    <span class="hljs-keyword">for</span> (item <span class="hljs-keyword">in</span> hugeList) {
+        ensureActive() <span class="hljs-comment">// бросит CancellationException при отмене</span>
+        process(item)
+    }
+}
+</code></pre></div>
+<p>Для блокирующих вызовов используйте <code>suspendCancellableCoroutine</code> и регистрируйте обработчик отмены через <code>invokeOnCancellation</code>, чтобы отменить нижележащую операцию (например, OkHttp <code>Call.cancel()</code>).</p>
+<h3 id="rasprostranenie-oshibok" class="study-subtitle">6.8. Базовое распространение ошибок между дочерними корутинами</h3>
+<p>В structured concurrency ошибка в дочерней корутине отменяет родителя и всех его других детей — это поведение по умолчанию (<code>Job</code>). Если одна из параллельных задач падает, остальные отменяются, а исключение пробрасывается в точку ожидания.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">scope.launch {
+    <span class="hljs-keyword">try</span> {
+        coroutineScope {
+            launch { taskA() } <span class="hljs-comment">// если упадёт</span>
+            launch { taskB() } <span class="hljs-comment">// будет отменена</span>
+        }
+    } <span class="hljs-keyword">catch</span> (e: Exception) {
+        <span class="hljs-comment">// получит исключение из taskA</span>
+    }
+}
+</code></pre></div>
+<p>Если нужно, чтобы сбой одной задачи не отменял остальные, используют <code>supervisorScope</code> и <code>SupervisorJob</code>: дети становятся независимыми, а ошибка обрабатывается в каждом <code>launch</code> отдельно. Это базовое понятие; тонкая настройка обработки ошибок относится к следующему уровню.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Перехват <code>Exception</code> с игнорированием <code>CancellationException</code>.</li>
+<li>Долгие CPU-циклы без <code>ensureActive</code>/<code>yield</code>.</li>
+<li>Использование <code>GlobalScope</code>, ломающее structured concurrency.</li>
+<li>Предположение, что <code>cancel()</code> мгновенно останавливает код.</li>
+<li>Необработанные исключения в дочерних корутинах, роняющие всю область.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, что делает <code>suspend</code> и как вызывать suspend-функции.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Различаю suspension и blocking.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, что такое continuation на общем уровне.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Объясняю кооперативную отмену и роль suspend-точек.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Правильно обрабатываю <code>CancellationException</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею проверять отмену в циклах через <code>ensureActive</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю распространение ошибок в <code>coroutineScope</code>.</li>
+</ul></section><section id="flow-basics" class="study-section" aria-labelledby="flow-basics-title"><h2 id="flow-basics-title" class="study-section-title">7. Flow Basics</h2><p>Flow — это реактивный поток данных в корутинах: последовательность значений, которые эмитятся со временем. В отличие от обычной функции, возвращающей один результат, Flow может выдать много значений и завершиться (или не завершиться никогда). Это основа реактивного UI на Android: экран подписывается на поток состояния и перерисовывается при каждом новом значении.</p>
+<h3 id="reaktivnyj-potok" class="study-subtitle">7.1. Реактивный поток данных</h3>
+<p>Реактивный поток — абстракция «значения, приходящие со временем». Потребитель (collector) реагирует на каждое новое значение, а не опрашивает источник. Это устраняет ручную синхронизацию: UI просто собирает Flow и обновляется.</p>
+<p>В Android реактивность чаще всего проявляется так: репозиторий отдаёт <code>Flow&lt;List&lt;Item&gt;&gt;</code>, ViewModel преобразует его в <code>StateFlow&lt;UiState&gt;</code>, а Compose/Fragment собирает и рисует. При изменении данных в БД поток сам доставляет новое значение до экрана.</p>
+<h3 id="flow-emit" class="study-subtitle">7.2. flow { emit() }</h3>
+<p>Холодный поток создаётся билдером <code>flow { }</code>. Внутри вызывают <code>emit(value)</code>, чтобы отправить значение потребителю. Код билдера выполняется заново для каждого нового коллектора.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> kotlinx.coroutines.flow.Flow
+<span class="hljs-keyword">import</span> kotlinx.coroutines.flow.flow
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">countdown</span><span class="hljs-params">(from: <span class="hljs-type">Int</span>)</span></span>: Flow&lt;<span class="hljs-built_in">Int</span>&gt; = flow {
+    <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> from downTo <span class="hljs-number">0</span>) {
+        emit(i)
+        delay(<span class="hljs-number">1000</span>)
+    }
+}
+</code></pre></div>
+<p>Билдер — suspend-контекст: внутри можно вызывать suspend-функции (<code>delay</code>, <code>withContext</code>). <code>emit</code> — suspend-функция: она приостанавливается, пока коллектор не готов принять значение (backpressure).</p>
+<h3 id="operator-collect" class="study-subtitle">7.3. Оператор collect</h3>
+<p><code>collect</code> — терминальный оператор: он запускает поток и начинает получать значения. <code>collect</code> — suspend-функция, поэтому вызывается из корутины. Поток выполняется, пока не завершится или пока корутина не будет отменена.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">launch {
+    countdown(<span class="hljs-number">5</span>).collect { value -&gt;
+        println(value)
+    }
+    println(<span class="hljs-string">&quot;Готово&quot;</span>)
+}
+</code></pre></div>
+<p>Есть варианты: <code>collectLatest</code> (отменяет предыдущую обработку при новом значении), <code>single()</code> (завершается после первого значения, а при втором и последующих бросает <code>IllegalStateException</code>), <code>first()</code>, <code>toList()</code>. <code>collect</code> не возвращает значение — он запускает побочный эффект (обработку каждого элемента).</p>
+<h3 id="flow-vs-suspend" class="study-subtitle">7.4. Flow vs suspend-функция</h3>
+<ul class="study-list">
+<li>Suspend-функция возвращает одно значение (или бросает исключение) и завершается. Подходит для разовых операций: «загрузить пользователя», «сохранить настройку».</li>
+<li>Flow возвращает потенциально много значений со временем. Подходит для наблюдения: «список сообщений», «состояние экрана», «таймер».</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUser</span><span class="hljs-params">(id: <span class="hljs-type">Int</span>)</span></span>: User        <span class="hljs-comment">// одно значение</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">observeUser</span><span class="hljs-params">(id: <span class="hljs-type">Int</span>)</span></span>: Flow&lt;User&gt;     <span class="hljs-comment">// поток изменений</span>
+</code></pre></div>
+<p>Flow можно рассматривать как suspend-функцию, которая может вызвать <code>emit</code> несколько раз. Если нужен только первый результат — используйте <code>first()</code> или обычную suspend-функцию; если нужна реактивность — Flow.</p>
+<h3 id="holodnyj-i-goryachij" class="study-subtitle">7.5. Холодный и горячий поток (обзорно)</h3>
+<ul class="study-list">
+<li>Холодный поток (cold): код билдера запускается заново для каждого коллектора. Никаких значений не эмитится, пока кто-то не вызовет <code>collect</code>. Примеры: <code>flow { }</code>, <code>flowOf</code>, операторы. Каждый подписчик получает свою независимую последовательность.</li>
+<li>Горячий поток (hot): эмитит значения независимо от наличия коллекторов; новые подписчики получают только значения, эмитированные после подписки (или последнее закэшированное). Примеры: <code>StateFlow</code>, <code>SharedFlow</code>; <code>callbackFlow</code> сам по себе холодный и становится горячим только после <code>shareIn</code>/<code>stateIn</code>.</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> cold = flow { emit(compute()) } <span class="hljs-comment">// compute на каждый collect</span>
+
+<span class="hljs-keyword">val</span> hot = MutableStateFlow(<span class="hljs-number">0</span>) <span class="hljs-comment">// хранит текущее значение</span>
+</code></pre></div>
+<p>Холодные потоки экономят ресурсы (не работают без подписчиков), горячие — удобны для состояния, которое должно быть актуальным всегда. Подробнее — на следующем уровне (операторы <code>shareIn</code>, <code>stateIn</code>).</p>
+<h3 id="map-i-filter-flow" class="study-subtitle">7.6. map и filter для Flow (базово)</h3>
+<p>Операторы Flow преобразуют поток и возвращают новый Flow. Они «ленивые»: не выполняются, пока не вызовут <code>collect</code>.</p>
+<ul class="study-list">
+<li><code>map { }</code> — преобразует каждое значение.</li>
+<li><code>filter { }</code> — пропускает только значения, удовлетворяющие условию.</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">evenDoubled</span><span class="hljs-params">(flow: <span class="hljs-type">Flow</span>&lt;<span class="hljs-type">Int</span>&gt;)</span></span>: Flow&lt;<span class="hljs-built_in">Int</span>&gt; =
+    flow
+        .filter { it % <span class="hljs-number">2</span> == <span class="hljs-number">0</span> }
+        .map { it * <span class="hljs-number">2</span> }
+</code></pre></div>
+<p>Операторы можно цепочкой. Каждый элемент проходит по всей цепочке. Важно: <code>map</code>/<code>filter</code> выполняются на диспетчере коллектора (по умолчанию). Переключение диспетчера для upstream делается через <code>flowOn</code> (следующий уровень).</p>
+<h3 id="stateflow-vvodnoe" class="study-subtitle">7.7. StateFlow (вводное понятие)</h3>
+<p><code>StateFlow</code> — горячий поток, хранящий одно текущее значение и отдающий его новым подписчикам сразу. Это реактивный контейнер состояния, замена <code>LiveData</code> в современных проектах. Всегда имеет начальное значение; повторные одинаковые значения не эмитятся (conflation по <code>equals</code>).</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> kotlinx.coroutines.flow.MutableStateFlow
+<span class="hljs-keyword">import</span> kotlinx.coroutines.flow.StateFlow
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">CounterViewModel</span> {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _count = MutableStateFlow(<span class="hljs-number">0</span>)
+    <span class="hljs-keyword">val</span> count: StateFlow&lt;<span class="hljs-built_in">Int</span>&gt; = _count
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span></span> { _count.value += <span class="hljs-number">1</span> }
+}
+</code></pre></div>
+<p>Чтение: <code>count.value</code> (синхронно) или сбор через <code>collect</code>. Изменение только через <code>_count.value = ...</code> или <code>update { }</code>. <code>StateFlow</code> не завершается и не бросает исключений при сборе — он живёт, пока живёт область.</p>
+<h3 id="sbor-vo-viewmodel" class="study-subtitle">7.8. Сбор во ViewModel</h3>
+<p>Во ViewModel корутины запускаются в <code>viewModelScope</code>, который отменяется при очистке ViewModel. Состояние экрана обычно хранят в <code>StateFlow</code> и собирают во View с учётом жизненного цикла.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">UserViewModel</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> repo: UserRepository
+) : ViewModel() {
+
+    <span class="hljs-keyword">val</span> uiState: StateFlow&lt;UiState&gt; =
+        repo.observeUser()
+            .map { UiState.Success(it) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(<span class="hljs-number">5000</span>),
+                initialValue = UiState.Loading
+            )
+}
+</code></pre></div>
+<p>Во View (Compose):</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> state <span class="hljs-keyword">by</span> viewModel.uiState.collectAsStateWithLifecycle()
+</code></pre></div>
+<p>Или во Fragment:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">viewLifecycleOwner.lifecycleScope.launch {
+    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewModel.uiState.collect { render(it) }
+    }
+}
+</code></pre></div>
+<p><code>repeatOnLifecycle</code> отменяет сбор при уходе экрана в фон и возобновляет при возврате — это предотвращает утечки и лишнюю работу. <code>collectAsStateWithLifecycle</code> делает то же для Compose.</p>
+<p><strong>Мостик к следующему уровню (middle-coroutines):</strong> дальше изучаются расширенные операторы (<code>flatMapLatest</code>, <code>combine</code>, <code>zip</code>, <code>debounce</code>, <code>distinctUntilChanged</code>), переключение диспетчера через <code>flowOn</code>, горячие потоки <code>SharedFlow</code> и <code>shareIn</code>/<code>stateIn</code> с разными стратегиями, обработка ошибок через <code>catch</code>, буферизация <code>buffer</code>/<code>conflate</code>, тестирование Flow через <code>Turbine</code> и виртуальное время. База, заложенная здесь (холодный поток, <code>emit</code>/<code>collect</code>, операторы, <code>StateFlow</code>, сбор во ViewModel), является фундаментом для всего этого.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Сбор Flow напрямую в <code>lifecycleScope</code> без <code>repeatOnLifecycle</code> — лишняя работа в фоне и обновления UI, когда экран не виден.</li>
+<li>Использование <code>collect</code> в главном потоке для тяжёлых преобразований без <code>flowOn</code>.</li>
+<li>Создание <code>MutableStateFlow</code> с <code>null</code>-начальным значением без учёта UI-состояния.</li>
+<li>Сравнение StateFlow по ссылке вместо значения.</li>
+<li>Забытый <code>stateIn</code> — Flow остаётся холодным и перезапускается на каждую подписку.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу создать холодный поток через <code>flow { emit() }</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю разницу Flow и suspend-функции.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Различаю холодный и горячий поток.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Применяю <code>map</code> и <code>filter</code> к Flow.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Создаю и обновляю <code>StateFlow</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Собираю Flow во ViewModel с учётом жизненного цикла.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, что изучать дальше (middle-coroutines).</li>
+</ul></section><section id="itogovaya-samoproverka" class="study-section" aria-labelledby="itogovaya-samoproverka-title"><h2 id="itogovaya-samoproverka-title" class="study-section-title">Итоговая самопроверка категории</h2><ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею выбирать <code>Dispatchers.Main</code>/<code>IO</code>/<code>Default</code> и переключать контекст через <code>withContext</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, что <code>suspend</code> не меняет поток автоматически.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Объясняю suspension vs blocking и кооперативную отмену.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Правильно обрабатываю <code>CancellationException</code> и проверяю отмену в циклах.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Создаю холодные Flow через <code>flow { emit() }</code> и собираю их через <code>collect</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Различаю холодный и горячий поток, использую <code>StateFlow</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Собираю Flow во ViewModel с <code>repeatOnLifecycle</code>/<code>collectAsStateWithLifecycle</code>.</li>
+</ul></section><section id="istochniki-i-dokumentaciya" class="study-section" aria-labelledby="istochniki-i-dokumentaciya-title"><h2 id="istochniki-i-dokumentaciya-title" class="study-section-title">Источники и документация</h2><h3 class="study-subtitle">Официальная документация</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://developer.android.com/kotlin/coroutines" target="_blank" rel="noopener noreferrer">Coroutines overview (Android Developers)</a></li>
+<li><a class="study-pill" href="https://developer.android.com/kotlin/coroutines/coroutines-adv" target="_blank" rel="noopener noreferrer">Coroutines on Android (Android Developers)</a></li>
+<li><a class="study-pill" href="https://kotlinlang.org/docs/coroutines-guide.html" target="_blank" rel="noopener noreferrer">Kotlin Coroutines guide</a></li>
+<li><a class="study-pill" href="https://kotlinlang.org/docs/coroutine-context-and-dispatchers.html" target="_blank" rel="noopener noreferrer">Dispatchers and threads</a></li>
+<li><a class="study-pill" href="https://kotlinlang.org/docs/cancellation-and-timeouts.html" target="_blank" rel="noopener noreferrer">Cancellation and timeouts</a></li>
+<li><a class="study-pill" href="https://kotlinlang.org/docs/flow.html" target="_blank" rel="noopener noreferrer">Flow</a></li>
+<li><a class="study-pill" href="https://developer.android.com/kotlin/flow/stateflow-and-sharedflow" target="_blank" rel="noopener noreferrer">StateFlow and SharedFlow (Android Developers)</a></li>
+<li><a class="study-pill" href="https://developer.android.com/topic/libraries/architecture/viewmodel#coroutines" target="_blank" rel="noopener noreferrer">ViewModel and coroutines</a></li>
+</ul>
+<h3 class="study-subtitle">Статьи</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://developer.android.com/kotlin/coroutines/coroutines-best-practices" target="_blank" rel="noopener noreferrer">Coroutines best practices (Android Developers)</a></li>
+<li><a class="study-pill" href="https://developer.android.com/kotlin/flow" target="_blank" rel="noopener noreferrer">Using Kotlin Flow (Android Developers)</a></li>
+<li><a class="study-pill" href="https://developer.android.com/topic/architecture/ui-layer/stateholders" target="_blank" rel="noopener noreferrer">State holders and UI state</a></li>
+<li><a class="study-pill" href="https://developer.android.com/topic/libraries/architecture/coroutines#lifecycle-aware" target="_blank" rel="noopener noreferrer">Lifecycle-aware collection</a></li>
+</ul></section><footer class="study-footer">Учебный конспект для уровня Junior. Примеры ориентированы на Kotlin.</footer></div></div>

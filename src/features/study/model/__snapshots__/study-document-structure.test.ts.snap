@@ -1,5 +1,515 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`android-basics: структура документа стабильна 1`] = `
+{
+  "sections": [
+    {
+      "anchor": "android-studio",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "1. Android Studio",
+    },
+    {
+      "anchor": "proekt-i-moduli",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "2. Проект и модули",
+    },
+    {
+      "anchor": "gradle",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "3. Gradle",
+    },
+    {
+      "anchor": "androidmanifest",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "4. AndroidManifest",
+    },
+    {
+      "anchor": "resources",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "5. Resources",
+    },
+    {
+      "anchor": "context-i-application",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "6. Context и Application",
+    },
+    {
+      "anchor": "layouts-xml",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "7. Layouts XML",
+    },
+    {
+      "anchor": "view-i-viewgroup",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "8. View и ViewGroup",
+    },
+    {
+      "anchor": "activity-lifecycle",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "9. Activity Lifecycle",
+    },
+    {
+      "anchor": "intent-i-activity-result-api",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "10. Intent и Activity Result API",
+    },
+    {
+      "anchor": "permissions",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "11. Permissions",
+    },
+    {
+      "anchor": "task-i-back-stack",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "12. Task и Back Stack",
+    },
+    {
+      "anchor": "main-thread-i-anr",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "13. Main Thread и ANR",
+    },
+    {
+      "anchor": "toast-dialog-i-snackbar",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "14. Toast, Dialog и Snackbar",
+    },
+    {
+      "anchor": "notifications",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "15. Notifications",
+    },
+    {
+      "anchor": "android-security-basics",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "16. Android Security Basics",
+    },
+    {
+      "anchor": "itogovaya-samoproverka",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговая самопроверка категории",
+    },
+    {
+      "anchor": "istochniki-i-dokumentaciya",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": true,
+      "title": "Источники и документация",
+    },
+  ],
+  "title": "Основы Android-платформы",
+}
+`;
+
+exports[`architecture-basics: структура документа стабильна 1`] = `
+{
+  "sections": [
+    {
+      "anchor": "mvc",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "1. MVC",
+    },
+    {
+      "anchor": "mvp",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "2. MVP",
+    },
+    {
+      "anchor": "mvvm",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "3. MVVM",
+    },
+    {
+      "anchor": "livedata-basics",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "4. LiveData Basics",
+    },
+    {
+      "anchor": "viewmodel",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "5. ViewModel",
+    },
+    {
+      "anchor": "repository",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "6. Repository",
+    },
+    {
+      "anchor": "ui-state",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "7. UI State",
+    },
+    {
+      "anchor": "odnostoronniy-potok-dannyh",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "8. Односторонний поток данных",
+    },
+    {
+      "anchor": "dependency-injection-basics",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "9. Dependency Injection Basics",
+    },
+    {
+      "anchor": "itogovaya-samoproverka",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговая самопроверка категории",
+    },
+    {
+      "anchor": "istochniki-i-dokumentaciya",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": true,
+      "title": "Источники и документация",
+    },
+  ],
+  "title": "Архитектура Android-приложения",
+}
+`;
+
+exports[`asynchronous-basics: структура документа стабильна 1`] = `
+{
+  "sections": [
+    {
+      "anchor": "thread-i-concurrency",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+        "cards",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "1. Thread и Concurrency Basics",
+    },
+    {
+      "anchor": "handler",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "2. Handler",
+    },
+    {
+      "anchor": "looper-i-messagequeue",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "3. Looper и MessageQueue",
+    },
+    {
+      "anchor": "coroutines-basics",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "4. Coroutines Basics",
+    },
+    {
+      "anchor": "dispatchers",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "5. Dispatchers",
+    },
+    {
+      "anchor": "suspend-functions-i-cancellation",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "6. Suspend Functions и Cancellation",
+    },
+    {
+      "anchor": "flow-basics",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "7. Flow Basics",
+    },
+    {
+      "anchor": "itogovaya-samoproverka",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговая самопроверка категории",
+    },
+    {
+      "anchor": "istochniki-i-dokumentaciya",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": true,
+      "title": "Источники и документация",
+    },
+  ],
+  "title": "Асинхронность в Android",
+}
+`;
+
+exports[`data-and-storage-basics: структура документа стабильна 1`] = `
+{
+  "sections": [
+    {
+      "anchor": "sharedpreferences-i-datastore",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "1. SharedPreferences и DataStore Basics",
+    },
+    {
+      "anchor": "files-i-storage",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "2. Files и Storage",
+    },
+    {
+      "anchor": "sqlite-i-sql",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "3. SQLite и SQL Basics",
+    },
+    {
+      "anchor": "room-basics",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "4. Room Basics",
+    },
+    {
+      "anchor": "json-i-serialization",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "5. JSON и Serialization",
+    },
+    {
+      "anchor": "http-i-rest",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "6. HTTP и REST Basics",
+    },
+    {
+      "anchor": "retrofit-basics",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "7. Retrofit Basics",
+    },
+    {
+      "anchor": "dto-i-data-mapping",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "8. DTO и Data Mapping",
+    },
+    {
+      "anchor": "itogovaya-samoproverka",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговая самопроверка категории",
+    },
+    {
+      "anchor": "istochniki-i-dokumentaciya",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": true,
+      "title": "Источники и документация",
+    },
+  ],
+  "title": "Данные и хранение в Android",
+}
+`;
+
 exports[`kotlin-basics: структура документа стабильна 1`] = `
 {
   "sections": [
@@ -136,6 +646,85 @@ exports[`kotlin-basics: структура документа стабильна
 }
 `;
 
+exports[`navigaciya-i-komponenty: структура документа стабильна 1`] = `
+{
+  "sections": [
+    {
+      "anchor": "fragment",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "1. Fragment",
+    },
+    {
+      "anchor": "navigation-component",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "2. Navigation Component",
+    },
+    {
+      "anchor": "service",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "3. Service",
+    },
+    {
+      "anchor": "broadcastreceiver",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "4. BroadcastReceiver",
+    },
+    {
+      "anchor": "contentprovider-basics",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "5. ContentProvider Basics",
+    },
+    {
+      "anchor": "itogovaya-samoproverka",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговая самопроверка категории",
+    },
+    {
+      "anchor": "istochniki-i-dokumentaciya",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": true,
+      "title": "Источники и документация",
+    },
+  ],
+  "title": "Навигация и компоненты Android",
+}
+`;
+
 exports[`osnovy-programmirovaniya-kotlin: структура документа стабильна 1`] = `
 {
   "sections": [
@@ -260,5 +849,274 @@ exports[`osnovy-programmirovaniya-kotlin: структура документа 
     },
   ],
   "title": "Основы программирования на Kotlin",
+}
+`;
+
+exports[`testing-basics: структура документа стабильна 1`] = `
+{
+  "sections": [
+    {
+      "anchor": "junit-i-unit-testing",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "1. JUnit и Unit Testing Basics",
+    },
+    {
+      "anchor": "espresso-basics",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "2. Espresso Basics",
+    },
+    {
+      "anchor": "test-doubles-i-mockk",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "3. Test Doubles и MockK Basics",
+    },
+    {
+      "anchor": "itogovaya-samoproverka",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговая самопроверка категории",
+    },
+    {
+      "anchor": "istochniki-i-dokumentaciya",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": true,
+      "title": "Источники и документация",
+    },
+  ],
+  "title": "Тестирование в Android",
+}
+`;
+
+exports[`tools-basics: структура документа стабильна 1`] = `
+{
+  "sections": [
+    {
+      "anchor": "git",
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "1. Git",
+    },
+    {
+      "anchor": "logcat-i-debugging",
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "2. Logcat и Debugging",
+    },
+    {
+      "anchor": "build-variants-i-apk-aab",
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "3. Build Variants и APK/AAB",
+    },
+    {
+      "anchor": "adb-basics",
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "4. ADB Basics",
+    },
+    {
+      "anchor": "dependencies-i-version-catalogs",
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "5. Dependencies и Version Catalogs",
+    },
+    {
+      "anchor": "itogovaya-samoproverka",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговая самопроверка категории",
+    },
+    {
+      "anchor": "istochniki-i-dokumentaciya",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": true,
+      "title": "Источники и документация",
+    },
+  ],
+  "title": "Инструменты Android-разработчика",
+}
+`;
+
+exports[`ui-basics: структура документа стабильна 1`] = `
+{
+  "sections": [
+    {
+      "anchor": "textview",
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "1. TextView",
+    },
+    {
+      "anchor": "button",
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "2. Button",
+    },
+    {
+      "anchor": "imageview",
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "3. ImageView",
+    },
+    {
+      "anchor": "edittext",
+      "blocks": [
+        "markdown",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "4. EditText",
+    },
+    {
+      "anchor": "linearlayout",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "5. LinearLayout",
+    },
+    {
+      "anchor": "constraintlayout",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "6. ConstraintLayout",
+    },
+    {
+      "anchor": "view-binding",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "7. View Binding",
+    },
+    {
+      "anchor": "recyclerview-basics",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "8. RecyclerView Basics",
+    },
+    {
+      "anchor": "styles-themes-i-material-3",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "9. Styles, Themes и Material 3",
+    },
+    {
+      "anchor": "razmery-i-accessibility",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "10. Размеры и Accessibility",
+    },
+    {
+      "anchor": "jetpack-compose-basics",
+      "blocks": [
+        "markdown",
+        "cards",
+        "note",
+        "markdown",
+      ],
+      "sources": false,
+      "title": "11. Jetpack Compose Basics",
+    },
+    {
+      "anchor": "itogovaya-samoproverka",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": false,
+      "title": "Итоговая самопроверка категории",
+    },
+    {
+      "anchor": "istochniki-i-dokumentaciya",
+      "blocks": [
+        "markdown",
+      ],
+      "sources": true,
+      "title": "Источники и документация",
+    },
+  ],
+  "title": "UI в Android: View и Jetpack Compose",
 }
 `;

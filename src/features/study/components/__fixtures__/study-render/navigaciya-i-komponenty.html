@@ -1,0 +1,517 @@
+<div class="study-layout"><nav class="study-toc" aria-label="Содержание материала"><div class="study-toc-rail"><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#fragment">1. Fragment</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#fragment-create">Создание Fragment</a></li><li><a class="study-toc-link" href="#fragment-lifecycle">Жизненный цикл Fragment</a></li><li><a class="study-toc-link" href="#fragment-manager">FragmentManager</a></li><li><a class="study-toc-link" href="#fragment-transaction">FragmentTransaction</a></li><li><a class="study-toc-link" href="#fragment-add-replace-remove">add, replace и remove</a></li><li><a class="study-toc-link" href="#fragment-arguments-bundle">Передача аргументов через Bundle</a></li><li><a class="study-toc-link" href="#fragment-view-lifecycle">View Lifecycle и его отличие от Fragment Lifecycle</a></li><li><a class="study-toc-link" href="#fragment-activity-interaction">Взаимодействие Activity и Fragment</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#navigation-component">2. Navigation Component</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#nav-graph-xml">Navigation Graph XML</a></li><li><a class="study-toc-link" href="#nav-controller">NavController</a></li><li><a class="study-toc-link" href="#nav-host-fragment">NavHostFragment</a></li><li><a class="study-toc-link" href="#nav-transitions">Переходы между destinations</a></li><li><a class="study-toc-link" href="#nav-arguments">Передача аргументов</a></li><li><a class="study-toc-link" href="#nav-safe-args">Safe Args</a></li><li><a class="study-toc-link" href="#nav-back-stack">Back Stack в Navigation Component</a></li><li><a class="study-toc-link" href="#nav-deep-links">Deep Links</a></li><li><a class="study-toc-link" href="#nav-bottom-navigation">Bottom Navigation</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#service">3. Service</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#service-purpose">Назначение Service</a></li><li><a class="study-toc-link" href="#service-started">Started Service</a></li><li><a class="study-toc-link" href="#service-bound">Bound Service</a></li><li><a class="study-toc-link" href="#service-lifecycle">Жизненный цикл Service</a></li><li><a class="study-toc-link" href="#service-foreground">Foreground Service</a></li><li><a class="study-toc-link" href="#service-foreground-types">Foreground Service types (Android 14+)</a></li><li><a class="study-toc-link" href="#service-notification">Уведомление для Foreground Service</a></li><li><a class="study-toc-link" href="#service-background-limits">Ограничения фонового выполнения Android</a></li><li><a class="study-toc-link" href="#service-vs-workmanager">WorkManager vs Service</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#broadcastreceiver">4. BroadcastReceiver</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#broadcast-purpose">Назначение BroadcastReceiver</a></li><li><a class="study-toc-link" href="#broadcast-onreceive">onReceive()</a></li><li><a class="study-toc-link" href="#broadcast-manifest">Регистрация в Manifest</a></li><li><a class="study-toc-link" href="#broadcast-dynamic">Динамическая регистрация</a></li><li><a class="study-toc-link" href="#broadcast-system">Системные Broadcast</a></li><li><a class="study-toc-link" href="#broadcast-exported">Экспортируемые и неэкспортируемые receiver</a></li><li><a class="study-toc-link" href="#broadcast-implicit-limits">Ограничения implicit broadcasts</a></li><li><a class="study-toc-link" href="#broadcast-onreceive-time">Время выполнения onReceive и ограничения длительных операций</a></li><li><a class="study-toc-link" href="#broadcast-ordered">Упорядоченные broadcasts</a></li><li><a class="study-toc-link" href="#broadcast-local">Локальные broadcasts внутри приложения</a></li><li><a class="study-toc-link" href="#broadcast-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#contentprovider-basics">5. ContentProvider Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#contentprovider-purpose">Назначение ContentProvider</a></li><li><a class="study-toc-link" href="#contentresolver-uri">ContentResolver и URI</a></li><li><a class="study-toc-link" href="#contentprovider-system">Системные провайдеры</a></li><li><a class="study-toc-link" href="#contentprovider-photo-picker">Photo Picker</a></li><li><a class="study-toc-link" href="#contentprovider-media-permissions">Разрешения на чтение медиа</a></li><li><a class="study-toc-link" href="#contentprovider-exported-security">Безопасность exported-провайдеров</a></li><li><a class="study-toc-link" href="#contentprovider-mime">MIME-типы и множественные результаты</a></li><li><a class="study-toc-link" href="#contentprovider-batch">Batch-операции и транзакции</a></li><li><a class="study-toc-link" href="#contentprovider-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></div><details class="study-toc-compact"><summary class="study-toc-summary">Содержание</summary><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#fragment">1. Fragment</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#fragment-create">Создание Fragment</a></li><li><a class="study-toc-link" href="#fragment-lifecycle">Жизненный цикл Fragment</a></li><li><a class="study-toc-link" href="#fragment-manager">FragmentManager</a></li><li><a class="study-toc-link" href="#fragment-transaction">FragmentTransaction</a></li><li><a class="study-toc-link" href="#fragment-add-replace-remove">add, replace и remove</a></li><li><a class="study-toc-link" href="#fragment-arguments-bundle">Передача аргументов через Bundle</a></li><li><a class="study-toc-link" href="#fragment-view-lifecycle">View Lifecycle и его отличие от Fragment Lifecycle</a></li><li><a class="study-toc-link" href="#fragment-activity-interaction">Взаимодействие Activity и Fragment</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#navigation-component">2. Navigation Component</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#nav-graph-xml">Navigation Graph XML</a></li><li><a class="study-toc-link" href="#nav-controller">NavController</a></li><li><a class="study-toc-link" href="#nav-host-fragment">NavHostFragment</a></li><li><a class="study-toc-link" href="#nav-transitions">Переходы между destinations</a></li><li><a class="study-toc-link" href="#nav-arguments">Передача аргументов</a></li><li><a class="study-toc-link" href="#nav-safe-args">Safe Args</a></li><li><a class="study-toc-link" href="#nav-back-stack">Back Stack в Navigation Component</a></li><li><a class="study-toc-link" href="#nav-deep-links">Deep Links</a></li><li><a class="study-toc-link" href="#nav-bottom-navigation">Bottom Navigation</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#service">3. Service</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#service-purpose">Назначение Service</a></li><li><a class="study-toc-link" href="#service-started">Started Service</a></li><li><a class="study-toc-link" href="#service-bound">Bound Service</a></li><li><a class="study-toc-link" href="#service-lifecycle">Жизненный цикл Service</a></li><li><a class="study-toc-link" href="#service-foreground">Foreground Service</a></li><li><a class="study-toc-link" href="#service-foreground-types">Foreground Service types (Android 14+)</a></li><li><a class="study-toc-link" href="#service-notification">Уведомление для Foreground Service</a></li><li><a class="study-toc-link" href="#service-background-limits">Ограничения фонового выполнения Android</a></li><li><a class="study-toc-link" href="#service-vs-workmanager">WorkManager vs Service</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#broadcastreceiver">4. BroadcastReceiver</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#broadcast-purpose">Назначение BroadcastReceiver</a></li><li><a class="study-toc-link" href="#broadcast-onreceive">onReceive()</a></li><li><a class="study-toc-link" href="#broadcast-manifest">Регистрация в Manifest</a></li><li><a class="study-toc-link" href="#broadcast-dynamic">Динамическая регистрация</a></li><li><a class="study-toc-link" href="#broadcast-system">Системные Broadcast</a></li><li><a class="study-toc-link" href="#broadcast-exported">Экспортируемые и неэкспортируемые receiver</a></li><li><a class="study-toc-link" href="#broadcast-implicit-limits">Ограничения implicit broadcasts</a></li><li><a class="study-toc-link" href="#broadcast-onreceive-time">Время выполнения onReceive и ограничения длительных операций</a></li><li><a class="study-toc-link" href="#broadcast-ordered">Упорядоченные broadcasts</a></li><li><a class="study-toc-link" href="#broadcast-local">Локальные broadcasts внутри приложения</a></li><li><a class="study-toc-link" href="#broadcast-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#contentprovider-basics">5. ContentProvider Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#contentprovider-purpose">Назначение ContentProvider</a></li><li><a class="study-toc-link" href="#contentresolver-uri">ContentResolver и URI</a></li><li><a class="study-toc-link" href="#contentprovider-system">Системные провайдеры</a></li><li><a class="study-toc-link" href="#contentprovider-photo-picker">Photo Picker</a></li><li><a class="study-toc-link" href="#contentprovider-media-permissions">Разрешения на чтение медиа</a></li><li><a class="study-toc-link" href="#contentprovider-exported-security">Безопасность exported-провайдеров</a></li><li><a class="study-toc-link" href="#contentprovider-mime">MIME-типы и множественные результаты</a></li><li><a class="study-toc-link" href="#contentprovider-batch">Batch-операции и транзакции</a></li><li><a class="study-toc-link" href="#contentprovider-errors">Типичные ошибки</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></details></nav><div class="study-content"><header class="study-hero"><p class="study-eyebrow">Навигация и компоненты · Junior</p><h1 class="study-title">Навигация и компоненты Android</h1><p class="study-lead">Четыре базовых компонента приложения, навигация между экранами и выбор между Service и WorkManager.</p></header><section id="fragment" class="study-section" aria-labelledby="fragment-title"><h2 id="fragment-title" class="study-section-title">1. Fragment</h2><p>Fragment — переиспользуемый UI-компонент Android, у которого есть собственный жизненный цикл и который размещается внутри Activity. Идея в том, что один экран приложения можно разбить на независимые части: список, детали, форму ввода, панель фильтров. Каждая часть живёт в своём Fragment и может переиспользоваться в других Activity или на других экранах. Fragment не является самостоятельным компонентом приложения: он всегда привязан к Activity-хосту и не может существовать сам по себе. Именно поэтому все системные события (поворот экрана, уход в фон, уничтожение процесса) приходят сначала в Activity, а уже оттуда — во Fragment.</p>
+<p>Fragment решает три задачи. Первая — модульность: один экран собирается из нескольких независимых блоков. Вторая — адаптивность: на телефоне список и детали показываются на отдельных экранах, на планшете — рядом. Третья — управление стеком экранов: FragmentManager хранит back stack, позволяя пользователю возвращаться кнопкой «Назад». Понимание Fragment необходимо, даже если вы пишете на Compose: многие библиотеки и старый код до сих пор используют View-систему.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Модульность</p><p>экран собирается из независимых блоков, каждый со своим состоянием.</p></div><div class="study-card"><p class="study-card-title">Адаптивность</p><p>один и тот же Fragment показывается по-разному на телефонах и планшетах.</p></div><div class="study-card"><p class="study-card-title">Back stack</p><p>FragmentManager хранит стек переходов и поддерживает кнопку «Назад».</p></div><div class="study-card"><p class="study-card-title">Хост</p><p>Fragment всегда живёт внутри Activity и не запускается сам по себе.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> Fragment — это не «маленькая Activity», а часть экрана со своим жизненным циклом и собственным View. Путать эти две сущности — частая причина утечек памяти и багов при повороте.</p></div><h3 id="fragment-create" class="study-subtitle">Создание Fragment</h3>
+<p>Чтобы создать Fragment, наследуются от <code>androidx.fragment.app.Fragment</code> и переопределяют <code>onCreateView</code>, где раздувают layout. Современный и рекомендованный подход — использовать ViewBinding и создавать разметку в <code>onCreateView</code>, а инициализировать View — в <code>onViewCreated</code>. Это разделяет создание разметки и её настройку.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ProfileFragment</span> : <span class="hljs-type">Fragment</span>(R.layout.fragment_profile) {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">var</span> _binding: FragmentProfileBinding? = <span class="hljs-literal">null</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> binding <span class="hljs-keyword">get</span>() = _binding!!
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onViewCreated</span><span class="hljs-params">(view: <span class="hljs-type">View</span>, savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span> {
+        <span class="hljs-keyword">super</span>.onViewCreated(view, savedInstanceState)
+        _binding = FragmentProfileBinding.bind(view)
+        binding.titleText.text = <span class="hljs-string">&quot;Профиль&quot;</span>
+    }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onDestroyView</span><span class="hljs-params">()</span></span> {
+        <span class="hljs-keyword">super</span>.onDestroyView()
+        _binding = <span class="hljs-literal">null</span>
+    }
+}
+</code></pre></div>
+<p>Fragment без UI (headless) создаётся без разметки и используется для хранения логики, которая должна переживать поворот экрана: например, загрузка данных. В современном коде эту роль чаще выполняет ViewModel, но headless Fragment всё ещё встречается в старых проектах.</p>
+<p>Типичные ошибки: хранить ссылку на View после <code>onDestroyView</code>, обращаться к <code>binding</code> из фонового потока, выполнять тяжёлую работу прямо в <code>onCreateView</code>. Правило: <code>onCreateView</code> должен только раздувать разметку, а вся логика — в <code>onViewCreated</code> или во ViewModel.</p>
+<h3 id="fragment-lifecycle" class="study-subtitle">Жизненный цикл Fragment</h3>
+<p>Жизненный цикл Fragment сложнее, чем у Activity, потому что у него есть два уровня: сам Fragment и его View. Основные коллбэки:</p>
+<ul class="study-list">
+<li><code>onAttach(context)</code> — Fragment привязан к Activity-хосту.</li>
+<li><code>onCreate(savedInstanceState)</code> — Fragment создан, но View ещё нет. Здесь инициализируют не-UI данные.</li>
+<li><code>onCreateView</code> — создаётся View (раздувается layout).</li>
+<li><code>onViewCreated</code> — View готов, можно настраивать слушатели и наблюдатели.</li>
+<li><code>onStart</code>, <code>onResume</code> — Fragment становится видимым и активным.</li>
+<li><code>onPause</code>, <code>onStop</code> — Fragment уходит в фон.</li>
+<li><code>onDestroyView</code> — View уничтожается, но сам Fragment может ещё жить.</li>
+<li><code>onDestroy</code> — Fragment уничтожается.</li>
+<li><code>onDetach</code> — Fragment отвязывается от Activity.</li>
+</ul>
+<p>Важно: Fragment может пережить уничтожение своего View. Например, при помещении в back stack вызывается <code>onDestroyView</code>, но <code>onDestroy</code> — нет. Поэтому данные, которые должны пережить смену экрана, хранят не в View, а в ViewModel или в arguments.</p>
+<h3 id="fragment-manager" class="study-subtitle">FragmentManager</h3>
+<p><code>FragmentManager</code> — это движок, который управляет Fragment&#x27;ами внутри контейнера: добавляет, удаляет, заменяет, держит back stack. В Activity используют <code>supportFragmentManager</code>, во Fragment — <code>childFragmentManager</code> для вложенных Fragment&#x27;ов и <code>parentFragmentManager</code> для обращения к родителю.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> fragmentManager = supportFragmentManager
+<span class="hljs-keyword">val</span> current = fragmentManager.findFragmentById(R.id.container)
+</code></pre></div>
+<p>Никогда не создавайте Fragment напрямую через конструктор с аргументами — используйте фабричный метод или arguments. FragmentManager восстанавливает Fragment при повороте экрана через рефлексию, вызывая пустой конструктор, поэтому конструктор с параметрами приведёт к краху при восстановлении.</p>
+<h3 id="fragment-transaction" class="study-subtitle">FragmentTransaction</h3>
+<p><code>FragmentTransaction</code> описывает набор операций над Fragment&#x27;ами. Транзакция создаётся через <code>beginTransaction()</code>, в неё добавляют операции, затем вызывают <code>commit()</code> или <code>commitNow()</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">supportFragmentManager.beginTransaction()
+    .replace(R.id.container, DetailsFragment())
+    .addToBackStack(<span class="hljs-string">&quot;details&quot;</span>)
+    .commit()
+</code></pre></div>
+<p><code>commit()</code> ставит транзакцию в очередь главного потока и выполняет асинхронно. <code>commitNow()</code> выполняет синхронно и не позволяет добавить в back stack. <code>commitAllowingStateLoss()</code> выполняет даже после сохранения состояния — использовать только в крайних случаях, иначе потеряются данные пользователя.</p>
+<h3 id="fragment-add-replace-remove" class="study-subtitle">add, replace и remove</h3>
+<p>Три базовые операции:</p>
+<ul class="study-list">
+<li><code>add(containerId, fragment)</code> — добавляет Fragment в контейнер, не удаляя другие. Используется для нескольких Fragment в одном контейнере.</li>
+<li><code>replace(containerId, fragment)</code> — удаляет все Fragment&#x27;ы из контейнера и добавляет новый. Это самая частая операция для навигации.</li>
+<li><code>remove(fragment)</code> — удаляет конкретный Fragment.</li>
+</ul>
+<p><code>replace</code> удобен для переключения экранов, но он уничтожает View предыдущего Fragment (вызывает <code>onDestroyView</code>). Если нужно сохранить состояние View, используют <code>add</code> + <code>hide</code>/<code>show</code>, но это усложняет управление памятью.</p>
+<h3 id="fragment-arguments-bundle" class="study-subtitle">Передача аргументов через Bundle</h3>
+<p>Аргументы передают через <code>Bundle</code>, устанавливая свойство <code>arguments</code> до добавления Fragment в менеджер. Данные должны быть примитивами или Parcelable.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">DetailsFragment</span> : <span class="hljs-type">Fragment</span>(R.layout.fragment_details) {
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onViewCreated</span><span class="hljs-params">(view: <span class="hljs-type">View</span>, savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span> {
+        <span class="hljs-keyword">super</span>.onViewCreated(view, savedInstanceState)
+        <span class="hljs-keyword">val</span> itemId = arguments?.getLong(<span class="hljs-string">&quot;item_id&quot;</span>) ?: <span class="hljs-keyword">return</span>
+        <span class="hljs-comment">// загрузить данные по itemId</span>
+    }
+}
+
+<span class="hljs-comment">// при создании</span>
+<span class="hljs-keyword">val</span> fragment = DetailsFragment().apply {
+    arguments = bundleOf(<span class="hljs-string">&quot;item_id&quot;</span> to <span class="hljs-number">42L</span>)
+}
+</code></pre></div>
+<p>Лучше обернуть создание в фабричный метод <code>newInstance(...)</code>, чтобы не забыть аргументы:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">companion</span> <span class="hljs-keyword">object</span> {
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">newInstance</span><span class="hljs-params">(itemId: <span class="hljs-type">Long</span>)</span></span>: DetailsFragment =
+        DetailsFragment().apply {
+            arguments = bundleOf(<span class="hljs-string">&quot;item_id&quot;</span> to itemId)
+        }
+}
+</code></pre></div>
+<h3 id="fragment-view-lifecycle" class="study-subtitle">View Lifecycle и его отличие от Fragment Lifecycle</h3>
+<p>У Fragment есть два жизненных цикла: <code>lifecycle</code> самого Fragment и <code>viewLifecycleOwner.lifecycle</code> его View. View живёт от <code>onCreateView</code> до <code>onDestroyView</code>, а Fragment может жить дольше (например, в back stack). Поэтому наблюдатели LiveData и Flow нужно привязывать к <code>viewLifecycleOwner</code>, а не к самому Fragment — иначе они продолжат работать после уничтожения View и вызовут утечку или крах.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">viewLifecycleOwner.lifecycleScope.launch {
+    viewModel.uiState.collect { state -&gt; render(state) }
+}
+</code></pre></div>
+<p>Типичная ошибка — использовать <code>lifecycleScope</code> Fragment вместо <code>viewLifecycleOwner.lifecycleScope</code> для UI-обновлений. Это приводит к обращению к уничтоженному View.</p>
+<h3 id="fragment-activity-interaction" class="study-subtitle">Взаимодействие Activity и Fragment</h3>
+<p>Activity — хост Fragment. Общие варианты взаимодействия:</p>
+<ul class="study-list">
+<li>Activity вызывает методы Fragment через <code>findFragmentById</code> / <code>findFragmentByTag</code>.</li>
+<li>Fragment обращается к Activity через <code>requireActivity()</code> или интерфейс обратного вызова.</li>
+<li>Современный способ — Fragment Result API: Fragment отправляет результат, другой Fragment или Activity его получает.</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// отправка результата</span>
+setFragmentResult(<span class="hljs-string">&quot;request_key&quot;</span>, bundleOf(<span class="hljs-string">&quot;result&quot;</span> to <span class="hljs-string">&quot;ok&quot;</span>))
+
+<span class="hljs-comment">// получение</span>
+setFragmentResultListener(<span class="hljs-string">&quot;request_key&quot;</span>) { _, bundle -&gt;
+    <span class="hljs-keyword">val</span> result = bundle.getString(<span class="hljs-string">&quot;result&quot;</span>)
+}
+</code></pre></div>
+<p>Ещё один способ — общая ViewModel, привязанная к Activity: <code>by activityViewModels()</code>. Это удобно для обмена данными между Fragment&#x27;ами без прямых ссылок.</p>
+<p>Типичные ошибки взаимодействия: хранить ссылку на Activity в поле Fragment (утечка), вызывать <code>requireActivity()</code> до <code>onAttach</code>, передавать данные через конструктор Fragment.</p>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Какие коллбэки вызываются при повороте экрана?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Чем <code>viewLifecycleOwner</code> отличается от <code>lifecycle</code> Fragment?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Почему нельзя передавать аргументы через конструктор Fragment?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Когда использовать <code>commit()</code> и когда <code>commitNow()</code>?</li>
+</ul></section><section id="navigation-component" class="study-section" aria-labelledby="navigation-component-title"><h2 id="navigation-component-title" class="study-section-title">2. Navigation Component</h2><p>Navigation Component — библиотека Jetpack для навигации между экранами (destinations) по декларативному графу. Она заменяет ручное управление FragmentTransaction и back stack, давая единый способ навигации, передачи аргументов, deep links и интеграции с Bottom Navigation. Компонент состоит из трёх частей: Navigation Graph (XML), NavHost (контейнер) и NavController (движок навигации).</p>
+<p>Navigation Component не отменяет Fragment — он управляет ими под капотом. Destinations могут быть Fragment, Activity или кастомными. Граф описывает, куда можно перейти и какие аргументы передать, а NavController выполняет переходы и ведёт back stack.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Граф</p><p>XML-описание экранов и переходов между ними.</p></div><div class="study-card"><p class="study-card-title">NavHost</p><p>контейнер, в котором отображается текущий destination.</p></div><div class="study-card"><p class="study-card-title">NavController</p><p>движок: выполняет навигацию, хранит back stack.</p></div><div class="study-card"><p class="study-card-title">Safe Args</p><p>генерация типобезопасных классов для аргументов.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> Navigation Component переносит навигацию из кода в декларативный граф. Это уменьшает баги с back stack и делает переходы предсказуемыми.</p></div><h3 id="nav-graph-xml" class="study-subtitle">Navigation Graph XML</h3>
+<p>Граф навигации — XML-файл в <code>res/navigation/</code>, корневой элемент <code>&lt;navigation&gt;</code>. Каждый экран — <code>&lt;fragment&gt;</code> или <code>&lt;activity&gt;</code> с <code>android:id</code> и <code>android:name</code>. Переходы описываются тегом <code>&lt;action&gt;</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">xml</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">navigation</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="hljs-attr">xmlns:app</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res-auto&quot;</span>
+    <span class="hljs-attr">android:id</span>=<span class="hljs-string">&quot;@+id/nav_graph&quot;</span>
+    <span class="hljs-attr">app:startDestination</span>=<span class="hljs-string">&quot;@id/homeFragment&quot;</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">fragment</span>
+        <span class="hljs-attr">android:id</span>=<span class="hljs-string">&quot;@+id/homeFragment&quot;</span>
+        <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.example.app.HomeFragment&quot;</span>
+        <span class="hljs-attr">android:label</span>=<span class="hljs-string">&quot;Home&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">action</span>
+            <span class="hljs-attr">android:id</span>=<span class="hljs-string">&quot;@+id/action_home_to_details&quot;</span>
+            <span class="hljs-attr">app:destination</span>=<span class="hljs-string">&quot;@id/detailsFragment&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">fragment</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">fragment</span>
+        <span class="hljs-attr">android:id</span>=<span class="hljs-string">&quot;@+id/detailsFragment&quot;</span>
+        <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.example.app.DetailsFragment&quot;</span>
+        <span class="hljs-attr">android:label</span>=<span class="hljs-string">&quot;Details&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">navigation</span>&gt;</span>
+</code></pre></div>
+<p>Граф можно редактировать визуально в Android Studio. Рекомендуется держать один граф на фичу или один корневой граф с вложенными.</p>
+<h3 id="nav-controller" class="study-subtitle">NavController</h3>
+<p><code>NavController</code> — объект, который выполняет навигацию. Получают его через <code>findNavController()</code> в Fragment или Activity, либо через <code>NavHostFragment.findNavController(fragment)</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> navController = findNavController()
+navController.navigate(R.id.action_home_to_details)
+</code></pre></div>
+<p>NavController хранит back stack destination&#x27;ов и предоставляет <code>navigateUp()</code> и <code>popBackStack()</code>. Навигацию лучше вызывать из ViewModel через события, а не напрямую из View, чтобы не дублировать логику.</p>
+<h3 id="nav-host-fragment" class="study-subtitle">NavHostFragment</h3>
+<p><code>NavHostFragment</code> — Fragment-контейнер, который отображает текущий destination из графа. Объявляется в layout Activity:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">xml</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">fragment</span>
+    <span class="hljs-attr">android:id</span>=<span class="hljs-string">&quot;@+id/nav_host_fragment&quot;</span>
+    <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;androidx.navigation.fragment.NavHostFragment&quot;</span>
+    <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">&quot;match_parent&quot;</span>
+    <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">&quot;match_parent&quot;</span>
+    <span class="hljs-attr">app:defaultNavHost</span>=<span class="hljs-string">&quot;true&quot;</span>
+    <span class="hljs-attr">app:navGraph</span>=<span class="hljs-string">&quot;@navigation/nav_graph&quot;</span> /&gt;</span>
+</code></pre></div>
+<p><code>app:defaultNavHost=&quot;true&quot;</code> делает NavHost обработчиком системной кнопки «Назад». Без этого back stack будет управляться вручную.</p>
+<h3 id="nav-transitions" class="study-subtitle">Переходы между destinations</h3>
+<p>Переходы выполняются через <code>navigate()</code> с id action или destination. Можно передавать <code>NavOptions</code> для настройки анимаций и поведения back stack.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> options = NavOptions.Builder()
+    .setEnterAnim(R.anim.slide_in_right)
+    .setExitAnim(R.anim.slide_out_left)
+    .setPopEnterAnim(R.anim.slide_in_left)
+    .setPopExitAnim(R.anim.slide_out_right)
+    .build()
+
+findNavController().navigate(R.id.detailsFragment, <span class="hljs-literal">null</span>, options)
+</code></pre></div>
+<p>Анимации переходов задаются также в XML через <code>&lt;action app:enterAnim=.../&gt;</code>. Рекомендуется держать анимации в графе, чтобы не дублировать.</p>
+<h3 id="nav-arguments" class="study-subtitle">Передача аргументов</h3>
+<p>Аргументы объявляются в графе через <code>&lt;argument&gt;</code> с типом и значением по умолчанию. Значения передаются в Bundle при навигации.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">xml</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">fragment</span>
+    <span class="hljs-attr">android:id</span>=<span class="hljs-string">&quot;@+id/detailsFragment&quot;</span>
+    <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.example.app.DetailsFragment&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">argument</span>
+        <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;itemId&quot;</span>
+        <span class="hljs-attr">app:argType</span>=<span class="hljs-string">&quot;long&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">fragment</span>&gt;</span>
+</code></pre></div>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> args = DetailsFragmentArgs.fromBundle(requireArguments())
+<span class="hljs-keyword">val</span> itemId = args.itemId
+</code></pre></div>
+<p>Типы аргументов: integer, long, float, boolean, string, reference, enum, Parcelable, Serializable. Обязательные аргументы не имеют defaultValue.</p>
+<h3 id="nav-safe-args" class="study-subtitle">Safe Args</h3>
+<p>Safe Args — плагин Gradle, генерирующий типобезопасные классы <code>*Args</code> и <code>*Directions</code>. Включается в <code>build.gradle</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">plugins {
+    id <span class="hljs-string">&quot;androidx.navigation.safeargs.kotlin&quot;</span>
+}
+</code></pre></div>
+<p>Сгенерированные классы избавляют от ручной работы с Bundle и ключами, предотвращая опечатки. Навигация с аргументами:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> action = HomeFragmentDirections.actionHomeToDetails(itemId = <span class="hljs-number">42L</span>)
+findNavController().navigate(action)
+</code></pre></div>
+<p>Safe Args рекомендуется использовать всегда, когда есть аргументы: ошибки типов ловятся на этапе компиляции.</p>
+<h3 id="nav-back-stack" class="study-subtitle">Back Stack в Navigation Component</h3>
+<p>NavController ведёт back stack destination&#x27;ов. <code>popBackStack()</code> возвращает на предыдущий экран, <code>navigateUp()</code> учитывает иерархию (up vs back). Отдельного <code>addToBackStack</code> в графе нет: NavController кладёт destination в стек при каждом переходе.</p>
+<p>Важные нюансы: <code>app:popUpTo</code>/<code>app:popUpToInclusive</code> на action, наоборот, удаляют destinations из back stack перед переходом. Поведение «Назад» на стартовом destination завершает Activity. Глубокие стеки лучше ограничивать через <code>popUpTo</code> до корня, иначе накапливаются дубликаты.</p>
+<h3 id="nav-deep-links" class="study-subtitle">Deep Links</h3>
+<p>Deep links позволяют открывать конкретный экран по URI. Объявляются в графе:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">xml</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">deepLink</span> <span class="hljs-attr">app:uri</span>=<span class="hljs-string">&quot;https://example.com/items/{itemId}&quot;</span> /&gt;</span>
+</code></pre></div>
+<p>И в манифесте Activity:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">xml</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">intent-filter</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">action</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.action.VIEW&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">category</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.category.DEFAULT&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">category</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.category.BROWSABLE&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">data</span> <span class="hljs-attr">android:scheme</span>=<span class="hljs-string">&quot;https&quot;</span> <span class="hljs-attr">android:host</span>=<span class="hljs-string">&quot;example.com&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">intent-filter</span>&gt;</span>
+</code></pre></div>
+<p>NavController автоматически разбирает URI и переходит на нужный destination с аргументами. Поддерживаются и явные deep links (explicit), например через <code>PendingIntent</code> из уведомления.</p>
+<h3 id="nav-bottom-navigation" class="study-subtitle">Bottom Navigation</h3>
+<p>Navigation Component интегрируется с <code>BottomNavigationView</code>: <code>NavigationUI.setupWithNavController(bottomNav, navController)</code> связывает пункты меню с destination&#x27;ами графа по id. Пункты меню должны иметь те же id, что и destination&#x27;ы.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> bottomNav = findViewById&lt;BottomNavigationView&gt;(R.id.bottom_nav)
+NavigationUI.setupWithNavController(bottomNav, navController)
+</code></pre></div>
+<p>Это даёт автоматическое переключение экранов и сохранение back stack для каждой вкладки (с Navigation 2.4+).</p>
+<p><strong>Мостик к Middle:</strong> В Jetpack Compose навигация строится через <code>NavHost</code> из <code>androidx.navigation:navigation-compose</code>, где destinations — composable-функции, а не Fragment&#x27;ы. Маршруты задаются строками или, в новых версиях, type-safe маршрутами (сериализуемые классы/объекты) — это убирает строковые ключи и делает навигацию проверяемой компилятором. Принципы (граф, NavController, back stack, deep links, Safe Args) остаются теми же; меняется только способ описания экранов.</p>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Из чего состоит Navigation Component?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Зачем нужен <code>app:defaultNavHost=&quot;true&quot;</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Как Safe Args предотвращает ошибки?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Чем <code>navigateUp()</code> отличается от <code>popBackStack()</code>?</li>
+</ul></section><section id="service" class="study-section" aria-labelledby="service-title"><h2 id="service-title" class="study-section-title">3. Service</h2><p>Service — компонент приложения для выполнения операций без пользовательского интерфейса: воспроизведение музыки, синхронизация данных, отслеживание местоположения, загрузка файлов. Service работает в главном потоке процесса (если не создать отдельный поток), поэтому тяжёлую работу нужно выносить в корутины или фоновые потоки. Service не создаёт окна и не взаимодействует с пользователем напрямую — для этого нужен Foreground Service с уведомлением.</p>
+<p>Service бывает двух видов: Started (запускается через <code>startService</code>/<code>startForegroundService</code>) и Bound (привязывается через <code>bindService</code>). Started Service работает до тех пор, пока сам не вызовет <code>stopSelf()</code> или его не остановят. Bound Service живёт, пока есть хотя бы один клиент.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Без UI</p><p>Service выполняет работу в фоне без экрана.</p></div><div class="study-card"><p class="study-card-title">Started</p><p>запускается явно и работает до остановки.</p></div><div class="study-card"><p class="study-card-title">Bound</p><p>привязывается к клиенту и живёт пока клиент подключён.</p></div><div class="study-card"><p class="study-card-title">Foreground</p><p>видимый пользователю через уведомление, не убивается системой.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> Service — это не «фоновый поток», а компонент с собственным жизненным циклом. Тяжёлую работу всё равно нужно выполнять в отдельном потоке или корутине.</p></div><h3 id="service-purpose" class="study-subtitle">Назначение Service</h3>
+<p>Service нужен, когда операция должна выполняться независимо от видимости экрана: воспроизведение аудио в фоне, загрузка файла, периодическая синхронизация. Если операция привязана к экрану — используйте ViewModel и корутины. Если нужно выполнить разовую отложенную работу с гарантией выполнения — WorkManager (см. ниже).</p>
+<p>Service объявляется в манифесте:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">xml</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">service</span>
+    <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.PlaybackService&quot;</span>
+    <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span> /&gt;</span>
+</code></pre></div>
+<h3 id="service-started" class="study-subtitle">Started Service</h3>
+<p>Started Service запускается через <code>startService()</code> (или <code>startForegroundService()</code> для foreground). Система вызывает <code>onStartCommand()</code>, где запускается работа. Service должен сам остановиться через <code>stopSelf()</code> или быть остановлен через <code>stopService()</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">DownloadService</span> : <span class="hljs-type">Service</span>() {
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onStartCommand</span><span class="hljs-params">(
+        intent: <span class="hljs-type">Intent</span>?,
+        flags: <span class="hljs-type">Int</span>,
+        startId: <span class="hljs-type">Int</span>
+    )</span></span>: <span class="hljs-built_in">Int</span> {
+        <span class="hljs-comment">// запуск загрузки в корутине</span>
+        <span class="hljs-keyword">return</span> START_NOT_STICKY
+    }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onBind</span><span class="hljs-params">(intent: <span class="hljs-type">Intent</span>?)</span></span>: IBinder? = <span class="hljs-literal">null</span>
+}
+</code></pre></div>
+<p>Возвращаемое значение <code>onStartCommand</code> определяет поведение при убийстве процесса:</p>
+<ul class="study-list">
+<li><code>START_STICKY</code> — Service перезапустится с null intent.</li>
+<li><code>START_NOT_STICKY</code> — не перезапускать.</li>
+<li><code>START_REDELIVER_INTENT</code> — перезапустить с тем же intent.</li>
+</ul>
+<h3 id="service-bound" class="study-subtitle">Bound Service</h3>
+<p>Bound Service предоставляет интерфейс для взаимодействия через <code>IBinder</code>. Клиент (Activity) привязывается через <code>bindService()</code> и получает binder. Service живёт, пока есть привязанные клиенты.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">LocalService</span> : <span class="hljs-type">Service</span>() {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> binder = LocalBinder()
+
+    <span class="hljs-keyword">inner</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LocalBinder</span> : <span class="hljs-type">Binder</span>() {
+        <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getService</span><span class="hljs-params">()</span></span>: LocalService = <span class="hljs-keyword">this</span><span class="hljs-symbol">@LocalService</span>
+    }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onBind</span><span class="hljs-params">(intent: <span class="hljs-type">Intent</span>)</span></span>: IBinder = binder
+}
+</code></pre></div>
+<p>Bound Service удобен для локального взаимодействия в рамках одного процесса. Для межпроцессного взаимодействия используют AIDL или Messenger.</p>
+<h3 id="service-lifecycle" class="study-subtitle">Жизненный цикл Service</h3>
+<ul class="study-list">
+<li><code>onCreate()</code> — Service создан (один раз).</li>
+<li><code>onStartCommand()</code> — при каждом вызове <code>startService</code>.</li>
+<li><code>onBind()</code> — при привязке клиента.</li>
+<li><code>onUnbind()</code> — при отключении последнего клиента.</li>
+<li><code>onDestroy()</code> — Service уничтожается.</li>
+</ul>
+<p>Если Service и started, и bound, он уничтожается только когда остановлен (<code>stopSelf</code>/<code>stopService</code>) И нет привязанных клиентов.</p>
+<h3 id="service-foreground" class="study-subtitle">Foreground Service</h3>
+<p>Foreground Service выполняет работу, заметную пользователю, и показывает уведомление. Система не убивает его при нехватке памяти (в отличие от обычного). Запускается через <code>startForegroundService()</code> и в течение 5 секунд должен вызвать <code>startForeground()</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">PlaybackService</span> : <span class="hljs-type">Service</span>() {
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onStartCommand</span><span class="hljs-params">(
+        intent: <span class="hljs-type">Intent</span>?,
+        flags: <span class="hljs-type">Int</span>,
+        startId: <span class="hljs-type">Int</span>
+    )</span></span>: <span class="hljs-built_in">Int</span> {
+        <span class="hljs-keyword">val</span> notification = NotificationCompat.Builder(<span class="hljs-keyword">this</span>, CHANNEL_ID)
+            .setContentTitle(<span class="hljs-string">&quot;Воспроизведение&quot;</span>)
+            .setSmallIcon(R.drawable.ic_play)
+            .build()
+        startForeground(<span class="hljs-number">1</span>, notification)
+        <span class="hljs-comment">// запуск воспроизведения</span>
+        <span class="hljs-keyword">return</span> START_STICKY
+    }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onBind</span><span class="hljs-params">(intent: <span class="hljs-type">Intent</span>?)</span></span>: IBinder? = <span class="hljs-literal">null</span>
+}
+</code></pre></div>
+<p>Foreground Service обязателен для длительных операций в фоне начиная с Android 8.0 (Oreo): обычный Service убивается через несколько минут после ухода приложения в фон.</p>
+<h3 id="service-foreground-types" class="study-subtitle">Foreground Service types (Android 14+)</h3>
+<p>Начиная с Android 14 (API 34), Foreground Service должен указывать тип работы через атрибут <code>android:foregroundServiceType</code> в манифесте и matching-разрешение. Типы: <code>camera</code>, <code>connectedDevice</code>, <code>dataSync</code>, <code>health</code>, <code>location</code>, <code>mediaPlayback</code>, <code>mediaProjection</code>, <code>microphone</code>, <code>phoneCall</code>, <code>remoteMessaging</code>, <code>shortService</code>, <code>specialUse</code>, <code>systemExempted</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">xml</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">service</span>
+    <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.PlaybackService&quot;</span>
+    <span class="hljs-attr">android:foregroundServiceType</span>=<span class="hljs-string">&quot;mediaPlayback&quot;</span>
+    <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span> /&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.FOREGROUND_SERVICE&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span>
+    <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK&quot;</span> /&gt;</span>
+</code></pre></div>
+<p>В коде тип передаётся в <code>startForeground()</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">startForeground(
+    <span class="hljs-number">1</span>,
+    notification,
+    ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+)
+</code></pre></div>
+<p>Несоответствие типа и разрешения приводит к <code>SecurityException</code>, а отсутствие типа в манифесте — к <code>MissingForegroundServiceTypeException</code>. Тип <code>shortService</code> ограничен 3 минутами и не требует специального разрешения — подходит для коротких задач.</p>
+<h3 id="service-notification" class="study-subtitle">Уведомление для Foreground Service</h3>
+<p>Уведомление создаётся через <code>NotificationCompat.Builder</code> и канал уведомлений (NotificationChannel, обязателен с Android 8.0). Уведомление должно быть информативным и позволять пользователю остановить работу (например, кнопка «Стоп»). Плохая практика — уведомление без возможности остановки или с вводящим в заблуждение текстом.</p>
+<h3 id="service-background-limits" class="study-subtitle">Ограничения фонового выполнения Android</h3>
+<p>С Android 8.0 background execution limits: приложение в фоне не может запускать обычный Service (<code>startService</code> бросит <code>IllegalStateException</code>). Разрешены: Foreground Service (с уведомлением), WorkManager, JobScheduler, AlarmManager. Также действуют ограничения на фоновый доступ к местоположению, камере, микрофону. Нарушение приводит к краху или отзыву разрешения системой.</p>
+<h3 id="service-vs-workmanager" class="study-subtitle">WorkManager vs Service</h3>
+<p>WorkManager — рекомендованный API для отложенной и гарантированной фоновой работы. Сравнение:</p>
+<ul class="study-list">
+<li>Service: немедленное выполнение, контроль потока, подходит для длительных операций в реальном времени (музыка, навигация). Требует Foreground Service для работы в фоне.</li>
+<li>WorkManager: отложенная работа с гарантией выполнения, переживает перезагрузку, учитывает ограничения (зарядка, сеть). Не подходит для длительной работы в реальном времени.</li>
+</ul>
+<p>Правило выбора: нужна длительная работа с UI-индикацией → Foreground Service. Нужна надёжная отложенная задача → WorkManager. Нужна немедленная короткая задача в фоне → корутина в ViewModel или <code>lifecycleScope</code>.</p>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Чем Started отличается от Bound Service?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Зачем Foreground Service показывает уведомление?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Какие типы Foreground Service есть в Android 14+?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Когда выбрать WorkManager вместо Service?</li>
+</ul></section><section id="broadcastreceiver" class="study-section" aria-labelledby="broadcastreceiver-title"><h2 id="broadcastreceiver-title" class="study-section-title">4. BroadcastReceiver</h2><p>BroadcastReceiver — компонент для приёма широковещательных сообщений (broadcasts) от системы или других приложений. Используется для реакции на системные события: загрузка завершена, изменение сети, низкий заряд батареи, подключение наушников. BroadcastReceiver не имеет UI и живёт только на время обработки сообщения.</p>
+<p>Broadcasts бывают явные (адресованы конкретному компоненту) и неявные (по action). С Android 8.0 неявные broadcasts ограничены для приложений в фоне — это важное ограничение, о котором часто забывают.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Приёмник</p><p>получает сообщения по action.</p></div><div class="study-card"><p class="study-card-title">onReceive</p><p>единственный коллбэк, выполняется в главном потоке.</p></div><div class="study-card"><p class="study-card-title">Manifest</p><p>регистрация для статических receiver&#x27;ов.</p></div><div class="study-card"><p class="study-card-title">Dynamic</p><p>регистрация во время работы приложения.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> BroadcastReceiver — это «слушатель событий», а не место для длительной работы. Весь код в <code>onReceive</code> должен выполняться быстро.</p></div><h3 id="broadcast-purpose" class="study-subtitle">Назначение BroadcastReceiver</h3>
+<p>BroadcastReceiver нужен для реакции на события системы или приложения без постоянного опроса. Примеры: показать уведомление при завершении загрузки, обновить UI при появлении сети, запустить синхронизацию при зарядке. Для периодических задач лучше использовать WorkManager, а для событий в рамках приложения — Flow/SharedFlow.</p>
+<h3 id="broadcast-onreceive" class="study-subtitle">onReceive()</h3>
+<p><code>onReceive(context, intent)</code> — единственный метод, который вызывается при получении broadcast. Он выполняется в главном потоке процесса (UI thread), поэтому должен завершиться быстро (система даёт около 10 секунд, но рекомендуется миллисекунды). Длительные операции нужно передавать в Service или WorkManager.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">BootReceiver</span> : <span class="hljs-type">BroadcastReceiver</span>() {
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onReceive</span><span class="hljs-params">(context: <span class="hljs-type">Context</span>, intent: <span class="hljs-type">Intent</span>)</span></span> {
+        <span class="hljs-keyword">if</span> (intent.action == Intent.ACTION_BOOT_COMPLETED) {
+            <span class="hljs-comment">// запустить фоновую работу</span>
+            <span class="hljs-comment">// через WorkManager</span>
+            <span class="hljs-keyword">val</span> work = OneTimeWorkRequestBuilder&lt;SyncWorker&gt;().build()
+            WorkManager.getInstance(context).enqueue(work)
+        }
+    }
+}
+</code></pre></div>
+<h3 id="broadcast-manifest" class="study-subtitle">Регистрация в Manifest</h3>
+<p>Статическая регистрация в манифесте позволяет получать broadcasts даже когда приложение не запущено (для разрешённых implicit broadcasts).</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">xml</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">receiver</span>
+    <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.BootReceiver&quot;</span>
+    <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">intent-filter</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">action</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.action.BOOT_COMPLETED&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">intent-filter</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">receiver</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.RECEIVE_BOOT_COMPLETED&quot;</span> /&gt;</span>
+</code></pre></div>
+<p>С Android 8.0 многие implicit broadcasts не доставляются manifest-registered receiver&#x27;ам (например, <code>ACTION_PACKAGE_ADDED</code> для чужих пакетов). Исключения: <code>BOOT_COMPLETED</code>, <code>ACTION_LOCALE_CHANGED</code> и некоторые другие.</p>
+<h3 id="broadcast-dynamic" class="study-subtitle">Динамическая регистрация</h3>
+<p>Динамическая регистрация через <code>registerReceiver()</code> работает только пока приложение запущено и компонент (Activity/Service) активен. Используется для событий, актуальных только во время работы приложения (например, <code>ACTION_BATTERY_CHANGED</code>).</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> connectivity = getSystemService(ConnectivityManager::<span class="hljs-keyword">class</span>.java)
+
+<span class="hljs-keyword">val</span> callback = <span class="hljs-keyword">object</span> : ConnectivityManager.NetworkCallback() {
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onAvailable</span><span class="hljs-params">(network: <span class="hljs-type">Network</span>)</span></span> {
+        <span class="hljs-comment">// сеть доступна</span>
+    }
+}
+
+connectivity.registerDefaultNetworkCallback(callback)
+
+<span class="hljs-comment">// при уничтожении</span>
+connectivity.unregisterNetworkCallback(callback)
+</code></pre></div>
+<p>Не забывайте вызывать <code>unregisterReceiver</code> в <code>onDestroy</code>/<code>onStop</code>, иначе утечка. Начиная с Android 14 (targetSdk 34) для динамической регистрации нужно указывать флаг экспорта: <code>RECEIVER_EXPORTED</code> или <code>RECEIVER_NOT_EXPORTED</code>.</p>
+<h3 id="broadcast-system" class="study-subtitle">Системные Broadcast</h3>
+<p>Система рассылает broadcasts при изменении состояния: <code>ACTION_BOOT_COMPLETED</code>, <code>ACTION_BATTERY_LOW</code>, <code>ACTION_POWER_CONNECTED</code>, <code>CONNECTIVITY_CHANGE</code>, <code>ACTION_AIRPLANE_MODE_CHANGED</code>. Слушать их можно только если они разрешены для вашего сценария и вы запросили нужные разрешения. Некоторые требуют специальных разрешений (например, <code>RECEIVE_BOOT_COMPLETED</code>).</p>
+<h3 id="broadcast-exported" class="study-subtitle">Экспортируемые и неэкспортируемые receiver</h3>
+<p><code>android:exported</code> определяет, могут ли другие приложения отправлять broadcast вашему receiver. Если receiver имеет intent-filter, <code>exported</code> по умолчанию <code>true</code> (на старых версиях) — это опасно. Явно указывайте <code>exported=&quot;false&quot;</code> для внутренних receiver&#x27;ов. С Android 12 (API 31) <code>exported</code> обязателен при наличии intent-filter.</p>
+<h3 id="broadcast-implicit-limits" class="study-subtitle">Ограничения implicit broadcasts</h3>
+<p>С Android 8.0 (Oreo) приложение в фоне не получает большинство implicit broadcasts через manifest-registered receivers. Это сделано для экономии батареи. Разрешённые исключения перечислены в документации. Обход: использовать явные broadcasts, WorkManager, JobScheduler или foreground Service.</p>
+<p>Для периодических задач используйте <code>WorkManager</code> с <code>Constraints</code> (сеть, зарядка), а не <code>BroadcastReceiver</code>.</p>
+<h3 id="broadcast-onreceive-time" class="study-subtitle">Время выполнения onReceive и ограничения длительных операций</h3>
+<p><code>onReceive</code> выполняется в главном потоке и должен завершиться за миллисекунды. Если нужно выполнить длительную работу, используйте <code>goAsync()</code>, который даёт дополнительное время (около 30 секунд) на фоновом потоке, или передайте работу в Service/WorkManager. Не вызывайте сетевые запросы или тяжёлые вычисления прямо в <code>onReceive</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onReceive</span><span class="hljs-params">(context: <span class="hljs-type">Context</span>, intent: <span class="hljs-type">Intent</span>)</span></span> {
+    <span class="hljs-keyword">val</span> pendingResult = goAsync()
+    CoroutineScope(Dispatchers.IO).launch {
+        <span class="hljs-keyword">try</span> {
+            doWork(context)
+        } <span class="hljs-keyword">finally</span> {
+            pendingResult.finish()
+        }
+    }
+}
+</code></pre></div>
+<h3 id="broadcast-ordered" class="study-subtitle">Упорядоченные broadcasts</h3>
+<p>Упорядоченный broadcast (<code>sendOrderedBroadcast</code>) доставляется receiver&#x27;ам по приоритету. Каждый receiver может прервать цепочку через <code>abortBroadcast()</code> или передать результат следующему через <code>setResultData()</code>. Используется системой (например, для SMS) и редко в обычных приложениях. Требует аккуратного управления приоритетами, иначе возникают конфликты между приложениями.</p>
+<h3 id="broadcast-local" class="study-subtitle">Локальные broadcasts внутри приложения</h3>
+<p>Для событий внутри одного приложения системные broadcasts избыточны и ограничены. Современный подход — использовать <code>SharedFlow</code>/<code>StateFlow</code> или <code>Channel</code> в общем репозитории/ViewModel. Это быстрее, типобезопасно и не зависит от ограничений ОС. <code>LocalBroadcastManager</code> устарел и не рекомендуется для нового кода.</p>
+<h3 id="broadcast-errors" class="study-subtitle">Типичные ошибки</h3>
+<p>Частые ошибки при работе с BroadcastReceiver:</p>
+<ul class="study-list">
+<li>Выполнять сетевые запросы или тяжёлые вычисления в <code>onReceive</code> — ANR или убийство процесса.</li>
+<li>Забывать вызывать <code>unregisterReceiver</code> — утечка receiver&#x27;а.</li>
+<li>Не указывать <code>exported</code> на Android 12+ — ошибка сборки.</li>
+<li>Регистрировать manifest-receiver для запрещённых implicit broadcasts и ожидать их доставку.</li>
+<li>Использовать <code>goAsync()</code> без вызова <code>finish()</code> — утечка pending result.</li>
+<li>Делать receiver exported без необходимости — другие приложения могут отправлять ему сообщения.</li>
+</ul>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Почему onReceive должен быть быстрым?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Когда использовать manifest, а когда динамическую регистрацию?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Что изменилось с implicit broadcasts в Android 8.0?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Зачем указывать exported?</li>
+</ul></section><section id="contentprovider-basics" class="study-section" aria-labelledby="contentprovider-basics-title"><h2 id="contentprovider-basics-title" class="study-section-title">5. ContentProvider Basics</h2><p>ContentProvider — компонент для предоставления доступа к структурированным данным приложения другим приложениям или внутри своего. Это абстракция над хранилищем (БД, файлы) с единым интерфейсом через URI. Системные провайдеры (контакты, медиа, календарь) доступны через ContentResolver без написания собственного провайдера. В современных приложениях собственные ContentProvider создаются редко; чаще используют Room и делятся данными через FileProvider или Photo Picker.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Провайдер</p><p>абстракция над хранилищем данных.</p></div><div class="study-card"><p class="study-card-title">ContentResolver</p><p>клиент для обращения к провайдеру.</p></div><div class="study-card"><p class="study-card-title">URI</p><p>адрес данных в формате content://authority/path.</p></div><div class="study-card"><p class="study-card-title">Photo Picker</p><p>современный способ выбора медиа без разрешений.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> ContentProvider — это контракт доступа к данным. В современной разработке чаще используют готовые системные провайдеры и FileProvider, а не пишут свои.</p></div><h3 id="contentprovider-purpose" class="study-subtitle">Назначение ContentProvider</h3>
+<p>ContentProvider нужен для безопасного шаринга данных между приложениями: контакты, медиафайлы, документы. Внутри одного приложения данные обычно хранят в Room/SQLite, а ContentProvider используют только когда нужно отдать данные наружу (например, через FileProvider для отправки файла в другое приложение). Создание собственного провайдера требует реализации методов <code>query</code>, <code>insert</code>, <code>update</code>, <code>delete</code>, <code>getType</code>.</p>
+<h3 id="contentresolver-uri" class="study-subtitle">ContentResolver и URI</h3>
+<p>Доступ к данным идёт через <code>ContentResolver</code>, получаемый из Context. Адрес данных — URI вида <code>content://authority/path/id</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> cursor = contentResolver.query(
+    ContactsContract.Contacts.CONTENT_URI,
+    arrayOf(ContactsContract.Contacts.DISPLAY_NAME),
+    <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>
+)
+cursor?.use {
+    <span class="hljs-keyword">while</span> (it.moveToNext()) {
+        <span class="hljs-keyword">val</span> name = it.getString(<span class="hljs-number">0</span>)
+        Log.d(<span class="hljs-string">&quot;Contacts&quot;</span>, name)
+    }
+}
+</code></pre></div>
+<p>URI состоит из схемы <code>content://</code>, authority (имя провайдера) и пути. <code>ContentUris.withAppendedId()</code> добавляет id. Всегда закрывайте Cursor через <code>use</code> или <code>close()</code>.</p>
+<h3 id="contentprovider-system" class="study-subtitle">Системные провайдеры</h3>
+<p>Android предоставляет системные провайдеры:</p>
+<ul class="study-list">
+<li>Контакты: <code>ContactsContract</code> (разрешение <code>READ_CONTACTS</code>).</li>
+<li>Медиа: <code>MediaStore</code> (фото, видео, аудио).</li>
+<li>Календарь: <code>CalendarContract</code>.</li>
+<li>Документы: Storage Access Framework (<code>ACTION_OPEN_DOCUMENT</code>).</li>
+</ul>
+<p>Для чтения контактов нужно разрешение <code>READ_CONTACTS</code>; для записи — <code>WRITE_CONTACTS</code>.</p>
+<h3 id="contentprovider-photo-picker" class="study-subtitle">Photo Picker</h3>
+<p>Photo Picker (Android 13+; на Android 11+ доступен через Google Play Services, ниже — fallback на <code>ACTION_OPEN_DOCUMENT</code>) — современный способ выбора фото/видео без запроса разрешений на медиа. Пользователь выбирает файлы в системном UI, а приложение получает URI с временным доступом.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> pickMedia = registerForActivityResult(
+    ActivityResultContracts.PickVisualMedia()
+) { uri -&gt;
+    uri?.let { showImage(it) }
+}
+
+<span class="hljs-comment">// запуск</span>
+pickMedia.launch(
+    PickVisualMediaRequest(
+        ActivityResultContracts.PickVisualMedia.ImageOnly
+    )
+)
+</code></pre></div>
+<p>Photo Picker не требует <code>READ_EXTERNAL_STORAGE</code>/<code>READ_MEDIA_*</code>, что упрощает работу с разрешениями и повышает приватность. Рекомендуется использовать его вместо прямого доступа к MediaStore.</p>
+<h3 id="contentprovider-media-permissions" class="study-subtitle">Разрешения на чтение медиа</h3>
+<p>С Android 13 (API 33) введены гранулярные разрешения: <code>READ_MEDIA_IMAGES</code>, <code>READ_MEDIA_VIDEO</code>, <code>READ_MEDIA_AUDIO</code> вместо общего <code>READ_EXTERNAL_STORAGE</code>. На Android 14+ добавлен <code>READ_MEDIA_VISUAL_USER_SELECTED</code> для частичного доступа. Рекомендуется использовать Photo Picker, чтобы избежать запросов разрешений вообще. Если нужен прямой доступ, запрашивайте только нужные типы и обрабатывайте отказ.</p>
+<h3 id="contentprovider-exported-security" class="study-subtitle">Безопасность exported-провайдеров</h3>
+<p>Если ContentProvider объявлен с <code>android:exported=&quot;true&quot;</code>, другие приложения могут обращаться к нему. Это опасно: утечка данных, SQL-инъекции через selection, обход проверок. Правила:</p>
+<ul class="study-list">
+<li>По умолчанию <code>exported=&quot;false&quot;</code> для внутренних провайдеров.</li>
+<li>Для FileProvider (шаринг файлов) используйте <code>android:exported=&quot;false&quot;</code> и <code>android:grantUriPermissions=&quot;true&quot;</code>.</li>
+<li>Валидируйте входные URI и selection, не конкатенируйте пользовательский ввод в SQL.</li>
+<li>Ограничивайте доступ через permissions: <code>android:readPermission</code>/<code>android:writePermission</code>.</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">xml</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">provider</span>
+    <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;androidx.core.content.FileProvider&quot;</span>
+    <span class="hljs-attr">android:authorities</span>=<span class="hljs-string">&quot;${applicationId}.fileprovider&quot;</span>
+    <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span>
+    <span class="hljs-attr">android:grantUriPermissions</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta-data</span>
+        <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.support.FILE_PROVIDER_PATHS&quot;</span>
+        <span class="hljs-attr">android:resource</span>=<span class="hljs-string">&quot;@xml/file_paths&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">provider</span>&gt;</span>
+</code></pre></div>
+<h3 id="contentprovider-mime" class="study-subtitle">MIME-типы и множественные результаты</h3>
+<p>Провайдер сообщает тип возвращаемых данных через <code>getType(uri)</code>. Для одиночной записи тип начинается с <code>vnd.android.cursor.item/</code>, для множества — <code>vnd.android.cursor.dir/</code>. Это позволяет клиентам (например, другим приложениям) понять, как отображать данные. При запросе через ContentResolver можно указать сортировку, проекцию (какие колонки нужны) и фильтр selection с аргументами selectionArgs — это защищает от SQL-инъекций, если использовать параметризованные запросы.</p>
+<h3 id="contentprovider-batch" class="study-subtitle">Batch-операции и транзакции</h3>
+<p>Для массовых изменений используют <code>ContentResolver.applyBatch()</code> с массивом <code>ContentProviderOperation</code>. Это позволяет выполнить несколько операций атомарно (в одной транзакции) и получить результаты всех. Удобно для синхронизации данных: вставить новые записи, обновить изменённые, удалить устаревшие — всё за один вызов.</p>
+<h3 id="contentprovider-errors" class="study-subtitle">Типичные ошибки</h3>
+<p>Частые ошибки при работе с ContentProvider:</p>
+<ul class="study-list">
+<li>Забыть закрыть Cursor — утечка ресурсов и крах при большом числе запросов.</li>
+<li>Конкатенировать пользовательский ввод в SQL-запрос — SQL-инъекция.</li>
+<li>Открывать exported-провайдер без необходимости — утечка данных.</li>
+<li>Использовать <code>READ_EXTERNAL_STORAGE</code> на Android 13+ вместо гранулярных разрешений.</li>
+<li>Не обрабатывать отсутствие разрешения и падать с SecurityException.</li>
+<li>Путать URI разных провайдеров и получать пустой результат.</li>
+</ul>
+<p>Дополнительно: при работе с MediaStore на Android 10+ учитывайте Scoped Storage — прямые пути к файлам недоступны, используйте URI и ContentResolver. Для шаринга файлов с другими приложениями всегда используйте FileProvider с <code>grantUriPermissions</code>, а не прямые file:// URI (они запрещены с Android 7.0 и вызывают FileUriExposedException).</p>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Зачем нужен Photo Picker?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Какие разрешения на медиа нужны на Android 13+?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Почему exported-провайдер опасен?</li>
+</ul></section><section id="itogovaya-samoproverka" class="study-section" aria-labelledby="itogovaya-samoproverka-title"><h2 id="itogovaya-samoproverka-title" class="study-section-title">Итоговая самопроверка категории</h2><ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею создавать Fragment и управлять его жизненным циклом.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю разницу между Fragment Lifecycle и View Lifecycle.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу настроить Navigation Graph и перейти между destinations с аргументами.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, когда использовать Foreground Service, а когда WorkManager.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю ограничения implicit broadcasts и умею регистрировать receiver.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею читать данные через ContentResolver и использовать Photo Picker.</li>
+</ul></section><section id="istochniki-i-dokumentaciya" class="study-section" aria-labelledby="istochniki-i-dokumentaciya-title"><h2 id="istochniki-i-dokumentaciya-title" class="study-section-title">Источники и документация</h2><h3 class="study-subtitle">Официальная документация</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://developer.android.com/guide/fragments" target="_blank" rel="noopener noreferrer">Fragments</a></li>
+<li><a class="study-pill" href="https://developer.android.com/guide/navigation" target="_blank" rel="noopener noreferrer">Navigation Component</a></li>
+<li><a class="study-pill" href="https://developer.android.com/guide/components/services" target="_blank" rel="noopener noreferrer">Services</a></li>
+<li><a class="study-pill" href="https://developer.android.com/develop/background-work/services/foreground-services" target="_blank" rel="noopener noreferrer">Foreground services</a></li>
+<li><a class="study-pill" href="https://developer.android.com/guide/components/broadcasts" target="_blank" rel="noopener noreferrer">BroadcastReceiver</a></li>
+<li><a class="study-pill" href="https://developer.android.com/guide/topics/providers/content-providers" target="_blank" rel="noopener noreferrer">Content providers</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/data-storage/shared/photopicker" target="_blank" rel="noopener noreferrer">Photo Picker</a></li>
+<li><a class="study-pill" href="https://developer.android.com/topic/libraries/architecture/workmanager" target="_blank" rel="noopener noreferrer">WorkManager</a></li>
+</ul>
+<h3 class="study-subtitle">Статьи</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://developer.android.com/about/versions/14/changes/fgs-types-required" target="_blank" rel="noopener noreferrer">Android 14 foreground service types</a></li>
+<li><a class="study-pill" href="https://developer.android.com/guide/background" target="_blank" rel="noopener noreferrer">Background execution limits</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/data-storage/shared/media" target="_blank" rel="noopener noreferrer">Media permissions</a></li>
+</ul></section><footer class="study-footer">Учебный конспект для уровня Junior. Примеры ориентированы на Kotlin.</footer></div></div>

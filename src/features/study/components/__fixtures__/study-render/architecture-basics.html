@@ -1,0 +1,914 @@
+<div class="study-layout"><nav class="study-toc" aria-label="Содержание материала"><div class="study-toc-rail"><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#mvc">1. MVC</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#mvc-model">1.1. Model</a></li><li><a class="study-toc-link" href="#mvc-view">1.2. View</a></li><li><a class="study-toc-link" href="#mvc-controller">1.3. Controller</a></li><li><a class="study-toc-link" href="#mvc-interaction">1.4. Взаимодействие компонентов</a></li><li><a class="study-toc-link" href="#mvc-android">1.5. Применение в Android</a></li><li><a class="study-toc-link" href="#mvc-massive-activity">1.6. Проблема Massive Activity</a></li><li><a class="study-toc-link" href="#mvc-limitations">1.7. Ограничения MVC в Android-приложениях</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#mvp">2. MVP</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#mvp-model">2.1. Model</a></li><li><a class="study-toc-link" href="#mvp-view-interface">2.2. View и её интерфейс</a></li><li><a class="study-toc-link" href="#mvp-presenter">2.3. Presenter</a></li><li><a class="study-toc-link" href="#mvp-contract">2.4. Contract</a></li><li><a class="study-toc-link" href="#mvp-events">2.5. Передача событий между View и Presenter</a></li><li><a class="study-toc-link" href="#mvp-testability">2.6. Тестируемость Presenter</a></li><li><a class="study-toc-link" href="#mvp-limitations">2.7. Недостатки и ограничения MVP</a></li><li><a class="study-toc-link" href="#mvp-lifecycle-android">2.8. MVP и жизненный цикл Android</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#mvvm">3. MVVM</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#mvvm-model">3.1. Model</a></li><li><a class="study-toc-link" href="#mvvm-view">3.2. View</a></li><li><a class="study-toc-link" href="#mvvm-viewmodel-role">3.3. ViewModel</a></li><li><a class="study-toc-link" href="#mvvm-responsibilities">3.4. Ответственность каждого слоя</a></li><li><a class="study-toc-link" href="#mvvm-data-flow">3.5. Поток данных между View и ViewModel</a></li><li><a class="study-toc-link" href="#mvvm-one-way-events">3.6. Односторонняя передача событий</a></li><li><a class="study-toc-link" href="#mvvm-repository">3.7. Связь с Repository</a></li><li><a class="study-toc-link" href="#mvvm-stateflow">3.8. StateFlow как основной реактивный поток состояния</a></li><li><a class="study-toc-link" href="#mvvm-livedata-legacy">3.9. LiveData как legacy-механизм в существующих проектах</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#livedata-basics">4. LiveData Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#livedata-mutablelivedata">4.1. LiveData и MutableLiveData</a></li><li><a class="study-toc-link" href="#livedata-observe">4.2. observe()</a></li><li><a class="study-toc-link" href="#livedata-setvalue-postvalue">4.3. setValue() и postValue()</a></li><li><a class="study-toc-link" href="#livedata-lifecycle-aware">4.4. Lifecycle-aware observation</a></li><li><a class="study-toc-link" href="#livedata-transformations">4.5. Transformations.map и switchMap (назначение)</a></li><li><a class="study-toc-link" href="#livedata-limitations">4.6. Ограничения LiveData</a></li><li><a class="study-toc-link" href="#livedata-legacy-projects">4.7. LiveData как технология, встречающаяся в legacy-проектах</a></li><li><a class="study-toc-link" href="#livedata-testing">4.8. Тестирование LiveData</a></li><li><a class="study-toc-link" href="#livedata-compose">4.9. LiveData и Jetpack Compose</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#viewmodel">5. ViewModel</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#viewmodel-create">5.1. Создание ViewModel</a></li><li><a class="study-toc-link" href="#viewmodel-obtain">5.2. Получение ViewModel в Activity и Fragment</a></li><li><a class="study-toc-link" href="#viewmodel-config-changes">5.3. Переживание Configuration Changes</a></li><li><a class="study-toc-link" href="#viewmodel-scope">5.4. ViewModelScope</a></li><li><a class="study-toc-link" href="#viewmodel-factory">5.5. Передача зависимостей через ViewModel Factory</a></li><li><a class="study-toc-link" href="#viewmodel-shared">5.6. Shared ViewModel</a></li><li><a class="study-toc-link" href="#viewmodel-lifecycle-diff">5.7. Отличие жизненного цикла ViewModel от Activity и Fragment</a></li><li><a class="study-toc-link" href="#viewmodel-process-death">5.8. ViewModel не переживает Process Death</a></li><li><a class="study-toc-link" href="#viewmodel-savedstatehandle">5.9. SavedStateHandle (назначение)</a></li><li><a class="study-toc-link" href="#viewmodel-testing">5.10. Тестирование ViewModel</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#repository">6. Repository</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#naznachenie-repository">6.1. Назначение Repository</a></li><li><a class="study-toc-link" href="#razdelenie-data-source-i-biznes-logiki">6.2. Разделение data source и бизнес-логики</a></li><li><a class="study-toc-link" href="#rabota-s-setyu-i-lokalnoy-bd">6.3. Работа с сетью и локальной БД</a></li><li><a class="study-toc-link" href="#interfeys-repository">6.4. Интерфейс Repository</a></li><li><a class="study-toc-link" href="#realizaciya-repository">6.5. Реализация Repository</a></li><li><a class="study-toc-link" href="#preobrazovanie-oshibok">6.6. Преобразование ошибок источников данных</a></li><li><a class="study-toc-link" href="#edinyy-istochnik-dannyh">6.7. Базовое понимание единого источника данных</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#ui-state">7. UI State</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#ponyatie-ui-state">7.1. Понятие UI State</a></li><li><a class="study-toc-link" href="#loading-success-error">7.2. Loading, Success и Error</a></li><li><a class="study-toc-link" href="#data-class-sostoyaniya">7.3. Data class для состояния экрана</a></li><li><a class="study-toc-link" href="#sealed-class-interface">7.4. Sealed class и sealed interface для состояний</a></li><li><a class="study-toc-link" href="#immutable-ui-state">7.5. Immutable UI State</a></li><li><a class="study-toc-link" href="#khranenie-sostoyaniya-viewmodel">7.6. Хранение состояния во ViewModel</a></li><li><a class="study-toc-link" href="#otobrazhenie-sostoyaniya">7.7. Отображение состояния в Activity и Fragment</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#odnostoronniy-potok-dannyh">8. Односторонний поток данных</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#state-vniz">8.1. State вниз</a></li><li><a class="study-toc-link" href="#events-vverkh">8.2. Events вверх</a></li><li><a class="study-toc-link" href="#single-source-of-truth">8.3. Single Source of Truth</a></li><li><a class="study-toc-link" href="#immutability">8.4. Immutability</a></li><li><a class="study-toc-link" href="#obrabotka-polzovatelskih-sobytiy">8.5. Обработка пользовательских событий</a></li><li><a class="study-toc-link" href="#obnovlenie-ui-state">8.6. Обновление UI State</a></li><li><a class="study-toc-link" href="#preimushchestva-predskazuemogo-potoka">8.7. Преимущества предсказуемого потока данных</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#dependency-injection-basics">9. Dependency Injection Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#ponyatie-zavisimosti">9.1. Понятие зависимости</a></li><li><a class="study-toc-link" href="#dependency-injection">9.2. Dependency Injection</a></li><li><a class="study-toc-link" href="#constructor-injection">9.3. Constructor Injection</a></li><li><a class="study-toc-link" href="#dependency-inversion">9.4. Dependency Inversion (базовое понимание)</a></li><li><a class="study-toc-link" href="#ruchnoe-sozdanie">9.5. Ручное создание объектов и проблема жёсткой связанности</a></li><li><a class="study-toc-link" href="#peredacha-zavisimostey">9.6. Передача зависимостей между слоями</a></li><li><a class="study-toc-link" href="#naznachenie-di-freymvorkov">9.7. Назначение DI-фреймворков</a></li><li><a class="study-toc-link" href="#patterny-proektirovaniya">9.8. Паттерны проектирования: Factory, Builder, Observer, Singleton</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></div><details class="study-toc-compact"><summary class="study-toc-summary">Содержание</summary><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#mvc">1. MVC</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#mvc-model">1.1. Model</a></li><li><a class="study-toc-link" href="#mvc-view">1.2. View</a></li><li><a class="study-toc-link" href="#mvc-controller">1.3. Controller</a></li><li><a class="study-toc-link" href="#mvc-interaction">1.4. Взаимодействие компонентов</a></li><li><a class="study-toc-link" href="#mvc-android">1.5. Применение в Android</a></li><li><a class="study-toc-link" href="#mvc-massive-activity">1.6. Проблема Massive Activity</a></li><li><a class="study-toc-link" href="#mvc-limitations">1.7. Ограничения MVC в Android-приложениях</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#mvp">2. MVP</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#mvp-model">2.1. Model</a></li><li><a class="study-toc-link" href="#mvp-view-interface">2.2. View и её интерфейс</a></li><li><a class="study-toc-link" href="#mvp-presenter">2.3. Presenter</a></li><li><a class="study-toc-link" href="#mvp-contract">2.4. Contract</a></li><li><a class="study-toc-link" href="#mvp-events">2.5. Передача событий между View и Presenter</a></li><li><a class="study-toc-link" href="#mvp-testability">2.6. Тестируемость Presenter</a></li><li><a class="study-toc-link" href="#mvp-limitations">2.7. Недостатки и ограничения MVP</a></li><li><a class="study-toc-link" href="#mvp-lifecycle-android">2.8. MVP и жизненный цикл Android</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#mvvm">3. MVVM</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#mvvm-model">3.1. Model</a></li><li><a class="study-toc-link" href="#mvvm-view">3.2. View</a></li><li><a class="study-toc-link" href="#mvvm-viewmodel-role">3.3. ViewModel</a></li><li><a class="study-toc-link" href="#mvvm-responsibilities">3.4. Ответственность каждого слоя</a></li><li><a class="study-toc-link" href="#mvvm-data-flow">3.5. Поток данных между View и ViewModel</a></li><li><a class="study-toc-link" href="#mvvm-one-way-events">3.6. Односторонняя передача событий</a></li><li><a class="study-toc-link" href="#mvvm-repository">3.7. Связь с Repository</a></li><li><a class="study-toc-link" href="#mvvm-stateflow">3.8. StateFlow как основной реактивный поток состояния</a></li><li><a class="study-toc-link" href="#mvvm-livedata-legacy">3.9. LiveData как legacy-механизм в существующих проектах</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#livedata-basics">4. LiveData Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#livedata-mutablelivedata">4.1. LiveData и MutableLiveData</a></li><li><a class="study-toc-link" href="#livedata-observe">4.2. observe()</a></li><li><a class="study-toc-link" href="#livedata-setvalue-postvalue">4.3. setValue() и postValue()</a></li><li><a class="study-toc-link" href="#livedata-lifecycle-aware">4.4. Lifecycle-aware observation</a></li><li><a class="study-toc-link" href="#livedata-transformations">4.5. Transformations.map и switchMap (назначение)</a></li><li><a class="study-toc-link" href="#livedata-limitations">4.6. Ограничения LiveData</a></li><li><a class="study-toc-link" href="#livedata-legacy-projects">4.7. LiveData как технология, встречающаяся в legacy-проектах</a></li><li><a class="study-toc-link" href="#livedata-testing">4.8. Тестирование LiveData</a></li><li><a class="study-toc-link" href="#livedata-compose">4.9. LiveData и Jetpack Compose</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#viewmodel">5. ViewModel</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#viewmodel-create">5.1. Создание ViewModel</a></li><li><a class="study-toc-link" href="#viewmodel-obtain">5.2. Получение ViewModel в Activity и Fragment</a></li><li><a class="study-toc-link" href="#viewmodel-config-changes">5.3. Переживание Configuration Changes</a></li><li><a class="study-toc-link" href="#viewmodel-scope">5.4. ViewModelScope</a></li><li><a class="study-toc-link" href="#viewmodel-factory">5.5. Передача зависимостей через ViewModel Factory</a></li><li><a class="study-toc-link" href="#viewmodel-shared">5.6. Shared ViewModel</a></li><li><a class="study-toc-link" href="#viewmodel-lifecycle-diff">5.7. Отличие жизненного цикла ViewModel от Activity и Fragment</a></li><li><a class="study-toc-link" href="#viewmodel-process-death">5.8. ViewModel не переживает Process Death</a></li><li><a class="study-toc-link" href="#viewmodel-savedstatehandle">5.9. SavedStateHandle (назначение)</a></li><li><a class="study-toc-link" href="#viewmodel-testing">5.10. Тестирование ViewModel</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#repository">6. Repository</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#naznachenie-repository">6.1. Назначение Repository</a></li><li><a class="study-toc-link" href="#razdelenie-data-source-i-biznes-logiki">6.2. Разделение data source и бизнес-логики</a></li><li><a class="study-toc-link" href="#rabota-s-setyu-i-lokalnoy-bd">6.3. Работа с сетью и локальной БД</a></li><li><a class="study-toc-link" href="#interfeys-repository">6.4. Интерфейс Repository</a></li><li><a class="study-toc-link" href="#realizaciya-repository">6.5. Реализация Repository</a></li><li><a class="study-toc-link" href="#preobrazovanie-oshibok">6.6. Преобразование ошибок источников данных</a></li><li><a class="study-toc-link" href="#edinyy-istochnik-dannyh">6.7. Базовое понимание единого источника данных</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#ui-state">7. UI State</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#ponyatie-ui-state">7.1. Понятие UI State</a></li><li><a class="study-toc-link" href="#loading-success-error">7.2. Loading, Success и Error</a></li><li><a class="study-toc-link" href="#data-class-sostoyaniya">7.3. Data class для состояния экрана</a></li><li><a class="study-toc-link" href="#sealed-class-interface">7.4. Sealed class и sealed interface для состояний</a></li><li><a class="study-toc-link" href="#immutable-ui-state">7.5. Immutable UI State</a></li><li><a class="study-toc-link" href="#khranenie-sostoyaniya-viewmodel">7.6. Хранение состояния во ViewModel</a></li><li><a class="study-toc-link" href="#otobrazhenie-sostoyaniya">7.7. Отображение состояния в Activity и Fragment</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#odnostoronniy-potok-dannyh">8. Односторонний поток данных</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#state-vniz">8.1. State вниз</a></li><li><a class="study-toc-link" href="#events-vverkh">8.2. Events вверх</a></li><li><a class="study-toc-link" href="#single-source-of-truth">8.3. Single Source of Truth</a></li><li><a class="study-toc-link" href="#immutability">8.4. Immutability</a></li><li><a class="study-toc-link" href="#obrabotka-polzovatelskih-sobytiy">8.5. Обработка пользовательских событий</a></li><li><a class="study-toc-link" href="#obnovlenie-ui-state">8.6. Обновление UI State</a></li><li><a class="study-toc-link" href="#preimushchestva-predskazuemogo-potoka">8.7. Преимущества предсказуемого потока данных</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#dependency-injection-basics">9. Dependency Injection Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#ponyatie-zavisimosti">9.1. Понятие зависимости</a></li><li><a class="study-toc-link" href="#dependency-injection">9.2. Dependency Injection</a></li><li><a class="study-toc-link" href="#constructor-injection">9.3. Constructor Injection</a></li><li><a class="study-toc-link" href="#dependency-inversion">9.4. Dependency Inversion (базовое понимание)</a></li><li><a class="study-toc-link" href="#ruchnoe-sozdanie">9.5. Ручное создание объектов и проблема жёсткой связанности</a></li><li><a class="study-toc-link" href="#peredacha-zavisimostey">9.6. Передача зависимостей между слоями</a></li><li><a class="study-toc-link" href="#naznachenie-di-freymvorkov">9.7. Назначение DI-фреймворков</a></li><li><a class="study-toc-link" href="#patterny-proektirovaniya">9.8. Паттерны проектирования: Factory, Builder, Observer, Singleton</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></details></nav><div class="study-content"><header class="study-hero"><p class="study-eyebrow">Архитектура · Junior</p><h1 class="study-title">Архитектура Android-приложения</h1><p class="study-lead">Как разделить приложение на слои, где хранить состояние экрана и почему MVVM с StateFlow стал стандартом.</p></header><section id="mvc" class="study-section" aria-labelledby="mvc-title"><h2 id="mvc-title" class="study-section-title">1. MVC</h2><p>MVC (Model-View-Controller) — один из старейших паттернов разделения ответственности. Он делит приложение на три роли: данные (Model), отображение (View) и управляющую логику (Controller). Главная идея — не смешивать бизнес-правила с кодом интерфейса, чтобы каждую часть можно было менять и тестировать отдельно. В Android MVC исторически возник сам по себе: Activity часто выступала и как View, и как Controller, а модели выносились в отдельные классы. Понимание MVC полезно не само по себе, а как отправная точка: большинство современных паттернов (MVP, MVVM) — это ответ на проблемы, которые проявляются при наивном применении MVC на Android.</p>
+<h3 id="mvc-model" class="study-subtitle">1.1. Model</h3>
+<p>Model — это данные приложения и правила работы с ними. Сюда входят сущности (data-классы), валидация, преобразования, доступ к базе данных и сети. Model не должна знать ничего о View, Activity, Fragment или жизненном цикле Android. Она может быть чистым Kotlin-кодом, который легко тестировать на JVM без эмулятора.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(
+    <span class="hljs-keyword">val</span> id: <span class="hljs-built_in">Long</span>,
+    <span class="hljs-keyword">val</span> name: String,
+    <span class="hljs-keyword">val</span> email: String
+)
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">UserRepository</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> api: UserApi,
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> dao: UserDao
+) {
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUser</span><span class="hljs-params">(id: <span class="hljs-type">Long</span>)</span></span>: User {
+        <span class="hljs-keyword">val</span> remote = api.fetchUser(id)
+        dao.insert(remote.toEntity())
+        <span class="hljs-keyword">return</span> remote.toDomain()
+    }
+}
+</code></pre></div>
+<p>Model отвечает за «что есть» и «как получить/сохранить», но не за «как показать». Если в Model появляются вызовы <code>findViewById</code> или обращения к <code>Context</code> ради UI — это признак того, что ответственность протекла.</p>
+<h3 id="mvc-view" class="study-subtitle">1.2. View</h3>
+<p>View — это слой отображения. В Android это XML-разметка, View-компоненты, а также Activity/Fragment, которые их наполняют. View должна быть пассивной: показать данные, собрать пользовательский ввод и передать его дальше. Она не принимает решений о бизнес-логике и не обращается к сети напрямую.</p>
+<p>Пассивность View означает, что в ней остаются только вызовы вроде <code>textView.text = user.name</code> и установка слушателей кликов. Как только в View появляется условие вроде «если пользователь админ — показать кнопку удаления», часть бизнес-логики переехала не туда, и её стоит вынести в Controller/ViewModel.</p>
+<h3 id="mvc-controller" class="study-subtitle">1.3. Controller</h3>
+<p>Controller принимает пользовательский ввод из View, обновляет Model и решает, какую View показать дальше. В Android роль Controller чаще всего играет сама Activity: она слушает клики, вызывает репозиторий, обновляет поля экрана. Именно поэтому в наивном MVC Activity быстро превращается в «бог-объект».</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">UserActivity</span> : <span class="hljs-type">AppCompatActivity</span>() {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">lateinit</span> <span class="hljs-keyword">var</span> repository: UserRepository
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span> {
+        <span class="hljs-keyword">super</span>.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_user)
+        repository = UserRepository(ApiService.userApi, AppDatabase.userDao())
+
+        findViewById&lt;Button&gt;(R.id.loadButton).setOnClickListener {
+            lifecycleScope.launch {
+                <span class="hljs-keyword">val</span> user = repository.getUser(<span class="hljs-number">1L</span>)
+                findViewById&lt;TextView&gt;(R.id.nameText).text = user.name
+            }
+        }
+    }
+}
+</code></pre></div>
+<p>Здесь Activity одновременно является View (показывает данные) и Controller (обрабатывает клик и вызывает репозиторий). Это работает на маленьких экранах, но плохо масштабируется.</p>
+<h3 id="mvc-interaction" class="study-subtitle">1.4. Взаимодействие компонентов</h3>
+<p>В классическом MVC взаимодействие идёт по кругу: пользователь действует во View → Controller получает событие → Controller меняет Model → Controller обновляет View. Иногда Model сама уведомляет наблюдателей (паттерн Observer), и тогда Controller не обязан вручную перерисовывать View.</p>
+<p>На Android этот круг часто схлопывается: Activity и есть и View, и Controller, поэтому уведомления от Model приходят прямо в Activity, которая сама обновляет поля. Отсутствие явной границы между ролями — главная причина, по которой MVC в Android быстро деградирует в «всё в Activity».</p>
+<h3 id="mvc-android" class="study-subtitle">1.5. Применение в Android</h3>
+<p>В простых приложениях (один-два экрана, мало логики) MVC допустима и даже удобна: меньше классов, меньше абстракций, проще читать. Activity хранит ссылки на View, вызывает репозиторий, обновляет UI. Для учебных проектов и прототипов это нормально.</p>
+<p>Но как только появляются состояния экрана (загрузка/ошибка/успех), навигация, тесты и пересоздание при повороте, MVC начинает мешать: логика размазана по Activity, её нельзя вынести и протестировать отдельно. Тогда переходят к MVP или MVVM.</p>
+<h3 id="mvc-massive-activity" class="study-subtitle">1.6. Проблема Massive Activity</h3>
+<p>Massive Activity («толстая Activity») — антипаттерн, когда один класс берёт на себя всё: привязку View, обработку кликов, валидацию, сетевые запросы, работу с БД, навигацию, сохранение состояния. Такая Activity может разрастись до тысяч строк и стать нечитаемой.</p>
+<p>Последствия:</p>
+<ul class="study-list">
+<li>Тестировать логику невозможно: она завязана на Android-компоненты и жизненный цикл.</li>
+<li>Любое изменение рискует сломать несвязанные части экрана.</li>
+<li>Утечки памяти: Activity хранит ссылки на долгоживущие объекты.</li>
+<li>Пересоздание при повороте теряет промежуточное состояние, если его не сохранить вручную.</li>
+</ul>
+<p>Massive Activity — главный симптом того, что архитектура не отделила логику представления от UI.</p>
+<h3 id="mvc-limitations" class="study-subtitle">1.7. Ограничения MVC в Android-приложениях</h3>
+<p>Android накладывает ограничения, с которыми классический MVC справляется плохо:</p>
+<ul class="study-list">
+<li>Activity/Fragment имеют сложный жизненный цикл и могут пересоздаваться при смене конфигурации.</li>
+<li>View (разметка) привязана к конкретному компоненту, поэтому Controller не может легко пережить пересоздание.</li>
+<li>Тестирование Controller требует эмулятора, если он зависит от Android SDK.</li>
+<li>Нет встроенного механизма наблюдения за данными: приходится обновлять UI вручную в каждой точке изменения.</li>
+</ul>
+<p>Именно эти ограничения привели к появлению MVP (вынос логики в Presenter с интерфейсом View) и MVVM (реактивное состояние через ViewModel и observable-потоки). MVC остаётся полезным как концептуальная модель, но в современном Android-коде в чистом виде почти не встречается.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Класть сетевые запросы и SQL-запросы прямо в Activity.</li>
+<li>Хранить состояние экрана в полях Activity без учёта пересоздания.</li>
+<li>Считать, что MVC на Android = «всё в Activity».</li>
+<li>Игнорировать жизненный цикл при подписке на данные.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу назвать роли Model, View, Controller и дать пример каждой в Android.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, почему Activity часто становится и View, и Controller.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Объясняю, что такое Massive Activity и чем он опасен.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю основные ограничения MVC на Android.</li>
+</ul></section><section id="mvp" class="study-section" aria-labelledby="mvp-title"><h2 id="mvp-title" class="study-section-title">2. MVP</h2><p>MVP (Model-View-Presenter) развивает идею MVC: логика представления выносится в отдельный класс Presenter, а View становится тонким пассивным интерфейсом. Цель — сделать логику экрана тестируемой без эмулятора и убрать бизнес-правила из Activity/Fragment. В Android MVP был стандартом до появления Jetpack ViewModel и архитектурных компонентов; сейчас его чаще встретишь в legacy-проектах, но понимание паттерна помогает читать старый код и понимать эволюцию архитектуры.</p>
+<h3 id="mvp-model" class="study-subtitle">2.1. Model</h3>
+<p>Model в MVP — те же данные и бизнес-правила, что и в MVC: сущности, репозитории, источники данных. Presenter обращается к Model через интерфейсы, а не к конкретным реализациям, что упрощает подмену в тестах.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserRepository</span> {
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUser</span><span class="hljs-params">(id: <span class="hljs-type">Long</span>)</span></span>: User
+}
+</code></pre></div>
+<p>Model остаётся независимой от Android и от View. Presenter зависит от абстракции, а не от конкретного репозитория — это и есть инверсия зависимостей в миниатюре.</p>
+<h3 id="mvp-view-interface" class="study-subtitle">2.2. View и её интерфейс</h3>
+<p>Ключевое отличие MVP: View описывается интерфейсом. Activity/Fragment реализуют этот интерфейс и становятся «глупыми»: они только показывают данные и передают события в Presenter.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserView</span> {
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showLoading</span><span class="hljs-params">()</span></span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showUser</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showError</span><span class="hljs-params">(message: <span class="hljs-type">String</span>)</span></span>
+}
+</code></pre></div>
+<p>Интерфейс делает View заменяемой: в тестах Presenter можно проверить с фейковой View, не создавая Activity. В production View реализует интерфейс и делегирует вызовы реальным View-компонентам.</p>
+<h3 id="mvp-presenter" class="study-subtitle">2.3. Presenter</h3>
+<p>Presenter содержит логику представления: что делать при клике, как преобразовать данные Model в состояние экрана, когда показать загрузку или ошибку. Он не знает о Android View напрямую — только о интерфейсе View.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">UserPresenter</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> view: UserView,
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> repository: UserRepository,
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> scope: CoroutineScope
+) {
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loadUser</span><span class="hljs-params">(id: <span class="hljs-type">Long</span>)</span></span> {
+        view.showLoading()
+        scope.launch {
+            runCatching { repository.getUser(id) }
+                .onSuccess { view.showUser(it) }
+                .onFailure { view.showError(it.message ?: <span class="hljs-string">&quot;Ошибка&quot;</span>) }
+        }
+    }
+}
+</code></pre></div>
+<p>Переживает ли Presenter пересоздание? Нет — в классическом MVP Presenter привязан к жизненному циклу View и создаётся заново при пересоздании Activity. Это один из недостатков.</p>
+<h3 id="mvp-contract" class="study-subtitle">2.4. Contract</h3>
+<p>Contract — соглашение (обычно интерфейс или пара интерфейсов), которое фиксирует, что View умеет показывать и какие события отправляет Presenter. Часто Contract объединяет <code>View</code> и <code>Presenter</code> в одном файле для удобства.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserContract</span> {
+    <span class="hljs-keyword">interface</span> <span class="hljs-title class_">View</span> {
+        <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showLoading</span><span class="hljs-params">()</span></span>
+        <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showUser</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showError</span><span class="hljs-params">(message: <span class="hljs-type">String</span>)</span></span>
+    }
+    <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Presenter</span> {
+        <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loadUser</span><span class="hljs-params">(id: <span class="hljs-type">Long</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onRetry</span><span class="hljs-params">()</span></span>
+    }
+}
+</code></pre></div>
+<p>Contract делает границу между слоями явной и помогает навигации по коду: открыв один файл, видно весь контракт экрана.</p>
+<h3 id="mvp-events" class="study-subtitle">2.5. Передача событий между View и Presenter</h3>
+<p>События текут в обе стороны, но через чёткие каналы:</p>
+<ul class="study-list">
+<li>View → Presenter: пользователь нажал кнопку, ввёл текст, прокрутил список. View вызывает метод Presenter (<code>presenter.loadUser(id)</code>).</li>
+<li>Presenter → View: показать данные, загрузку, ошибку. Presenter вызывает методы интерфейса View (<code>view.showUser(user)</code>).</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">UserActivity</span> : <span class="hljs-type">AppCompatActivity</span>(), UserContract.View {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">lateinit</span> <span class="hljs-keyword">var</span> presenter: UserContract.Presenter
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span> {
+        <span class="hljs-keyword">super</span>.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_user)
+        presenter = UserPresenter(<span class="hljs-keyword">this</span>, UserRepositoryImpl(), lifecycleScope)
+        findViewById&lt;Button&gt;(R.id.loadButton).setOnClickListener {
+            presenter.loadUser(<span class="hljs-number">1L</span>)
+        }
+    }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showUser</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span> {
+        findViewById&lt;TextView&gt;(R.id.nameText).text = user.name
+    }
+    <span class="hljs-comment">// ...</span>
+}
+</code></pre></div>
+<p>Важно: Presenter не должен обращаться к View после её уничтожения. Поэтому в MVP часто добавляют <code>attachView</code>/<code>detachView</code> и проверки, что View не null.</p>
+<h3 id="mvp-testability" class="study-subtitle">2.6. Тестируемость Presenter</h3>
+<p>Главная выгода MVP — Presenter можно тестировать на JVM. Подменяем View фейком, репозиторий — фейком, вызываем метод Presenter и проверяем, какие методы View были вызваны и в каком порядке.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">FakeUserView</span> : <span class="hljs-type">UserContract.View</span> {
+    <span class="hljs-keyword">val</span> shownUsers = mutableListOf&lt;User&gt;()
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showLoading</span><span class="hljs-params">()</span></span> {}
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showUser</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span> { shownUsers.add(user) }
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showError</span><span class="hljs-params">(message: <span class="hljs-type">String</span>)</span></span> {}
+}
+
+<span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `loadUser shows user on success`<span class="hljs-params">()</span></span> = runTest {
+    <span class="hljs-keyword">val</span> view = FakeUserView()
+    <span class="hljs-keyword">val</span> repo = FakeUserRepository()
+    <span class="hljs-keyword">val</span> presenter = UserPresenter(view, repo, <span class="hljs-keyword">this</span>)
+    presenter.loadUser(<span class="hljs-number">1L</span>)
+    advanceUntilIdle()
+    assertEquals(<span class="hljs-string">&quot;Alex&quot;</span>, view.shownUsers.first().name)
+}
+</code></pre></div>
+<p>Такие тесты быстрые и не требуют эмулятора, потому что Presenter зависит только от интерфейсов.</p>
+<h3 id="mvp-limitations" class="study-subtitle">2.7. Недостатки и ограничения MVP</h3>
+<p>MVP решает проблему тестируемости, но создаёт новые:</p>
+<ul class="study-list">
+<li>Много boilerplate: интерфейсы View и Presenter, attach/detach, делегирование каждого вызова.</li>
+<li>Presenter привязан к жизненному циклу View: при повороте экрана Presenter пересоздаётся, состояние теряется (если не сохранить вручную).</li>
+<li>Риск утечек: если Presenter держит ссылку на View и не отписывается, Activity не может быть собрана сборщиком мусора.</li>
+<li>Двусторонние вызовы (View ↔ Presenter) могут привести к запутанному потоку данных при сложных экранах.</li>
+<li>Нет встроенной реактивности: обновление UI происходит через явные вызовы методов, а не через наблюдение за состоянием.</li>
+</ul>
+<p>Из-за этих ограничений в современном Android MVP уступил место MVVM с ViewModel и StateFlow, где состояние переживает пересоздание и обновляет UI реактивно. Дополнительно: в MVP сложно организовать единый источник правды для состояния экрана — каждое изменение требует явного вызова метода View, что приводит к рассинхронизации при сложных сценариях.</p>
+<h3 id="mvp-lifecycle-android" class="study-subtitle">2.8. MVP и жизненный цикл Android</h3>
+<p>В классическом MVP Presenter не переживает пересоздание Activity, поэтому состояние экрана теряется при повороте, если его не сохранить вручную. Чтобы снизить риск, Presenter создаётся в <code>onCreate</code> и привязывается к View через <code>attachView</code>, а в <code>onDestroy</code> вызывается <code>detachView</code>, обнуляющий ссылку. Это защищает от утечек и от вызовов уничтоженной View.</p>
+<p>При сложных экранах Presenter может разрастись, и тогда его делят на несколько маленьких презентеров или переходят к MVVM. В legacy-коде часто встречается MVP с RxJava или корутинами: Presenter запускает асинхронную операцию и обновляет View через коллбэки. Такой код читается, но требует аккуратного управления отменой при уничтожении View.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Держать сильную ссылку на View в Presenter без detach.</li>
+<li>Вызывать методы View после её уничтожения.</li>
+<li>Класть Android-зависимости (Context, Resources) в Presenter.</li>
+<li>Дублировать логику в View и Presenter.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Объясняю, зачем View описывается интерфейсом.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу написать простой Presenter и фейковую View для теста.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, почему Presenter не переживает поворот экрана.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю основные недостатки MVP.</li>
+</ul></section><section id="mvvm" class="study-section" aria-labelledby="mvvm-title"><h2 id="mvvm-title" class="study-section-title">3. MVVM</h2><p>MVVM (Model-View-ViewModel) — архитектурный паттерн, рекомендованный Google для Android. В нём логика представления живёт в ViewModel, которая переживает пересоздание Activity/Fragment, а UI обновляется реактивно через наблюдение за состоянием. В современном Android основной поток данных — StateFlow (или SharedFlow для событий), а View в Jetpack Compose или View-системе подписывается на него. LiveData остаётся в старых проектах. MVVM хорошо ложится на Unidirectional Data Flow: состояние спускается вниз, события поднимаются вверх.</p>
+<h3 id="mvvm-model" class="study-subtitle">3.1. Model</h3>
+<p>Model — данные и бизнес-правила: сущности, репозитории, источники данных (сеть, БД, кеш). Model не зависит от ViewModel и UI. ViewModel обращается к Model через репозитории/интерфейсы.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Product</span>(<span class="hljs-keyword">val</span> id: <span class="hljs-built_in">Long</span>, <span class="hljs-keyword">val</span> title: String, <span class="hljs-keyword">val</span> price: <span class="hljs-built_in">Int</span>)
+
+<span class="hljs-keyword">interface</span> <span class="hljs-title class_">ProductRepository</span> {
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getProducts</span><span class="hljs-params">()</span></span>: List&lt;Product&gt;
+}
+</code></pre></div>
+<p>Разделение Model и ViewModel важно: Model описывает «мир данных», ViewModel — «что показать на этом экране». Смешивать их нельзя, иначе логика экрана протечёт в репозиторий.</p>
+<h3 id="mvvm-view" class="study-subtitle">3.2. View</h3>
+<p>View — Activity/Fragment или Composable-функция. Она отображает состояние, приходящее из ViewModel, и отправляет пользовательские события (клики, ввод) в ViewModel. View не содержит бизнес-логики и не обращается к репозиториям напрямую.</p>
+<p>В Compose View — это <code>@Composable</code>-функция, которая принимает состояние и коллбэки. Во View-системе — Activity/Fragment, которая подписывается на Flow/StateFlow и обновляет View-компоненты.</p>
+<h3 id="mvvm-viewmodel-role" class="study-subtitle">3.3. ViewModel</h3>
+<p>ViewModel (androidx.lifecycle.ViewModel) — класс, который хранит UI-состояние и логику представления. Он переживает пересоздание Activity/Fragment при смене конфигурации (поворот, смена темы) и очищается только когда экран окончательно закрывается. ViewModel не должна ссылаться на View, Context (кроме Application) или жизненный цикл — только на абстракции данных.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">sealed</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ProductUiState</span> {
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">object</span> Loading : ProductUiState
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Success</span>(<span class="hljs-keyword">val</span> products: List&lt;Product&gt;) : ProductUiState
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Error</span>(<span class="hljs-keyword">val</span> message: String) : ProductUiState
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ProductViewModel</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> repository: ProductRepository
+) : ViewModel() {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _state = MutableStateFlow&lt;ProductUiState&gt;(ProductUiState.Loading)
+    <span class="hljs-keyword">val</span> state: StateFlow&lt;ProductUiState&gt; = _state.asStateFlow()
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">load</span><span class="hljs-params">()</span></span> {
+        viewModelScope.launch {
+            _state.value = ProductUiState.Loading
+            runCatching { repository.getProducts() }
+                .onSuccess { _state.value = ProductUiState.Success(it) }
+                .onFailure { _state.value = ProductUiState.Error(it.message ?: <span class="hljs-string">&quot;Ошибка&quot;</span>) }
+        }
+    }
+}
+</code></pre></div>
+<h3 id="mvvm-responsibilities" class="study-subtitle">3.4. Ответственность каждого слоя</h3>
+<ul class="study-list">
+<li>Model: данные, правила, источники данных.</li>
+<li>ViewModel: состояние экрана, реакция на события пользователя, вызовы Model, преобразование данных в UI-состояние.</li>
+<li>View: отображение состояния, сбор ввода, навигация (по указанию ViewModel/событий).</li>
+</ul>
+<p>Никакой слой не должен делать работу другого. Если ViewModel начинает вызывать <code>findViewById</code> или знать про <code>RecyclerView</code> — граница нарушена. Если View начинает сортировать список — тоже.</p>
+<h3 id="mvvm-data-flow" class="study-subtitle">3.5. Поток данных между View и ViewModel</h3>
+<p>Данные текут в одну сторону: ViewModel публикует состояние → View подписывается и перерисовывается. Пользовательские действия идут в обратную сторону: View вызывает методы ViewModel (<code>viewModel.load()</code>, <code>viewModel.onItemClick(id)</code>). ViewModel обновляет состояние, и View автоматически получает новое значение.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">viewLifecycleOwner.lifecycleScope.launch {
+    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewModel.state.collect { state -&gt; render(state) }
+    }
+}
+</code></pre></div>
+<p>Без <code>repeatOnLifecycle</code> сбор не остановится при уходе экрана в фон: корутина в <code>lifecycleScope</code> живёт до уничтожения View, и невидимый UI продолжает обновляться.</p>
+<p>Такой поток предсказуем: состояние всегда приходит из одного места, и UI — функция от состояния.</p>
+<h3 id="mvvm-one-way-events" class="study-subtitle">3.6. Односторонняя передача событий</h3>
+<p>События (одноразовые действия: показать Snackbar, перейти на другой экран, показать диалог) не должны смешиваться с состоянием. Для них используют отдельный поток — <code>SharedFlow</code> или <code>Channel</code>, который View собирает и обрабатывает один раз.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _events = MutableSharedFlow&lt;ProductEvent&gt;(extraBufferCapacity = <span class="hljs-number">1</span>)
+<span class="hljs-keyword">val</span> events: SharedFlow&lt;ProductEvent&gt; = _events.asSharedFlow()
+</code></pre></div>
+<p>Если использовать для событий StateFlow, повторное открытие экрана может повторно показать старый Snackbar. Разделение состояния (StateFlow) и событий (SharedFlow/Channel) — важная часть правильного MVVM.</p>
+<h3 id="mvvm-repository" class="study-subtitle">3.7. Связь с Repository</h3>
+<p>ViewModel не работает с сетью/БД напрямую — она вызывает Repository, который скрывает детали источников данных. Это позволяет подменять Repository в тестах и менять реализацию (сеть → кеш) без изменения ViewModel.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ProductViewModel</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> repository: ProductRepository
+) : ViewModel() { ... }
+</code></pre></div>
+<p>Repository возвращает данные (часто через Flow или suspend-функции), ViewModel преобразует их в UI-состояние и публикует в StateFlow. Такая цепочка (Repository → ViewModel → View) — основа современного Android.</p>
+<h3 id="mvvm-stateflow" class="study-subtitle">3.8. StateFlow как основной реактивный поток состояния</h3>
+<p>StateFlow — горячий поток, который хранит текущее значение и отдаёт его новым подписчикам сразу. Это идеальный контейнер для UI-состояния: всегда есть актуальное значение, подписка не теряет последнее состояние, обновления доставляются в контексте корутины, которая собирает поток через <code>collect</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _uiState = MutableStateFlow&lt;UiState&gt;(UiState.Idle)
+<span class="hljs-keyword">val</span> uiState: StateFlow&lt;UiState&gt; = _uiState.asStateFlow()
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onSearch</span><span class="hljs-params">(query: <span class="hljs-type">String</span>)</span></span> {
+    _uiState.value = UiState.Loading
+    viewModelScope.launch {
+        <span class="hljs-keyword">val</span> result = repository.search(query)
+        _uiState.value = UiState.Success(result)
+    }
+}
+</code></pre></div>
+<p>В Compose подписка выглядит так:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Composable</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">ProductScreen</span><span class="hljs-params">(viewModel: <span class="hljs-type">ProductViewModel</span> = viewModel()</span></span>) {
+    <span class="hljs-keyword">val</span> state <span class="hljs-keyword">by</span> viewModel.state.collectAsState()
+    <span class="hljs-keyword">when</span> (state) {
+        <span class="hljs-keyword">is</span> ProductUiState.Loading -&gt; CircularProgressIndicator()
+        <span class="hljs-keyword">is</span> ProductUiState.Success -&gt; ProductList(state.products)
+        <span class="hljs-keyword">is</span> ProductUiState.Error -&gt; Text(state.message)
+    }
+}
+</code></pre></div>
+<p><code>collectAsState()</code> превращает StateFlow в Compose State, и UI автоматически перерисовывается при каждом новом значении. В View-системе используют <code>repeatOnLifecycle</code> + <code>collect</code>, чтобы подписка активировалась только когда экран виден.</p>
+<h3 id="mvvm-livedata-legacy" class="study-subtitle">3.9. LiveData как legacy-механизм в существующих проектах</h3>
+<p>LiveData — lifecycle-aware контейнер данных из AndroidX. Он был стандартом до появления StateFlow и до сих пор встречается в проектах, написанных на View-системе с Java/Kotlin. LiveData автоматически учитывает жизненный цикл: подписка активна только когда View в состоянии STARTED/RESUMED, и автоматически отписывается при уничтожении.</p>
+<p>В новых проектах предпочитают StateFlow: он часть Kotlin Coroutines, не привязан к Android lifecycle, работает с Compose через <code>collectAsState</code>, легко комбинируется с операторами Flow. LiveData остаётся в legacy-коде и при поддержке старых экранов; смешивать оба подхода на одном экране не рекомендуется. При миграции LiveData → StateFlow обычно заменяют <code>MutableLiveData</code> на <code>MutableStateFlow</code> и <code>observe</code> на <code>collect</code>.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Хранить ссылку на View/Context в ViewModel.</li>
+<li>Использовать StateFlow для одноразовых событий (повторное срабатывание).</li>
+<li>Обновлять <code>_state.value</code> из фонового потока без учёта главного потока (StateFlow thread-safe, но логика должна быть согласована).</li>
+<li>Смешивать LiveData и StateFlow на одном экране без причины.</li>
+<li>Делать ViewModel слишком «толстой», дублируя логику Repository.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Объясняю роли Model, View, ViewModel.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, как StateFlow обновляет UI через collectAsState.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Отличаю состояние (StateFlow) от событий (SharedFlow/Channel).</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, почему LiveData считается legacy.</li>
+</ul></section><section id="livedata-basics" class="study-section" aria-labelledby="livedata-basics-title"><h2 id="livedata-basics-title" class="study-section-title">4. LiveData Basics</h2><p>LiveData — lifecycle-aware контейнер наблюдаемых данных из AndroidX. Он хранит значение и уведомляет активных наблюдателей при его изменении, при этом автоматически учитывая жизненный цикл: наблюдение активно только когда View находится в состоянии STARTED или RESUMED, и автоматически прекращается при уничтожении. В современных проектах LiveData считается legacy-технологией: для нового кода используют StateFlow и Flow. Но LiveData всё ещё широко встречается в существующих проектах на View-системе, поэтому умение её читать и поддерживать остаётся необходимым навыком.</p>
+<h3 id="livedata-mutablelivedata" class="study-subtitle">4.1. LiveData и MutableLiveData</h3>
+<p><code>LiveData&lt;T&gt;</code> — неизменяемый для внешних наблюдателей контейнер: снаружи можно только подписаться. <code>MutableLiveData&lt;T&gt;</code> — наследник, который позволяет изменять значение через <code>setValue</code>/<code>postValue</code>. Паттерн тот же, что со StateFlow: приватное изменяемое поле и публичное неизменяемое.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">UserViewModel</span> : <span class="hljs-type">ViewModel</span>() {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _user = MutableLiveData&lt;User&gt;()
+    <span class="hljs-keyword">val</span> user: LiveData&lt;User&gt; = _user
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loadUser</span><span class="hljs-params">()</span></span> {
+        _user.value = User(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;Alex&quot;</span>)
+    }
+}
+</code></pre></div>
+<p>Снаружи <code>user</code> только читается — это защищает инварианты состояния.</p>
+<h3 id="livedata-observe" class="study-subtitle">4.2. observe()</h3>
+<p><code>observe(LifecycleOwner, Observer)</code> подписывает наблюдателя на изменения. Наблюдатель получает текущее значение сразу при подписке (если оно есть) и при каждом последующем изменении. Подписка привязана к жизненному циклу владельца.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">viewModel.user.observe(viewLifecycleOwner) { user -&gt;
+    nameText.text = user.name
+}
+</code></pre></div>
+<p>Используйте <code>viewLifecycleOwner</code> во Fragment, а не <code>this</code>, чтобы подписка корректно отменялась при уничтожении View. В Activity используйте <code>this</code>.</p>
+<h3 id="livedata-setvalue-postvalue" class="study-subtitle">4.3. setValue() и postValue()</h3>
+<ul class="study-list">
+<li><code>setValue(value)</code> обновляет значение и уведомляет наблюдателей синхронно. Можно вызывать только из главного потока.</li>
+<li><code>postValue(value)</code> планирует обновление на главный поток из фонового. Если несколько <code>postValue</code> вызваны подряд, до главного потока дойдёт только последнее значение.</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// из главного потока</span>
+_user.value = user
+
+<span class="hljs-comment">// из фонового потока</span>
+_user.postValue(user)
+</code></pre></div>
+<p>Путаница между ними — частая причина крашей «Cannot invoke setValue on a background thread» или потери обновлений.</p>
+<h3 id="livedata-lifecycle-aware" class="study-subtitle">4.4. Lifecycle-aware observation</h3>
+<p>LiveData знает о состоянии LifecycleOwner. Наблюдатель получает обновления только когда владелец активен (STARTED/RESUMED). При переходе в STOPPED наблюдение приостанавливается; при возврате — возобновляется с последним значением. При DESTROYED наблюдатель удаляется автоматически.</p>
+<p>Это избавляет от ручной отписки и защищает от обновления UI после уничтожения Activity. Именно эта особенность сделала LiveData популярной до появления Flow с <code>repeatOnLifecycle</code>.</p>
+<h3 id="livedata-transformations" class="study-subtitle">4.5. Transformations.map и switchMap (назначение)</h3>
+<p><code>Transformations.map(source) { ... }</code> создаёт новый LiveData, применяя функцию к каждому значению источника — аналог <code>map</code> для Flow. <code>Transformations.switchMap(source) { ... }</code> переключается на новый LiveData, возвращаемый функцией, при каждом изменении источника — аналог <code>flatMapLatest</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> userName: LiveData&lt;String&gt; = Transformations.map(user) { it.name }
+</code></pre></div>
+<p>Они полезны для производных данных (например, форматированная строка из объекта). В современном коде их заменяют операторами Flow (<code>map</code>, <code>flatMapLatest</code>).</p>
+<h3 id="livedata-limitations" class="study-subtitle">4.6. Ограничения LiveData</h3>
+<ul class="study-list">
+<li>Привязка к Android lifecycle: LiveData не работает вне Android-компонентов (например, в чистых модулях).</li>
+<li>Нет встроенных операторов комбинирования/фильтрации как у Flow.</li>
+<li><code>postValue</code> теряет промежуточные значения при частых обновлениях.</li>
+<li>Проверка значения через <code>.value</code> неудобна и не реактивна.</li>
+<li>Плохо сочетается с Jetpack Compose: нет нативного <code>collectAsState</code> для LiveData (нужен <code>observeAsState</code>).</li>
+<li>Тестирование требует InstantTaskExecutorRule и главный поток.</li>
+</ul>
+<p>Дополнительно: LiveData не поддерживает операторы вроде <code>combine</code>, <code>debounce</code>, <code>distinctUntilChanged</code> из коробки. Для сложных преобразований приходится писать собственные MediatorLiveData, что усложняет код. Flow даёт эти операторы стандартно, поэтому миграция на StateFlow упрощает поддержку.</p>
+<h3 id="livedata-legacy-projects" class="study-subtitle">4.7. LiveData как технология, встречающаяся в legacy-проектах</h3>
+<p>В новых проектах LiveData практически не используют: StateFlow/Flow из Kotlin Coroutines стали стандартом, особенно с Jetpack Compose. Но LiveData остаётся в:</p>
+<ul class="study-list">
+<li>старых экранах на View-системе;</li>
+<li>проектах, где архитектура строилась вокруг LiveData до 2020 года;</li>
+<li>библиотеках, возвращающих LiveData (например, Room поддерживает и Flow, и LiveData).</li>
+</ul>
+<p>При поддержке такого кода: не смешивайте LiveData и StateFlow на одном экране без необходимости, при миграции заменяйте <code>MutableLiveData</code> на <code>MutableStateFlow</code>, <code>observe</code> — на <code>collect</code>/<code>collectAsState</code>, а <code>Transformations</code> — на операторы Flow. Понимание LiveData нужно, чтобы читать и безопасно менять legacy-код, а не для нового.</p>
+<h3 id="livedata-testing" class="study-subtitle">4.8. Тестирование LiveData</h3>
+<p>Тестирование LiveData требует, чтобы наблюдение происходило на главном потоке. Для этого используют <code>InstantTaskExecutorRule</code> из <code>androidx.arch.core:core-testing</code>, который делает главный поток синхронным в тестах. Затем можно вызвать <code>getOrAwaitValue()</code> (расширение из примеров Google) или observeForever и проверить значение.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@get:Rule</span>
+<span class="hljs-keyword">val</span> instantTaskExecutorRule = InstantTaskExecutorRule()
+
+<span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `user LiveData emits value`<span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> vm = UserViewModel()
+    vm.loadUser()
+    assertEquals(<span class="hljs-string">&quot;Alex&quot;</span>, vm.user.getOrAwaitValue().name)
+}
+</code></pre></div>
+<p>В современных проектах тесты для StateFlow проще: достаточно <code>runTest</code> и чтения <code>.value</code>. Это ещё одна причина, почему LiveData считается legacy.</p>
+<h3 id="livedata-compose" class="study-subtitle">4.9. LiveData и Jetpack Compose</h3>
+<p>В Compose для подписки на LiveData используют <code>observeAsState()</code> из <code>androidx.compose.runtime:runtime-livedata</code>. Он возвращает <code>State&lt;T?&gt;</code>, который обновляется при изменении LiveData. Это работает, но добавляет зависимость и менее удобно, чем нативный <code>collectAsState()</code> для StateFlow.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Composable</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">UserScreen</span><span class="hljs-params">(viewModel: <span class="hljs-type">UserViewModel</span>)</span></span> {
+    <span class="hljs-keyword">val</span> user <span class="hljs-keyword">by</span> viewModel.user.observeAsState()
+    Text(user?.name ?: <span class="hljs-string">&quot;Загрузка...&quot;</span>)
+}
+</code></pre></div>
+<p>В новых проектах, особенно на Compose, предпочитают StateFlow, чтобы не держать две модели реактивности. В legacy-коде на View-системе LiveData остаётся удобной благодаря lifecycle-aware observe.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Вызывать <code>setValue</code> из фонового потока.</li>
+<li>Использовать <code>this</code> вместо <code>viewLifecycleOwner</code> во Fragment.</li>
+<li>Смешивать LiveData и StateFlow на одном экране.</li>
+<li>Полагаться на <code>.value</code> для чтения в фоне.</li>
+<li>Забывать InstantTaskExecutorRule в тестах.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Отличаю LiveData от MutableLiveData и знаю паттерн приватного изменяемого поля.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю разницу setValue и postValue.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, что observe привязан к lifecycle.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу объяснить, почему LiveData — legacy и когда её ещё встретишь.</li>
+</ul></section><section id="viewmodel" class="study-section" aria-labelledby="viewmodel-title"><h2 id="viewmodel-title" class="study-section-title">5. ViewModel</h2><p>ViewModel — компонент AndroidX (androidx.lifecycle.ViewModel), предназначенный для хранения UI-состояния и логики представления с сохранением при пересоздании Activity/Fragment. Он живёт дольше, чем View: переживает поворот экрана и смену конфигурации, но уничтожается при окончательном закрытии экрана или процесса. ViewModel — центральный элемент MVVM: именно в ней держат StateFlow с состоянием экрана и запускают корутины через viewModelScope.</p>
+<h3 id="viewmodel-create" class="study-subtitle">5.1. Создание ViewModel</h3>
+<p>ViewModel создаётся наследованием от <code>ViewModel</code>. В конструктор передают зависимости (репозитории, use-case). Сам класс не должен ссылаться на View или Context.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ProfileViewModel</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> repository: UserRepository
+) : ViewModel() {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _state = MutableStateFlow&lt;ProfileUiState&gt;(ProfileUiState.Loading)
+    <span class="hljs-keyword">val</span> state: StateFlow&lt;ProfileUiState&gt; = _state.asStateFlow()
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">load</span><span class="hljs-params">(userId: <span class="hljs-type">Long</span>)</span></span> {
+        viewModelScope.launch {
+            _state.value = ProfileUiState.Loading
+            runCatching { repository.getUser(userId) }
+                .onSuccess { _state.value = ProfileUiState.Success(it) }
+                .onFailure { _state.value = ProfileUiState.Error(it.message ?: <span class="hljs-string">&quot;Ошибка&quot;</span>) }
+        }
+    }
+}
+</code></pre></div>
+<h3 id="viewmodel-obtain" class="study-subtitle">5.2. Получение ViewModel в Activity и Fragment</h3>
+<p>Для получения ViewModel используют делегаты <code>by viewModels()</code> (в Activity/Fragment) или <code>by activityViewModels()</code> (общая с Activity). ViewModel создаётся один раз на область видимости и переиспользуется при пересоздании.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ProfileFragment</span> : <span class="hljs-type">Fragment</span>() {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> viewModel: ProfileViewModel <span class="hljs-keyword">by</span> viewModels {
+        ProfileViewModelFactory(repository)
+    }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onViewCreated</span><span class="hljs-params">(view: <span class="hljs-type">View</span>, savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span> {
+        <span class="hljs-keyword">super</span>.onViewCreated(view, savedInstanceState)
+        viewModel.load(<span class="hljs-number">1L</span>)
+    }
+}
+</code></pre></div>
+<p>В Compose используют <code>viewModel()</code> из <code>androidx.lifecycle.viewmodel.compose</code>, который сам создаёт/находит ViewModel в ближайшем ViewModelStoreOwner.</p>
+<h3 id="viewmodel-config-changes" class="study-subtitle">5.3. Переживание Configuration Changes</h3>
+<p>При смене конфигурации (поворот экрана, смена языка, тёмная тема) Activity/Fragment уничтожаются и создаются заново. ViewModel при этом сохраняется в <code>ViewModelStore</code>, привязанном к Activity/Fragment, и переиспользуется. Поэтому состояние в StateFlow и запущенные корутины (в viewModelScope) продолжают жить, а UI просто переподписывается при пересоздании.</p>
+<p>Это ключевое преимущество ViewModel над хранением состояния в Activity: нет необходимости вручную сохранять и восстанавливать данные при повороте.</p>
+<h3 id="viewmodel-scope" class="study-subtitle">5.4. ViewModelScope</h3>
+<p><code>viewModelScope</code> — CoroutineScope, привязанный к жизненному циклу ViewModel. Корутины, запущенные в нём, автоматически отменяются, когда ViewModel очищается (экран закрыт). Это предотвращает утечки и работу с устаревшими данными.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">refresh</span><span class="hljs-params">()</span></span> {
+    viewModelScope.launch {
+        <span class="hljs-keyword">val</span> <span class="hljs-keyword">data</span> = repository.fetchLatest()
+        _state.value = UiState.Success(<span class="hljs-keyword">data</span>)
+    }
+}
+</code></pre></div>
+<p>Используйте <code>viewModelScope</code> для всех корутин в ViewModel. Не создавайте свой Scope без необходимости: можно потерять автоматическую отмену.</p>
+<h3 id="viewmodel-factory" class="study-subtitle">5.5. Передача зависимостей через ViewModel Factory</h3>
+<p>ViewModel не создаётся через конструктор напрямую фреймворком — нужен <code>ViewModelProvider.Factory</code>. Фабрика знает, как создать ViewModel с зависимостями.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ProfileViewModelFactory</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> repository: UserRepository
+) : ViewModelProvider.Factory {
+    <span class="hljs-meta">@Suppress(<span class="hljs-string">&quot;UNCHECKED_CAST&quot;</span>)</span>
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-type">&lt;T : ViewModel&gt;</span> <span class="hljs-title">create</span><span class="hljs-params">(modelClass: <span class="hljs-type">Class</span>&lt;<span class="hljs-type">T</span>&gt;)</span></span>: T {
+        <span class="hljs-keyword">if</span> (modelClass.isAssignableFrom(ProfileViewModel::<span class="hljs-keyword">class</span>.java)) {
+            <span class="hljs-keyword">return</span> ProfileViewModel(repository) <span class="hljs-keyword">as</span> T
+        }
+        <span class="hljs-keyword">throw</span> IllegalArgumentException(<span class="hljs-string">&quot;Unknown ViewModel class&quot;</span>)
+    }
+}
+</code></pre></div>
+<p>В проектах с DI (Hilt) фабрика генерируется автоматически (<code>@HiltViewModel</code>), и ViewModel получает зависимости через конструктор без ручной фабрики. На Junior-уровне важно понимать принцип: фреймворк создаёт ViewModel, а зависимости передаются через фабрику.</p>
+<h3 id="viewmodel-shared" class="study-subtitle">5.6. Shared ViewModel</h3>
+<p>Shared ViewModel — одна ViewModel, общая для нескольких Fragment в рамках одной Activity. Она используется для обмена данными между экранами (например, выбор элемента в списке и отображение детали) без передачи через аргументы.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SharedViewModel</span> : <span class="hljs-type">ViewModel</span>() {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _selectedId = MutableStateFlow&lt;<span class="hljs-built_in">Long</span>?&gt;(<span class="hljs-literal">null</span>)
+    <span class="hljs-keyword">val</span> selectedId: StateFlow&lt;<span class="hljs-built_in">Long</span>?&gt; = _selectedId.asStateFlow()
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">select</span><span class="hljs-params">(id: <span class="hljs-type">Long</span>)</span></span> { _selectedId.value = id }
+}
+
+<span class="hljs-comment">// в обоих Fragment</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> shared: SharedViewModel <span class="hljs-keyword">by</span> activityViewModels()
+</code></pre></div>
+<p>Shared ViewModel живёт, пока жива Activity, и доступна всем Fragment. Это удобно, но важно не превращать её в глобальное хранилище: данные должны относиться к конкретному потоку навигации.</p>
+<h3 id="viewmodel-lifecycle-diff" class="study-subtitle">5.7. Отличие жизненного цикла ViewModel от Activity и Fragment</h3>
+<ul class="study-list">
+<li>Activity/Fragment: создаются и уничтожаются при каждом пересоздании (поворот, смена конфигурации) и при закрытии экрана.</li>
+<li>ViewModel: создаётся при первом запросе и живёт, пока Activity/Fragment (или навигационный back stack entry) окончательно не уничтожены. Переживает пересоздание.</li>
+<li>View (разметка): живёт между <code>onCreateView</code> и <code>onDestroyView</code> во Fragment — короче, чем сам Fragment.</li>
+</ul>
+<p>Поэтому в ViewModel нельзя хранить ссылки на View, binding или Context, связанный с View: они могут устареть при пересоздании. Храните только данные и абстракции.</p>
+<h3 id="viewmodel-process-death" class="study-subtitle">5.8. ViewModel не переживает Process Death</h3>
+<p>Важное ограничение: ViewModel переживает пересоздание при смене конфигурации, но не переживает убийство процесса системой (process death). Если ОС убьёт приложение в фоне из-за нехватки памяти, при возврате пользователь увидит новый процесс, и ViewModel создастся заново с начальным состоянием.</p>
+<p>Для данных, которые должны пережить process death (например, введённый текст, позиция в списке), используют SavedStateHandle или сохранение в постоянное хранилище (DataStore, БД). Полагаться на ViewModel для критически важных данных нельзя.</p>
+<h3 id="viewmodel-savedstatehandle" class="study-subtitle">5.9. SavedStateHandle (назначение)</h3>
+<p><code>SavedStateHandle</code> — key-value хранилище, привязанное к ViewModel, которое сохраняется в Bundle при process death и восстанавливается при пересоздании. Оно позволяет ViewModel читать и записывать небольшие значения, переживающие убийство процесса.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SearchViewModel</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    <span class="hljs-keyword">val</span> query: StateFlow&lt;String&gt; = savedStateHandle.getStateFlow(<span class="hljs-string">&quot;query&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">setQuery</span><span class="hljs-params">(value: <span class="hljs-type">String</span>)</span></span> {
+        savedStateHandle[<span class="hljs-string">&quot;query&quot;</span>] = value
+    }
+}
+</code></pre></div>
+<p><code>SavedStateHandle</code> удобен для идентификаторов, поисковых запросов, фильтров. Большие объекты и списки в него класть не стоит — Bundle ограничен по размеру. Для них используют постоянное хранилище.</p>
+<h3 id="viewmodel-testing" class="study-subtitle">5.10. Тестирование ViewModel</h3>
+<p>ViewModel тестируется на JVM: подменяем репозиторий фейком и проверяем изменения StateFlow. Корутины запускаем через <code>runTest</code>, а для проверки нескольких эмиссий используют библиотеку Turbine.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `load sets success state`<span class="hljs-params">()</span></span> = runTest {
+    <span class="hljs-keyword">val</span> vm = ProfileViewModel(FakeUserRepository())
+    vm.load(<span class="hljs-number">1L</span>)
+    assertEquals(ProfileUiState.Success(User(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;Alex&quot;</span>)), vm.state.value)
+}
+</code></pre></div>
+<p>Такие тесты быстрые и не требуют эмулятора, потому что ViewModel зависит только от абстракций. Это и есть главная выгода выноса логики из Activity в ViewModel.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Хранить ссылку на View, binding или Activity в ViewModel.</li>
+<li>Считать, что ViewModel переживает убийство процесса.</li>
+<li>Создавать ViewModel через <code>ViewModelProvider</code> без фабрики при наличии зависимостей.</li>
+<li>Использовать <code>GlobalScope</code> вместо <code>viewModelScope</code>.</li>
+<li>Класть большие объекты в SavedStateHandle.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу создать ViewModel с зависимостью через фабрику.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, почему ViewModel переживает поворот, но не process death.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю назначение viewModelScope и SavedStateHandle.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Объясняю, когда нужен Shared ViewModel.</li>
+</ul></section><section id="repository" class="study-section" aria-labelledby="repository-title"><h2 id="repository-title" class="study-section-title">6. Repository</h2><p>Repository — паттерн доступа к данным, который скрывает от ViewModel и UI детали того, откуда приходят данные: сеть, локальная база, кэш, файлы или SharedPreferences. ViewModel работает только с интерфейсом Repository и не знает, как именно данные получаются и сохраняются. Это делает слои независимыми и позволяет подменять источники данных без изменения логики представления.</p>
+<h3 id="naznachenie-repository" class="study-subtitle">6.1. Назначение Repository</h3>
+<p>Главная задача Repository — предоставить единый интерфейс для работы с данными конкретной сущности. Вместо того чтобы ViewModel напрямую вызывала Retrofit-интерфейс и Room DAO, она обращается к <code>UserRepository</code>, который сам решает, откуда взять данные. Благодаря этому логика представления не зависит от конкретной технологии хранения и передачи данных.</p>
+<p>Repository также становится местом, где живёт политика данных: когда можно вернуть кэш, когда нужно обновить сеть, как объединить несколько источников. Без Repository эта политика размазывается по ViewModel и фрагментам, и её невозможно тестировать изолированно. С Repository политика сосредоточена в одном классе, который можно покрыть unit-тестами с фейковыми источниками.</p>
+<h3 id="razdelenie-data-source-i-biznes-logiki" class="study-subtitle">6.2. Разделение data source и бизнес-логики</h3>
+<p>Data source — конкретный источник данных: Retrofit-сервис, Room DAO, DataStore, файловый кэш. Бизнес-логика — правила, по которым данные превращаются в то, что нужно UI: фильтрация, сортировка, объединение, валидация. Repository разделяет эти две вещи: он вызывает data source, но преобразует результат в доменную модель.</p>
+<p>Важно не смешивать слои. Retrofit-модель (<code>UserDto</code>) не должна утекать в ViewModel: Repository маппит её в доменный <code>User</code>. Тогда смена формата API или схемы БД затрагивает только Repository и мапперы, а ViewModel и UI остаются нетронутыми. Это и есть разделение ответственности: data source знает о транспорте, Repository — о правилах работы с данными, ViewModel — о состоянии экрана.</p>
+<h3 id="rabota-s-setyu-i-lokalnoy-bd" class="study-subtitle">6.3. Работа с сетью и локальной БД</h3>
+<p>Типичный сценарий: приложение должно показывать данные из локальной БД мгновенно, а затем обновлять их из сети. Repository координирует оба источника. Он не просто выбирает один из них, а выстраивает поток: сначала отдать локальные данные, потом запросить сеть и обновить локальное хранилище, после чего UI получит новые данные через тот же поток.</p>
+<p>Для реактивного потока удобно возвращать <code>Flow</code>. Repository подписывается на DAO, который эмитит изменения таблицы, и параллельно запускает сетевой запрос, сохраняющий результат в ту же таблицу. UI наблюдает за одним потоком и автоматически получает обновления. Это исключает рассинхронизацию: один источник истины — база данных.</p>
+<h3 id="interfeys-repository" class="study-subtitle">6.4. Интерфейс Repository</h3>
+<p>Repository всегда начинается с интерфейса. Интерфейс описывает контракт: какие операции доступны (получить, сохранить, удалить, наблюдать) и в каком виде возвращаются данные. ViewModel зависит от интерфейса, а не от реализации. Это позволяет подменить реализацию в тестах фейковым репозиторием без изменения кода ViewModel.</p>
+<p>Интерфейс должен быть минимальным и выражать намерения, а не детали. Методы называют по бизнес-смыслу: <code>getProfile</code>, <code>observeOrders</code>, <code>markAsRead</code>. Не стоит протаскивать через интерфейс параметры Retrofit или Room — они не должны быть видны вне data-слоя.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserRepository</span> {
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUser</span><span class="hljs-params">(id: <span class="hljs-type">Int</span>)</span></span>: User
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">observeUser</span><span class="hljs-params">(id: <span class="hljs-type">Int</span>)</span></span>: Flow&lt;User&gt;
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">saveUser</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span>
+}
+</code></pre></div>
+<h3 id="realizaciya-repository" class="study-subtitle">6.5. Реализация Repository</h3>
+<p>Реализация Repository получает зависимости (API, DAO, мапперы) через конструктор и реализует интерфейс. Внутри она выполняет маппинг, координацию источников и обработку ошибок. Реализация может быть одной на всё приложение или разделённой по сущностям — обычно один Repository на агрегат или группу связанных данных.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">UserRepositoryImpl</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> api: UserApi,
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> dao: UserDao,
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> mapper: UserMapper
+) : UserRepository {
+
+    <span class="hljs-keyword">override</span> <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUser</span><span class="hljs-params">(id: <span class="hljs-type">Int</span>)</span></span>: User {
+        <span class="hljs-keyword">val</span> dto = api.getUser(id)
+        <span class="hljs-keyword">val</span> user = mapper.toDomain(dto)
+        dao.insert(mapper.toEntity(user))
+        <span class="hljs-keyword">return</span> user
+    }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">observeUser</span><span class="hljs-params">(id: <span class="hljs-type">Int</span>)</span></span>: Flow&lt;User&gt; =
+        dao.observeById(id).map { mapper.toDomain(it) }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">saveUser</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span> {
+        dao.insert(mapper.toEntity(user))
+    }
+}
+</code></pre></div>
+<p>Здесь Repository объединяет сеть и БД: <code>getUser</code> запрашивает сеть, маппит, сохраняет в БД и возвращает доменную модель. <code>observeUser</code> отдаёт поток из БД, поэтому после <code>getUser</code> UI автоматически получит обновлённые данные.</p>
+<h3 id="preobrazovanie-oshibok" class="study-subtitle">6.6. Преобразование ошибок источников данных</h3>
+<p>Сетевой слой бросает <code>IOException</code> и <code>HttpException</code>, БД может бросать <code>SQLiteException</code>. Эти детали не должны доходить до ViewModel и UI: они привязаны к конкретной технологии и не несут бизнес-смысла. Repository перехватывает ошибки источников и преобразует их в доменные типы, понятные верхним слоям.</p>
+<p>Удобно использовать sealed-класс результата. Тогда ViewModel проверяет тип и показывает пользователю понятное сообщение, а не стектрейс.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Result</span>&lt;<span class="hljs-type">out T</span>&gt; {
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Success</span>&lt;<span class="hljs-type">T</span>&gt;(<span class="hljs-keyword">val</span> <span class="hljs-keyword">data</span>: T) : Result&lt;T&gt;()
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Error</span>(<span class="hljs-keyword">val</span> error: AppError) : Result&lt;<span class="hljs-built_in">Nothing</span>&gt;()
+}
+
+<span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AppError</span> {
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">object</span> Network : AppError()
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">object</span> NotFound : AppError()
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">object</span> Unknown : AppError()
+}
+
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUser</span><span class="hljs-params">(id: <span class="hljs-type">Int</span>)</span></span>: Result&lt;User&gt; = <span class="hljs-keyword">try</span> {
+    Result.Success(mapper.toDomain(api.getUser(id)))
+} <span class="hljs-keyword">catch</span> (e: IOException) {
+    Result.Error(AppError.Network)
+} <span class="hljs-keyword">catch</span> (e: HttpException) {
+    <span class="hljs-keyword">if</span> (e.code() == <span class="hljs-number">404</span>) Result.Error(AppError.NotFound)
+    <span class="hljs-keyword">else</span> Result.Error(AppError.Unknown)
+}
+</code></pre></div>
+<p>Так ViewModel не зависит от Retrofit и может реагировать на <code>AppError</code> универсально. Логирование оригинальной ошибки стоит оставить в Repository или в отдельном перехватчике, чтобы не потерять диагностику.</p>
+<h3 id="edinyy-istochnik-dannyh" class="study-subtitle">6.7. Базовое понимание единого источника данных</h3>
+<p>Single Source of Truth (SSOT) — принцип, при котором для каждой сущности есть один авторитетный источник данных, и все остальные читают из него. В Android-приложении таким источником обычно становится локальная БД: UI наблюдает за БД, а сеть лишь обновляет её. Тогда даже при отсутствии сети UI показывает последние сохранённые данные, а при появлении сети — обновляется автоматически.</p>
+<p>SSOT устраняет расхождения: нет ситуации, когда один экран показывает старые данные, а другой — новые. Repository обеспечивает SSOT, скрывая от UI факт того, что данные могли прийти из сети. Для Junior-уровня достаточно понимать идею и применять её к простым случаям: «БД — источник истины, сеть — обновление».</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>ViewModel напрямую вызывает Retrofit и Room, минуя Repository — логика данных размазывается и не тестируется.</li>
+<li>Утечка DTO и Entity в UI-слой — смена API ломает экраны.</li>
+<li>Несколько независимых источников для одной сущности без синхронизации — рассинхронизированный UI.</li>
+<li>Игнорирование ошибок сети — приложение падает или молчит.</li>
+<li>Repository, знающий о View и Context — нарушение слоёв.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу объяснить, зачем нужен Repository и что он скрывает от ViewModel.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю разницу между data source и бизнес-логикой.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею описать интерфейс Repository и его реализацию.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, как маппить ошибки источников в доменные типы.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю идею Single Source of Truth.</li>
+</ul></section><section id="ui-state" class="study-section" aria-labelledby="ui-state-title"><h2 id="ui-state-title" class="study-section-title">7. UI State</h2><p>UI State — модель того, что экран должен показать пользователю в конкретный момент: данные, флаги загрузки, ошибки, выбранные элементы. Явная модель состояния делает поведение экрана предсказуемым и упрощает отрисовку: UI становится функцией от состояния.</p>
+<h3 id="ponyatie-ui-state" class="study-subtitle">7.1. Понятие UI State</h3>
+<p>Состояние экрана — это все данные, необходимые для отрисовки интерфейса в данный момент: список элементов, текст заголовка, флаг загрузки, сообщение об ошибке, выбранная вкладка. Вместо набора разрозненных переменных и флагов в Activity лучше иметь один объект <code>UiState</code>, описывающий весь экран.</p>
+<p>Явное состояние упрощает рассуждение о поведении: «если состояние такое — показываем вот это». Оно также помогает избежать противоречивых комбинаций, например одновременно показывать спиннер и данные. Хранится состояние во ViewModel, а View лишь отображает его.</p>
+<p>Явное состояние также упрощает командную работу: дизайнер и разработчик могут договориться о наборе состояний экрана, а затем реализовывать их независимо. При добавлении нового состояния (например, «пустой список») достаточно добавить вариант в sealed-иерархию и обновить рендеринг — компилятор подскажет все места, где состояние используется. Это снижает риск забыть обновить один из экранов или диалогов.</p>
+<h3 id="loading-success-error" class="study-subtitle">7.2. Loading, Success и Error</h3>
+<p>Большинство экранов проходят через три базовых состояния асинхронной операции: загрузка, успех, ошибка. Эти состояния взаимоисключающие — экран не может одновременно грузиться и показывать ошибку. Поэтому их удобно моделировать через sealed-класс или sealed-интерфейс.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">sealed</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UiState</span> {
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">object</span> Loading : UiState
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Success</span>(<span class="hljs-keyword">val</span> items: List&lt;Item&gt;) : UiState
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Error</span>(<span class="hljs-keyword">val</span> message: String) : UiState
+}
+</code></pre></div>
+<p>Такая модель заставляет View обработать все случаи: компилятор не даст забыть ветку. При переходе из Loading в Success спиннер скрывается и показывается список; при Error — сообщение и кнопка повтора. Никаких «половинчатых» состояний.</p>
+<h3 id="data-class-sostoyaniya" class="study-subtitle">7.3. Data class для состояния экрана</h3>
+<p>Когда состояний много и они пересекаются, удобнее один data-класс со всеми полями, где часть полей может быть null или пустой. Это проще для сложных экранов с несколькими независимыми блоками.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ProfileScreenState</span>(
+    <span class="hljs-keyword">val</span> isLoading: <span class="hljs-built_in">Boolean</span> = <span class="hljs-literal">false</span>,
+    <span class="hljs-keyword">val</span> user: User? = <span class="hljs-literal">null</span>,
+    <span class="hljs-keyword">val</span> errorMessage: String? = <span class="hljs-literal">null</span>,
+    <span class="hljs-keyword">val</span> isRefreshing: <span class="hljs-built_in">Boolean</span> = <span class="hljs-literal">false</span>
+)
+</code></pre></div>
+<p>Плюс подхода — гибкость: можно показывать частичные данные во время обновления. Минус — возможность противоречивых комбинаций (например, <code>isLoading = true</code> и <code>errorMessage != null</code> одновременно). Для простых экранов предпочтительнее sealed-состояния, для сложных — data-класс с инвариантами, проверяемыми в ViewModel.</p>
+<p>На практике часто комбинируют оба подхода: верхнеуровневое состояние экрана моделируют через sealed-класс (Loading/Content/Error), а внутри Content хранят data-класс с полями. Такой гибрид сохраняет исчерпывающую проверку в <code>when</code> и позволяет описывать сложные данные внутри успешного состояния. Выбор конкретной формы зависит от количества независимых осей изменения экрана.</p>
+<h3 id="sealed-class-interface" class="study-subtitle">7.4. Sealed class и sealed interface для состояний</h3>
+<p>Sealed-иерархия ограничивает набор наследников: все варианты известны на этапе компиляции. <code>when</code> по sealed-типу становится исчерпывающим — компилятор потребует обработать все ветки и не даст добавить новую без обновления UI.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">sealed</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ScreenState</span> {
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">object</span> Loading : ScreenState
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Content</span>(<span class="hljs-keyword">val</span> <span class="hljs-keyword">data</span>: List&lt;Item&gt;) : ScreenState
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Error</span>(<span class="hljs-keyword">val</span> reason: Throwable) : ScreenState
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">object</span> Empty : ScreenState
+}
+</code></pre></div>
+<p>Sealed interface предпочтительнее sealed class, если не нужно хранить общее состояние в базовом типе: интерфейс не навязывает конструктор и позволяет наследовать несколько иерархий. Для UI State sealed interface — современный стандарт.</p>
+<h3 id="immutable-ui-state" class="study-subtitle">7.5. Immutable UI State</h3>
+<p>Состояние должно быть неизменяемым: вместо изменения полей создаётся новая копия через <code>copy()</code>. Это упрощает отслеживание изменений (diff), делает эмиссии StateFlow корректными и исключает гонки при параллельном доступе.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UiState</span>(
+    <span class="hljs-keyword">val</span> query: String = <span class="hljs-string">&quot;&quot;</span>,
+    <span class="hljs-keyword">val</span> results: List&lt;Item&gt; = emptyList(),
+    <span class="hljs-keyword">val</span> isLoading: <span class="hljs-built_in">Boolean</span> = <span class="hljs-literal">false</span>
+)
+
+<span class="hljs-comment">// обновление</span>
+_state.value = _state.value.copy(isLoading = <span class="hljs-literal">true</span>)
+</code></pre></div>
+<p>Иммутабельность также упрощает тестирование: состояние до и после операции можно сравнить напрямую. Mutable-поля в state-объекте приводят к скрытым изменениям и багам, когда UI не замечает обновление.</p>
+<p>Иммутабельность также упрощает откат и повтор изменений (undo/redo): достаточно хранить список предыдущих состояний и возвращаться к нужному. В отладке это позволяет воспроизвести любой момент жизни экрана. Кроме того, иммутабельные объекты безопасно передавать между потоками без дополнительной синхронизации, что важно при работе с корутинами и Flow.</p>
+<h3 id="khranenie-sostoyaniya-viewmodel" class="study-subtitle">7.6. Хранение состояния во ViewModel</h3>
+<p>ViewModel хранит состояние в <code>MutableStateFlow</code>, а наружу отдаёт read-only <code>StateFlow</code>. Это гарантирует, что только ViewModel может менять состояние, а View — только наблюдать. При пересоздании Activity состояние сохраняется, потому что ViewModel переживает configuration change.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SearchViewModel</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> repo: SearchRepository
+) : ViewModel() {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _state = MutableStateFlow(UiState())
+    <span class="hljs-keyword">val</span> state: StateFlow&lt;UiState&gt; = _state.asStateFlow()
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">search</span><span class="hljs-params">(query: <span class="hljs-type">String</span>)</span></span> {
+        _state.value = _state.value.copy(isLoading = <span class="hljs-literal">true</span>, query = query)
+        viewModelScope.launch {
+            <span class="hljs-keyword">val</span> result = repo.search(query)
+            _state.value = _state.value.copy(isLoading = <span class="hljs-literal">false</span>, results = result)
+        }
+    }
+}
+</code></pre></div>
+<p>Важно: не отдавать наружу <code>MutableStateFlow</code> и не менять <code>_state.value</code> из View. Единственная точка изменения — методы ViewModel, вызываемые по событиям пользователя.</p>
+<h3 id="otobrazhenie-sostoyaniya" class="study-subtitle">7.7. Отображение состояния в Activity и Fragment</h3>
+<p>View подписывается на <code>StateFlow</code> и перерисовывает UI при каждом новом состоянии. Используют <code>repeatOnLifecycle</code>, чтобы сбор происходил только когда экран видим, и останавливался при уходе в фон — это экономит ресурсы и предотвращает обновления невидимого UI.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SearchFragment</span> : <span class="hljs-type">Fragment</span>(R.layout.fragment_search) {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> viewModel: SearchViewModel <span class="hljs-keyword">by</span> viewModels()
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onViewCreated</span><span class="hljs-params">(view: <span class="hljs-type">View</span>, savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span> {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state -&gt;
+                    render(state)
+                }
+            }
+        }
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">render</span><span class="hljs-params">(state: <span class="hljs-type">UiState</span>)</span></span> {
+        <span class="hljs-keyword">when</span> (state) {
+            <span class="hljs-keyword">is</span> UiState.Loading -&gt; showProgress()
+            <span class="hljs-keyword">is</span> UiState.Success -&gt; showList(state.items)
+            <span class="hljs-keyword">is</span> UiState.Error -&gt; showError(state.message)
+        }
+    }
+}
+</code></pre></div>
+<p>Рендеринг выносят в отдельную функцию <code>render</code>, которая полностью описывает, как состояние превращается в UI. Это делает код читаемым и тестируемым: можно проверить <code>render</code> отдельно или проверить, что ViewModel эмитит ожидаемые состояния.</p>
+<p>Важно не смешивать логику и отображение: функция <code>render</code> должна только читать состояние и обновлять View, без вызовов Repository или навигации. Побочные эффекты (навигация, показ Snackbar, запрос разрешений) лучше выносить в отдельный канал событий (SharedFlow), чтобы они не повторялись при каждом новом состоянии и не терялись при пересоздании View. Разделение состояния и одноразовых событий — частая точка ошибок на Junior-уровне.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Хранение состояния в Activity/Fragment — теряется при повороте экрана.</li>
+<li>Несколько LiveData/Flow для одного экрана без объединения — сложно синхронизировать.</li>
+<li>Изменение состояния из View напрямую — нарушение инкапсуляции.</li>
+<li>Отсутствие обработки всех веток sealed-состояния — неполный UI.</li>
+<li>Сбор Flow без <code>repeatOnLifecycle</code> — утечки и лишняя работа в фоне.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу описать состояние экрана одним объектом.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею моделировать Loading/Success/Error через sealed-интерфейс.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, зачем состояние иммутабельно.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею хранить состояние в ViewModel через StateFlow.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, как собирать состояние в Activity/Fragment через repeatOnLifecycle.</li>
+</ul></section><section id="odnostoronniy-potok-dannyh" class="study-section" aria-labelledby="odnostoronniy-potok-dannyh-title"><h2 id="odnostoronniy-potok-dannyh-title" class="study-section-title">8. Односторонний поток данных</h2><p>Unidirectional Data Flow (UDF) — архитектурный принцип, при котором состояние движется только вниз (от логики к UI), а пользовательские события — только вверх (от UI к логике). Это делает поток данных предсказуемым и упрощает отладку.</p>
+<h3 id="state-vniz" class="study-subtitle">8.1. State вниз</h3>
+<p>Состояние передаётся от ViewModel к View. View не хранит собственное состояние экрана и не вычисляет его; она получает готовый объект <code>UiState</code> и отображает. При изменении состояния ViewModel эмитит новое значение, и View перерисовывается.</p>
+<p>Направление «вниз» означает, что данные текут от источника истины (ViewModel) к потребителю (View). View не может изменить состояние напрямую — только запросить изменение через событие. Это исключает ситуацию, когда View и ViewModel расходятся во мнении о том, что сейчас на экране.</p>
+<h3 id="events-vverkh" class="study-subtitle">8.2. Events вверх</h3>
+<p>Пользовательские действия (клик, ввод, свайп) передаются вверх как события. View не меняет состояние сама — она вызывает метод ViewModel (<code>onItemClick</code>, <code>onRetry</code>) или отправляет объект события. ViewModel обрабатывает событие, обновляет состояние и эмитит новое значение вниз.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// View</span>
+button.setOnClickListener { viewModel.onRetry() }
+
+<span class="hljs-comment">// ViewModel</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onRetry</span><span class="hljs-params">()</span></span> {
+    _state.value = _state.value.copy(isLoading = <span class="hljs-literal">true</span>)
+    viewModelScope.launch {
+        <span class="hljs-keyword">val</span> <span class="hljs-keyword">data</span> = repo.load()
+        _state.value = _state.value.copy(isLoading = <span class="hljs-literal">false</span>, <span class="hljs-keyword">data</span> = <span class="hljs-keyword">data</span>)
+    }
+}
+</code></pre></div>
+<p>Разделение «событие вверх, состояние вниз» делает поток однонаправленным: всегда понятно, откуда пришло изменение. Это особенно важно при отладке: можно логировать каждое событие и каждое новое состояние.</p>
+<h3 id="single-source-of-truth" class="study-subtitle">8.3. Single Source of Truth</h3>
+<p>В UDF для каждого куска состояния есть один источник истины — обычно ViewModel (или Repository для данных). Никакой другой компонент не хранит свою копию, которую нужно синхронизировать. View — чистая функция от состояния, она не добавляет собственной логики.</p>
+<p>SSOT устраняет класс багов, когда два компонента хранят состояние независимо и расходятся. Например, если и Activity, и Fragment держат флаг <code>isLoading</code>, они могут показать разное. С UDF флаг один — во ViewModel, и все читают его оттуда.</p>
+<p>На практике SSOT означает, что при конфликте данных между кэшем и сетью побеждает тот источник, который объявлен авторитетным. Repository обеспечивает это правило: он решает, откуда брать данные и как объединять источники. ViewModel же всегда читает готовое состояние и не пытается «угадать», какой источник актуальнее. Это особенно важно при оффлайн-режиме, когда локальная БД может содержать устаревшие, но последние известные данные.</p>
+<h3 id="immutability" class="study-subtitle">8.4. Immutability</h3>
+<p>Состояние в UDF неизменно. Каждое изменение создаёт новое значение состояния, а не мутирует старое. Это позволяет StateFlow корректно определять изменения (сравнение по равенству), сохранять историю изменений и откатывать состояние при необходимости.</p>
+<p>Иммутабельность также делает код потокобезопасным: состояние не может измениться «под ногами» у читающего кода. При параллельных операциях каждая создаёт свою копию, и конфликтов состояния не возникает.</p>
+<p>В Kotlin иммутабельность достигается использованием <code>val</code> и data-классов с <code>copy()</code>. Важно не забывать, что коллекции внутри data-класса (например, <code>List</code>) должны быть неизменяемыми: <code>listOf</code>, а не <code>mutableListOf</code>. Иначе внешний код сможет изменить список внутри «неизменяемого» объекта, что ломает гарантии. Для защиты используйте <code>toList()</code> при создании состояния.</p>
+<h3 id="obrabotka-polzovatelskih-sobytiy" class="study-subtitle">8.5. Обработка пользовательских событий</h3>
+<p>События пользователя должны быть явными и типизированными. Вместо произвольных вызовов методов удобно использовать sealed-класс событий, который View отправляет в ViewModel. Это делает контракт между View и ViewModel явным и проверяемым компилятором.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">sealed</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserEvent</span> {
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">QueryChanged</span>(<span class="hljs-keyword">val</span> query: String) : UserEvent
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">object</span> SearchClicked : UserEvent
+    <span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ItemClicked</span>(<span class="hljs-keyword">val</span> id: <span class="hljs-built_in">Int</span>) : UserEvent
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">SearchViewModel</span> : <span class="hljs-type">ViewModel</span>() {
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onEvent</span><span class="hljs-params">(event: <span class="hljs-type">UserEvent</span>)</span></span> {
+        <span class="hljs-keyword">when</span> (event) {
+            <span class="hljs-keyword">is</span> UserEvent.QueryChanged -&gt; updateQuery(event.query)
+            UserEvent.SearchClicked -&gt; performSearch()
+            <span class="hljs-keyword">is</span> UserEvent.ItemClicked -&gt; openItem(event.id)
+        }
+    }
+}
+</code></pre></div>
+<p>Единая точка входа <code>onEvent</code> упрощает логирование, тестирование и добавление новых событий: достаточно добавить вариант в sealed-класс и обработать его в <code>when</code>.</p>
+<h3 id="obnovlenie-ui-state" class="study-subtitle">8.6. Обновление UI State</h3>
+<p>Обновление состояния происходит в ViewModel в ответ на событие. Процесс: получить текущее состояние, вычислить новое (обычно через <code>copy</code>), присвоить <code>_state.value</code>. Если обновление зависит от асинхронной операции, сначала можно выставить промежуточное состояние (Loading), а после завершения — финальное (Success/Error).</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">performSearch</span><span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> query = _state.value.query
+    _state.value = _state.value.copy(isLoading = <span class="hljs-literal">true</span>, error = <span class="hljs-literal">null</span>)
+    viewModelScope.launch {
+        <span class="hljs-keyword">val</span> result = <span class="hljs-keyword">try</span> {
+            repo.search(query)
+        } <span class="hljs-keyword">catch</span> (e: Exception) {
+            <span class="hljs-literal">null</span>
+        }
+        _state.value = <span class="hljs-keyword">if</span> (result != <span class="hljs-literal">null</span>) {
+            _state.value.copy(isLoading = <span class="hljs-literal">false</span>, results = result)
+        } <span class="hljs-keyword">else</span> {
+            _state.value.copy(isLoading = <span class="hljs-literal">false</span>, error = <span class="hljs-string">&quot;Не удалось загрузить&quot;</span>)
+        }
+    }
+}
+</code></pre></div>
+<p>Важно обновлять состояние атомарно и не оставлять «полусостояния», когда часть полей уже обновлена, а часть — нет. Иммутабельный <code>copy</code> помогает: новое значение создаётся целиком.</p>
+<h3 id="preimushchestva-predskazuemogo-potoka" class="study-subtitle">8.7. Преимущества предсказуемого потока данных</h3>
+<p>UDF даёт несколько практических преимуществ. Отладка упрощается: состояние — функция событий, поэтому по логу событий можно воспроизвести любое состояние. Тестирование становится простым: отправить событие, проверить эмитированное состояние. UI становится детерминированным: одинаковое состояние всегда даёт одинаковый экран.</p>
+<p>Также упрощается работа с configuration changes: ViewModel хранит состояние, View при пересоздании просто подписывается заново и получает актуальное. Нет необходимости сохранять и восстанавливать состояние вручную. Для Junior-разработчика UDF — основа для понимания MVVM и подготовка к MVI на Middle-уровне.</p>
+<p>Ещё одно преимущество — предсказуемость при тестировании. Тест отправляет событие и проверяет, что ViewModel эмитировала ожидаемую последовательность состояний. Нет скрытых зависимостей от порядка вызовов или внутренних флагов. Это делает тесты стабильными и понятными: «при событии X состояние становится Y». Именно поэтому UDF рекомендуется как стандарт для новых Android-проектов.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>View напрямую меняет состояние, минуя ViewModel — нарушение направления потока.</li>
+<li>Несколько источников истины для одного экрана — рассинхронизация.</li>
+<li>Мутация состояния вместо создания копии — StateFlow не эмитит обновление.</li>
+<li>Смешение событий и состояния в одном объекте — путаница в потоке.</li>
+<li>Обработка событий в View вместо ViewModel — логика утекает в UI.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу объяснить, почему состояние идёт вниз, а события — вверх.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, что такое Single Source of Truth.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, зачем состояние иммутабельно.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею моделировать события через sealed-класс.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу описать полный цикл: событие → обновление состояния → перерисовка.</li>
+</ul></section><section id="dependency-injection-basics" class="study-section" aria-labelledby="dependency-injection-basics-title"><h2 id="dependency-injection-basics-title" class="study-section-title">9. Dependency Injection Basics</h2><p>Dependency Injection (DI) — техника, при которой объект получает свои зависимости извне, а не создаёт их сам. Это снижает связанность компонентов и упрощает тестирование и замену реализаций.</p>
+<h3 id="ponyatie-zavisimosti" class="study-subtitle">9.1. Понятие зависимости</h3>
+<p>Зависимость — объект, который нужен другому объекту для работы. Например, <code>UserRepository</code> зависит от <code>UserApi</code> и <code>UserDao</code>; <code>LoginViewModel</code> зависит от <code>LoginUseCase</code>. Если класс сам создаёт свои зависимости через <code>new</code>/конструктор, он жёстко связан с их конкретными реализациями и не может работать с другими.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">LoginViewModel</span> {
+    <span class="hljs-comment">// жёсткая связанность: ViewModel сам создаёт репозиторий</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> repo = UserRepositoryImpl(RetrofitInstance.api, AppDatabase.dao)
+}
+</code></pre></div>
+<p>Зависимость становится проблемой, когда её нужно заменить (в тесте, при смене реализации) или когда один и тот же объект нужно разделить между несколькими потребителями. DI решает эту проблему, передавая зависимости снаружи.</p>
+<h3 id="dependency-injection" class="study-subtitle">9.2. Dependency Injection</h3>
+<p>DI — передача зависимостей объекту извне, обычно через конструктор. Объект не знает, как создать зависимость, он только использует её. Созданием и связыванием занимается внешний код — composition root или DI-фреймворк.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">LoginViewModel</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> loginUseCase: LoginUseCase
+) : ViewModel() {
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">login</span><span class="hljs-params">(email: <span class="hljs-type">String</span>, password: <span class="hljs-type">String</span>)</span></span> {
+        viewModelScope.launch { loginUseCase(email, password) }
+    }
+}
+</code></pre></div>
+<p>Теперь <code>LoginViewModel</code> зависит от абстракции <code>LoginUseCase</code> (или интерфейса), а конкретная реализация подставляется снаружи. В тесте можно передать фейковый use-case. Это и есть инверсия управления: контроль над созданием объектов переходит от класса к внешнему коду.</p>
+<h3 id="constructor-injection" class="study-subtitle">9.3. Constructor Injection</h3>
+<p>Constructor Injection — основной и самый предпочтительный вид DI: зависимости передаются через конструктор и сохраняются в <code>private val</code> полях. Это делает зависимости явными, неизменяемыми и гарантирует, что объект не может существовать без них.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderRepositoryImpl</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> api: OrderApi,
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> dao: OrderDao,
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> mapper: OrderMapper
+) : OrderRepository { ... }
+</code></pre></div>
+<p>Преимущества: зависимости видны в сигнатуре, их нельзя забыть; объект иммутабелен; легко создать в тесте, передав фейки. Альтернативы (field injection, setter injection) скрывают зависимости и позволяют создать объект в невалидном состоянии — их используют только там, где конструктор недоступен (например, Android-компоненты без фабрики).</p>
+<h3 id="dependency-inversion" class="study-subtitle">9.4. Dependency Inversion (базовое понимание)</h3>
+<p>Dependency Inversion Principle (DIP) — принцип SOLID: модули верхнего уровня не должны зависеть от модулей нижнего уровня; оба должны зависеть от абстракций. Абстракции не должны зависеть от деталей; детали зависят от абстракций.</p>
+<p>На практике это означает: ViewModel зависит от интерфейса Repository, а не от его реализации с Retrofit. Реализация зависит от того же интерфейса. Связь между слоями идёт через абстракцию, поэтому можно подменить реализацию (например, перейти с Retrofit на Ktor) без изменения ViewModel. DI и DIP идут рука об руку: DI — механизм передачи зависимостей, DIP — правило, от чего зависеть.</p>
+<h3 id="ruchnoe-sozdanie" class="study-subtitle">9.5. Ручное создание объектов и проблема жёсткой связанности</h3>
+<p>Без DI объекты создаются вручную, часто в Activity или Application. Это приводит к жёсткой связанности: чтобы создать ViewModel, нужно создать Repository, который требует API и DAO, которые требуют Context и базу данных. Граф зависимостей растёт, и его приходится собирать вручную в каждом месте.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// ручная сборка в Activity — плохо масштабируется</span>
+<span class="hljs-keyword">val</span> db = Room.databaseBuilder(context, AppDb::<span class="hljs-keyword">class</span>.java, <span class="hljs-string">&quot;db&quot;</span>).build()
+<span class="hljs-keyword">val</span> api = Retrofit.Builder().baseUrl(BASE_URL).build().create(UserApi::<span class="hljs-keyword">class</span>.java)
+<span class="hljs-keyword">val</span> repo = UserRepositoryImpl(api, db.userDao())
+<span class="hljs-keyword">val</span> vm = UserViewModel(repo)
+</code></pre></div>
+<p>Проблемы: дублирование кода сборки, сложность тестирования (нельзя подменить зависимости), риск создать несколько экземпляров там, где нужен один. DI-фреймворки автоматизируют эту сборку.</p>
+<h3 id="peredacha-zavisimostey" class="study-subtitle">9.6. Передача зависимостей между слоями</h3>
+<p>Зависимости передаются сверху вниз по слоям: UI получает ViewModel, ViewModel — use-case или Repository, Repository — data source. Каждый слой зависит только от абстракций соседнего нижнего слоя. Это сохраняет направление зависимостей и не даёт нижним слоям знать о верхних.</p>
+<p>Важно не «протаскивать» зависимости через слои без необходимости: если Repository нужен только ViewModel, он не должен попадать в Activity. Каждый компонент получает только то, что ему нужно. Это принцип минимальных знаний (Least Knowledge) и он упрощает тестирование каждого слоя отдельно.</p>
+<h3 id="naznachenie-di-freymvorkov" class="study-subtitle">9.7. Назначение DI-фреймворков</h3>
+<p>DI можно делать вручную (Pure DI), но на больших проектах граф зависимостей становится громоздким. DI-фреймворки (Hilt, Koin, Dagger) автоматизируют создание и связывание объектов: описываете, как создавать каждую зависимость, а фреймворк строит граф и внедряет их туда, где нужно.</p>
+<p>Фреймворки также управляют жизненным циклом: singleton на всё приложение, scoped на Activity/Fragment/ViewModel, factory для новых экземпляров. Это избавляет от ручного управления экземплярами и предотвращает утечки. Для Junior-уровня достаточно понять идею и базовые аннотации/DSL; глубокая настройка — задача Middle-уровня.</p>
+<h3 id="patterny-proektirovaniya" class="study-subtitle">9.8. Паттерны проектирования: Factory, Builder, Observer, Singleton</h3>
+<p>Несколько базовых паттернов, которые часто встречаются вместе с DI:</p>
+<ul class="study-list">
+<li><strong>Factory</strong> — объект, отвечающий за создание других объектов. Инкапсулирует логику создания и позволяет подменять создаваемый тип. Пример: <code>ViewModelFactory</code>, создающая ViewModel с зависимостями.</li>
+<li><strong>Builder</strong> — пошаговое конструирование сложного объекта. Полезен, когда у объекта много параметров, часть из которых опциональны. Пример: <code>Retrofit.Builder()</code>, <code>AlertDialog.Builder</code>.</li>
+<li><strong>Observer</strong> — объект уведомляет подписчиков об изменениях своего состояния. В Android это <code>LiveData</code>, <code>StateFlow</code>, <code>Flow</code>: View подписывается на изменения состояния ViewModel.</li>
+<li><strong>Singleton</strong> — гарантирует один экземпляр класса на всё приложение. Используется для общих ресурсов (база данных, сетевой клиент). В DI-фреймворках помечается аннотацией <code>@Singleton</code> или scope-ом.</li>
+</ul>
+<p>Эти паттерны не заменяют DI, а дополняют его: Factory создаёт объекты с зависимостями, Builder собирает сложные конфигурации, Observer распространяет изменения состояния, Singleton управляет общими ресурсами.</p>
+<p><strong>Мостик к Hilt и Koin (Middle).</strong> На Junior-уровне DI делают вручную или через простые фабрики. На Middle-уровне переходят к фреймворкам:</p>
+<ul class="study-list">
+<li><strong>Hilt</strong> — обёртка над Dagger для Android: аннотации <code>@HiltAndroidApp</code>, <code>@AndroidEntryPoint</code>, <code>@Inject</code>, <code>@Module</code>, <code>@Provides</code>/<code>@Binds</code>, scopes (<code>@Singleton</code>, <code>@ViewModelScoped</code>). Интегрируется с ViewModel и WorkManager.</li>
+<li><strong>Koin</strong> — лёгкий DI-фреймворк на Kotlin DSL: модули с <code>single</code>, <code>factory</code>, <code>viewModel</code>, внедрение через <code>by inject()</code>/<code>by viewModel()</code>. Проще в настройке, но без compile-time проверки графа.</li>
+</ul>
+<p>Оба решают одну задачу — автоматическая сборка графа зависимостей. Выбор между ними зависит от проекта: Hilt даёт compile-time безопасность и интеграцию с Android, Koin — простоту и гибкость. Подробное изучение — на Middle-уровне.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Создание зависимостей внутри класса — жёсткая связанность и нетестируемость.</li>
+<li>Зависимость от конкретной реализации вместо интерфейса — нарушение DIP.</li>
+<li>Использование service locator вместо DI без необходимости — скрытые зависимости.</li>
+<li>Singleton для объектов с состоянием запроса — утечки и гонки.</li>
+<li>Передача Context во все слои — нарушение границ.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу объяснить, что такое зависимость и зачем её внедрять.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю Constructor Injection и его преимущества.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю принцип Dependency Inversion на базовом уровне.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу описать проблемы ручного создания объектов.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю назначение DI-фреймворков и различие Hilt/Koin на уровне идеи.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу кратко описать паттерны Factory, Builder, Observer, Singleton.</li>
+</ul></section><section id="itogovaya-samoproverka" class="study-section" aria-labelledby="itogovaya-samoproverka-title"><h2 id="itogovaya-samoproverka-title" class="study-section-title">Итоговая самопроверка категории</h2><ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю паттерны MVC, MVP, MVVM и их различия.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею создавать и использовать ViewModel и переживать configuration changes.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю основы LiveData и StateFlow и умею наблюдать за данными.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу реализовать Repository с интерфейсом и маппингом ошибок.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею моделировать UI State через sealed-классы и хранить его во ViewModel.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю принцип одностороннего потока данных.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю основы Dependency Injection и базовые паттерны проектирования.</li>
+</ul></section><section id="istochniki-i-dokumentaciya" class="study-section" aria-labelledby="istochniki-i-dokumentaciya-title"><h2 id="istochniki-i-dokumentaciya-title" class="study-section-title">Источники и документация</h2><h3 class="study-subtitle">Официальная документация</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://developer.android.com/topic/architecture" target="_blank" rel="noopener noreferrer">Guide to app architecture</a></li>
+<li><a class="study-pill" href="https://developer.android.com/topic/libraries/architecture/viewmodel" target="_blank" rel="noopener noreferrer">ViewModel overview</a></li>
+<li><a class="study-pill" href="https://developer.android.com/topic/libraries/architecture/livedata" target="_blank" rel="noopener noreferrer">LiveData overview</a></li>
+<li><a class="study-pill" href="https://developer.android.com/topic/architecture/data-layer" target="_blank" rel="noopener noreferrer">Data layer — Repository</a></li>
+<li><a class="study-pill" href="https://developer.android.com/topic/architecture/ui-layer/stateholders" target="_blank" rel="noopener noreferrer">UI layer — state holders</a></li>
+<li><a class="study-pill" href="https://developer.android.com/topic/architecture/ui-layer#udf" target="_blank" rel="noopener noreferrer">Unidirectional data flow</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/dependency-injection" target="_blank" rel="noopener noreferrer">Dependency injection in Android</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/dependency-injection/hilt-android" target="_blank" rel="noopener noreferrer">Hilt</a></li>
+<li><a class="study-pill" href="https://insert-koin.io/docs/quickstart/android/" target="_blank" rel="noopener noreferrer">Koin</a></li>
+</ul>
+<h3 class="study-subtitle">Статьи</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://developer.android.com/topic/architecture/recommendations" target="_blank" rel="noopener noreferrer">Android architecture recommendations</a></li>
+<li><a class="study-pill" href="https://developer.android.com/kotlin/flow/stateflow-and-sharedflow" target="_blank" rel="noopener noreferrer">StateFlow and SharedFlow</a></li>
+<li><a class="study-pill" href="https://developer.android.com/topic/libraries/architecture/viewmodel/viewmodel-savedstate" target="_blank" rel="noopener noreferrer">SavedStateHandle</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/dependency-injection/manual" target="_blank" rel="noopener noreferrer">Manual dependency injection</a></li>
+<li><a class="study-pill" href="https://github.com/android/architecture-samples" target="_blank" rel="noopener noreferrer">Architecture components samples</a></li>
+</ul></section><footer class="study-footer">Учебный конспект для уровня Junior. Примеры ориентированы на Kotlin.</footer></div></div>

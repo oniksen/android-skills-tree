@@ -55,12 +55,21 @@ describe("quiz questions", () => {
     }
   });
 
-  it("has Android Basics questions for every grade", () => {
-    const androidQuestions = allQuizQuestions.filter(
-      (q) => q.topic === "Android Basics",
-    );
+  it("каждый грейд покрыт вопросами по платформе Android", () => {
+    const platformCategoryByGrade: Record<string, string> = {
+      junior: "junior-android",
+      middle: "middle-components",
+      "strong-middle": "strong-arch",
+      senior: "senior-platform",
+    };
+
     for (const grade of QUIZ_GRADES) {
-      expect(androidQuestions.some((q) => q.grade === grade)).toBe(true);
+      const categoryId = platformCategoryByGrade[grade];
+      expect(categoryId, `грейд ${grade} без platform-категории`).toBeDefined();
+      const covered = allQuizQuestions.some(
+        (q) => q.grade === grade && getSkillById(q.skillId)?.categoryId === categoryId,
+      );
+      expect(covered, `грейд ${grade}: нет вопросов по категории ${categoryId}`).toBe(true);
     }
   });
 
@@ -70,12 +79,14 @@ describe("quiz questions", () => {
   });
 
   it("counts quiz questions per grade for a skill", () => {
-    const counts = getQuizGradeCounts("junior-osnovy-perem");
-    expect(getTotalQuizQuestions("junior-osnovy-perem")).toBe(4);
-    expect(counts.junior).toBe(1);
-    expect(counts.middle).toBe(1);
-    expect(counts["strong-middle"]).toBe(1);
-    expect(counts.senior).toBe(1);
+    const sample = allQuizQuestions[0];
+    const questions = getQuizQuestionsBySkill(sample.skillId);
+    const counts = getQuizGradeCounts(sample.skillId);
+
+    expect(getTotalQuizQuestions(sample.skillId)).toBe(questions.length);
+    expect(QUIZ_GRADES.reduce((sum, grade) => sum + counts[grade], 0)).toBe(questions.length);
+    expect(counts[sample.grade]).toBeGreaterThan(0);
+    expect(Object.keys(counts).sort()).toEqual([...QUIZ_GRADES].sort());
   });
 
   it("returns zero counts for unknown skill", () => {
