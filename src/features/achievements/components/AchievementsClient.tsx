@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useAchievements, useStreak } from "@/hooks";
+import { useAchievements, useProjectProgress, useStreak } from "@/hooks";
 import { useAssessments } from "@/hooks/useAssessments";
 import AchievementCard from "@/features/achievements/components/AchievementCard";
 import TierIcon from "@/features/achievements/components/TierIcon";
@@ -15,8 +15,9 @@ import {
 import { getAchievementProgress } from "@/core/domain/achievement-conditions";
 
 const GROUPS: { key: string; label: string }[] = [
-  { key: "level_master", label: "Мастерство уровней" },
-  { key: "level_up", label: "Повышение уровня" },
+  { key: "level_up", label: "Базовый грейд" },
+  { key: "grade_complete", label: "Полные грейды" },
+  { key: "level_master", label: "Прогресс грейдов" },
   { key: "category_perfect", label: "Идеальные темы" },
   { key: "streak", label: "Стрики" },
   { key: "path_complete", label: "Путь разработчика" },
@@ -32,8 +33,9 @@ export default function AchievementsClient() {
   const { achievements, loading } = useAchievements();
   const { currentStreak, longestStreak } = useStreak();
   const { assessmentMap, loading: assessmentsLoading } = useAssessments();
+  const { projectMap, loading: projectsLoading } = useProjectProgress();
 
-  if (loading || assessmentsLoading) {
+  if (loading || assessmentsLoading || projectsLoading) {
     return <AchievementsSkeleton />;
   }
 
@@ -80,7 +82,11 @@ export default function AchievementsClient() {
               {items.map((def, index) => {
                 const earned = earnedIds.has(def.id);
                 const achievement = achievements.find((a) => def.matches(a));
-                const status = getAchievementProgress(def, { assessmentMap, streakDays: longestStreak });
+                const status = getAchievementProgress(def, {
+                  assessmentMap,
+                  streakDays: longestStreak,
+                  projectMap,
+                });
                 const tierIcon = status.tier ? (
                   <TierIcon tier={status.tier} className="h-7 w-7" />
                 ) : (

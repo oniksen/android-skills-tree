@@ -121,6 +121,7 @@ export default function ProfileContent({
       achievements={achievements}
       assessmentMap={assessmentMap}
       longestStreak={longestStreak}
+      projectMap={projectMap}
     />
   );
 

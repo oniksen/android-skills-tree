@@ -27,12 +27,23 @@ export function getAchievementCatalog(): AchievementDef[] {
     defs.push({
       id: `level-master:${level.id}`,
       type: "level_master",
-      title: `Мастер уровня: ${level.name}`,
+      title: `Прогресс грейда: ${level.name}`,
       icon: "🏆",
-      condition: `Все категории уровня "${level.name}" на 100%`,
+      condition: `Освоение навыков уровня "${level.name}" по тирам`,
       levelId: level.id,
       matches: (a) =>
         a.type === "level_master" && a.metadata?.level_id === level.id,
+    });
+
+    defs.push({
+      id: `grade-complete:${level.id}`,
+      type: "grade_complete",
+      title: `Полный грейд: ${level.name}`,
+      icon: "💠",
+      condition: `Все навыки уровня "${level.name}" на 100%`,
+      levelId: level.id,
+      matches: (a) =>
+        a.type === "grade_complete" && a.metadata?.level_id === level.id,
     });
   });
 
@@ -42,9 +53,9 @@ export function getAchievementCatalog(): AchievementDef[] {
     defs.push({
       id: `level-up:${from.id}-${to.id}`,
       type: "level_up",
-      title: `Повышение до ${to.name}`,
+      title: `Переход на ${to.name}`,
       icon: "🚀",
-      condition: `Переход с уровня "${from.name}" на "${to.name}"`,
+      condition: `Обязательные навыки уровня "${from.name}" на 100% и проекты`,
       fromLevelId: from.id,
       toLevelId: to.id,
       matches: (a) =>

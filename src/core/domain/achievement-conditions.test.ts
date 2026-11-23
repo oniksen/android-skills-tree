@@ -12,8 +12,6 @@ import {
   selectMissingAwards,
   type AssessmentMap,
 } from "@/core/domain/achievement-conditions";
-import { calcTotalScore } from "@/core/domain/scoring";
-import { getLevelCompletionMinScore } from "@/core/domain/weights";
 const OSNOVY = "junior-osnovy";
 
 function allCheckedMap(categoryIds: string[]): AssessmentMap {
@@ -171,6 +169,24 @@ describe("evaluateAchievements", () => {
     ).toHaveLength(levels.length);
   });
 
+  it("даёт grade_complete только при 100% уровня", () => {
+    const partial = evaluateAchievements({ assessmentMap: allCheckedMap([OSNOVY]) });
+    expect(partial.some((a) => a.type === "grade_complete")).toBe(false);
+
+    const full = evaluateAchievements({
+      assessmentMap: allCheckedMap(
+        categories.filter((category) => category.levelId === "junior").map((category) => category.id),
+      ),
+    });
+    const award = full.find(
+      (a) => a.type === "grade_complete" && a.metadata.level_id === "junior",
+    );
+
+    expect(award).toBeDefined();
+    expect(award!.metadata.level_name).toBe("Junior");
+    expect(award!.matchKey).toBe("level_id");
+  });
+
   it("даёт path_complete с пустыми метаданными когда путь выше порога", () => {
     const award = evaluateAchievements({
       assessmentMap: allCheckedMap(categories.map((c) => c.id)),
@@ -279,6 +295,15 @@ describe("achievementKey", () => {
     );
   });
 
+  it("дедуплицирует grade_complete по level_id", () => {
+    expect(achievementKey("grade_complete", { level_id: "junior" })).toBe(
+      "grade_complete::junior",
+    );
+    expect(achievementKey("grade_complete", { level_id: "junior" })).not.toBe(
+      achievementKey("grade_complete", { level_id: "middle" }),
+    );
+  });
+
   it("для level_up использует to_level", () => {
     expect(
       achievementKey("level_up", { from_level: "Junior", to_level: "Middle" }),
@@ -365,17 +390,39 @@ describe("getAchievementProgress level_up", () => {
     toLevelId: "middle",
   };
 
-  it("uses the current grade completion threshold", () => {
+  it("uses the base grade: required skills plus projects", () => {
     const map = allCheckedMap(
       categories.filter((category) => category.levelId === "junior").map((category) => category.id),
     );
-    expect(calcTotalScore(map)).toBeGreaterThanOrEqual(
-      getLevelCompletionMinScore("junior"),
-    );
-    expect(getAchievementProgress(def, { assessmentMap: map }).progress).toBe(100);
+    const { progress } = getAchievementProgress(def, {
+      assessmentMap: map,
+      projectMap: { a: true, b: true },
+    });
+    expect(progress).toBe(100);
   });
 
-  it("is zero without XP", () => {
+  it("is limited by the project requirement", () => {
+    const map = allCheckedMap(
+      categories.filter((category) => category.levelId === "junior").map((category) => category.id),
+    );
+    expect(
+      getAchievementProgress(def, {
+        assessmentMap: map,
+        projectMap: { a: true },
+      }).progress,
+    ).toBe(50);
+  });
+
+  it("is zero without required skills", () => {
     expect(getAchievementProgress(def, { assessmentMap: {} }).progress).toBe(0);
+  });
+
+  it("grade_complete progress is the full level completion", () => {
+    const map = allCheckedMap(
+      categories.filter((category) => category.levelId === "junior").map((category) => category.id),
+    );
+    const gradeDef = { type: "grade_complete", id: "grade-complete:junior" };
+    expect(getAchievementProgress(gradeDef, { assessmentMap: map }).progress).toBe(100);
+    expect(getAchievementProgress(gradeDef, { assessmentMap: {} }).progress).toBe(0);
   });
 });

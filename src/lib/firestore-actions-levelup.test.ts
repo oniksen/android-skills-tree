@@ -2,8 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { AssessmentData, ProjectProgress } from "@/types";
 import type { Skill } from "@/data/skills";
 import { getSkillsByLevelId } from "@/data/skills";
-import { getCategoriesByLevelId } from "@/data/categories";
-import { getCategoryMaxScore } from "@/core/domain/weights";
 import {
   getLevelUpRequirements,
   getNextLevel,
@@ -91,35 +89,13 @@ type LevelUpFixture = {
 
 function levelUpFixtures(nextLevel: NonNullable<ReturnType<typeof getNextLevel>>): LevelUpFixture[] {
   const allJunior = completedLevelAssessment(JUNIOR);
-
-  // Keep the weakest category's required skill complete but drop its optional
-  // skills, so the category gate fails while the required-skill gate stays
-  // satisfied.
-  const weakestCategory = getCategoriesByLevelId(JUNIOR).reduce(
-    (weakest, category) =>
-      getCategoryMaxScore(category.id) < getCategoryMaxScore(weakest.id)
-        ? category
-        : weakest,
+  const requiredJunior = getSkillsByLevelId(JUNIOR).filter(
+    (skill) => skill.requiredForLevelUp,
   );
-  const categoryBelowThreshold = Object.fromEntries(
-    getSkillsByLevelId(JUNIOR)
-      .filter(
-        (skill) =>
-          skill.categoryId !== weakestCategory.id || skill.requiredForLevelUp,
-      )
-      .map((skill) => [skill.id, completedSkill(skill)]),
-  );
-
-  // All subtopics stay complete (categories pass) but the required skills of
-  // one category report score 0, so only the skills gate fails.
-  const missingRequiredSkills = Object.fromEntries(
-    getSkillsByLevelId(JUNIOR).map((skill) => [
-      skill.id,
-      skill.categoryId === "junior-kotlin" && skill.requiredForLevelUp
-        ? { ...completedSkill(skill), score: 0 }
-        : completedSkill(skill),
-    ]),
-  );
+  const missingRequiredSkill = {
+    ...allJunior,
+    [requiredJunior[0].id]: { score: 0, subtopics: {} },
+  };
 
   return [
     {
@@ -129,14 +105,8 @@ function levelUpFixtures(nextLevel: NonNullable<ReturnType<typeof getNextLevel>>
       expectedUnmet: [],
     },
     {
-      name: `the XP gate passes but ${weakestCategory.id} stays below the category threshold`,
-      assessments: categoryBelowThreshold,
-      projects: completedProjects(nextLevel.requiredProjectCount),
-      expectedUnmet: ["categories"],
-    },
-    {
-      name: "required current-level skills have no score",
-      assessments: missingRequiredSkills,
+      name: "a required current-level skill is not fully complete",
+      assessments: missingRequiredSkill,
       projects: completedProjects(nextLevel.requiredProjectCount),
       expectedUnmet: ["skills"],
     },
@@ -175,7 +145,7 @@ describe("checkLevelUp", () => {
     expect(res).toBeNull();
   });
 
-  it("null если категория не набрала порог", async () => {
+  it("null если обязательные навыки не закрыты", async () => {
     const stateMod = await import("@/adapters/firestore-client/state");
     (stateMod.readUserState as ReturnType<typeof vi.fn>).mockResolvedValue({
       progress: {

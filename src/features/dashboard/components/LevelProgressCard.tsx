@@ -1,6 +1,5 @@
 "use client";
 import ProgressRing from "@/shared/ui/ProgressRing";
-import AnimatedNumber from "@/shared/ui/AnimatedNumber";
 import { levelProgressPercent } from "@/core/domain/profile-level";
 
 interface LevelProgressCardProps {
@@ -26,8 +25,7 @@ export default function LevelProgressCard({ currentLevel, currentScore, nextLeve
       </div>
       {nextLevel && nextThreshold ? (
         <p className="mt-4 text-sm text-slate-400">
-          До уровня <span className="text-slate-300">{nextLevel}</span> осталось{" "}
-          <AnimatedNumber value={Math.max(0, nextThreshold - currentScore)} className="font-mono text-slate-200" /> XP
+          Прогресс грейда: <span className="font-mono text-slate-200">{percent}%</span>
         </p>
       ) : (
         <p className="mt-4 text-emerald-400 font-medium">Максимальный уровень достигнут!</p>

@@ -16,10 +16,7 @@ import {
   calcLevelCompletionPercent,
   calcLevelScore,
 } from "@/core/domain/scoring";
-import {
-  getCategoryMaxScore,
-  getLevelCompletionMinScore,
-} from "@/core/domain/weights";
+import { getCategoryMaxScore } from "@/core/domain/weights";
 
 const LEVEL_ACCENT: Record<string, string> = {
   junior: "text-green-400",
@@ -107,7 +104,6 @@ export default function TreeClient({ slug }: TreeClientProps) {
   const currentLevelIndex = levels.findIndex((l) => l.id === currentLevelId);
   const isCurrentOrPast = levelIndex <= currentLevelIndex;
   const isCompleted = levelIndex < currentLevelIndex;
-  const currentScore = progress.totalScore || 0;
 
   return (
     <div className="space-y-6">
@@ -129,8 +125,6 @@ export default function TreeClient({ slug }: TreeClientProps) {
               <LevelGate
                 isUnlocked={false}
                 isCompleted={false}
-                requiredScore={getLevelCompletionMinScore(currentLevelId)}
-                currentScore={currentScore}
                 levelName={currentLevel.name}
               />
               <div className="tree-grid">
@@ -153,8 +147,6 @@ export default function TreeClient({ slug }: TreeClientProps) {
               <LevelGate
                 isUnlocked={false}
                 isCompleted={true}
-                requiredScore={0}
-                currentScore={currentScore}
                 levelName={currentLevel.name}
               />
               <div className="tree-grid">

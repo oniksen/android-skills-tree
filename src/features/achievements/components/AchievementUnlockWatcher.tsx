@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useAssessments } from "@/hooks/useAssessments";
+import { useProjectProgress } from "@/hooks/useProjectProgress";
 import { useStreak } from "@/hooks/useStreak";
 import { getAchievementCatalog } from "@/data/achievements";
 import { getAchievementProgress } from "@/core/domain/achievement-conditions";
@@ -17,17 +18,18 @@ import AchievementCelebration, {
 export default function AchievementUnlockWatcher() {
   const { achievements, loading: achievementsLoading } = useAchievements();
   const { assessmentMap } = useAssessments();
+  const { projectMap } = useProjectProgress();
   const { longestStreak } = useStreak();
 
   const [queue, setQueue] = useState<CelebrationItem[]>([]);
   const [current, setCurrent] = useState<CelebrationItem | null>(null);
 
   const knownIdsRef = useRef<Set<string> | null>(null);
-  const latestRef = useRef({ assessmentMap, longestStreak });
+  const latestRef = useRef({ assessmentMap, longestStreak, projectMap });
 
   useEffect(() => {
-    latestRef.current = { assessmentMap, longestStreak };
-  }, [assessmentMap, longestStreak]);
+    latestRef.current = { assessmentMap, longestStreak, projectMap };
+  }, [assessmentMap, longestStreak, projectMap]);
 
   useEffect(() => {
     if (achievementsLoading) return;
@@ -52,6 +54,7 @@ export default function AchievementUnlockWatcher() {
           ? getAchievementProgress(def, {
               assessmentMap: latestRef.current.assessmentMap,
               streakDays: latestRef.current.longestStreak,
+              projectMap: latestRef.current.projectMap,
             })
           : { tier: achievement?.tier ?? null };
 

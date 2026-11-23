@@ -2,16 +2,10 @@
 // same category threshold, XP target, required-skill and project checks. Both
 // implementations must change together; firestore-actions-levelup.test.ts
 // cross-checks them so the checklist cannot drift from the actual level-up.
-import { getCategoriesByLevelId } from "@/data/categories";
 import { levels, type Level } from "@/data/levels";
 import { getSkillsByLevelId } from "@/data/skills";
 import type { AssessmentData } from "@/types";
-import { calcCategoryScore, calcTotalScore } from "./scoring";
-import {
-  getCategoryMaxScore,
-  getLevelCompletionMinScore,
-  LEVEL_UP_THRESHOLD,
-} from "./weights";
+import { isSkillComplete } from "./scoring";
 
 export interface LevelRequirement {
   id: "categories" | "xp" | "skills" | "projects";
@@ -39,39 +33,13 @@ export function getLevelUpRequirements(params: {
 
   const requirements: LevelRequirement[] = [];
 
-  const currentCategories = getCategoriesByLevelId(currentLevelId);
-  const passedCategories = currentCategories.filter(
-    (category) =>
-      calcCategoryScore(category.id, assessmentMap) >=
-      getCategoryMaxScore(category.id) * LEVEL_UP_THRESHOLD,
-  ).length;
-
-  requirements.push({
-    id: "categories",
-    label: "Категории текущего уровня",
-    done: passedCategories === currentCategories.length,
-    current: passedCategories,
-    target: currentCategories.length,
-  });
-
-  const totalScore = calcTotalScore(assessmentMap);
-  const xpTarget = getLevelCompletionMinScore(currentLevelId);
-
-  requirements.push({
-    id: "xp",
-    label: "Общий XP",
-    done: totalScore >= xpTarget,
-    current: totalScore,
-    target: xpTarget,
-  });
-
   const requiredSkills = getSkillsByLevelId(currentLevelId).filter(
     (skill) => skill.requiredForLevelUp,
   );
 
   if (requiredSkills.length > 0) {
-    const passedSkills = requiredSkills.filter(
-      (skill) => (assessmentMap[skill.id]?.score ?? 0) >= 1,
+    const passedSkills = requiredSkills.filter((skill) =>
+      isSkillComplete(skill.id, assessmentMap[skill.id]?.subtopics),
     ).length;
 
     requirements.push({

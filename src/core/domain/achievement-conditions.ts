@@ -1,8 +1,7 @@
 import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
-import { skills } from "@/data/skills";
-import { calcTotalScore, isSkillComplete, calcCategoryCompletionPercent, calcLevelCompletionPercent, calcTotalCompletionPercent } from "@/core/domain/scoring";
-import { getLevelCompletionMinScore } from "@/core/domain/weights";
+import { getSkillsByLevelId, skills } from "@/data/skills";
+import { isSkillComplete, calcCategoryCompletionPercent, calcLevelCompletionPercent, calcTotalCompletionPercent } from "@/core/domain/scoring";
 import { ACHIEVEMENT_TIERS, getAchievementTier, getTierProgress } from "@/core/domain/achievement-tiers";
 import { STREAK_ACHIEVEMENT_DAYS } from "@/core/domain/streak";
 
@@ -14,6 +13,7 @@ export const PATH_COMPLETE_UNLOCK_THRESHOLD = ACHIEVEMENT_UNLOCK_THRESHOLD;
 export const ASSESSMENT_AWARD_TYPES = new Set<string>([
   "category_perfect",
   "level_master",
+  "grade_complete",
   "path_complete",
 ]);
 
@@ -36,6 +36,7 @@ export interface AchievementContext {
 export interface AchievementProgressContext {
   assessmentMap: AssessmentMap;
   streakDays?: number;
+  projectMap?: Record<string, boolean>;
 }
 
 export interface AchievementAward {
@@ -49,6 +50,7 @@ export interface AchievementAward {
 export const ACHIEVEMENT_MATCH_KEY: Record<string, string | undefined> = {
   category_perfect: "category_id",
   level_master: "level_id",
+  grade_complete: "level_id",
   level_up: "to_level",
 };
 
@@ -105,17 +107,30 @@ export function evaluateAchievements(context: AchievementContext): AchievementAw
 
   for (const level of levels) {
     const progress = calcLevelCompletionPercent(level.id, assessmentMap);
-    if (progress < ACHIEVEMENT_UNLOCK_THRESHOLD) continue;
-    awards.push({
-      type: "level_master",
-      metadata: {
-        level_id: level.id,
-        level_name: level.name,
-        level_slug: level.slug,
-      },
-      matchKey: ACHIEVEMENT_MATCH_KEY.level_master,
-      matchValue: level.id,
-    });
+    if (progress >= ACHIEVEMENT_UNLOCK_THRESHOLD) {
+      awards.push({
+        type: "level_master",
+        metadata: {
+          level_id: level.id,
+          level_name: level.name,
+          level_slug: level.slug,
+        },
+        matchKey: ACHIEVEMENT_MATCH_KEY.level_master,
+        matchValue: level.id,
+      });
+    }
+    if (progress >= 100) {
+      awards.push({
+        type: "grade_complete",
+        metadata: {
+          level_id: level.id,
+          level_name: level.name,
+          level_slug: level.slug,
+        },
+        matchKey: ACHIEVEMENT_MATCH_KEY.grade_complete,
+        matchValue: level.id,
+      });
+    }
   }
 
   const totalProgress = calcTotalCompletionPercent(assessmentMap);
@@ -171,7 +186,7 @@ export function getAchievementProgress(
   if (def.type === "category_perfect") {
     const categoryId = def.id.split(":")[1];
     if (categoryId) progress = calcCategoryCompletionPercent(categoryId, context.assessmentMap);
-  } else if (def.type === "level_master") {
+  } else if (def.type === "level_master" || def.type === "grade_complete") {
     const levelId = def.id.split(":")[1];
     if (levelId) progress = calcLevelCompletionPercent(levelId, context.assessmentMap);
   } else if (def.type === "path_complete") {
@@ -180,11 +195,32 @@ export function getAchievementProgress(
     const days = Number(def.id.split(":")[1]);
     progress = days > 0 ? Math.min(((context.streakDays ?? 0) / days) * 100, 100) : 0;
   } else if (def.type === "level_up") {
-    const threshold = def.fromLevelId
-      ? getLevelCompletionMinScore(def.fromLevelId)
+    const requiredSkills = def.fromLevelId
+      ? getSkillsByLevelId(def.fromLevelId).filter(
+          (skill) => skill.requiredForLevelUp,
+        )
+      : [];
+    const completedSkills = requiredSkills.filter((skill) =>
+      isSkillComplete(skill.id, context.assessmentMap[skill.id]?.subtopics),
+    ).length;
+    const skillsPercent =
+      requiredSkills.length > 0
+        ? (completedSkills / requiredSkills.length) * 100
+        : 100;
+
+    const nextLevel = def.toLevelId
+      ? levels.find((level) => level.id === def.toLevelId)
+      : undefined;
+    const projectTarget = nextLevel?.requiredProjectCount ?? 0;
+    const completedProjects = context.projectMap
+      ? Object.values(context.projectMap).filter(Boolean).length
       : 0;
-    const totalScore = calcTotalScore(context.assessmentMap);
-    progress = threshold > 0 ? Math.min((totalScore / threshold) * 100, 100) : 100;
+    const projectPercent =
+      projectTarget > 0
+        ? Math.min((completedProjects / projectTarget) * 100, 100)
+        : 100;
+
+    progress = Math.min(skillsPercent, projectPercent);
   }
 
   return {

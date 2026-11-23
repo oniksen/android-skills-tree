@@ -6,12 +6,7 @@ import { levels } from "@/data/levels";
 import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import { syncStreak } from "@/adapters/firestore-client/streak-commands";
-import { calcCategoryScore, calcTotalScore } from "@/core/domain/scoring";
-import {
-  getCategoryMaxScore,
-  getLevelCompletionMinScore,
-  LEVEL_UP_THRESHOLD,
-} from "@/core/domain/weights";
+import { calcTotalScore, isSkillComplete } from "@/core/domain/scoring";
 import {
   reconcileAchievements,
   updateUserProgress,
@@ -110,18 +105,7 @@ export async function checkLevelUp() {
   const nextLevel = levels[currentIndex + 1];
   const assessmentMap = (state?.assessments ?? {}) as AssessmentMap;
 
-  const currentCategories = categories.filter(
-    (c) => c.levelId === currentLevelId,
-  );
-  for (const cat of currentCategories) {
-    const catXp = calcCategoryScore(cat.id, assessmentMap);
-    if (catXp < getCategoryMaxScore(cat.id) * LEVEL_UP_THRESHOLD) return null;
-  }
-
-  const totalScore = calcTotalScore(assessmentMap);
-  if (totalScore < getLevelCompletionMinScore(currentLevelId)) return null;
-
-  // Required skills belong to the grade being completed, so they are reachable
+  // The base grade is the current grade's required skills. They are reachable
   // through the normal tree before the next grade is unlocked.
   const requiredSkills = skills.filter(
     (s) =>
@@ -132,10 +116,10 @@ export async function checkLevelUp() {
 
   if (requiredSkills.length > 0) {
     const stateAssessments = state?.assessments ?? {};
-    const allRequiredScored = requiredSkills.every(
-      (s) => (stateAssessments[s.id]?.score || 0) >= 1,
+    const allRequiredComplete = requiredSkills.every((s) =>
+      isSkillComplete(s.id, stateAssessments[s.id]?.subtopics),
     );
-    if (!allRequiredScored) return null;
+    if (!allRequiredComplete) return null;
   }
 
   if (nextLevel.requiredProjectCount > 0) {
@@ -147,6 +131,8 @@ export async function checkLevelUp() {
     const completedCount = Object.values(projectMap).filter(Boolean).length;
     if (completedCount < nextLevel.requiredProjectCount) return null;
   }
+
+  const totalScore = calcTotalScore(assessmentMap);
 
   const unlockedIds = [
     ...(userProgress.unlockedLevelIds || []),

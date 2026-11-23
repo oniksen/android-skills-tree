@@ -1,13 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getLevelUpRequirements, getNextLevel } from "./level-requirements";
-import { getCategoriesByLevelId } from "@/data/categories";
 import { getSkillsByLevelId } from "@/data/skills";
-import {
-  getCategoryMaxScore,
-  getLevelCompletionMinScore,
-  LEVEL_UP_THRESHOLD,
-} from "./weights";
-import { calcCategoryScore, calcTotalScore } from "./scoring";
 import type { Level } from "@/data/levels";
 import type { AssessmentData } from "@/types";
 
@@ -46,7 +39,7 @@ describe("getLevelUpRequirements", () => {
     ).toEqual([]);
   });
 
-  it("returns categories, xp, skills and projects for junior -> middle", () => {
+  it("returns skills and projects for junior -> middle", () => {
     const requirements = getLevelUpRequirements({
       currentLevelId: "junior",
       nextLevel: getNextLevel("junior"),
@@ -54,23 +47,8 @@ describe("getLevelUpRequirements", () => {
       projectMap: {},
     });
 
-    expect(requirements.map((item) => item.id)).toEqual([
-      "categories",
-      "xp",
-      "skills",
-      "projects",
-    ]);
+    expect(requirements.map((item) => item.id)).toEqual(["skills", "projects"]);
     const byId = Object.fromEntries(requirements.map((item) => [item.id, item]));
-    expect(byId.categories).toMatchObject({
-      current: 0,
-      target: getCategoriesByLevelId("junior").length,
-      done: false,
-    });
-    expect(byId.xp).toMatchObject({
-      current: 0,
-      target: getLevelCompletionMinScore("junior"),
-      done: false,
-    });
     expect(byId.skills).toMatchObject({
       current: 0,
       target: getSkillsByLevelId("junior").filter((s) => s.requiredForLevelUp)
@@ -84,41 +62,12 @@ describe("getLevelUpRequirements", () => {
     });
   });
 
-  it("marks the categories item done only when every category reaches the threshold", () => {
-    const juniorSkills = getSkillsByLevelId("junior");
-    const assessmentMap = Object.fromEntries(
-      juniorSkills.map((skill) => [
-        skill.id,
-        fullyDone(skill.subtopics),
-      ]),
-    );
-    const categories = getCategoriesByLevelId("junior");
-    const expectedCurrent = categories.filter(
-      (category) =>
-        calcCategoryScore(category.id, assessmentMap) >=
-        getCategoryMaxScore(category.id) * LEVEL_UP_THRESHOLD,
-    ).length;
-
-    const item = getLevelUpRequirements({
-      currentLevelId: "junior",
-      nextLevel: getNextLevel("junior"),
-      assessmentMap,
-      projectMap: {},
-    }).find((requirement) => requirement.id === "categories");
-
-    expect(item).toMatchObject({
-      current: expectedCurrent,
-      target: categories.length,
-      done: expectedCurrent === categories.length,
-    });
-  });
-
-  it("marks required skills done when each has a score of at least 1", () => {
+  it("marks required skills done only when every required skill is fully complete", () => {
     const required = getSkillsByLevelId("junior").filter(
       (skill) => skill.requiredForLevelUp,
     );
     const assessmentMap = Object.fromEntries(
-      required.map((skill) => [skill.id, { score: 1, subtopics: {} }]),
+      required.map((skill) => [skill.id, fullyDone(skill.subtopics)]),
     );
 
     const item = getLevelUpRequirements({
@@ -135,67 +84,13 @@ describe("getLevelUpRequirements", () => {
     });
   });
 
-  it("counts completed projects against the next level requirement", () => {
-    const item = getLevelUpRequirements({
-      currentLevelId: "junior",
-      nextLevel: getNextLevel("junior"),
-      assessmentMap: {},
-      projectMap: { a: true, b: true },
-    }).find((requirement) => requirement.id === "projects");
-
-    expect(item).toMatchObject({ current: 2, target: 2, done: true });
-  });
-
-  it("reports partial category progress between zero and the target", () => {
-    const categories = getCategoriesByLevelId("junior");
-    const skipped = categories[categories.length - 1];
-    const assessmentMap = Object.fromEntries(
-      getSkillsByLevelId("junior")
-        .filter((skill) => skill.categoryId !== skipped.id)
-        .map((skill) => [skill.id, fullyDone(skill.subtopics)]),
-    );
-
-    const item = getLevelUpRequirements({
-      currentLevelId: "junior",
-      nextLevel: getNextLevel("junior"),
-      assessmentMap,
-      projectMap: {},
-    }).find((requirement) => requirement.id === "categories");
-
-    expect(item?.current).toBeGreaterThan(0);
-    expect(item?.current).toBeLessThan(categories.length);
-    expect(item).toMatchObject({ done: false, target: categories.length });
-  });
-
-  it("reports partial XP progress between zero and the target", () => {
-    const juniorSkills = getSkillsByLevelId("junior");
-    const assessmentMap = Object.fromEntries(
-      juniorSkills
-        .slice(0, Math.ceil(juniorSkills.length / 2))
-        .map((skill) => [skill.id, fullyDone(skill.subtopics)]),
-    );
-    const target = getLevelCompletionMinScore("junior");
-
-    const item = getLevelUpRequirements({
-      currentLevelId: "junior",
-      nextLevel: getNextLevel("junior"),
-      assessmentMap,
-      projectMap: {},
-    }).find((requirement) => requirement.id === "xp");
-
-    expect(item?.current).toBe(calcTotalScore(assessmentMap));
-    expect(item?.current).toBeGreaterThan(0);
-    expect(item?.current).toBeLessThan(target);
-    expect(item).toMatchObject({ done: false, target });
-  });
-
   it("reports partial required-skill progress between zero and the target", () => {
     const required = getSkillsByLevelId("junior").filter(
       (skill) => skill.requiredForLevelUp,
     );
     const passed = required.slice(0, required.length - 1);
     const assessmentMap = Object.fromEntries(
-      passed.map((skill) => [skill.id, { score: 1, subtopics: {} }]),
+      passed.map((skill) => [skill.id, fullyDone(skill.subtopics)]),
     );
 
     const item = getLevelUpRequirements({
@@ -209,6 +104,17 @@ describe("getLevelUpRequirements", () => {
     expect(item?.current).toBeGreaterThan(0);
     expect(item?.current).toBeLessThan(required.length);
     expect(item).toMatchObject({ done: false, target: required.length });
+  });
+
+  it("counts completed projects against the next level requirement", () => {
+    const item = getLevelUpRequirements({
+      currentLevelId: "junior",
+      nextLevel: getNextLevel("junior"),
+      assessmentMap: {},
+      projectMap: { a: true, b: true },
+    }).find((requirement) => requirement.id === "projects");
+
+    expect(item).toMatchObject({ current: 2, target: 2, done: true });
   });
 
   it("reports partial project progress between zero and the target", () => {
@@ -226,7 +132,7 @@ describe("getLevelUpRequirements", () => {
     expect(item).toMatchObject({ done: false, target });
   });
 
-  it("omits the skills and project requirements when their target is zero", () => {
+  it("omits skills and projects when both targets are zero", () => {
     const synthetic: Level = {
       id: "synthetic",
       name: "Synthetic",
@@ -243,6 +149,26 @@ describe("getLevelUpRequirements", () => {
       projectMap: {},
     });
 
-    expect(requirements.map((item) => item.id)).toEqual(["categories", "xp"]);
+    expect(requirements).toEqual([]);
+  });
+
+  it("omits skills when the current grade has no required skills", () => {
+    const synthetic: Level = {
+      id: "synthetic",
+      name: "Synthetic",
+      slug: "synthetic",
+      description: "",
+      levelOrder: 99,
+      requiredProjectCount: 2,
+    };
+
+    const requirements = getLevelUpRequirements({
+      currentLevelId: "senior",
+      nextLevel: synthetic,
+      assessmentMap: {},
+      projectMap: { first: true },
+    });
+
+    expect(requirements.map((item) => item.id)).toEqual(["projects"]);
   });
 });

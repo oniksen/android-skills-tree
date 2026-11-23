@@ -14,6 +14,7 @@ interface ProfileAchievementsProps {
   achievements: Achievement[];
   assessmentMap: Record<string, { subtopics?: Record<string, boolean> }>;
   longestStreak: number;
+  projectMap: Record<string, boolean>;
   /** Show only the most recent badges (page bento); omit to show all. */
   limit?: number;
 }
@@ -26,6 +27,7 @@ export default function ProfileAchievements({
   achievements,
   assessmentMap,
   longestStreak,
+  projectMap,
   limit,
 }: ProfileAchievementsProps) {
   const earned = new Set(earnedIds);
@@ -67,6 +69,7 @@ export default function ProfileAchievements({
             const status = getAchievementProgress(def, {
               assessmentMap,
               streakDays: longestStreak,
+              projectMap,
             });
             const tierIcon = status.tier ? (
               <TierIcon tier={status.tier} className="h-7 w-7" />
