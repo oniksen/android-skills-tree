@@ -91,5 +91,6 @@ describe("RoadmapDiagram", () => {
     );
     expect(html).toContain(`<title>${longName}</title>`);
     expect(html).toContain("…");
+    expect((html.match(/<tspan/g) ?? []).length).toBeGreaterThan(1);
   });
 });

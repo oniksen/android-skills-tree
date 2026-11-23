@@ -1,16 +1,19 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import type { RefObject } from "react";
 import type { RoadmapGraph, RoadmapGraphNode } from "@/core/domain/roadmap-graph";
 import { isDesktopViewport, skillDetailHref, treeSkillHref } from "@/lib/viewport";
 
 const NODE_W = 200;
 const NODE_H = 56;
-const COL_W = 240;
-const ROW_H = 76;
+const LINE_H = 16;
+const MAX_LINES = 3;
+const MAX_LINE_CHARS = 20;
+const COL_W = 300;
+const VERTICAL_GAP = 40;
 const PADDING = 24;
 const HEADER_H = 48;
-const MAX_NAME_CHARS = 22;
 
 const STATUS_RECT_CLASS: Record<RoadmapGraphNode["status"], string> = {
   done: "fill-emerald-500/15 stroke-emerald-400/60",
@@ -18,47 +21,109 @@ const STATUS_RECT_CLASS: Record<RoadmapGraphNode["status"], string> = {
   remaining: "fill-slate-800/40 stroke-slate-600",
 };
 
-function shortenName(name: string): string {
-  if (name.length <= MAX_NAME_CHARS) return name;
-  return `${name.slice(0, MAX_NAME_CHARS - 1).trimEnd()}…`;
+interface NodeBox {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  lines: string[];
 }
 
-function nodeBox(node: RoadmapGraphNode) {
+function wrapName(name: string): string[] {
+  const words = name.split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let current = "";
+
+  const finish = (truncated: boolean): string[] => {
+    if (!truncated) return lines;
+    const lastIndex = lines.length - 1;
+    const last = lines[lastIndex] ?? "";
+    const clipped =
+      last.length >= MAX_LINE_CHARS
+        ? last.slice(0, MAX_LINE_CHARS - 1)
+        : last;
+    return [...lines.slice(0, lastIndex), `${clipped}…`];
+  };
+
+  for (const word of words) {
+    let rest = word;
+    while (rest.length > 0) {
+      const candidate = current ? `${current} ${rest}` : rest;
+      if (candidate.length <= MAX_LINE_CHARS) {
+        current = candidate;
+        rest = "";
+        break;
+      }
+      if (current) {
+        lines.push(current);
+        current = "";
+        if (lines.length >= MAX_LINES) return finish(true);
+        continue;
+      }
+      if (lines.length >= MAX_LINES) return finish(true);
+      lines.push(rest.slice(0, MAX_LINE_CHARS));
+      rest = rest.slice(MAX_LINE_CHARS);
+    }
+  }
+
+  if (current) {
+    if (lines.length >= MAX_LINES) return finish(true);
+    lines.push(current);
+  }
+
+  return lines.length > 0 ? lines : [name];
+}
+
+function buildLayout(graph: RoadmapGraph): {
+  boxes: Map<string, NodeBox>;
+  width: number;
+  height: number;
+} {
+  const nodesById = new Map(graph.nodes.map((node) => [node.skillId, node]));
+  const boxes = new Map<string, NodeBox>();
+  let maxRight = PADDING;
+  let maxBottom = PADDING + HEADER_H;
+
+  graph.columns.forEach((column, columnIndex) => {
+    let y = PADDING + HEADER_H;
+    const x = PADDING + columnIndex * COL_W;
+    column.skillIds.forEach((skillId) => {
+      const node = nodesById.get(skillId);
+      if (!node) return;
+      const lines = wrapName(node.name);
+      const h = NODE_H + (lines.length - 1) * LINE_H;
+      boxes.set(skillId, { x, y, w: NODE_W, h, lines });
+      y += h + VERTICAL_GAP;
+      maxRight = Math.max(maxRight, x + NODE_W);
+    });
+    maxBottom = Math.max(maxBottom, y - VERTICAL_GAP);
+  });
+
   return {
-    x: PADDING + node.column * COL_W,
-    y: PADDING + HEADER_H + node.row * ROW_H,
+    boxes,
+    width: maxRight + PADDING,
+    height: maxBottom + PADDING,
   };
 }
 
-function edgePath(from: RoadmapGraphNode, to: RoadmapGraphNode): string {
-  const a = nodeBox(from);
-  const b = nodeBox(to);
-
-  if (to.column > from.column) {
-    const x1 = a.x + NODE_W;
-    const y1 = a.y + NODE_H / 2;
-    const x2 = b.x;
-    const y2 = b.y + NODE_H / 2;
-    const mid = (x1 + x2) / 2;
-    return `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`;
+function edgePath(from: NodeBox, to: NodeBox): string {
+  if (from.x === to.x) {
+    const x1 = from.x + from.w;
+    const y1 = from.y + from.h / 2;
+    const x2 = to.x + to.w;
+    const y2 = to.y + to.h / 2;
+    const bow = x1 + 60;
+    return `M ${x1} ${y1} C ${bow} ${y1}, ${bow} ${y2}, ${x2} ${y2}`;
   }
 
-  if (to.column < from.column) {
-    const x1 = a.x;
-    const y1 = a.y + NODE_H / 2;
-    const x2 = b.x + NODE_W;
-    const y2 = b.y + NODE_H / 2;
-    const mid = (x1 + x2) / 2;
-    return `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`;
-  }
-
-  // Same column: bow out to the right instead of drawing a straight vertical line.
-  const x1 = a.x + NODE_W;
-  const y1 = a.y + NODE_H / 2;
-  const x2 = b.x + NODE_W;
-  const y2 = b.y + NODE_H / 2;
-  const bow = x1 + 36;
-  return `M ${x1} ${y1} C ${bow} ${y1}, ${bow} ${y2}, ${x2} ${y2}`;
+  const leftToRight = to.x > from.x;
+  const x1 = leftToRight ? from.x + from.w : from.x;
+  const y1 = from.y + from.h / 2;
+  const x2 = leftToRight ? to.x : to.x + to.w;
+  const y2 = to.y + to.h / 2;
+  const c1 = leftToRight ? x1 + 60 : x1 - 60;
+  const c2 = leftToRight ? x2 - 60 : x2 + 60;
+  return `M ${x1} ${y1} C ${c1} ${y1}, ${c2} ${y2}, ${x2} ${y2}`;
 }
 
 const LEGEND: { label: string; swatch: string }[] = [
@@ -71,14 +136,20 @@ const LEGEND: { label: string; swatch: string }[] = [
 export default function RoadmapDiagram({
   graph,
   levelSlug,
+  scrollRef,
 }: {
   graph: RoadmapGraph;
   levelSlug: string;
+  scrollRef?: RefObject<HTMLDivElement | null>;
 }) {
   const router = useRouter();
 
   if (graph.nodes.length === 0) {
-    return <p className="py-6 text-center text-sm text-slate-500">Нет навыков для построения диаграммы.</p>;
+    return (
+      <p className="py-6 text-center text-sm text-slate-500">
+        Нет навыков для построения диаграммы.
+      </p>
+    );
   }
 
   const openSkill = (skillId: string) => {
@@ -89,18 +160,7 @@ export default function RoadmapDiagram({
     );
   };
 
-  const maxRows = graph.columns.reduce(
-    (max, column) => Math.max(max, column.skillIds.length),
-    0,
-  );
-  const rows = Math.max(
-    maxRows,
-    graph.nodes.reduce((max, node) => Math.max(max, node.row + 1), 0),
-  );
-  const width = PADDING * 2 + graph.columns.length * COL_W;
-  const height = PADDING * 2 + HEADER_H + rows * ROW_H;
-
-  const nodesById = new Map(graph.nodes.map((node) => [node.skillId, node]));
+  const { boxes, width, height } = buildLayout(graph);
 
   return (
     <div className="space-y-3">
@@ -116,7 +176,11 @@ export default function RoadmapDiagram({
         Сплошная стрелка — обязательная связь, пунктирная — рекомендация.
       </p>
 
-      <div className="overflow-x-auto">
+      <div
+        ref={scrollRef}
+        id="roadmap-diagram-scroll"
+        className="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
         <svg
           width={width}
           height={height}
@@ -152,8 +216,8 @@ export default function RoadmapDiagram({
           ))}
 
           {graph.edges.map((edge) => {
-            const from = nodesById.get(edge.from);
-            const to = nodesById.get(edge.to);
+            const from = boxes.get(edge.from);
+            const to = boxes.get(edge.to);
             if (!from || !to || from === to) return null;
             return (
               <path
@@ -168,7 +232,9 @@ export default function RoadmapDiagram({
           })}
 
           {graph.nodes.map((node) => {
-            const { x, y } = nodeBox(node);
+            const box = boxes.get(node.skillId);
+            if (!box) return null;
+            const { x, y, w, h, lines } = box;
             const label = `${node.name}, ${node.completionPercent}%${
               node.requiredForLevelUp ? "" : ", дополнительный навык"
             }`;
@@ -191,17 +257,21 @@ export default function RoadmapDiagram({
                 <rect
                   x={x}
                   y={y}
-                  width={NODE_W}
-                  height={NODE_H}
+                  width={w}
+                  height={h}
                   rx={10}
                   strokeWidth={1.5}
                   strokeDasharray={node.requiredForLevelUp ? undefined : "5 4"}
                   className={STATUS_RECT_CLASS[node.status]}
                 />
-                <text x={x + 14} y={y + 24} className="fill-white text-sm">
-                  {shortenName(node.name)}
+                <text x={x + 14} y={y + 22} className="fill-white text-sm">
+                  {lines.map((line, index) => (
+                    <tspan key={index} x={x + 14} dy={index === 0 ? 0 : LINE_H}>
+                      {line}
+                    </tspan>
+                  ))}
                 </text>
-                <text x={x + 14} y={y + 43} className="fill-slate-500 text-xs">
+                <text x={x + 14} y={y + h - 12} className="fill-slate-500 text-xs">
                   {node.completionPercent}%
                 </text>
               </g>

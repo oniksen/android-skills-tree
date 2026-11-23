@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowDown, ArrowUp, Check, type LucideIcon } from "lucide-react";
 import { useUserProgress, useAssessments } from "@/hooks";
@@ -9,6 +9,7 @@ import { categories } from "@/data/categories";
 import { skills } from "@/data/skills";
 import GapList from "@/features/roadmap/components/GapList";
 import RoadmapDiagram from "@/features/roadmap/components/RoadmapDiagram";
+import RoadmapScrollbar from "@/features/roadmap/components/RoadmapScrollbar";
 import PageHero from "@/shared/ui/PageHero";
 import PageSummaryCard from "@/shared/ui/PageSummaryCard";
 import { RoadmapSkeleton } from "@/shared/ui/skeletons";
@@ -30,6 +31,7 @@ export default function RoadmapClient() {
   const { assessmentMap, loading: assessmentsLoading } = useAssessments();
   const [sortKey, setSortKey] = useState<RoadmapSortKey>("xp-desc");
   const [hideCompleted, setHideCompleted] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   if (progressLoading || assessmentsLoading) {
     return <RoadmapSkeleton />;
@@ -100,7 +102,7 @@ export default function RoadmapClient() {
       : 0;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 pb-16">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -177,8 +179,12 @@ export default function RoadmapClient() {
         </div>
       </div>
 
-      <div className="hidden xl:block">
-        <RoadmapDiagram graph={graph} levelSlug={currentLevel.slug} />
+      <div className="hidden xl:block xl:-mr-6">
+        <RoadmapDiagram
+          graph={graph}
+          levelSlug={currentLevel.slug}
+          scrollRef={scrollRef}
+        />
       </div>
 
       <div className="xl:hidden">
@@ -190,6 +196,8 @@ export default function RoadmapClient() {
           <GapList gaps={visibleItems} emptyMessage={emptyMessage} levelSlug={currentLevel.slug} />
         </motion.div>
       </div>
+
+      <RoadmapScrollbar scrollRef={scrollRef} />
     </div>
   );
 }
