@@ -10,6 +10,11 @@ describe("wide-screen layout css", () => {
     expect(css).not.toContain("max-width: 72rem");
   });
 
+  it("keeps the desktop table of contents beside the article", () => {
+    expect(css).toContain("@media (min-width: 1280px)");
+    expect(css).toContain("grid-template-columns: 280px minmax(0, 1fr)");
+  });
+
   it("keeps the shared wide content grid", () => {
     expect(css).toContain("@utility content-grid-wide");
   });
