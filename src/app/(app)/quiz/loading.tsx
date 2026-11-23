@@ -3,7 +3,7 @@ import { Skeleton } from "@/shared/ui/skeletons";
 export default function Loading() {
   return (
     <div
-      className="mx-auto flex w-full max-w-[1400px] flex-1 gap-4 px-4 pt-6"
+      className="mx-auto flex w-full max-w-[2000px] flex-1 gap-4 px-4 pt-6"
       aria-busy
     >
       <div className="flex min-w-0 flex-1 flex-col space-y-3">

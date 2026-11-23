@@ -12,7 +12,7 @@ describe("QuizShell", () => {
 
     expect(html).toContain("terminal");
     expect(html).toContain("panel");
-    expect(html).toContain("max-w-[1400px]");
+    expect(html).toContain("max-w-[2000px]");
     expect(html).toContain("hidden xl:flex");
   });
 });

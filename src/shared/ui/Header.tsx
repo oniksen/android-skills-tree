@@ -211,7 +211,7 @@ export default function Header({
     width === "study"
       ? "max-w-none"
       : width === "quiz"
-        ? "max-w-[1400px]"
+        ? "max-w-[2000px]"
         : width === "wide"
           ? "max-w-[2000px]"
           : "max-w-6xl";
@@ -311,7 +311,7 @@ export default function Header({
         <main
           className={
             isQuiz
-              ? "w-full max-w-[1400px] mx-auto flex-1 p-3"
+              ? "w-full max-w-[2000px] mx-auto flex-1 p-3"
               : width === "study"
                 ? "w-full flex-1 p-3"
                 : width === "wide"
