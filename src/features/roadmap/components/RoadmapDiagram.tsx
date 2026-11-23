@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import type { RefObject } from "react";
 import type { RoadmapGraph, RoadmapGraphNode } from "@/core/domain/roadmap-graph";
-import { isDesktopViewport, skillDetailHref, treeSkillHref } from "@/lib/viewport";
+import { skillDetailHref } from "@/lib/viewport";
 
 const NODE_W = 200;
 const NODE_H = 56;
@@ -153,11 +153,7 @@ export default function RoadmapDiagram({
   }
 
   const openSkill = (skillId: string) => {
-    router.push(
-      isDesktopViewport()
-        ? treeSkillHref(levelSlug, skillId)
-        : skillDetailHref(levelSlug, skillId),
-    );
+    router.push(skillDetailHref(levelSlug, skillId));
   };
 
   const { boxes, width, height } = buildLayout(graph);

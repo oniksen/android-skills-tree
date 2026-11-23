@@ -28,10 +28,7 @@ export default async function StudyMaterialRoute({
   if (!material) return notFound();
 
   return (
-    <StudyMaterialPage
-      backHref={`/tree/${slug}`}
-      backLabel="Назад к дереву"
-    >
+    <StudyMaterialPage>
       <StudyMaterialContent content={material.content} grade={material.grade} />
     </StudyMaterialPage>
   );

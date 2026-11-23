@@ -40,10 +40,8 @@ export default function SkillDetailSkeleton() {
   return (
     <div className="space-y-4" aria-busy>
       {header}
-      <div className="xl:grid xl:grid-cols-2 xl:items-start xl:gap-6">
-        {description}
-        {subtopics}
-      </div>
+      {description}
+      {subtopics}
     </div>
   );
 }

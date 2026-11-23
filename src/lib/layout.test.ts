@@ -16,6 +16,10 @@ describe("pageWidthFor", () => {
     );
   });
 
+  it("gives the category detail page the full-width detail layout", () => {
+    expect(pageWidthFor("/tree/junior/category/junior-osnovy")).toBe("detail");
+  });
+
   it("marks the collection pages as wide", () => {
     for (const path of [
       "/dashboard",

@@ -5,6 +5,7 @@ import { Check, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/shared/lib/toast-context";
 import DifficultyBadge from "@/shared/ui/DifficultyBadge";
+import QuizInfoIcon from "@/shared/ui/QuizInfoIcon";
 import { getCrystalRewardForSkill } from "@/core/domain/currency";
 import { getCategoryById, getSkillById } from "@/data";
 
@@ -21,8 +22,8 @@ export interface SkillDetailContentProps {
   award?: { amount: number } | null;
   onToggleSubtopic?: (subtopicName: string) => void;
   studyHref?: string;
-  /** Two-column body for the standalone page; the modal keeps one column. */
-  wide?: boolean;
+  /** Hide the category label when the block already sits inside its category page. */
+  showCategory?: boolean;
 }
 
 export default function SkillDetailContent({
@@ -38,7 +39,7 @@ export default function SkillDetailContent({
   award = null,
   onToggleSubtopic,
   studyHref,
-  wide = false,
+  showCategory = true,
 }: SkillDetailContentProps) {
   const toast = useToast();
   const categoryName = getCategoryById(getSkillById(skillId)?.categoryId ?? "")?.name;
@@ -49,7 +50,7 @@ export default function SkillDetailContent({
 
   const header = (
     <div className="space-y-2">
-      {categoryName && (
+      {showCategory && categoryName && (
         <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
           {categoryName}
         </p>
@@ -83,6 +84,7 @@ export default function SkillDetailContent({
             )}
           </AnimatePresence>
           <DifficultyBadge skillId={skillId} />
+          <QuizInfoIcon skillId={skillId} />
         </div>
       </div>
       <div className="flex flex-wrap items-center gap-2">
@@ -212,18 +214,8 @@ export default function SkillDetailContent({
   return (
     <div className="space-y-4">
       {header}
-
-      {wide ? (
-        <div className="xl:grid xl:grid-cols-2 xl:items-start xl:gap-6">
-          <div className="space-y-4">{descriptionBlock}</div>
-          <div>{subtopicsBlock}</div>
-        </div>
-      ) : (
-        <>
-          {descriptionBlock}
-          {subtopicsBlock}
-        </>
-      )}
+      {descriptionBlock}
+      {subtopicsBlock}
 
       {!description && subtopics.length === 0 && (
         <p className="text-sm text-slate-500">Для этого навыка пока нет дополнительной информации.</p>

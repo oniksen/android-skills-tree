@@ -36,18 +36,22 @@ export default function TreeSkeleton() {
         <Skeleton className="h-8 w-40 rounded-md" />
       </div>
 
-      <div className="tree-grid">
+      <div className="tree-grid auto-rows-fr">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="card-surface rounded-lg p-5">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-5 w-32" />
-              <Skeleton className="h-5 w-12" />
+          <div
+            key={i}
+            className="card-surface flex min-h-[9.5rem] flex-col rounded-lg p-5"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <Skeleton className="h-5 w-40" />
+              <Skeleton className="h-4 w-10" />
             </div>
-            <Skeleton className="mt-4 h-2 w-full" />
-            <div className="mt-4 space-y-2">
-              {Array.from({ length: 3 }).map((_, j) => (
-                <Skeleton key={j} className="h-8 w-full rounded-md" />
-              ))}
+            <div className="mt-auto pt-5">
+              <div className="flex items-center justify-between gap-3">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+              <Skeleton className="mt-2 h-2 w-full" />
             </div>
           </div>
         ))}

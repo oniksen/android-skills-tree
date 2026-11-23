@@ -5,10 +5,12 @@ import { motion } from "motion/react";
 import { normalizeReleaseVersion } from "@/lib/version";
 import { usePathname } from "next/navigation";
 import { pageWidthFor } from "@/lib/layout";
+import { closeTargetFor } from "@/lib/close-target";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import StreakBadge from "@/shared/ui/StreakBadge";
 import CurrencyBadge from "@/shared/ui/CurrencyBadge";
 import BrandMark from "@/shared/ui/BrandMark";
+import AppCloseButton from "@/shared/ui/AppCloseButton";
 import AchievementUnlockWatcher from "@/features/achievements/components/AchievementUnlockWatcher";
 import {
   LayoutDashboard,
@@ -196,7 +198,7 @@ function MobileNavItem({
 
 export default function Header({
   children,
-  mainClassName = "px-4 pt-8 pb-32 nav-md:pb-8",
+  mainClassName = "px-3 pt-8 pb-32 nav-md:pb-8",
   branch,
   version,
 }: HeaderProps) {
@@ -207,14 +209,7 @@ export default function Header({
   const activeHref = segment === "tree" ? "/tree/junior" : `/${segment}`;
   const isQuiz = (pathname ?? "").startsWith("/quiz");
   const width = pageWidthFor(pathname ?? "");
-  const headerWidthClass =
-    width === "study"
-      ? "max-w-none"
-      : width === "quiz"
-        ? "max-w-[2000px]"
-        : width === "wide"
-          ? "max-w-[2000px]"
-          : "max-w-6xl";
+  const close = closeTargetFor(pathname ?? "");
   const isActive = (href: string) =>
     href === "/profile" ? activeHref === "/profile" : href === activeHref;
   const showNav = !loading && Boolean(uid);
@@ -269,53 +264,57 @@ export default function Header({
       )}
 
       <div className="flex min-h-dvh flex-1 min-w-0 flex-col">
-        <header className="sticky top-0 z-50 px-3 pt-[max(env(safe-area-inset-top),0.75rem)]">
-          <div className={`glass-panel mx-auto flex h-14 w-full items-center justify-between gap-4 px-4 ${headerWidthClass}`}>
+        <header className="sticky top-0 z-50 pl-3 pr-3 pt-[max(env(safe-area-inset-top),0.75rem)]">
+          <div className="mx-auto flex h-14 w-full items-center gap-[var(--app-close-gap)]">
+            <div className="glass-panel flex h-14 min-w-0 flex-1 items-center justify-between gap-4 px-4">
 
-            <div className="flex min-w-0 items-center gap-3">
-              <Link
-                href="/tree/junior"
-                className="nav-lg:hidden shrink-0 transition-opacity hover:opacity-80"
-              >
-                <BrandMark className="h-7 w-7" />
-              </Link>
-              <Prompt path={pathname ?? ""} />
-            </div>
-            <div className="ml-auto flex shrink-0 items-center gap-2">
-              {!loading && uid && <StreakBadge />}
-              {!loading && uid && <CurrencyBadge />}
-              {!loading && uid && (
+              <div className="flex min-w-0 items-center gap-3">
                 <Link
-                  href="/quiz"
-                  className="nav-md:hidden flex items-center justify-center rounded-md p-1.5 text-slate-400 transition-colors hover:bg-blue-500/10 hover:text-blue-600"
-                  aria-label="quiz"
+                  href="/tree/junior"
+                  className="nav-lg:hidden shrink-0 transition-opacity hover:opacity-80"
                 >
-                  <Terminal className="h-4 w-4" />
+                  <BrandMark className="h-7 w-7" />
                 </Link>
-              )}
-              {!loading &&
-                !uid &&
-                pathname !== "/login" && (
+                <Prompt path={pathname ?? ""} />
+              </div>
+              <div className="ml-auto flex shrink-0 items-center gap-2">
+                {!loading && uid && <StreakBadge />}
+                {!loading && uid && <CurrencyBadge />}
+                {!loading && uid && (
                   <Link
-                    href="/login"
-                    className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 font-mono text-xs text-slate-400 transition-colors hover:bg-blue-500/10 hover:text-blue-600"
+                    href="/quiz"
+                    className="nav-md:hidden flex items-center justify-center rounded-md p-1.5 text-slate-400 transition-colors hover:bg-blue-500/10 hover:text-blue-600"
+                    aria-label="quiz"
                   >
-                    <LogIn className="h-4 w-4" />
-                    <span className="hidden nav-md:inline">login</span>
+                    <Terminal className="h-4 w-4" />
                   </Link>
                 )}
+                {!loading &&
+                  !uid &&
+                  pathname !== "/login" && (
+                    <Link
+                      href="/login"
+                      className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 font-mono text-xs text-slate-400 transition-colors hover:bg-blue-500/10 hover:text-blue-600"
+                    >
+                      <LogIn className="h-4 w-4" />
+                      <span className="hidden nav-md:inline">login</span>
+                    </Link>
+                  )}
+              </div>
             </div>
+
+            {close && <AppCloseButton href={close.href} label={close.label} />}
           </div>
         </header>
 
         <main
           className={
             isQuiz
-              ? "w-full max-w-[2000px] mx-auto flex-1 p-3"
-              : width === "study"
+              ? "w-full flex-1 p-3"
+              : width === "study" || width === "detail"
                 ? "w-full flex-1 p-3"
                 : width === "wide"
-                  ? `w-full max-w-[2000px] mx-auto flex-1 nav-md:px-6 ${mainClassName}`
+                  ? `w-full flex-1 ${mainClassName}`
                   : `w-full max-w-6xl mx-auto flex-1 ${mainClassName}`
           }
         >

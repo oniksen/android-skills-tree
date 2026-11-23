@@ -1,16 +1,17 @@
-export const MOBILE_BREAKPOINT = 600;
+import { getSkillById } from "@/data";
 
-export function isDesktopViewport(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-    return true;
-  }
-  return window.matchMedia(`(min-width: ${MOBILE_BREAKPOINT}px)`).matches;
+export function categoryHref(slug: string, categoryId: string): string {
+  return `/tree/${slug}/category/${categoryId}`;
 }
 
+/**
+ * Canonical address of a skill: the block inside its category page. The old
+ * `/tree/<slug>/skill/<id>` route redirects here.
+ */
 export function skillDetailHref(slug: string, skillId: string): string {
-  return `/tree/${slug}/skill/${skillId}`;
-}
+  const categoryId = getSkillById(skillId)?.categoryId;
 
-export function treeSkillHref(slug: string, skillId: string): string {
-  return `/tree/${slug}?skill=${encodeURIComponent(skillId)}`;
+  return categoryId
+    ? `${categoryHref(slug, categoryId)}#skill-${skillId}`
+    : `/tree/${slug}`;
 }

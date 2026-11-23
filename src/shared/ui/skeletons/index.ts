@@ -1,6 +1,7 @@
 export { Skeleton } from "./Skeleton";
 export { default as DashboardSkeleton } from "./DashboardSkeleton";
 export { default as TreeSkeleton } from "./TreeSkeleton";
+export { default as CategorySkeleton } from "./CategorySkeleton";
 export { default as ProjectsSkeleton } from "./ProjectsSkeleton";
 export { default as RoadmapSkeleton } from "./RoadmapSkeleton";
 export { default as AchievementsSkeleton } from "./AchievementsSkeleton";

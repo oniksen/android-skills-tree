@@ -7,16 +7,17 @@ import { getCategoriesByLevelId } from "@/data/categories";
 import { getSkillsByCategoryId } from "@/data/skills";
 import LevelHero from "@/features/tree/components/LevelHero";
 import TreeToolbar from "@/features/tree/components/TreeToolbar";
-import CategoryCard from "@/features/tree/components/CategoryCard";
-import CategoryCardReadonly from "@/features/tree/components/CategoryCardReadonly";
+import CategorySummaryCard from "@/features/tree/components/CategorySummaryCard";
 import LevelGate from "@/features/tree/components/LevelGate";
 import { TreeSkeleton } from "@/shared/ui/skeletons";
 import {
   calcCategoryScore,
   calcLevelCompletionPercent,
   calcLevelScore,
+  isSkillComplete,
 } from "@/core/domain/scoring";
-import { getCategoryMaxScore } from "@/core/domain/weights";
+import { getCategoryMaxScore, getRequiredSkillsScore } from "@/core/domain/weights";
+import { categoryHref } from "@/lib/viewport";
 
 const LEVEL_ACCENT: Record<string, string> = {
   junior: "text-green-400",
@@ -49,10 +50,26 @@ export default function TreeClient({ slug }: TreeClientProps) {
     (sum, category) => sum + getCategoryMaxScore(category.id),
     0,
   );
-  const categoriesDone = levelCategories.filter((category) => {
+
+  const categoryCards = levelCategories.map((category) => {
     const maxScore = getCategoryMaxScore(category.id);
-    return maxScore > 0 && calcCategoryScore(category.id, assessmentMap) >= maxScore;
-  }).length;
+    const score = calcCategoryScore(category.id, assessmentMap);
+    const skillsDone = category.skills.filter((skill) =>
+      isSkillComplete(skill.id, assessmentMap[skill.id]?.subtopics),
+    ).length;
+
+    return {
+      ...category,
+      maxScore,
+      score,
+      skillsDone,
+      isComplete: maxScore > 0 && score >= maxScore,
+    };
+  });
+
+  const categoriesDone = categoryCards.filter(
+    (category) => category.isComplete,
+  ).length;
 
   const hero = (
     <LevelHero
@@ -62,10 +79,34 @@ export default function TreeClient({ slug }: TreeClientProps) {
       totalLevels={levels.length}
       score={calcLevelScore(currentLevel.id, assessmentMap)}
       maxScore={levelMaxScore}
+      requiredScore={getRequiredSkillsScore(currentLevel.id)}
       categoriesDone={categoriesDone}
       categoriesTotal={levelCategories.length}
       subtopicPercent={calcLevelCompletionPercent(currentLevel.id, assessmentMap)}
     />
+  );
+
+  const grid = (muted: boolean) => (
+    <div className="tree-grid auto-rows-fr">
+      {categoryCards.map((category) => (
+        <CategorySummaryCard
+          key={category.id}
+          href={categoryHref(slug, category.id)}
+          name={category.name}
+          score={category.score}
+          maxScore={category.maxScore}
+          skillsDone={category.skillsDone}
+          skillsTotal={category.skills.length}
+          studyHref={
+            category.studyMaterial
+              ? `${categoryHref(slug, category.id)}/study`
+              : undefined
+          }
+          isComplete={category.isComplete}
+          muted={muted}
+        />
+      ))}
+    </div>
   );
 
   if (progressLoading || assessmentsLoading) {
@@ -84,16 +125,8 @@ export default function TreeClient({ slug }: TreeClientProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="tree-grid"
           >
-            {levelCategories.map((cat) => (
-              <CategoryCardReadonly
-                key={cat.id}
-                categoryId={cat.id}
-                name={cat.name}
-                skills={cat.skills}
-              />
-            ))}
+            {grid(false)}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -121,65 +154,20 @@ export default function TreeClient({ slug }: TreeClientProps) {
           className="space-y-6"
         >
           {!isCurrentOrPast && (
-            <>
-              <LevelGate
-                isUnlocked={false}
-                isCompleted={false}
-                levelName={currentLevel.name}
-              />
-              <div className="tree-grid">
-                {levelCategories.map((cat) => (
-                  <CategoryCard
-                    key={cat.id}
-                    categoryId={cat.id}
-                    name={cat.name}
-                    skills={cat.skills}
-                    assessments={assessmentMap}
-                    isLocked={false}
-                    disabled={true}
-                  />
-                ))}
-              </div>
-            </>
+            <LevelGate
+              isUnlocked={false}
+              isCompleted={false}
+              levelName={currentLevel.name}
+            />
           )}
           {isCompleted && (
-            <>
-              <LevelGate
-                isUnlocked={false}
-                isCompleted={true}
-                levelName={currentLevel.name}
-              />
-              <div className="tree-grid">
-                {levelCategories.map((cat) => (
-                  <CategoryCardReadonly
-                    key={cat.id}
-                    categoryId={cat.id}
-                    name={cat.name}
-                    skills={cat.skills}
-                  />
-                ))}
-              </div>
-            </>
+            <LevelGate
+              isUnlocked={false}
+              isCompleted={true}
+              levelName={currentLevel.name}
+            />
           )}
-          {isCurrentOrPast && !isCompleted && (
-            <div className="tree-grid">
-              {levelCategories.map((cat) => {
-                const catScore = calcCategoryScore(cat.id, assessmentMap);
-                const catMax = getCategoryMaxScore(cat.id);
-                return (
-                  <CategoryCard
-                    key={cat.id}
-                    categoryId={cat.id}
-                    name={cat.name}
-                    skills={cat.skills}
-                    assessments={assessmentMap}
-                    isLocked={catScore >= catMax}
-                    disabled={false}
-                  />
-                );
-              })}
-            </div>
-          )}
+          {grid(!isCurrentOrPast)}
         </motion.div>
       </AnimatePresence>
     </div>

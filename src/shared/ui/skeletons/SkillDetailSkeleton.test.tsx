@@ -3,9 +3,10 @@ import { describe, expect, it } from "vitest";
 import SkillDetailSkeleton from "./SkillDetailSkeleton";
 
 describe("SkillDetailSkeleton", () => {
-  it("always matches the widened skill page grid", () => {
+  it("keeps the stacked skill block layout used on category pages", () => {
     const html = renderToStaticMarkup(<SkillDetailSkeleton />);
 
-    expect(html).toContain("xl:grid-cols-2");
+    expect(html).toContain("aria-busy");
+    expect(html).not.toContain("xl:grid-cols-2");
   });
 });

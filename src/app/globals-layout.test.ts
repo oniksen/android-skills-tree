@@ -5,8 +5,9 @@ import { describe, expect, it } from "vitest";
 const css = readFileSync(resolve(process.cwd(), "src", "app", "globals.css"), "utf8");
 
 describe("wide-screen layout css", () => {
-  it("centres the study layout next to its table of contents", () => {
-    expect(css).toContain("max-width: calc(72rem + 280px)");
+  it("stretches the study layout across the available width", () => {
+    expect(css).not.toContain("max-width: calc(72rem + 280px)");
+    expect(css).not.toContain("max-width: 72rem");
   });
 
   it("keeps the shared wide content grid", () => {

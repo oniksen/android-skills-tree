@@ -88,10 +88,10 @@ export function renderFixture(): string {
   );
 }
 
-/** Fixture rendered inside the page shell (topbar, back link, article). */
+/** Fixture rendered inside the page shell (article container). */
 export function renderFixturePage(): string {
   return renderToStaticMarkup(
-    <StudyMaterialPage backHref="/tree/junior" backLabel="Назад">
+    <StudyMaterialPage>
       <StudyMarkdownRenderer content={FIXTURE} grade="junior" />
     </StudyMaterialPage>,
   );

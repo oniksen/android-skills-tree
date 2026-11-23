@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import type { Level } from "@/data/levels";
-import ProgressBar from "@/shared/ui/ProgressBar";
+import GradeXpBar from "@/features/tree/components/GradeXpBar";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -13,6 +13,7 @@ interface LevelHeroProps {
   totalLevels: number;
   score: number;
   maxScore: number;
+  requiredScore: number;
   categoriesDone: number;
   categoriesTotal: number;
   subtopicPercent: number;
@@ -25,6 +26,7 @@ export default function LevelHero({
   totalLevels,
   score,
   maxScore,
+  requiredScore,
   categoriesDone,
   categoriesTotal,
   subtopicPercent,
@@ -61,7 +63,7 @@ export default function LevelHero({
           </span>
         </div>
         <div className="mt-1.5">
-          <ProgressBar current={score} max={maxScore} tone="coral" showLabel={false} />
+          <GradeXpBar score={score} required={requiredScore} max={maxScore} />
         </div>
 
         <dl className="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/[0.06] pt-3 text-sm">

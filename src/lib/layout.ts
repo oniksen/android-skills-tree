@@ -1,4 +1,4 @@
-export type PageWidth = "wide" | "study" | "quiz" | "default";
+export type PageWidth = "wide" | "study" | "detail" | "quiz" | "default";
 
 const WIDE_PAGES = new Set([
   "/dashboard",
@@ -19,6 +19,7 @@ export function pageWidthFor(pathname: string): PageWidth {
 
   if (/\/study(\/|$)/.test(path)) return "study";
   if (path === "/quiz" || path.startsWith("/quiz/")) return "quiz";
+  if (/^\/tree\/[^/]+\/category\/[^/]+$/.test(path)) return "detail";
   if (path === "/tree" || path.startsWith("/tree/")) return "wide";
   if (WIDE_PAGES.has(path)) return "wide";
   return "default";

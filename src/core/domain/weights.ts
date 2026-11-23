@@ -23,12 +23,13 @@ function levelIdByCategoryId(): Map<string, string> {
   return new Map(categories.map((c) => [c.id, c.levelId]));
 }
 
+const categoryLevelIds = levelIdByCategoryId();
+
 function buildSkillWeights(): Map<string, number> {
-  const categoryLevels = levelIdByCategoryId();
   const weights = new Map<string, number>();
 
   for (const skill of skills) {
-    const multiplier = LEVEL_MULTIPLIER[categoryLevels.get(skill.categoryId) ?? ""] ?? 1;
+    const multiplier = LEVEL_MULTIPLIER[categoryLevelIds.get(skill.categoryId) ?? ""] ?? 1;
     const difficulty = skill.difficulty ?? FALLBACK_DIFFICULTY;
     weights.set(skill.id, DIFFICULTY_WEIGHT[difficulty] * multiplier);
   }
@@ -84,6 +85,21 @@ export function getCategoryMaxScore(categoryId: string): number {
 
 export function getLevelMaxScore(levelId: string): number {
   return levelMaxScores.get(levelId) ?? 0;
+}
+
+/**
+ * XP of the level's `requiredForLevelUp` skills — the XP part of the base-grade
+ * gate. Unlike `getLevelMaxScore`, this is scoped to `levelId` only and is not
+ * cumulative, so it compares directly with `calcLevelScore(levelId)`.
+ */
+export function getRequiredSkillsScore(levelId: string): number {
+  return skills
+    .filter(
+      (s) =>
+        s.requiredForLevelUp &&
+        categoryLevelIds.get(s.categoryId) === levelId,
+    )
+    .reduce((sum, s) => sum + getSkillWeight(s.id), 0);
 }
 
 export function getLevelMinScore(levelId: string): number {

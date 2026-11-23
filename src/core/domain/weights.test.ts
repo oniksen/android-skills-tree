@@ -10,6 +10,7 @@ import {
   getLevelCompletionMinScore,
   getLevelMaxScore,
   getLevelMinScore,
+  getRequiredSkillsScore,
   getSkillDifficulty,
   getSkillWeight,
   getTotalMaxScore,
@@ -101,6 +102,35 @@ describe("пороги категорий", () => {
   });
 });
 
+describe("обязательный XP грейда", () => {
+  it("равен сумме весов обязательных навыков этого грейда", () => {
+    for (const level of levels) {
+      const expected = skills
+        .filter(
+          (s) => s.requiredForLevelUp && levelIdOfCategory(s.categoryId) === level.id,
+        )
+        .reduce((sum, s) => sum + getSkillWeight(s.id), 0);
+
+      expect(getRequiredSkillsScore(level.id), `грейд ${level.id}`).toBe(expected);
+    }
+  });
+
+  it("не превышает полный XP своего грейда", () => {
+    const sorted = [...levels].sort((a, b) => a.levelOrder - b.levelOrder);
+
+    sorted.forEach((level, index) => {
+      const previousMax = index === 0 ? 0 : getLevelMaxScore(sorted[index - 1].id);
+      const ownMax = getLevelMaxScore(level.id) - previousMax;
+      expect(getRequiredSkillsScore(level.id), `грейд ${level.id}`).toBeLessThanOrEqual(ownMax);
+    });
+  });
+
+  it("без обязательных навыков даёт ноль", () => {
+    expect(getRequiredSkillsScore("senior")).toBe(0);
+    expect(getRequiredSkillsScore("no-such-level")).toBe(0);
+  });
+});
+
 describe("пороги уровней", () => {
   it("maxScore накопительный и строго возрастает", () => {
     const sorted = [...levels].sort((a, b) => a.levelOrder - b.levelOrder);
@@ -163,6 +193,5 @@ describe("пороги уровней", () => {
   it("итоговый потолок равен сумме весов всех скиллов", () => {
     const sumOfWeights = skills.reduce((sum, s) => sum + getSkillWeight(s.id), 0);
     expect(getTotalMaxScore()).toBe(sumOfWeights);
-    expect(getTotalMaxScore()).toBe(3206);
   });
 });

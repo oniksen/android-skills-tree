@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import DifficultyBadge from "@/shared/ui/DifficultyBadge";
-import { isDesktopViewport, skillDetailHref, treeSkillHref } from "@/lib/viewport";
+import { skillDetailHref } from "@/lib/viewport";
 
 interface Gap {
   skillId: string;
@@ -30,11 +30,7 @@ export default function GapList({
 
   const openSkill = (skillId: string) => {
     if (!levelSlug) return;
-    router.push(
-      isDesktopViewport()
-        ? treeSkillHref(levelSlug, skillId)
-        : skillDetailHref(levelSlug, skillId),
-    );
+    router.push(skillDetailHref(levelSlug, skillId));
   };
 
   if (gaps.length === 0) {
