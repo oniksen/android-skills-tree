@@ -152,6 +152,38 @@ Never edit the generated file by hand.
   `study-material.ts` / `study-materials.generated.ts` from a client component.
 - Do not commit generated changes unless they came from `npm run generate:materials`.
 
+## Roadmap dependency graph and diagram
+
+The `/roadmap` page is designed to show **all** skills of the current grade as a graph on
+`xl+` while keeping the existing flat `GapList` below `xl`. Implementation plan:
+`docs/superpowers/plans/2026-11-23-roadmap-dependency-diagram.md`.
+
+- **Edges (source of truth):** `src/data/roadmap-links.ts` exports `ROADMAP_LINKS`
+  (`{ from, to, kind: "requires" | "recommends" }`) keyed by existing skill IDs.
+  `requires` draws a solid arrow, `recommends` a dashed one. Edges are same-grade only;
+  the data test rejects cross-grade edges. Add links only in this file; do not add
+  prerequisite fields to `src/data/skills/*`.
+- **Domain:** `src/core/domain/roadmap-graph.ts` → `buildRoadmapGraph({ levelId,
+  assessmentMap, links })`. It includes every skill of the grade, groups them into
+  category columns ordered by `sortOrder` (`column`, `row`), and assigns `done` (100%),
+  `in-progress` (partial) or `remaining` (0%) plus the `requiredForLevelUp` flag.
+  Edges with unknown or cross-grade endpoints are dropped at runtime; the data test must
+  reject them. There is no ancestor filtering and no topological layer pass.
+- **Renderer:** `src/features/roadmap/components/RoadmapDiagram.tsx` renders category
+  columns as hand-rolled SVG (no graph library, no pan/zoom; horizontal scroll). Nodes
+  are `<g role="link">` and use `treeSkillHref` / `skillDetailHref`; status colors are
+  emerald / blue / slate. A non-required skill (`requiredForLevelUp === false`) gets a
+  dashed stroke; required skills are solid. Empty graphs render a message, not an empty
+  `<svg>`.
+- **Responsive:** `RoadmapClient` renders the diagram in `hidden xl:block` and the
+  `GapList` in `xl:hidden`; the sort toolbar is `xl:hidden` because it only sorts the
+  list. The skeleton is unchanged.
+- **Invariants/tests:** every `from`/`to` must exist in `skills`, edges must be unique,
+  same-grade and acyclic (`src/data/roadmap-links.test.ts`); graph behavior is covered by
+  `src/core/domain/roadmap-graph.test.ts`; the diagram by `RoadmapDiagram.test.tsx`.
+  Never add a graph library for this feature.
+- **Verify:** `npm run lint`, `npm run typecheck`, `npm test`.
+
 ## Firestore data model and listeners
 
 - Source of truth: single state document `users/{uid}/state/current` (`UserState`).
