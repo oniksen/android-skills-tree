@@ -1,0 +1,502 @@
+<div class="study-layout"><nav class="study-toc" aria-label="Содержание материала"><div class="study-toc-rail"><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#junit-i-unit-testing">1. JUnit и Unit Testing Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#naznachenie-unit-testing">1.1. Назначение Unit Testing</a></li><li><a class="study-toc-link" href="#unit-vs-integration-vs-ui">1.2. Unit vs Integration vs UI Tests</a></li><li><a class="study-toc-link" href="#test-annotation">1.3. Аннотация @Test</a></li><li><a class="study-toc-link" href="#before-after">1.4. @Before и @After</a></li><li><a class="study-toc-link" href="#assertions">1.5. Assertions</a></li><li><a class="study-toc-link" href="#arrange-act-assert">1.6. Arrange-Act-Assert</a></li><li><a class="study-toc-link" href="#granichnye-sluchai">1.7. Проверка граничных случаев</a></li><li><a class="study-toc-link" href="#testirovanie-isklyucheniy">1.8. Тестирование исключений</a></li><li><a class="study-toc-link" href="#imenovanie-testov">1.9. Именование тестов</a></li><li><a class="study-toc-link" href="#runtest-suspend">1.10. runTest и тестирование suspend-функций</a></li><li><a class="study-toc-link" href="#testirovanie-viewmodel">1.11. Базовое тестирование ViewModel</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#espresso-basics">2. Espresso Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#naznachenie-espresso">2.1. Назначение Espresso</a></li><li><a class="study-toc-link" href="#onview">2.2. onView()</a></li><li><a class="study-toc-link" href="#viewmatchers">2.3. ViewMatchers</a></li><li><a class="study-toc-link" href="#viewactions">2.4. ViewActions</a></li><li><a class="study-toc-link" href="#viewassertions">2.5. ViewAssertions</a></li><li><a class="study-toc-link" href="#otobrazhenie-vzaimodeystvie">2.6. Проверка отображения и взаимодействия</a></li><li><a class="study-toc-link" href="#recyclerview">2.7. Базовое тестирование RecyclerView</a></li><li><a class="study-toc-link" href="#idling-resources">2.8. Idling Resources</a></li><li><a class="study-toc-link" href="#nastroyka-espresso">2.9. Настройка проекта и запуск тестов</a></li><li><a class="study-toc-link" href="#flaky-tests">2.10. Флаки-тесты и стабильность</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#test-doubles-i-mockk">3. Test Doubles и MockK Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#naznachenie-test-doubles">3.1. Назначение Test Doubles</a></li><li><a class="study-toc-link" href="#fake-stub-mock-spy">3.2. Fake, Stub, Mock и Spy</a></li><li><a class="study-toc-link" href="#sozdanie-mock">3.3. Создание mock-объектов</a></li><li><a class="study-toc-link" href="#every-returns">3.4. every и returns</a></li><li><a class="study-toc-link" href="#verify">3.5. verify</a></li><li><a class="study-toc-link" href="#mockk-junit">3.6. Совместное использование MockK и JUnit</a></li><li><a class="study-toc-link" href="#vzaimodeystvie">3.7. Проверка взаимодействия с зависимостями</a></li><li><a class="study-toc-link" href="#fake-vs-mock">3.8. Когда предпочтительнее Fake вместо Mock</a></li><li><a class="study-toc-link" href="#matchers-slot">3.9. Матчеры аргументов и захват значений</a></li><li><a class="study-toc-link" href="#verify-order">3.10. Порядок вызовов и множественные проверки</a></li><li><a class="study-toc-link" href="#nastroyka-mockk">3.11. Настройка проекта</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></div><details class="study-toc-compact"><summary class="study-toc-summary">Содержание</summary><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#junit-i-unit-testing">1. JUnit и Unit Testing Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#naznachenie-unit-testing">1.1. Назначение Unit Testing</a></li><li><a class="study-toc-link" href="#unit-vs-integration-vs-ui">1.2. Unit vs Integration vs UI Tests</a></li><li><a class="study-toc-link" href="#test-annotation">1.3. Аннотация @Test</a></li><li><a class="study-toc-link" href="#before-after">1.4. @Before и @After</a></li><li><a class="study-toc-link" href="#assertions">1.5. Assertions</a></li><li><a class="study-toc-link" href="#arrange-act-assert">1.6. Arrange-Act-Assert</a></li><li><a class="study-toc-link" href="#granichnye-sluchai">1.7. Проверка граничных случаев</a></li><li><a class="study-toc-link" href="#testirovanie-isklyucheniy">1.8. Тестирование исключений</a></li><li><a class="study-toc-link" href="#imenovanie-testov">1.9. Именование тестов</a></li><li><a class="study-toc-link" href="#runtest-suspend">1.10. runTest и тестирование suspend-функций</a></li><li><a class="study-toc-link" href="#testirovanie-viewmodel">1.11. Базовое тестирование ViewModel</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#espresso-basics">2. Espresso Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#naznachenie-espresso">2.1. Назначение Espresso</a></li><li><a class="study-toc-link" href="#onview">2.2. onView()</a></li><li><a class="study-toc-link" href="#viewmatchers">2.3. ViewMatchers</a></li><li><a class="study-toc-link" href="#viewactions">2.4. ViewActions</a></li><li><a class="study-toc-link" href="#viewassertions">2.5. ViewAssertions</a></li><li><a class="study-toc-link" href="#otobrazhenie-vzaimodeystvie">2.6. Проверка отображения и взаимодействия</a></li><li><a class="study-toc-link" href="#recyclerview">2.7. Базовое тестирование RecyclerView</a></li><li><a class="study-toc-link" href="#idling-resources">2.8. Idling Resources</a></li><li><a class="study-toc-link" href="#nastroyka-espresso">2.9. Настройка проекта и запуск тестов</a></li><li><a class="study-toc-link" href="#flaky-tests">2.10. Флаки-тесты и стабильность</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#test-doubles-i-mockk">3. Test Doubles и MockK Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#naznachenie-test-doubles">3.1. Назначение Test Doubles</a></li><li><a class="study-toc-link" href="#fake-stub-mock-spy">3.2. Fake, Stub, Mock и Spy</a></li><li><a class="study-toc-link" href="#sozdanie-mock">3.3. Создание mock-объектов</a></li><li><a class="study-toc-link" href="#every-returns">3.4. every и returns</a></li><li><a class="study-toc-link" href="#verify">3.5. verify</a></li><li><a class="study-toc-link" href="#mockk-junit">3.6. Совместное использование MockK и JUnit</a></li><li><a class="study-toc-link" href="#vzaimodeystvie">3.7. Проверка взаимодействия с зависимостями</a></li><li><a class="study-toc-link" href="#fake-vs-mock">3.8. Когда предпочтительнее Fake вместо Mock</a></li><li><a class="study-toc-link" href="#matchers-slot">3.9. Матчеры аргументов и захват значений</a></li><li><a class="study-toc-link" href="#verify-order">3.10. Порядок вызовов и множественные проверки</a></li><li><a class="study-toc-link" href="#nastroyka-mockk">3.11. Настройка проекта</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></details></nav><div class="study-content"><header class="study-hero"><p class="study-eyebrow">Тестирование · Junior</p><h1 class="study-title">Тестирование в Android</h1><p class="study-lead">Как писать модульные и UI-тесты Android-приложения и не тратить на них больше времени, чем они экономят.</p></header><section id="junit-i-unit-testing" class="study-section" aria-labelledby="junit-i-unit-testing-title"><h2 id="junit-i-unit-testing-title" class="study-section-title">1. JUnit и Unit Testing Basics</h2><p>Модульный тест (unit test) проверяет одну небольшую единицу логики — функцию, метод класса или правило — в изоляции от Android-фреймворка, базы данных и сети. Цель unit-тестов — быстро и дёшево находить ошибки в чистой логике: расчётах, преобразованиях, ветвлениях, состояниях. Они выполняются на JVM за миллисекунды, поэтому их можно запускать сотнями при каждом изменении.</p>
+<h3 id="naznachenie-unit-testing" class="study-subtitle">1.1. Назначение Unit Testing</h3>
+<p>Без тестов регрессии обнаруживаются вручную: разработчик меняет код, запускает приложение, кликает по экранам и надеется, что ничего не сломалось. На маленьком проекте это работает, но с ростом кодовой базы цена ручной проверки растёт, а уверенность падает. Unit-тесты превращают проверку в автоматическую: написал тест один раз — он будет проверять поведение при каждом запуске сборки.</p>
+<p>Тесты также служат живой документацией: по ним видно, как функция должна себя вести на корректных и некорректных входах. Хороший тест описывает контракт, а не реализацию, поэтому его можно сохранить при рефакторинге.</p>
+<h3 id="unit-vs-integration-vs-ui" class="study-subtitle">1.2. Unit vs Integration vs UI Tests</h3>
+<p>Тесты различаются по масштабу проверяемого куска системы.</p>
+<ul class="study-list">
+<li>Unit-тест проверяет один класс или функцию в изоляции. Зависимости заменяются фейками или моками. Быстрый, запускается на JVM без эмулятора.</li>
+<li>Integration-тест проверяет взаимодействие нескольких компонентов: например, репозиторий с реальной базой данных Room или сетевой слой с мок-сервером. Запускается на эмуляторе или через Robolectric, медленнее unit-тестов.</li>
+<li>UI-тест проверяет поведение экрана с точки зрения пользователя: нажатия, ввод текста, отображение элементов. В Android чаще всего Espresso для View или Compose UI Test для Compose. Самый медленный и хрупкий уровень.</li>
+</ul>
+<p>Практическое правило: пишите много unit-тестов, меньше интеграционных и совсем мало UI-тестов. Это классическая пирамида тестирования. UI-тесты дороги в поддержке, поэтому ими покрывают только критические пользовательские сценарии, а логику проверяют unit-тестами.</p>
+<h3 id="test-annotation" class="study-subtitle">1.3. Аннотация @Test</h3>
+<p>Любой метод, помеченный <code>@Test</code>, становится тестом. Метод должен быть без параметров и возвращать <code>Unit</code> (или <code>void</code> в Java). JUnit 5 (Jupiter) — стандарт для новых проектов, но в существующих Android-кодовых базах JUnit 4 по-прежнему очень распространён.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> org.junit.jupiter.api.Assertions.assertEquals
+<span class="hljs-keyword">import</span> org.junit.jupiter.api.Test
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">CalculatorTest</span> {
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> `1 + 2 equals 3`<span class="hljs-params">()</span></span> {
+        <span class="hljs-keyword">val</span> result = <span class="hljs-number">1</span> + <span class="hljs-number">2</span>
+        assertEquals(<span class="hljs-number">3</span>, result)
+    }
+}
+</code></pre></div>
+<p>Тест считается успешным, если он завершился без исключений и все проверки прошли. Если проверка не прошла, JUnit бросает <code>AssertionError</code> и помечает тест как проваленный.</p>
+<h3 id="before-after" class="study-subtitle">1.4. @Before и @After</h3>
+<p><code>@BeforeEach</code> (JUnit 5) выполняется перед каждым тестом, <code>@AfterEach</code> — после. В JUnit 4 аналоги — <code>@Before</code> и <code>@After</code>. Они нужны для подготовки общего состояния: создание объектов, очистка базы, сброс синглтонов.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> org.junit.jupiter.api.AfterEach
+<span class="hljs-keyword">import</span> org.junit.jupiter.api.BeforeEach
+<span class="hljs-keyword">import</span> org.junit.jupiter.api.Test
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">CounterTest</span> {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">lateinit</span> <span class="hljs-keyword">var</span> counter: Counter
+
+    <span class="hljs-meta">@BeforeEach</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">setUp</span><span class="hljs-params">()</span></span> {
+        counter = Counter()
+    }
+
+    <span class="hljs-meta">@AfterEach</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">tearDown</span><span class="hljs-params">()</span></span> {
+        <span class="hljs-comment">// освобождение ресурсов, если нужно</span>
+    }
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> `increment increases value <span class="hljs-keyword">by</span> one`<span class="hljs-params">()</span></span> {
+        counter.increment()
+        assertEquals(<span class="hljs-number">1</span>, counter.value)
+    }
+}
+</code></pre></div>
+<p>Важно: состояние между тестами не должно утекать. Каждый тест начинается с чистого объекта, созданного в <code>@BeforeEach</code>. Если тест зависит от порядка выполнения других тестов — это запах: тесты должны быть независимыми.</p>
+<h3 id="assertions" class="study-subtitle">1.5. Assertions</h3>
+<p>Проверки (assertions) — сердце теста. JUnit предоставляет набор функций для сравнения значений.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> org.junit.jupiter.api.Assertions.*
+<span class="hljs-keyword">import</span> org.junit.jupiter.api.assertThrows
+
+<span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `assertions examples`<span class="hljs-params">()</span></span> {
+    assertEquals(<span class="hljs-number">4</span>, <span class="hljs-number">2</span> + <span class="hljs-number">2</span>)
+    assertNotEquals(<span class="hljs-number">5</span>, <span class="hljs-number">2</span> + <span class="hljs-number">2</span>)
+    assertTrue(<span class="hljs-number">2</span> + <span class="hljs-number">2</span> == <span class="hljs-number">4</span>)
+    assertFalse(<span class="hljs-number">2</span> + <span class="hljs-number">2</span> == <span class="hljs-number">5</span>)
+    assertNull(<span class="hljs-literal">null</span>)
+    assertNotNull(<span class="hljs-string">&quot;hello&quot;</span>)
+    assertThrows&lt;IllegalArgumentException&gt; {
+        require(<span class="hljs-literal">false</span>) { <span class="hljs-string">&quot;bad input&quot;</span> }
+    }
+}
+</code></pre></div>
+<p><code>assertEquals(expected, actual)</code> принимает ожидаемое значение первым аргументом. Порядок важен: при провале сообщение покажет «expected X but was Y». Для сравнения объектов используется <code>equals</code>, поэтому data-классы сравниваются по содержимому.</p>
+<p>Для проверки исключений есть <code>assertThrows</code>, который возвращает брошенное исключение — его можно дополнительно проверить.</p>
+<h3 id="arrange-act-assert" class="study-subtitle">1.6. Arrange-Act-Assert</h3>
+<p>AAA — стандартная структура теста из трёх шагов.</p>
+<ul class="study-list">
+<li>Arrange (подготовка): создать объекты, задать входные данные.</li>
+<li>Act (действие): вызвать тестируемый метод.</li>
+<li>Assert (проверка): сравнить результат с ожиданием.</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `calculateDiscount returns 10 percent <span class="hljs-keyword">for</span> loyal customer`<span class="hljs-params">()</span></span> {
+    <span class="hljs-comment">// Arrange</span>
+    <span class="hljs-keyword">val</span> customer = Customer(loyaltyYears = <span class="hljs-number">3</span>)
+    <span class="hljs-keyword">val</span> price = <span class="hljs-number">1000</span>
+
+    <span class="hljs-comment">// Act</span>
+    <span class="hljs-keyword">val</span> discounted = calculateDiscount(customer, price)
+
+    <span class="hljs-comment">// Assert</span>
+    assertEquals(<span class="hljs-number">900</span>, discounted)
+}
+</code></pre></div>
+<p>Разделение шагов пустыми строками делает тест читаемым. Один тест — одна проверяемая идея. Если в тесте несколько несвязанных проверок, его стоит разбить.</p>
+<h3 id="granichnye-sluchai" class="study-subtitle">1.7. Проверка граничных случаев</h3>
+<p>Граничные случаи (edge cases) — входы на границах допустимого диапазона: ноль, пустая строка, пустой список, максимальное значение, отрицательное число. Именно здесь чаще всего прячутся баги: деление на ноль, off-by-one, пустые коллекции.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `average of empty list returns zero`<span class="hljs-params">()</span></span> {
+    assertEquals(<span class="hljs-number">0</span>, averageOf(emptyList()))
+}
+
+<span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `average of single element returns that element`<span class="hljs-params">()</span></span> {
+    assertEquals(<span class="hljs-number">5</span>, averageOf(listOf(<span class="hljs-number">5</span>)))
+}
+</code></pre></div>
+<p>Полезно думать в терминах: что минимальное, максимальное, типичное, пустое, null (если допустимо). Покрытие граничных случаев даёт больше пользы, чем тестирование «средних» значений.</p>
+<h3 id="testirovanie-isklyucheniy" class="study-subtitle">1.8. Тестирование исключений</h3>
+<p>Если метод должен бросать исключение при некорректном вводе, это нужно проверить явно. Иначе тест пройдёт даже если метод просто вернёт мусор.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `divide <span class="hljs-keyword">by</span> zero throws`<span class="hljs-params">()</span></span> {
+    <span class="hljs-keyword">val</span> exception = assertThrows&lt;IllegalArgumentException&gt; {
+        divide(<span class="hljs-number">10</span>, <span class="hljs-number">0</span>)
+    }
+    assertEquals(<span class="hljs-string">&quot;divisor must not be zero&quot;</span>, exception.message)
+}
+</code></pre></div>
+<p>Проверяйте не только тип исключения, но и сообщение или поле, если оно важно для логики. В production-коде для валидации входов используют <code>require</code> и <code>check</code>, которые бросают <code>IllegalArgumentException</code> и <code>IllegalStateException</code> соответственно.</p>
+<h3 id="imenovanie-testov" class="study-subtitle">1.9. Именование тестов</h3>
+<p>Имя теста должно описывать сценарий и ожидаемый результат. В Kotlin удобно использовать имена с обратными кавычками и пробелами.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `login with empty password returns error`<span class="hljs-params">()</span></span> { ... }
+
+<span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `user with age 18 <span class="hljs-keyword">is</span> adult`<span class="hljs-params">()</span></span> { ... }
+</code></pre></div>
+<p>Формат «метод + условие + результат» читается как предложение. Избегайте имён вроде <code>test1</code> или <code>testLogin</code>: они не объясняют, что именно проверяется, и при провале не помогают понять причину.</p>
+<h3 id="runtest-suspend" class="study-subtitle">1.10. runTest и тестирование suspend-функций</h3>
+<p>Suspend-функции нельзя вызвать из обычного теста напрямую. Библиотека <code>kotlinx-coroutines-test</code> предоставляет <code>runTest</code>, который запускает корутину в тестовом диспетчере и ждёт её завершения.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> kotlinx.coroutines.test.runTest
+<span class="hljs-keyword">import</span> org.junit.jupiter.api.Test
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">UserRepositoryTest</span> {
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> `fetchUser returns user from api`<span class="hljs-params">()</span></span> = runTest {
+        <span class="hljs-keyword">val</span> repo = UserRepository(FakeApi())
+        <span class="hljs-keyword">val</span> user = repo.fetchUser(<span class="hljs-number">1</span>)
+        assertEquals(<span class="hljs-string">&quot;Alex&quot;</span>, user.name)
+    }
+}
+</code></pre></div>
+<p><code>runTest</code> по умолчанию использует <code>StandardTestDispatcher</code> с виртуальным временем: <code>delay</code> не тратит реальные секунды, а лишь сдвигает виртуальные часы теста. Для тестирования ViewModel и use-case с корутинами <code>runTest</code> — обязательный инструмент.</p>
+<p>Зависимость: <code>testImplementation(&quot;org.jetbrains.kotlinx:kotlinx-coroutines-test:...&quot;)</code>.</p>
+<h3 id="testirovanie-viewmodel" class="study-subtitle">1.11. Базовое тестирование ViewModel</h3>
+<p>ViewModel обычно содержит состояние UI и вызывает use-case или репозиторий. Чтобы протестировать её, подменяем зависимость фейковым репозиторием и проверяем изменение состояния.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ProfileViewModel</span>(
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> repo: UserRepository
+) : ViewModel() {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _state = MutableStateFlow&lt;UiState&gt;(UiState.Loading)
+    <span class="hljs-keyword">val</span> state: StateFlow&lt;UiState&gt; = _state.asStateFlow()
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">load</span><span class="hljs-params">(userId: <span class="hljs-type">Int</span>)</span></span> = viewModelScope.launch {
+        _state.value = UiState.Success(repo.getUser(userId))
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">FakeUserRepository</span> : <span class="hljs-type">UserRepository</span> {
+    <span class="hljs-keyword">override</span> <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUser</span><span class="hljs-params">(id: <span class="hljs-type">Int</span>)</span></span> = User(id, <span class="hljs-string">&quot;Alex&quot;</span>)
+}
+
+<span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `load sets success state`<span class="hljs-params">()</span></span> = runTest {
+    <span class="hljs-keyword">val</span> vm = ProfileViewModel(FakeUserRepository())
+    vm.load(<span class="hljs-number">1</span>)
+    assertEquals(UiState.Success(User(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;Alex&quot;</span>)), vm.state.value)
+}
+</code></pre></div>
+<p>Такой тест проверяет логику преобразования данных в состояние, а не Android-компоненты. Для проверки <code>StateFlow</code> используйте <code>runTest</code> и чтение <code>.value</code> после завершения корутины. Более сложные сценарии (несколько эмиссий) проверяют через Turbine.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Тестирование реализации вместо поведения: тест ломается при рефакторинге, хотя поведение не изменилось.</li>
+<li>Общее изменяемое состояние между тестами — приводит к флаки-тестам.</li>
+<li>Запуск suspend-функции без <code>runTest</code> — не скомпилируется или зависнет.</li>
+<li>Путаница порядка аргументов в <code>assertEquals</code> — сообщение об ошибке будет вводить в заблуждение.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу объяснить, зачем нужны unit-тесты и чем они отличаются от UI-тестов.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею писать тест с <code>@Test</code>, <code>@BeforeEach</code> и assertions.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю структуру AAA и применяю её.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею тестировать suspend-функции через <code>runTest</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу написать тест для ViewModel с фейковым репозиторием.</li>
+</ul></section><section id="espresso-basics" class="study-section" aria-labelledby="espresso-basics-title"><h2 id="espresso-basics-title" class="study-section-title">2. Espresso Basics</h2><p>Espresso — фреймворк для UI-тестирования Android-приложений, работающих на классических View (XML-разметка, Fragment, Activity). Он синхронизируется с главным потоком UI и автоматически ждёт завершения операций, что делает тесты стабильнее ручных кликов.</p>
+<p>Важно: на современных проектах, использующих Jetpack Compose, Espresso применяют только к legacy-экранам на View. Для Compose-экранов используют Compose UI Test (<code>compose-ui-test</code>), где взаимодействие строится вокруг семантического дерева, а не View-иерархии. Espresso не видит Compose-компоненты, поэтому попытка применить его к Compose-экрану приведёт к падению теста с ошибкой «view not found». Если проект смешанный (View + Compose), Espresso покрывает старые экраны, а Compose Test — новые.</p>
+<h3 id="naznachenie-espresso" class="study-subtitle">2.1. Назначение Espresso</h3>
+<p>Espresso нужен, чтобы автоматически проверять, что экран отображает нужные элементы, реагирует на действия пользователя и переходит между состояниями. Тест запускается на эмуляторе или реальном устройстве и выполняет реальные жесты.</p>
+<p>Типичные сценарии: проверка формы логина, навигация по списку, отображение ошибки при пустом вводе. Espresso не заменяет unit-тесты: он медленный и хрупкий, поэтому им покрывают только критические пользовательские пути.</p>
+<h3 id="onview" class="study-subtitle">2.2. onView()</h3>
+<p>Точка входа — <code>onView(matcher)</code>, которая находит View по матчеру и возвращает <code>ViewInteraction</code>. Дальнейшие действия и проверки цепляются к этому объекту.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> androidx.test.espresso.Espresso.onView
+<span class="hljs-keyword">import</span> androidx.test.espresso.action.ViewActions.click
+<span class="hljs-keyword">import</span> androidx.test.espresso.matcher.ViewMatchers.withId
+
+onView(withId(R.id.loginButton)).perform(click())
+</code></pre></div>
+<p>Если матчер находит несколько View, Espresso бросает <code>AmbiguousViewMatcherException</code>. Если не находит ни одного — <code>NoMatchingViewException</code>. Это помогает быстро локализовать проблему: элемент не отображён или матчер слишком общий.</p>
+<h3 id="viewmatchers" class="study-subtitle">2.3. ViewMatchers</h3>
+<p>Матчеры описывают, какую View ищем. Основные: <code>withId</code>, <code>withText</code>, <code>withHint</code>, <code>isDisplayed</code>, <code>isEnabled</code>, <code>isChecked</code>. Их можно комбинировать через <code>allOf</code> и <code>anyOf</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> androidx.test.espresso.matcher.ViewMatchers.*
+
+onView(allOf(withId(R.id.submitButton), isEnabled()))
+onView(withText(<span class="hljs-string">&quot;Войти&quot;</span>))
+onView(withHint(<span class="hljs-string">&quot;Email&quot;</span>))
+</code></pre></div>
+<p>Комбинирование матчеров делает поиск точным: например, кнопка с конкретным id и текстом. Избегайте матчеров только по тексту, если текст может меняться из-за локализации.</p>
+<h3 id="viewactions" class="study-subtitle">2.4. ViewActions</h3>
+<p>Действия имитируют жесты пользователя: клик, ввод текста, прокрутка, свайп.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> androidx.test.espresso.action.ViewActions.*
+
+onView(withId(R.id.emailInput)).perform(typeText(<span class="hljs-string">&quot;user@example.com&quot;</span>))
+onView(withId(R.id.loginButton)).perform(click())
+onView(withId(R.id.scrollView)).perform(scrollTo())
+</code></pre></div>
+<p><code>typeText</code> вводит строку в поле ввода. <code>click()</code> выполняет клик. <code>closeSoftKeyboard()</code> закрывает клавиатуру — часто нужен после ввода, иначе следующий элемент может быть перекрыт.</p>
+<h3 id="viewassertions" class="study-subtitle">2.5. ViewAssertions</h3>
+<p>Проверки подтверждают состояние View после действий.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> androidx.test.espresso.assertion.ViewAssertions.*
+
+onView(withId(R.id.welcomeText)).check(matches(isDisplayed()))
+onView(withId(R.id.errorText)).check(matches(withText(<span class="hljs-string">&quot;Неверный пароль&quot;</span>)))
+onView(withId(R.id.loginButton)).check(matches(isEnabled()))
+</code></pre></div>
+<p><code>matches(matcher)</code> — основная проверка. <code>doesNotExist()</code> проверяет, что View отсутствует. Именно через assertions тест подтверждает ожидаемый результат.</p>
+<h3 id="otobrazhenie-vzaimodeystvie" class="study-subtitle">2.6. Проверка отображения и взаимодействия</h3>
+<p>Полный сценарий: ввести данные, нажать кнопку, проверить результат.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loginShowsWelcome</span><span class="hljs-params">()</span></span> {
+    onView(withId(R.id.emailInput)).perform(typeText(<span class="hljs-string">&quot;user@example.com&quot;</span>), closeSoftKeyboard())
+    onView(withId(R.id.passwordInput)).perform(typeText(<span class="hljs-string">&quot;secret&quot;</span>), closeSoftKeyboard())
+    onView(withId(R.id.loginButton)).perform(click())
+
+    onView(withId(R.id.welcomeText)).check(matches(isDisplayed()))
+    onView(withId(R.id.welcomeText)).check(matches(withText(<span class="hljs-string">&quot;Добро пожаловать&quot;</span>)))
+}
+</code></pre></div>
+<p>Такой тест проверяет сквозной сценарий на экране. Он запускается на эмуляторе и зависит от разметки, поэтому при изменении id элементов тест придётся обновить.</p>
+<h3 id="recyclerview" class="study-subtitle">2.7. Базовое тестирование RecyclerView</h3>
+<p>RecyclerView не имеет простого <code>onView</code> для элементов списка, потому что элементы создаются лениво. Используют <code>RecyclerViewActions</code> из <code>espresso-contrib</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> androidx.test.espresso.contrib.RecyclerViewActions
+
+onView(withId(R.id.recyclerView)).perform(
+    RecyclerViewActions.actionOnItemAtPosition&lt;MyAdapter.ViewHolder&gt;(
+        <span class="hljs-number">0</span>, click()
+    )
+)
+
+onView(withId(R.id.recyclerView)).check(
+    matches(hasDescendant(withText(<span class="hljs-string">&quot;Kotlin&quot;</span>)))
+)
+</code></pre></div>
+<p><code>actionOnItemAtPosition</code> выполняет действие на элементе с заданной позицией. <code>hasDescendant</code> проверяет, что среди потомков RecyclerView есть View с нужным текстом. Для больших списков предпочтительнее скроллить к элементу через <code>scrollToPosition</code> перед действием.</p>
+<h3 id="idling-resources" class="study-subtitle">2.8. Idling Resources</h3>
+<p>Idling Resources сообщают Espresso, что приложение занято фоновой работой (сетевой запрос, анимация, таймер) и тест должен подождать. Без них Espresso может проверить результат до того, как данные загрузились, и тест упадёт ложно.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SimpleIdlingResource</span> : <span class="hljs-type">IdlingResource</span> {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">var</span> callback: IdlingResource.ResourceCallback? = <span class="hljs-literal">null</span>
+    <span class="hljs-meta">@Volatile</span> <span class="hljs-keyword">private</span> <span class="hljs-keyword">var</span> isIdle = <span class="hljs-literal">true</span>
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getName</span><span class="hljs-params">()</span></span> = <span class="hljs-string">&quot;SimpleIdlingResource&quot;</span>
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">isIdleNow</span><span class="hljs-params">()</span></span> = isIdle
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">registerIdleTransitionCallback</span><span class="hljs-params">(cb: <span class="hljs-type">IdlingResource</span>.<span class="hljs-type">ResourceCallback</span>)</span></span> {
+        callback = cb
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">setIdleState</span><span class="hljs-params">(isIdleNow: <span class="hljs-type">Boolean</span>)</span></span> {
+        isIdle = isIdleNow
+        <span class="hljs-keyword">if</span> (isIdleNow) callback?.onTransitionToIdle()
+    }
+}
+</code></pre></div>
+<p>Idling resource регистрируют в тестовом коде (<code>androidTest</code>): сама реализация может жить в <code>debug</code> source set или приходить через DI, а в релизной сборке остаётся no-op. Регистрируют их через <code>IdlingRegistry</code>; готовые реализации вроде OkHttp IdlingResource подключают так же. В Compose Test вместо idling resources ждут нужное состояние через <code>waitUntil</code>.</p>
+<h3 id="nastroyka-espresso" class="study-subtitle">2.9. Настройка проекта и запуск тестов</h3>
+<p>Espresso-тесты — инструментальные: они выполняются на эмуляторе или устройстве. Зависимости добавляют в <code>build.gradle.kts</code> модуля <code>app</code> в блоке <code>androidTest</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">androidTestImplementation(<span class="hljs-string">&quot;androidx.test.ext:junit:1.2.1&quot;</span>)
+androidTestImplementation(<span class="hljs-string">&quot;androidx.test.espresso:espresso-core:3.6.1&quot;</span>)
+androidTestImplementation(<span class="hljs-string">&quot;androidx.test.espresso:espresso-contrib:3.6.1&quot;</span>)
+</code></pre></div>
+<p>Тестовый класс помечают аннотацией <code>@RunWith(AndroidJUnit4::class)</code> (JUnit 4) или используют JUnit 5 с плагином. Перед тестом запускают Activity через <code>ActivityScenario</code> или правило <code>ActivityScenarioRule</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> androidx.test.core.app.ActivityScenario
+<span class="hljs-keyword">import</span> androidx.test.ext.junit.rules.ActivityScenarioRule
+<span class="hljs-keyword">import</span> androidx.test.ext.junit.runners.AndroidJUnit4
+<span class="hljs-keyword">import</span> org.junit.Rule
+<span class="hljs-keyword">import</span> org.junit.Test
+<span class="hljs-keyword">import</span> org.junit.runner.RunWith
+
+<span class="hljs-meta">@RunWith(AndroidJUnit4::class)</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">LoginScreenTest</span> {
+
+    <span class="hljs-meta">@get:Rule</span>
+    <span class="hljs-keyword">val</span> rule = ActivityScenarioRule(LoginActivity::<span class="hljs-keyword">class</span>.java)
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loginShowsWelcome</span><span class="hljs-params">()</span></span> {
+        <span class="hljs-comment">// ...</span>
+    }
+}
+</code></pre></div>
+<p><code>ActivityScenarioRule</code> запускает Activity перед каждым тестом и закрывает после. Это гарантирует чистое состояние экрана. Запуск: <code>./gradlew connectedAndroidTest</code> или через панель тестов в Android Studio.</p>
+<p>Espresso автоматически синхронизируется с главным потоком UI: перед каждым действием он ждёт, пока очередь сообщений главного потока опустеет. Именно поэтому <code>Thread.sleep</code> в Espresso-тестах обычно не нужен — и его использование считается антипаттерном, так как замедляет тесты и не гарантирует корректность.</p>
+<h3 id="flaky-tests" class="study-subtitle">2.10. Флаки-тесты и стабильность</h3>
+<p>Флаки-тесты — тесты, которые иногда проходят, а иногда падают без изменения кода. Главные причины в Espresso: асинхронные операции без Idling Resources, зависимость от анимаций (Espresso сам их не отключает — это делают флагом <code>testOptions.animationsDisabled</code> в Gradle или вручную на тестовом устройстве), нестабильные данные (например, список, зависящий от сервера).</p>
+<p>Рекомендации: отключайте анимации на тестовом устройстве (Настройки разработчика → Window/Transition/Animator animation scale → Off), используйте фейковые данные вместо реальных, регистрируйте Idling Resources для всех асинхронных операций, избегайте жёстких ожиданий через <code>Thread.sleep</code>.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Применение Espresso к Compose-экранам — тест не найдёт View.</li>
+<li>Слишком общие матчеры, приводящие к <code>AmbiguousViewMatcherException</code>.</li>
+<li>Забытый <code>closeSoftKeyboard()</code> — следующий <code>click</code> попадает в клавиатуру.</li>
+<li>Отсутствие Idling Resources при асинхронных операциях — флаки-тесты.</li>
+<li>Использование <code>Thread.sleep</code> вместо Idling Resources.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, когда Espresso уместен, а когда нужен Compose UI Test.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею найти View через <code>onView</code> и матчеры.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу выполнить действие и проверку результата.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, зачем нужны Idling Resources.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу настроить и запустить инструментальный тест.</li>
+</ul></section><section id="test-doubles-i-mockk" class="study-section" aria-labelledby="test-doubles-i-mockk-title"><h2 id="test-doubles-i-mockk-title" class="study-section-title">3. Test Doubles и MockK Basics</h2><p>Тестируемый класс часто зависит от других компонентов: репозитория, API, базы данных, SharedPreferences. Чтобы проверить логику изолированно, зависимости подменяют тестовыми дублёрами (test doubles). Это позволяет контролировать входы и выходы зависимостей и не тащить в тест тяжёлую инфраструктуру.</p>
+<h3 id="naznachenie-test-doubles" class="study-subtitle">3.1. Назначение Test Doubles</h3>
+<p>Test double — объект, который подменяет реальную зависимость в тесте. Цели: изоляция (тест не зависит от сети/БД), скорость (нет реальных вызовов), детерминированность (контролируемый результат), возможность проверить взаимодействие (был ли вызван метод и с какими аргументами).</p>
+<p>Без дублёров unit-тест превращается в интеграционный: он будет падать из-за сети, требовать эмулятор и выполняться секунды. Дублёры возвращают логику в центр внимания.</p>
+<h3 id="fake-stub-mock-spy" class="study-subtitle">3.2. Fake, Stub, Mock и Spy</h3>
+<ul class="study-list">
+<li>Fake — рабочая упрощённая реализация интерфейса. Например, <code>FakeUserRepository</code>, хранящий данные в <code>MutableList</code> вместо Room. Ведёт себя как реальный объект, но без внешних зависимостей.</li>
+<li>Stub — объект, возвращающий заранее заданные ответы. Не проверяет вызовы, просто отвечает.</li>
+<li>Mock — объект с ожиданиями: тест указывает, какие методы должны быть вызваны и с какими аргументами, и проверяет это.</li>
+<li>Spy — обёртка вокруг реального объекта, которая записывает вызовы, но выполняет реальную логику (или частично).</li>
+</ul>
+<p>Границы размыты: MockK создаёт моки, которые могут вести себя как стабы (через <code>every</code>/<code>returns</code>). Важна идея: Fake даёт реальное поведение в упрощённом виде, Mock — проверяет взаимодействие.</p>
+<h3 id="sozdanie-mock" class="study-subtitle">3.3. Создание mock-объектов</h3>
+<p>В MockK мок создаётся функцией <code>mockk&lt;T&gt;()</code>. Для интерфейсов и классов.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> io.mockk.mockk
+
+<span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserRepository</span> {
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUser</span><span class="hljs-params">(id: <span class="hljs-type">Int</span>)</span></span>: User
+}
+
+<span class="hljs-keyword">val</span> repo: UserRepository = mockk()
+</code></pre></div>
+<p>По умолчанию все методы мока бросают исключение, если не настроены через <code>every</code>. Это заставляет явно задавать поведение и предотвращает случайные вызовы.</p>
+<p>Для spy: <code>spyk(realObject)</code>. Для релаксированных моков (возвращают дефолтные значения): <code>mockk(relaxed = true)</code> — удобно для объектов с множеством методов, где важны только некоторые.</p>
+<h3 id="every-returns" class="study-subtitle">3.4. every и returns</h3>
+<p><code>every { ... } returns ...</code> настраивает ответ мока на вызов.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> io.mockk.every
+<span class="hljs-keyword">import</span> io.mockk.coEvery
+
+<span class="hljs-comment">// suspend-функцию настраивают через coEvery</span>
+coEvery { repo.getUser(<span class="hljs-number">1</span>) } returns User(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;Alex&quot;</span>)
+
+<span class="hljs-comment">// обычную (не suspend) функцию — через every</span>
+every { formValidator.isValid(<span class="hljs-string">&quot;user@example.com&quot;</span>) } returns <span class="hljs-literal">true</span>
+</code></pre></div>
+<p><code>coEvery</code> используется для suspend-функций. Можно задавать ответы в зависимости от аргументов: <code>coEvery { repo.getUser(any()) } returns User(0, &quot;Unknown&quot;)</code>. <code>any()</code>, <code>eq(...)</code>, <code>match { ... }</code> — матчеры аргументов.</p>
+<p>Можно настраивать последовательность ответов: <code>returnsMany(listOf(...))</code> или цепочка <code>returns ... andThen ...</code>.</p>
+<h3 id="verify" class="study-subtitle">3.5. verify</h3>
+<p><code>verify</code> проверяет, что метод был вызван (и с какими аргументами).</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> io.mockk.verify
+<span class="hljs-keyword">import</span> io.mockk.coVerify
+
+<span class="hljs-comment">// suspend-функции проверяют через coVerify</span>
+coVerify { repo.getUser(<span class="hljs-number">1</span>) }        <span class="hljs-comment">// вызвана ровно раз</span>
+coVerify(exactly = <span class="hljs-number">2</span>) { repo.getUser(<span class="hljs-number">1</span>) }
+verify { repo wasNot Called }       <span class="hljs-comment">// не вызывалась вообще</span>
+
+<span class="hljs-comment">// обычные (не suspend) функции — через verify</span>
+verify { formValidator.isValid(<span class="hljs-string">&quot;user@example.com&quot;</span>) }
+</code></pre></div>
+<p><code>verify</code> помещают после действия, чтобы проверить взаимодействие. Это ключевая возможность моков: убедиться, что тестируемый код действительно обращается к зависимости с правильными параметрами.</p>
+<h3 id="mockk-junit" class="study-subtitle">3.6. Совместное использование MockK и JUnit</h3>
+<p>MockK интегрируется с JUnit через аннотации. <code>@MockK</code> создаёт мок-поле, <code>@InjectMockKs</code> внедряет моки в тестируемый объект.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> io.mockk.MockKAnnotations
+<span class="hljs-keyword">import</span> io.mockk.impl.annotations.InjectMockKs
+<span class="hljs-keyword">import</span> io.mockk.impl.annotations.MockK
+<span class="hljs-keyword">import</span> org.junit.jupiter.api.BeforeEach
+<span class="hljs-keyword">import</span> org.junit.jupiter.api.Test
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ProfileViewModelTest</span> {
+
+    <span class="hljs-meta">@MockK</span>
+    <span class="hljs-keyword">lateinit</span> <span class="hljs-keyword">var</span> repo: UserRepository
+
+    <span class="hljs-meta">@InjectMockKs</span>
+    <span class="hljs-keyword">lateinit</span> <span class="hljs-keyword">var</span> viewModel: ProfileViewModel
+
+    <span class="hljs-meta">@BeforeEach</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">setUp</span><span class="hljs-params">()</span></span> {
+        MockKAnnotations.<span class="hljs-keyword">init</span>(<span class="hljs-keyword">this</span>)
+    }
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> `load calls repository`<span class="hljs-params">()</span></span> = runTest {
+        coEvery { repo.getUser(<span class="hljs-number">1</span>) } returns User(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;Alex&quot;</span>)
+        viewModel.load(<span class="hljs-number">1</span>)
+        coVerify { repo.getUser(<span class="hljs-number">1</span>) }
+    }
+}
+</code></pre></div>
+<p><code>MockKAnnotations.init(this)</code> инициализирует все <code>@MockK</code>-поля. Вызывать в <code>@BeforeEach</code>, чтобы каждый тест начинался с чистых моков.</p>
+<h3 id="vzaimodeystvie" class="study-subtitle">3.7. Проверка взаимодействия с зависимостями</h3>
+<p>Моки позволяют проверить не только результат, но и то, как тестируемый код общается с зависимостями: сколько раз вызван метод, с какими аргументами, в каком порядке.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `save user calls repository once with correct <span class="hljs-keyword">data</span>`<span class="hljs-params">()</span></span> = runTest {
+    <span class="hljs-keyword">val</span> service = UserService(repo)
+    service.register(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-number">25</span>)
+
+    coVerify(exactly = <span class="hljs-number">1</span>) { repo.save(User(name = <span class="hljs-string">&quot;Alex&quot;</span>, age = <span class="hljs-number">25</span>)) }
+}
+</code></pre></div>
+<p>Такие проверки полезны для use-case и ViewModel, где важно не дублировать запросы и передавать корректные данные. Но чрезмерная проверка взаимодействий делает тесты хрупкими: они ломаются при любом изменении внутренней реализации, даже если поведение сохранилось.</p>
+<h3 id="fake-vs-mock" class="study-subtitle">3.8. Когда предпочтительнее Fake вместо Mock</h3>
+<p>Fake предпочтительнее Mock, когда:</p>
+<ul class="study-list">
+<li>Зависимость имеет состояние (коллекция, кэш, база) и тест проверяет последовательность операций.</li>
+<li>Тестируется сложная логика с множеством вызовов зависимостей — моки превращаются в громоздкие настройки.</li>
+<li>Нужно использовать зависимость в нескольких тестах — Fake переиспользуется.</li>
+</ul>
+<p>Mock предпочтительнее Fake, когда:</p>
+<ul class="study-list">
+<li>Нужно проверить, что метод был вызван (или не вызван) — Fake не отслеживает вызовы без дополнительного кода.</li>
+<li>Зависимость внешняя и сложная (сетевой клиент) — Fake пришлось бы писать самому.</li>
+<li>Тест проверяет один сценарий — настройка мока короче.</li>
+</ul>
+<p>Практическое правило: начинайте с Fake для репозиториев и хранилищ, используйте MockK для внешних сервисов и случаев, где важна проверка вызовов. Не смешивайте оба подхода в одном тесте без необходимости.</p>
+<h3 id="matchers-slot" class="study-subtitle">3.9. Матчеры аргументов и захват значений</h3>
+<p>MockK предоставляет матчеры для гибкой настройки и проверки: <code>any()</code>, <code>eq(value)</code>, <code>match { predicate }</code>, <code>or</code>, <code>and</code>. Для захвата переданного значения используют <code>slot&lt;T&gt;()</code> и функцию <code>capture</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> io.mockk.slot
+<span class="hljs-keyword">import</span> io.mockk.capture
+
+<span class="hljs-meta">@Test</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> `register passes user with correct age`<span class="hljs-params">()</span></span> = runTest {
+    <span class="hljs-keyword">val</span> slot = slot&lt;User&gt;()
+    coEvery { repo.save(capture(slot)) } returns <span class="hljs-built_in">Unit</span>
+
+    service.register(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-number">25</span>)
+
+    assertEquals(<span class="hljs-string">&quot;Alex&quot;</span>, slot.captured.name)
+    assertEquals(<span class="hljs-number">25</span>, slot.captured.age)
+}
+</code></pre></div>
+<p>Захват полезен, когда важно проверить не точное равенство объекта, а отдельные поля или вычисленные значения. Вместо <code>slot</code> можно использовать <code>verify { repo.save(match { it.age &gt;= 18 }) }</code> — проверка через предикат без захвата.</p>
+<h3 id="verify-order" class="study-subtitle">3.10. Порядок вызовов и множественные проверки</h3>
+<p>MockK умеет проверять порядок вызовов через <code>verifyOrder</code> и <code>verifySequence</code>. Это важно, когда логика требует строгой последовательности: сначала валидация, потом сохранение, потом уведомление.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> io.mockk.verifyOrder
+
+verifyOrder {
+    repo.validate(any())
+    repo.save(any())
+    notifier.notify(any())
+}
+</code></pre></div>
+<p><code>verifyAll</code> проверяет, что вызваны все перечисленные методы (порядок не важен). Для проверки, что мок больше ничего не вызывал, используют <code>confirmVerified(mock)</code> — он падает, если были непроверенные вызовы.</p>
+<h3 id="nastroyka-mockk" class="study-subtitle">3.11. Настройка проекта</h3>
+<p>Зависимость добавляют в <code>build.gradle.kts</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">testImplementation(<span class="hljs-string">&quot;io.mockk:mockk:1.13.12&quot;</span>)
+testImplementation(<span class="hljs-string">&quot;org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0&quot;</span>)
+</code></pre></div>
+<p>Для инструментальных тестов (androidTest) используют <code>mockk-android</code>. MockK работает с JUnit 4 и JUnit 5; с JUnit 5 достаточно обычной зависимости <code>mockk</code>.</p>
+<p><strong>Типичные ошибки:</strong></p>
+<ul class="study-list">
+<li>Мокирование всего подряд, включая простые data-классы — тесты становятся нечитаемыми.</li>
+<li>Отсутствие <code>coEvery</code>/<code>coVerify</code> для suspend-функций — ошибка компиляции или ложный результат.</li>
+<li>Проверка внутренних вызовов вместо публичного поведения — хрупкие тесты.</li>
+<li>Использование <code>relaxed = true</code> везде — скрывает неожиданные вызовы и маскирует баги.</li>
+<li>Забытый <code>MockKAnnotations.init(this)</code> в <code>@BeforeEach</code> — поля остаются неинициализированными.</li>
+</ul>
+<p><strong>Короткая самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу объяснить разницу между Fake, Stub, Mock и Spy.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею создать мок и настроить ответ через <code>every</code>/<code>returns</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею проверить вызов через <code>verify</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, когда выбрать Fake, а когда Mock.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу захватить аргумент через <code>slot</code> и проверить его поля.</li>
+</ul></section><section id="itogovaya-samoproverka" class="study-section" aria-labelledby="itogovaya-samoproverka-title"><h2 id="itogovaya-samoproverka-title" class="study-section-title">Итоговая самопроверка категории</h2><ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею писать unit-тесты на JUnit с assertions и AAA-структурой.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу тестировать suspend-функции через <code>runTest</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею писать тесты для ViewModel с тестовыми дублёрами.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, когда применять Espresso, а когда Compose UI Test.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу написать Espresso-тест для View-экрана: поиск, действие, проверка.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею создавать моки в MockK и настраивать их поведение.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю разницу между Fake, Stub, Mock и Spy и выбираю подходящий инструмент.</li>
+</ul></section><section id="istochniki-i-dokumentaciya" class="study-section" aria-labelledby="istochniki-i-dokumentaciya-title"><h2 id="istochniki-i-dokumentaciya-title" class="study-section-title">Источники и документация</h2><h3 class="study-subtitle">Официальная документация</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://developer.android.com/training/testing/fundamentals" target="_blank" rel="noopener noreferrer">Testing fundamentals</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/testing/local-tests" target="_blank" rel="noopener noreferrer">Local unit tests</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/testing/instrumented-tests" target="_blank" rel="noopener noreferrer">Instrumented tests</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/testing/espresso" target="_blank" rel="noopener noreferrer">Espresso</a></li>
+<li><a class="study-pill" href="https://developer.android.com/jetpack/compose/testing" target="_blank" rel="noopener noreferrer">Compose testing</a></li>
+<li><a class="study-pill" href="https://developer.android.com/kotlin/coroutines/test" target="_blank" rel="noopener noreferrer">Coroutines testing</a></li>
+<li><a class="study-pill" href="https://developer.android.com/codelabs/basic-android-kotlin-compose-test-viewmodel" target="_blank" rel="noopener noreferrer">ViewModel testing</a></li>
+<li><a class="study-pill" href="https://junit.org/junit5/docs/current/user-guide/" target="_blank" rel="noopener noreferrer">JUnit 5 User Guide</a></li>
+<li><a class="study-pill" href="https://mockk.io/" target="_blank" rel="noopener noreferrer">MockK documentation</a></li>
+</ul>
+<h3 class="study-subtitle">Статьи</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://developer.android.com/training/testing/fundamentals/strategies#testing-pyramid" target="_blank" rel="noopener noreferrer">Android testing pyramid</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/testing/espresso/idling-resource" target="_blank" rel="noopener noreferrer">Idling resources</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/testing/espresso/lists" target="_blank" rel="noopener noreferrer">RecyclerView testing with Espresso</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/testing/fundamentals/test-doubles" target="_blank" rel="noopener noreferrer">Test doubles</a></li>
+</ul></section><footer class="study-footer">Учебный конспект для уровня Junior. Примеры ориентированы на Kotlin.</footer></div></div>

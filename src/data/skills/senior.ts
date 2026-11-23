@@ -489,6 +489,24 @@ export const seniorSkills: Skill[] = [
     sortOrder: 7,
     requiredForLevelUp: true,
   },
+  {
+    id: "senior-platform-ai",
+    categoryId: "senior-platform",
+    name: "On-Device AI и ML",
+    description: "Архитектура и интеграция локальных ML/AI-моделей на Android: Gemini Nano и AICore, ML Kit, LiteRT, управление памятью, приватностью и гибридным on-device/cloud инференсом.",
+    subtopics: [
+      "Gemini Nano и AICore",
+      "ML Kit",
+      "LiteRT / TFLite",
+      "on-device inference и ограничения памяти",
+      "приватность и разрешения",
+      "выбор между on-device и облачной моделью",
+      "интеграция AI-фичи в архитектуру приложения",
+    ],
+    difficulty: "hard",
+    sortOrder: 8,
+    requiredForLevelUp: false,
+  },
 
   // ============================
   // Senior: Compose Advanced

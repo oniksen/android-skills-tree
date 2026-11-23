@@ -605,6 +605,23 @@ export const strongMiddleSkills: Skill[] = [
     sortOrder: 5,
     requiredForLevelUp: false,
   },
+  {
+    id: "strong-arch-convention-plugins",
+    categoryId: "strong-arch",
+    name: "Convention Plugins и Build Logic",
+    description: "Централизация конфигурации сборки многомодульного Android-проекта через build-logic, convention plugins, version catalogs и строгие границы модулей.",
+    subtopics: [
+      "build-logic модуль",
+      "convention plugins",
+      "version catalogs в многомодульном проекте",
+      "границы модулей и api/implementation",
+      "стоимость конфигурации Gradle",
+      "переиспользование конфигурации между приложениями",
+    ],
+    difficulty: "medium",
+    sortOrder: 6,
+    requiredForLevelUp: false,
+  },
 
   // ============================
   // Strong Middle: Data
@@ -765,7 +782,7 @@ export const strongMiddleSkills: Skill[] = [
     id: "strong-security-ssl",
     categoryId: "strong-security",
     name: "TLS и Network Security",
-    description: "Продвинутая настройка сетевой безопасности Android-приложений. Управление доверенными сертификатами, TLS-конфигурацией и защитой соединений от атак посредника.",
+    description: "Продвинутая настройка сетевой безопасности Android-приложений. Управление доверенными сертификатами, TLS-конфигурацией, защитой соединений от атак посредника и проверкой целостности через Play Integrity API.",
     subtopics: [
       "Модель доверия TLS",
       "Certificate Chain Validation",
@@ -780,6 +797,7 @@ export const strongMiddleSkills: Skill[] = [
       "Mutual TLS (mTLS)",
       "Hostname Verification",
       "Защита от неправильной реализации TrustManager",
+      "Play Integrity API: аттестация приложения и устройства",
       "Диагностика TLS-ошибок",
     ],
     difficulty: "hard",

@@ -1,0 +1,1116 @@
+<div class="study-layout"><nav class="study-toc" aria-label="Содержание материала"><div class="study-toc-rail"><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#sharedpreferences-i-datastore">1. SharedPreferences и DataStore Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#preferences-datastore-kak-osnovnoy-sovremennyy-podhod">1.1. Preferences DataStore как основной современный подход</a></li><li><a class="study-toc-link" href="#preferences-key-chtenie-cherez-data-flow-i-zapis-cherez-edit">1.2. Preferences.Key, чтение через data Flow и запись через edit</a></li><li><a class="study-toc-link" href="#preimuschestva-datastore-pered-sharedpreferences">1.3. Преимущества DataStore перед SharedPreferences</a></li><li><a class="study-toc-link" href="#sharedpreferences-v-suschestvuyuschih-i-legacy-proektah">1.4. SharedPreferences в существующих и legacy-проектах</a></li><li><a class="study-toc-link" href="#chtenie-i-zapis-v-sharedpreferences-edit-apply-i-commit">1.5. Чтение и запись в SharedPreferences (edit, apply и commit)</a></li><li><a class="study-toc-link" href="#ogranicheniya-i-blokirovki-glavnogo-potoka-v-sharedpreferences">1.6. Ограничения и блокировки главного потока в SharedPreferences</a></li><li><a class="study-toc-link" href="#podderzhivaemye-tipy-dannyh">1.7. Поддерживаемые типы данных</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#files-i-storage">2. Files и Storage</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#internal-storage">2.1. Internal storage</a></li><li><a class="study-toc-link" href="#app-specific-external-storage">2.2. App-specific external storage</a></li><li><a class="study-toc-link" href="#filesdir-i-cachedir">2.3. filesDir и cacheDir</a></li><li><a class="study-toc-link" href="#openfileinput-i-openfileoutput">2.4. openFileInput и openFileOutput</a></li><li><a class="study-toc-link" href="#fileinputstream-i-fileoutputstream">2.5. FileInputStream и FileOutputStream</a></li><li><a class="study-toc-link" href="#scoped-storage">2.6. Scoped Storage</a></li><li><a class="study-toc-link" href="#uri-i-contentresolver-naznachenie">2.7. URI и ContentResolver (назначение)</a></li><li><a class="study-toc-link" href="#storage-access-framework-bazovoe-ponimanie">2.8. Storage Access Framework (базовое понимание)</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#sqlite-i-sql">3. SQLite и SQL Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#relatsionnaya-model-dannyh">3.1. Реляционная модель данных</a></li><li><a class="study-toc-link" href="#tablicy-stroki-i-stolbcy">3.2. Таблицы, строки и столбцы</a></li><li><a class="study-toc-link" href="#pervichnyy-i-vneshniy-klyuch">3.3. Первичный и внешний ключ</a></li><li><a class="study-toc-link" href="#select-i-where">3.4. SELECT и WHERE</a></li><li><a class="study-toc-link" href="#insert-update-i-delete">3.5. INSERT, UPDATE и DELETE</a></li><li><a class="study-toc-link" href="#order-by-i-limit">3.6. ORDER BY и LIMIT</a></li><li><a class="study-toc-link" href="#join-naznachenie-i-bazovoe-primenenie">3.7. JOIN (назначение и базовое применение)</a></li><li><a class="study-toc-link" href="#transaktsii-naznachenie">3.8. Транзакции (назначение)</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#room-basics">4. Room Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#entity">4.1. @Entity</a></li><li><a class="study-toc-link" href="#primarykey">4.2. @PrimaryKey</a></li><li><a class="study-toc-link" href="#dao">4.3. @Dao</a></li><li><a class="study-toc-link" href="#query">4.4. @Query</a></li><li><a class="study-toc-link" href="#insert-update-i-delete-room">4.5. @Insert, @Update и @Delete</a></li><li><a class="study-toc-link" href="#database">4.6. @Database</a></li><li><a class="study-toc-link" href="#poluchenie-dannyh-cherez-suspend-i-flow-bazovoe-ponimanie">4.7. Получение данных через suspend и Flow (базовое понимание)</a></li><li><a class="study-toc-link" href="#versionirovanie-bazy-dannyh">4.8. Версионирование базы данных</a></li><li><a class="study-toc-link" href="#naznachenie-migratsiy">4.9. Назначение миграций</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#json-i-serialization">5. JSON и Serialization</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#json-structure">Структура JSON</a></li><li><a class="study-toc-link" href="#json-object-array">JSON Object и JSON Array</a></li><li><a class="study-toc-link" href="#serialization-deserialization">Сериализация и десериализация</a></li><li><a class="study-toc-link" href="#gson-basics">Gson Basics</a></li><li><a class="study-toc-link" href="#kotlinx-serialization-basics">Kotlinx Serialization Basics</a></li><li><a class="study-toc-link" href="#serialization-annotations">Аннотации сериализации</a></li><li><a class="study-toc-link" href="#json-nullable-missing">Nullable и отсутствующие поля</a></li><li><a class="study-toc-link" href="#json-parse-errors">Обработка ошибок парсинга</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#http-i-rest">6. HTTP и REST Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#client-server-model">Клиент-серверная модель</a></li><li><a class="study-toc-link" href="#http-request-response">HTTP request и response</a></li><li><a class="study-toc-link" href="#http-methods">HTTP methods</a></li><li><a class="study-toc-link" href="#http-status-codes">HTTP status codes</a></li><li><a class="study-toc-link" href="#url-path-query">URL, path и query parameters</a></li><li><a class="study-toc-link" href="#http-headers">HTTP headers</a></li><li><a class="study-toc-link" href="#request-response-body">Request body и response body</a></li><li><a class="study-toc-link" href="#rest-api-resources">REST API и ресурсы</a></li><li><a class="study-toc-link" href="#https">HTTPS и отличие от HTTP</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#retrofit-basics">7. Retrofit Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#retrofit-builder">Retrofit builder</a></li><li><a class="study-toc-link" href="#retrofit-api-interface">Создание API interface</a></li><li><a class="study-toc-link" href="#retrofit-get-post">@GET и @POST</a></li><li><a class="study-toc-link" href="#retrofit-path-query">@Path и @Query</a></li><li><a class="study-toc-link" href="#retrofit-body">@Body</a></li><li><a class="study-toc-link" href="#retrofit-suspend">Вызовы через suspend-функции</a></li><li><a class="study-toc-link" href="#retrofit-call-response">Call и Response (назначение)</a></li><li><a class="study-toc-link" href="#retrofit-success-error">Обработка успешного и неуспешного HTTP-ответа</a></li><li><a class="study-toc-link" href="#retrofit-converter">Подключение JSON Converter</a></li><li><a class="study-toc-link" href="#retrofit-okhttp">OkHttpClient и базовая настройка клиента</a></li><li><a class="study-toc-link" href="#retrofit-logging">HttpLoggingInterceptor для отладки запросов</a></li><li><a class="study-toc-link" href="#retrofit-timeouts">Таймауты подключения и чтения</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#dto-i-data-mapping">8. DTO и Data Mapping</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#dto-purpose">Назначение DTO</a></li><li><a class="study-toc-link" href="#dto-network-vs-domain">Сетевые модели и Domain-модели</a></li><li><a class="study-toc-link" href="#dto-to-domain">Преобразование DTO в Domain</a></li><li><a class="study-toc-link" href="#dto-mapping-extensions">Extension-функции для маппинга</a></li><li><a class="study-toc-link" href="#dto-nullable">Обработка nullable-полей API</a></li><li><a class="study-toc-link" href="#dto-missing-extra">Отсутствующие и дополнительные поля ответа</a></li><li><a class="study-toc-link" href="#dto-not-in-ui">Почему не следует напрямую использовать DTO в UI</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></div><details class="study-toc-compact"><summary class="study-toc-summary">Содержание</summary><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#sharedpreferences-i-datastore">1. SharedPreferences и DataStore Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#preferences-datastore-kak-osnovnoy-sovremennyy-podhod">1.1. Preferences DataStore как основной современный подход</a></li><li><a class="study-toc-link" href="#preferences-key-chtenie-cherez-data-flow-i-zapis-cherez-edit">1.2. Preferences.Key, чтение через data Flow и запись через edit</a></li><li><a class="study-toc-link" href="#preimuschestva-datastore-pered-sharedpreferences">1.3. Преимущества DataStore перед SharedPreferences</a></li><li><a class="study-toc-link" href="#sharedpreferences-v-suschestvuyuschih-i-legacy-proektah">1.4. SharedPreferences в существующих и legacy-проектах</a></li><li><a class="study-toc-link" href="#chtenie-i-zapis-v-sharedpreferences-edit-apply-i-commit">1.5. Чтение и запись в SharedPreferences (edit, apply и commit)</a></li><li><a class="study-toc-link" href="#ogranicheniya-i-blokirovki-glavnogo-potoka-v-sharedpreferences">1.6. Ограничения и блокировки главного потока в SharedPreferences</a></li><li><a class="study-toc-link" href="#podderzhivaemye-tipy-dannyh">1.7. Поддерживаемые типы данных</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#files-i-storage">2. Files и Storage</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#internal-storage">2.1. Internal storage</a></li><li><a class="study-toc-link" href="#app-specific-external-storage">2.2. App-specific external storage</a></li><li><a class="study-toc-link" href="#filesdir-i-cachedir">2.3. filesDir и cacheDir</a></li><li><a class="study-toc-link" href="#openfileinput-i-openfileoutput">2.4. openFileInput и openFileOutput</a></li><li><a class="study-toc-link" href="#fileinputstream-i-fileoutputstream">2.5. FileInputStream и FileOutputStream</a></li><li><a class="study-toc-link" href="#scoped-storage">2.6. Scoped Storage</a></li><li><a class="study-toc-link" href="#uri-i-contentresolver-naznachenie">2.7. URI и ContentResolver (назначение)</a></li><li><a class="study-toc-link" href="#storage-access-framework-bazovoe-ponimanie">2.8. Storage Access Framework (базовое понимание)</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#sqlite-i-sql">3. SQLite и SQL Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#relatsionnaya-model-dannyh">3.1. Реляционная модель данных</a></li><li><a class="study-toc-link" href="#tablicy-stroki-i-stolbcy">3.2. Таблицы, строки и столбцы</a></li><li><a class="study-toc-link" href="#pervichnyy-i-vneshniy-klyuch">3.3. Первичный и внешний ключ</a></li><li><a class="study-toc-link" href="#select-i-where">3.4. SELECT и WHERE</a></li><li><a class="study-toc-link" href="#insert-update-i-delete">3.5. INSERT, UPDATE и DELETE</a></li><li><a class="study-toc-link" href="#order-by-i-limit">3.6. ORDER BY и LIMIT</a></li><li><a class="study-toc-link" href="#join-naznachenie-i-bazovoe-primenenie">3.7. JOIN (назначение и базовое применение)</a></li><li><a class="study-toc-link" href="#transaktsii-naznachenie">3.8. Транзакции (назначение)</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#room-basics">4. Room Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#entity">4.1. @Entity</a></li><li><a class="study-toc-link" href="#primarykey">4.2. @PrimaryKey</a></li><li><a class="study-toc-link" href="#dao">4.3. @Dao</a></li><li><a class="study-toc-link" href="#query">4.4. @Query</a></li><li><a class="study-toc-link" href="#insert-update-i-delete-room">4.5. @Insert, @Update и @Delete</a></li><li><a class="study-toc-link" href="#database">4.6. @Database</a></li><li><a class="study-toc-link" href="#poluchenie-dannyh-cherez-suspend-i-flow-bazovoe-ponimanie">4.7. Получение данных через suspend и Flow (базовое понимание)</a></li><li><a class="study-toc-link" href="#versionirovanie-bazy-dannyh">4.8. Версионирование базы данных</a></li><li><a class="study-toc-link" href="#naznachenie-migratsiy">4.9. Назначение миграций</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#json-i-serialization">5. JSON и Serialization</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#json-structure">Структура JSON</a></li><li><a class="study-toc-link" href="#json-object-array">JSON Object и JSON Array</a></li><li><a class="study-toc-link" href="#serialization-deserialization">Сериализация и десериализация</a></li><li><a class="study-toc-link" href="#gson-basics">Gson Basics</a></li><li><a class="study-toc-link" href="#kotlinx-serialization-basics">Kotlinx Serialization Basics</a></li><li><a class="study-toc-link" href="#serialization-annotations">Аннотации сериализации</a></li><li><a class="study-toc-link" href="#json-nullable-missing">Nullable и отсутствующие поля</a></li><li><a class="study-toc-link" href="#json-parse-errors">Обработка ошибок парсинга</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#http-i-rest">6. HTTP и REST Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#client-server-model">Клиент-серверная модель</a></li><li><a class="study-toc-link" href="#http-request-response">HTTP request и response</a></li><li><a class="study-toc-link" href="#http-methods">HTTP methods</a></li><li><a class="study-toc-link" href="#http-status-codes">HTTP status codes</a></li><li><a class="study-toc-link" href="#url-path-query">URL, path и query parameters</a></li><li><a class="study-toc-link" href="#http-headers">HTTP headers</a></li><li><a class="study-toc-link" href="#request-response-body">Request body и response body</a></li><li><a class="study-toc-link" href="#rest-api-resources">REST API и ресурсы</a></li><li><a class="study-toc-link" href="#https">HTTPS и отличие от HTTP</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#retrofit-basics">7. Retrofit Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#retrofit-builder">Retrofit builder</a></li><li><a class="study-toc-link" href="#retrofit-api-interface">Создание API interface</a></li><li><a class="study-toc-link" href="#retrofit-get-post">@GET и @POST</a></li><li><a class="study-toc-link" href="#retrofit-path-query">@Path и @Query</a></li><li><a class="study-toc-link" href="#retrofit-body">@Body</a></li><li><a class="study-toc-link" href="#retrofit-suspend">Вызовы через suspend-функции</a></li><li><a class="study-toc-link" href="#retrofit-call-response">Call и Response (назначение)</a></li><li><a class="study-toc-link" href="#retrofit-success-error">Обработка успешного и неуспешного HTTP-ответа</a></li><li><a class="study-toc-link" href="#retrofit-converter">Подключение JSON Converter</a></li><li><a class="study-toc-link" href="#retrofit-okhttp">OkHttpClient и базовая настройка клиента</a></li><li><a class="study-toc-link" href="#retrofit-logging">HttpLoggingInterceptor для отладки запросов</a></li><li><a class="study-toc-link" href="#retrofit-timeouts">Таймауты подключения и чтения</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#dto-i-data-mapping">8. DTO и Data Mapping</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#dto-purpose">Назначение DTO</a></li><li><a class="study-toc-link" href="#dto-network-vs-domain">Сетевые модели и Domain-модели</a></li><li><a class="study-toc-link" href="#dto-to-domain">Преобразование DTO в Domain</a></li><li><a class="study-toc-link" href="#dto-mapping-extensions">Extension-функции для маппинга</a></li><li><a class="study-toc-link" href="#dto-nullable">Обработка nullable-полей API</a></li><li><a class="study-toc-link" href="#dto-missing-extra">Отсутствующие и дополнительные поля ответа</a></li><li><a class="study-toc-link" href="#dto-not-in-ui">Почему не следует напрямую использовать DTO в UI</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></details></nav><div class="study-content"><header class="study-hero"><p class="study-eyebrow">Data &amp; Storage Basics · Junior</p><h1 class="study-title">Данные и хранение в Android</h1><p class="study-lead">Где и как Android-приложение хранит данные: настройки, файлы, SQLite, Room и подготовка данных к отправке в сеть.</p></header><section id="sharedpreferences-i-datastore" class="study-section" aria-labelledby="sharedpreferences-i-datastore-title"><h2 id="sharedpreferences-i-datastore-title" class="study-section-title">1. SharedPreferences и DataStore Basics</h2><p>Любое приложение хранит данные: имя пользователя, флаг «первый запуск», выбранный язык, токен авторизации, кэш настроек. Для небольших пар «ключ — значение» в Android исторически использовали SharedPreferences. Сегодня рекомендуемый подход — Preferences DataStore: он асинхронный, типобезопасный и не блокирует главный поток. SharedPreferences остаётся legacy-механизмом для старого кода и сторонних библиотек.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">DataStore</p><p>современный способ хранения настроек: асинхронный, на корутинах и Flow.</p></div><div class="study-card"><p class="study-card-title">SharedPreferences</p><p>устаревший, но всё ещё встречающийся key-value API.</p></div><div class="study-card"><p class="study-card-title">Ключи</p><p>типизированные <code>Preferences.Key</code>, а не строки.</p></div><div class="study-card"><p class="study-card-title">Чтение</p><p>всегда через <code>Flow</code>, данные приходят асинхронно.</p></div><div class="study-card"><p class="study-card-title">Запись</p><p>через <code>edit { }</code>, транзакционно.</p></div><div class="study-card"><p class="study-card-title">Миграция</p><p>DataStore умеет перенести старые SharedPreferences.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> для новых проектов используйте Preferences DataStore. SharedPreferences оставляйте только там, где он уже есть и перенос неоправдан.</p></div><h3 id="preferences-datastore-kak-osnovnoy-sovremennyy-podhod" class="study-subtitle">1.1. Preferences DataStore как основной современный подход</h3>
+<p>Preferences DataStore — это часть библиотеки Jetpack DataStore. Он хранит данные в файле на диске в формате key-value, но работает поверх корутин и <code>Flow</code>. Чтение возвращает поток данных, который обновляется при каждом изменении; запись выполняется в транзакции.</p>
+<p>Подключение в <code>build.gradle</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">dependencies {
+    <span class="hljs-comment">// подставьте актуальную версию androidx.datastore:datastore-preferences</span>
+    implementation <span class="hljs-string">&quot;androidx.datastore:datastore-preferences:&lt;version&gt;&quot;</span>
+}
+</code></pre></div>
+<p>Создание хранилища. Чаще всего используют делегат расширения <code>preferencesDataStore</code> на <code>Context</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> androidx.datastore.core.DataStore
+<span class="hljs-keyword">import</span> androidx.datastore.preferences.core.Preferences
+<span class="hljs-keyword">import</span> androidx.datastore.preferences.preferencesDataStore
+
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> Context.dataStore: DataStore&lt;Preferences&gt; <span class="hljs-keyword">by</span> preferencesDataStore(
+    name = <span class="hljs-string">&quot;settings&quot;</span>
+)
+</code></pre></div>
+<p>Делегат создаёт один экземпляр <code>DataStore</code> на процесс для данного имени файла. Это важно: создавайте хранилище один раз, обычно на уровне приложения или через DI, и переиспользуйте.</p>
+<p>Чтение данных:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> darkModeFlow: Flow&lt;<span class="hljs-built_in">Boolean</span>&gt; = context.dataStore.<span class="hljs-keyword">data</span>.map { prefs -&gt;
+    prefs[DARK_MODE_KEY] ?: <span class="hljs-literal">false</span>
+}
+</code></pre></div>
+<p>Запись данных:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">setDarkMode</span><span class="hljs-params">(enabled: <span class="hljs-type">Boolean</span>)</span></span> {
+    context.dataStore.edit { prefs -&gt;
+        prefs[DARK_MODE_KEY] = enabled
+    }
+}
+</code></pre></div>
+<p>Метод <code>edit</code> принимает лямбду, в которой можно изменить <code>MutablePreferences</code>. Изменения применяются атомарно: либо все, либо ни одного. Ошибки ввода-вывода пробрасываются как исключения, их можно перехватить через <code>catch</code> на потоке <code>data</code>.</p>
+<h3 id="preferences-key-chtenie-cherez-data-flow-i-zapis-cherez-edit" class="study-subtitle">1.2. Preferences.Key, чтение через data Flow и запись через edit</h3>
+<p>Ключи в DataStore типизированы. Вместо строк используют фабричные функции, которые создают <code>Preferences.Key&lt;T&gt;</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> androidx.datastore.preferences.core.booleanPreferencesKey
+<span class="hljs-keyword">import</span> androidx.datastore.preferences.core.stringPreferencesKey
+<span class="hljs-keyword">import</span> androidx.datastore.preferences.core.intPreferencesKey
+<span class="hljs-keyword">import</span> androidx.datastore.preferences.core.longPreferencesKey
+<span class="hljs-keyword">import</span> androidx.datastore.preferences.core.floatPreferencesKey
+<span class="hljs-keyword">import</span> androidx.datastore.preferences.core.doublePreferencesKey
+<span class="hljs-keyword">import</span> androidx.datastore.preferences.core.stringSetPreferencesKey
+
+<span class="hljs-keyword">object</span> SettingsKeys {
+    <span class="hljs-keyword">val</span> DARK_MODE = booleanPreferencesKey(<span class="hljs-string">&quot;dark_mode&quot;</span>)
+    <span class="hljs-keyword">val</span> USER_NAME = stringPreferencesKey(<span class="hljs-string">&quot;user_name&quot;</span>)
+    <span class="hljs-keyword">val</span> LAUNCH_COUNT = intPreferencesKey(<span class="hljs-string">&quot;launch_count&quot;</span>)
+    <span class="hljs-keyword">val</span> LAST_SYNC = longPreferencesKey(<span class="hljs-string">&quot;last_sync&quot;</span>)
+    <span class="hljs-keyword">val</span> FONT_SCALE = floatPreferencesKey(<span class="hljs-string">&quot;font_scale&quot;</span>)
+    <span class="hljs-keyword">val</span> RATING = doublePreferencesKey(<span class="hljs-string">&quot;rating&quot;</span>)
+    <span class="hljs-keyword">val</span> TAGS = stringSetPreferencesKey(<span class="hljs-string">&quot;tags&quot;</span>)
+}
+</code></pre></div>
+<p>Тип ключа определяет, какие значения можно хранить. Компилятор не даст записать <code>String</code> в <code>intPreferencesKey</code>.</p>
+<p>Чтение через <code>Flow</code>. Поток <code>dataStore.data</code> эмитит текущие <code>Preferences</code> при каждом изменении. Обычно его мапят в нужный тип:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SettingsRepository</span>(<span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> dataStore: DataStore&lt;Preferences&gt;) {
+    <span class="hljs-keyword">val</span> userName: Flow&lt;String&gt; = dataStore.<span class="hljs-keyword">data</span>.map { prefs -&gt;
+        prefs[SettingsKeys.USER_NAME] ?: <span class="hljs-string">&quot;Гость&quot;</span>
+    }
+
+    <span class="hljs-keyword">val</span> launchCount: Flow&lt;<span class="hljs-built_in">Int</span>&gt; = dataStore.<span class="hljs-keyword">data</span>.map { prefs -&gt;
+        prefs[SettingsKeys.LAUNCH_COUNT] ?: <span class="hljs-number">0</span>
+    }
+}
+</code></pre></div>
+<p>В Compose данные читаются через <code>collectAsState</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Composable</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">SettingsScreen</span><span class="hljs-params">(viewModel: <span class="hljs-type">SettingsViewModel</span>)</span></span> {
+    <span class="hljs-keyword">val</span> userName <span class="hljs-keyword">by</span> viewModel.userName.collectAsState(initial = <span class="hljs-string">&quot;Гость&quot;</span>)
+    Text(text = <span class="hljs-string">&quot;Привет, <span class="hljs-variable">$userName</span>&quot;</span>)
+}
+</code></pre></div>
+<p>Запись через <code>edit</code>. Метод <code>edit</code> — <code>suspend</code>-функция, поэтому вызывать её нужно из корутины:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SettingsRepository</span>(<span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> dataStore: DataStore&lt;Preferences&gt;) {
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">setUserName</span><span class="hljs-params">(name: <span class="hljs-type">String</span>)</span></span> {
+        dataStore.edit { prefs -&gt;
+            prefs[SettingsKeys.USER_NAME] = name
+        }
+    }
+
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">incrementLaunchCount</span><span class="hljs-params">()</span></span> {
+        dataStore.edit { prefs -&gt;
+            <span class="hljs-keyword">val</span> current = prefs[SettingsKeys.LAUNCH_COUNT] ?: <span class="hljs-number">0</span>
+            prefs[SettingsKeys.LAUNCH_COUNT] = current + <span class="hljs-number">1</span>
+        }
+    }
+
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">clearAll</span><span class="hljs-params">()</span></span> {
+        dataStore.edit { prefs -&gt;
+            prefs.clear()
+        }
+    }
+}
+</code></pre></div>
+<p>Важно: внутри <code>edit</code> нельзя вызывать другие <code>edit</code> того же DataStore — это приведёт к дедлоку. Все изменения в одной транзакции делайте в одной лямбде.</p>
+<h3 id="preimuschestva-datastore-pered-sharedpreferences" class="study-subtitle">1.3. Преимущества DataStore перед SharedPreferences</h3>
+<div class="study-table-wrap" role="group" aria-label="Таблица" tabindex="0"><table class="study-table"><thead><tr><th>Критерий</th><th>SharedPreferences</th><th>Preferences DataStore</th></tr></thead><tbody><tr><td>Асинхронность</td><td><code>apply</code> асинхронный, но чтение синхронное</td><td>Полностью асинхронный</td></tr><tr><td>Главный поток</td><td>Чтение/запись могут блокировать UI</td><td>Не блокирует UI</td></tr><tr><td>Транзакции</td><td>Нет</td><td>Атомарные изменения</td></tr><tr><td>Типобезопасность</td><td>Строковые ключи</td><td>Типизированные <code>Preferences.Key</code></td></tr><tr><td>Обработка ошибок</td><td>Ошибки I/O теряются</td><td>Исключения пробрасываются</td></tr><tr><td>Согласованность</td><td>Возможны рассинхроны</td><td>Единый источник правды через Flow</td></tr><tr><td>Миграция</td><td>Ручная</td><td>Встроенная <code>SharedPreferencesMigration</code></td></tr></tbody></table></div>
+<p>Главная причина перехода — безопасность главного потока. SharedPreferences при чтении обращается к диску (или к кэшу в памяти, но первый вызов и запись всё равно связаны с I/O). На слабых устройствах это приводит к ANR. DataStore читает данные один раз при старте и дальше отдаёт их через <code>Flow</code> из памяти.</p>
+<p>Дополнительно DataStore поддерживает обработку ошибок:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">context.dataStore.<span class="hljs-keyword">data</span>
+    .<span class="hljs-keyword">catch</span> { exception -&gt;
+        <span class="hljs-keyword">if</span> (exception <span class="hljs-keyword">is</span> IOException) emit(emptyPreferences())
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">throw</span> exception
+    }
+    .map { prefs -&gt; prefs[SettingsKeys.USER_NAME] ?: <span class="hljs-string">&quot;Гость&quot;</span> }
+</code></pre></div>
+<h3 id="sharedpreferences-v-suschestvuyuschih-i-legacy-proektah" class="study-subtitle">1.4. SharedPreferences в существующих и legacy-проектах</h3>
+<p>SharedPreferences никуда не делся: он встречается в старом коде, в сторонних SDK и в миграционных сценариях. Задача разработчика — не писать новый код на SharedPreferences, но уметь его читать и аккуратно мигрировать.</p>
+<p>Типичные места, где вы встретите SharedPreferences:</p>
+<ul class="study-list">
+<li>старые проекты, написанные до появления DataStore;</li>
+<li>библиотеки, которые хранят свои настройки через <code>getSharedPreferences</code>;</li>
+<li>код, где DataStore ещё не подключён, а зависимость тянуть не хотят.</li>
+</ul>
+<p>Если проект уже использует SharedPreferences, миграцию делают постепенно: сначала оборачивают чтение в репозиторий, затем заменяют реализацию на DataStore с <code>SharedPreferencesMigration</code>, затем удаляют старый код. DataStore умеет автоматически перенести данные:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> Context.dataStore: DataStore&lt;Preferences&gt; <span class="hljs-keyword">by</span> preferencesDataStore(
+    name = <span class="hljs-string">&quot;settings&quot;</span>,
+    produceMigrations = { context -&gt;
+        listOf(SharedPreferencesMigration(context, <span class="hljs-string">&quot;old_settings&quot;</span>))
+    }
+)
+</code></pre></div>
+<p>После миграции старый файл SharedPreferences остаётся на диске, но DataStore его больше не читает. Удалять файл вручную не нужно, но и рассчитывать на него нельзя.</p>
+<h3 id="chtenie-i-zapis-v-sharedpreferences-edit-apply-i-commit" class="study-subtitle">1.5. Чтение и запись в SharedPreferences (edit, apply и commit)</h3>
+<p>Получение экземпляра:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> prefs = context.getSharedPreferences(<span class="hljs-string">&quot;app_settings&quot;</span>, Context.MODE_PRIVATE)
+</code></pre></div>
+<p><code>MODE_PRIVATE</code> — единственный рекомендуемый режим; остальные помечены устаревшими и небезопасны.</p>
+<p>Чтение:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> userName = prefs.getString(<span class="hljs-string">&quot;user_name&quot;</span>, <span class="hljs-string">&quot;Гость&quot;</span>) ?: <span class="hljs-string">&quot;Гость&quot;</span>
+<span class="hljs-keyword">val</span> darkMode = prefs.getBoolean(<span class="hljs-string">&quot;dark_mode&quot;</span>, <span class="hljs-literal">false</span>)
+<span class="hljs-keyword">val</span> launchCount = prefs.getInt(<span class="hljs-string">&quot;launch_count&quot;</span>, <span class="hljs-number">0</span>)
+</code></pre></div>
+<p>Запись через <code>edit()</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">prefs.edit().apply {
+    putString(<span class="hljs-string">&quot;user_name&quot;</span>, <span class="hljs-string">&quot;Анна&quot;</span>)
+    putBoolean(<span class="hljs-string">&quot;dark_mode&quot;</span>, <span class="hljs-literal">true</span>)
+    putInt(<span class="hljs-string">&quot;launch_count&quot;</span>, <span class="hljs-number">5</span>)
+    apply() <span class="hljs-comment">// или commit()</span>
+}
+</code></pre></div>
+<p>Разница <code>apply</code> и <code>commit</code>:</p>
+<ul class="study-list">
+<li><code>apply()</code> — асинхронно записывает на диск в фоне, не возвращает результат, не блокирует вызывающий поток. Предпочтительный вариант.</li>
+<li><code>commit()</code> — синхронно записывает на диск и возвращает <code>Boolean</code> об успехе. Блокирует поток до завершения записи.</li>
+</ul>
+<p>Используйте <code>apply()</code> почти всегда. <code>commit()</code> оправдан только когда нужно гарантировать, что данные записаны до продолжения (например, перед завершением процесса).</p>
+<h3 id="ogranicheniya-i-blokirovki-glavnogo-potoka-v-sharedpreferences" class="study-subtitle">1.6. Ограничения и блокировки главного потока в SharedPreferences</h3>
+<p>SharedPreferences загружает весь файл в память при первом обращении. Это чтение с диска происходит на том потоке, где вызван первый <code>getSharedPreferences</code> или <code>get*</code>. Если это главный поток, возможна задержка и ANR на больших файлах.</p>
+<p>Дополнительные проблемы:</p>
+<ul class="study-list">
+<li>нет транзакций: два потока могут перезаписать друг друга;</li>
+<li>нет типобезопасности: ключи — строки, ошибки в имени ключа обнаружатся только в рантайме;</li>
+<li><code>commit()</code> на главном потоке блокирует UI до записи на диск;</li>
+<li>данные не версионируются и не мигрируют автоматически;</li>
+<li>при удалении приложения данные удаляются — это ожидаемо, но иногда путают с «вечным» хранилищем.</li>
+</ul>
+<p>Для диагностики блокировок используют <code>StrictMode</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">StrictMode.setThreadPolicy(
+    StrictMode.ThreadPolicy.Builder()
+        .detectDiskReads()
+        .detectDiskWrites()
+        .penaltyLog()
+        .build()
+)
+</code></pre></div>
+<p>Если в логах появляются <code>StrictMode policy violation</code>, значит SharedPreferences (или другой код) трогает диск на главном потоке.</p>
+<h3 id="podderzhivaemye-tipy-dannyh" class="study-subtitle">1.7. Поддерживаемые типы данных</h3>
+<p>Preferences DataStore и SharedPreferences поддерживают одинаковый набор примитивов:</p>
+<ul class="study-list">
+<li><code>Boolean</code></li>
+<li><code>Float</code></li>
+<li><code>Int</code></li>
+<li><code>Long</code></li>
+<li><code>Double</code> (только DataStore; в SharedPreferences нет)</li>
+<li><code>String</code></li>
+<li><code>Set&lt;String&gt;</code></li>
+</ul>
+<p>Сложные объекты (data class, списки объектов) напрямую хранить нельзя. Варианты:</p>
+<ol class="study-list">
+<li>Сериализовать объект в JSON-строку и хранить как <code>String</code>:</li>
+</ol>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> json = Json.encodeToString(user)
+prefs.edit { it[USER_JSON] = json }
+</code></pre></div>
+<ol class="study-list">
+<li>
+<p>Использовать Proto DataStore — отдельный вариант DataStore, который хранит типизированные protobuf-объекты. Это следующий шаг после Preferences DataStore, когда настроек много и они структурированы.</p>
+</li>
+<li>
+<p>Хранить сложные данные в Room (база данных), а в настройках держать только идентификаторы.</p>
+</li>
+</ol><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> хранить в SharedPreferences/DataStore большие объёмы данных (списки из тысяч элементов, изображения). Для этого используйте файлы или базу данных.</p></div><h3 class="study-subtitle">Практика: SharedPreferences и DataStore</h3>
+<ol class="study-list">
+<li>Создайте <code>SettingsRepository</code> на Preferences DataStore с ключами <code>user_name</code> (String) и <code>dark_mode</code> (Boolean).</li>
+<li>Реализуйте чтение <code>userName</code> как <code>Flow&lt;String&gt;</code> и запись через <code>suspend</code>-функцию.</li>
+<li>Добавьте миграцию со старого SharedPreferences-файла.</li>
+<li>Прочитайте старый код с <code>prefs.edit().putString(...).apply()</code> и перепишите его на DataStore.</li>
+<li>Включите <code>StrictMode</code> и убедитесь, что на главном потоке нет дисковых операций.</li>
+</ol>
+<h3 class="study-subtitle">Самопроверка: SharedPreferences и DataStore</h3>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, почему DataStore предпочтительнее SharedPreferences.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею создавать типизированные ключи <code>Preferences.Key</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, как читать данные через <code>Flow</code> и писать через <code>edit</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу объяснить разницу <code>apply</code> и <code>commit</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, почему SharedPreferences может вызвать ANR.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, какие типы данных поддерживаются и как хранить сложные объекты.</li>
+</ul></section><section id="files-i-storage" class="study-section" aria-labelledby="files-i-storage-title"><h2 id="files-i-storage-title" class="study-section-title">2. Files и Storage</h2><p>Файлы — основной способ хранения больших и бинарных данных: изображения, аудио, кэш ответов сервера, экспортированные документы. Android разделяет хранилище на внутреннее (приватное для приложения) и внешнее (общее или app-specific). С Android 10 действует Scoped Storage, ограничивающий прямой доступ к файлам других приложений.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Internal storage</p><p>приватные файлы приложения, удаляются при удалении приложения.</p></div><div class="study-card"><p class="study-card-title">External storage</p><p>общее хранилище или app-specific директория.</p></div><div class="study-card"><p class="study-card-title">filesDir / cacheDir</p><p>базовые директории внутреннего хранилища.</p></div><div class="study-card"><p class="study-card-title">Scoped Storage</p><p>модель доступа с Android 10, ограничивает прямой доступ.</p></div><div class="study-card"><p class="study-card-title">URI</p><p>адрес ресурса, через который обращаются к файлам.</p></div><div class="study-card"><p class="study-card-title">SAF</p><p>стандартный диалог выбора файлов пользователем.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> для своих данных используйте внутреннее или app-specific внешнее хранилище — разрешения не нужны. К общим файлам обращайтесь через <code>MediaStore</code> и SAF.</p></div><h3 id="internal-storage" class="study-subtitle">2.1. Internal storage</h3>
+<p>Внутреннее хранилище — директория, привязанная к приложению. Файлы здесь доступны только вашему приложению (и root-пользователю). При удалении приложения данные удаляются. Разрешения не требуются.</p>
+<p>Типичные сценарии: базы данных SQLite/Room, SharedPreferences/DataStore, приватные конфиги, кэш, файлы, которые не должны быть видны пользователю или другим приложениям.</p>
+<p>Доступ к внутреннему хранилищу:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> file = File(context.filesDir, <span class="hljs-string">&quot;notes.txt&quot;</span>)
+file.writeText(<span class="hljs-string">&quot;Первая заметка&quot;</span>)
+<span class="hljs-keyword">val</span> text = file.readText()
+</code></pre></div>
+<p>Внутреннее хранилище ограничено размером, выделенным под приложение. Не храните там гигабайты данных.</p>
+<h3 id="app-specific-external-storage" class="study-subtitle">2.2. App-specific external storage</h3>
+<p>Android позволяет приложению создавать файлы во внешнем хранилище в своей собственной директории. Эти файлы не требуют разрешений <code>READ_EXTERNAL_STORAGE</code>/<code>WRITE_EXTERNAL_STORAGE</code> и удаляются при удалении приложения. Другие приложения их не видят (на Android 11+).</p>
+<p>Получение директорий:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> filesDir = context.getExternalFilesDir(<span class="hljs-literal">null</span>) <span class="hljs-comment">// корень app-specific</span>
+<span class="hljs-keyword">val</span> picturesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+<span class="hljs-keyword">val</span> downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+<span class="hljs-keyword">val</span> cacheDir = context.externalCacheDir
+</code></pre></div>
+<p>Перед использованием проверяйте доступность внешнего хранилища:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">if</span> (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
+    <span class="hljs-comment">// можно писать</span>
+}
+</code></pre></div>
+<p>App-specific external storage подходит для больших файлов (видео, архивы), которые не помещаются во внутреннее хранилище, но не должны быть видны в галерее.</p>
+<h3 id="filesdir-i-cachedir" class="study-subtitle">2.3. filesDir и cacheDir</h3>
+<p><code>Context.filesDir</code> — директория для постоянных файлов приложения внутри внутреннего хранилища. Система не удаляет их автоматически, но пользователь может очистить данные приложения в настройках.</p>
+<p><code>Context.cacheDir</code> — директория для временных файлов. Система может удалить их при нехватке места. Не храните там важные данные.</p>
+<p>Аналоги для внешнего хранилища: <code>context.externalCacheDir</code> и <code>context.getExternalFilesDir(...)</code>.</p>
+<p>Рекомендации:</p>
+<ul class="study-list">
+<li>постоянные данные → <code>filesDir</code> или <code>getExternalFilesDir</code>;</li>
+<li>временные/кэш → <code>cacheDir</code> или <code>externalCacheDir</code>;</li>
+<li>не смешивайте: очистка кэша не должна удалять пользовательские файлы.</li>
+</ul>
+<p>Очистка кэша вручную:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">clearCache</span><span class="hljs-params">(context: <span class="hljs-type">Context</span>)</span></span> {
+    context.cacheDir.deleteRecursively()
+    context.externalCacheDir?.deleteRecursively()
+}
+</code></pre></div>
+<h3 id="openfileinput-i-openfileoutput" class="study-subtitle">2.4. openFileInput и openFileOutput</h3>
+<p>Это старый, но всё ещё рабочий API для работы с файлами внутреннего хранилища. Методы <code>Context</code> открывают потоки по имени файла:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// Запись</span>
+context.openFileOutput(<span class="hljs-string">&quot;notes.txt&quot;</span>, Context.MODE_PRIVATE).use { output -&gt;
+    output.write(<span class="hljs-string">&quot;Привет, файл&quot;</span>.toByteArray())
+}
+
+<span class="hljs-comment">// Чтение</span>
+<span class="hljs-keyword">val</span> text = context.openFileInput(<span class="hljs-string">&quot;notes.txt&quot;</span>).use { input -&gt;
+    input.readBytes().toString(Charsets.UTF_8)
+}
+</code></pre></div>
+<p>Режимы: <code>MODE_PRIVATE</code> (по умолчанию и рекомендуется), <code>MODE_APPEND</code> (добавление в конец). Другие режимы устарели.</p>
+<p><code>use</code> гарантирует закрытие потока. Без него файл может остаться открытым и заблокированным.</p>
+<h3 id="fileinputstream-i-fileoutputstream" class="study-subtitle">2.5. FileInputStream и FileOutputStream</h3>
+<p>Для работы с произвольными путями используют стандартные потоки Java/Kotlin. Они удобны для копирования, буферизованного чтения, работы с большими файлами:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> java.io.File
+<span class="hljs-keyword">import</span> java.io.FileInputStream
+<span class="hljs-keyword">import</span> java.io.FileOutputStream
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">copyFile</span><span class="hljs-params">(source: <span class="hljs-type">File</span>, target: <span class="hljs-type">File</span>)</span></span> {
+    FileInputStream(source).use { input -&gt;
+        FileOutputStream(target).use { output -&gt;
+            input.copyTo(output, bufferSize = <span class="hljs-number">8192</span>)
+        }
+    }
+}
+</code></pre></div>
+<p>Для текстовых файлов удобнее расширения Kotlin:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">File(context.filesDir, <span class="hljs-string">&quot;log.txt&quot;</span>).appendText(<span class="hljs-string">&quot;новая строка\n&quot;</span>)
+<span class="hljs-keyword">val</span> lines = File(context.filesDir, <span class="hljs-string">&quot;log.txt&quot;</span>).readLines()
+</code></pre></div>
+<p>Для бинарных данных (изображения, архивы) используйте потоки и буферы, а не строковые методы.</p>
+<h3 id="scoped-storage" class="study-subtitle">2.6. Scoped Storage</h3>
+<p>Scoped Storage — модель доступа к хранилищу, введённая в Android 10 (API 29) и обязательная с Android 11 (API 30). Её цель — защитить данные пользователя: приложение не может произвольно читать/писать чужие файлы во внешнем хранилище.</p>
+<p>Ключевые правила:</p>
+<ul class="study-list">
+<li>приложение имеет прямой доступ только к своей app-specific директории и к файлам, которые оно создало;</li>
+<li>для доступа к медиафайлам (фото, видео, аудио) используют <code>MediaStore</code>;</li>
+<li>для доступа к документам других приложений — Storage Access Framework;</li>
+<li>разрешения <code>READ_EXTERNAL_STORAGE</code>/<code>WRITE_EXTERNAL_STORAGE</code> на Android 11+ не дают полного доступа (только к медиа с учётом области).</li>
+</ul>
+<p>Последствия для кода:</p>
+<ul class="study-list">
+<li>нельзя использовать абсолютные пути вроде <code>/sdcard/DCIM/...</code>;</li>
+<li>нельзя через <code>File</code> читать чужие файлы;</li>
+<li>нужно работать через <code>Uri</code> и <code>ContentResolver</code>.</li>
+</ul>
+<p>При миграции старого кода, который напрямую обращался к файлам, придётся переписать логику на <code>MediaStore</code> или SAF.</p>
+<h3 id="uri-i-contentresolver-naznachenie" class="study-subtitle">2.7. URI и ContentResolver (назначение)</h3>
+<p><code>Uri</code> — унифицированный адрес ресурса. В Android файлы и данные других приложений адресуются через <code>content://</code> URI, а не через пути файловой системы.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> uri: Uri = Uri.parse(<span class="hljs-string">&quot;content://com.example.provider/files/report.pdf&quot;</span>)
+</code></pre></div>
+<p><code>ContentResolver</code> — объект, через который приложение обращается к контент-провайдерам по URI. Он умеет открывать потоки, запрашивать метаданные, вставлять и удалять записи:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> resolver = context.contentResolver
+
+<span class="hljs-comment">// Открыть поток для чтения</span>
+resolver.openInputStream(uri)?.use { input -&gt;
+    <span class="hljs-comment">// прочитать данные</span>
+}
+
+<span class="hljs-comment">// Открыть поток для записи</span>
+resolver.openOutputStream(uri)?.use { output -&gt;
+    <span class="hljs-comment">// записать данные</span>
+}
+
+<span class="hljs-comment">// Запросить метаданные</span>
+<span class="hljs-keyword">val</span> cursor = resolver.query(uri, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>)
+</code></pre></div>
+<p><code>ContentResolver</code> — это шлюз между вашим приложением и данными, принадлежащими системе или другим приложениям. Прямые пути к файлам в Scoped Storage не работают, поэтому <code>Uri</code> + <code>ContentResolver</code> — основной способ.</p>
+<h3 id="storage-access-framework-bazovoe-ponimanie" class="study-subtitle">2.8. Storage Access Framework (базовое понимание)</h3>
+<p>Storage Access Framework (SAF) — стандартный механизм Android, позволяющий пользователю выбрать файл или директорию через системный диалог. Приложение получает <code>Uri</code> с правами на чтение/запись, не требуя разрешений.</p>
+<p>Типичные интенты:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// Выбрать файл для чтения</span>
+<span class="hljs-keyword">val</span> openIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+    addCategory(Intent.CATEGORY_OPENABLE)
+    type = <span class="hljs-string">&quot;application/pdf&quot;</span>
+}
+
+<span class="hljs-comment">// Создать новый файл</span>
+<span class="hljs-keyword">val</span> createIntent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+    addCategory(Intent.CATEGORY_OPENABLE)
+    type = <span class="hljs-string">&quot;text/plain&quot;</span>
+    putExtra(Intent.EXTRA_TITLE, <span class="hljs-string">&quot;notes.txt&quot;</span>)
+}
+
+<span class="hljs-comment">// Выбрать директорию</span>
+<span class="hljs-keyword">val</span> treeIntent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+</code></pre></div>
+<p>Запуск через Activity Result API:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> launcher = registerForActivityResult(
+    ActivityResultContracts.StartActivityForResult()
+) { result -&gt;
+    <span class="hljs-keyword">val</span> uri = result.<span class="hljs-keyword">data</span>?.<span class="hljs-keyword">data</span>
+    uri?.let { persistUriPermission(it) }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">persistUriPermission</span><span class="hljs-params">(uri: <span class="hljs-type">Uri</span>)</span></span> {
+    <span class="hljs-keyword">val</span> flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+    context.contentResolver.takePersistableUriPermission(uri, flags)
+}
+</code></pre></div>
+<p><code>takePersistableUriPermission</code> сохраняет права на URI между перезапусками приложения — без него доступ пропадёт после закрытия.</p>
+<p>SAF — правильный путь, когда приложению нужно работать с файлами пользователя (документы, скачанные архивы), а не со своими внутренними данными.</p>
+<h3 class="study-subtitle">Практика: Files и Storage</h3>
+<ol class="study-list">
+<li>Сохраните текстовую заметку во внутреннее хранилище через <code>openFileOutput</code>.</li>
+<li>Прочитайте её обратно через <code>openFileInput</code>.</li>
+<li>Скопируйте файл из внутреннего хранилища в app-specific внешнее через потоки.</li>
+<li>Очистите кэш приложения программно.</li>
+<li>Реализуйте выбор PDF-файла через SAF и прочитайте его содержимое через <code>ContentResolver</code>.</li>
+</ol>
+<h3 class="study-subtitle">Самопроверка: Files и Storage</h3>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю разницу между внутренним и внешним хранилищем.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю назначение <code>filesDir</code> и <code>cacheDir</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею читать/писать файлы через <code>openFileInput</code>/<code>openFileOutput</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, зачем нужен Scoped Storage.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, как получить <code>Uri</code> и открыть поток через <code>ContentResolver</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю назначение Storage Access Framework.</li>
+</ul></section><section id="sqlite-i-sql" class="study-section" aria-labelledby="sqlite-i-sql-title"><h2 id="sqlite-i-sql-title" class="study-section-title">3. SQLite и SQL Basics</h2><p>SQLite — встроенная реляционная база данных, доступная в Android без отдельного сервера. Она хранит структурированные данные в таблицах и позволяет выполнять запросы на SQL. Понимание SQL необходимо для работы с Room, а также для чтения и отладки данных.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Реляционная модель</p><p>данные хранятся в таблицах со связями.</p></div><div class="study-card"><p class="study-card-title">Таблица</p><p>набор строк и столбцов с фиксированной схемой.</p></div><div class="study-card"><p class="study-card-title">Ключ</p><p>идентификатор строки (первичный) или ссылка на другую таблицу (внешний).</p></div><div class="study-card"><p class="study-card-title">SQL</p><p>язык запросов: SELECT, INSERT, UPDATE, DELETE.</p></div><div class="study-card"><p class="study-card-title">Транзакция</p><p>группа операций, выполняемых атомарно.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> SQL описывает <em>что</em> нужно получить или изменить, а не <em>как</em>. База данных сама выбирает способ выполнения.</p></div><h3 id="relatsionnaya-model-dannyh" class="study-subtitle">3.1. Реляционная модель данных</h3>
+<p>Реляционная модель организует данные в таблицы (отношения). Каждая таблица описывает один тип сущностей: пользователи, заказы, товары. Связи между сущностями выражаются через ключи, а не через вложенность.</p>
+<p>Преимущества:</p>
+<ul class="study-list">
+<li>данные не дублируются: пользователь хранится один раз, а заказы ссылаются на него;</li>
+<li>целостность: внешние ключи запрещают ссылки на несуществующие записи;</li>
+<li>гибкие запросы: можно объединять таблицы и фильтровать по любым полям;</li>
+<li>транзакции: несколько изменений применяются атомарно.</li>
+</ul>
+<p>В Android SQLite реализует реляционную модель локально. Нет сервера, нет сети — база живёт в файле внутри приложения.</p>
+<h3 id="tablicy-stroki-i-stolbcy" class="study-subtitle">3.2. Таблицы, строки и столбцы</h3>
+<p>Таблица состоит из строк (записей) и столбцов (полей). Схема таблицы фиксирована: у каждого столбца есть имя и тип.</p>
+<p>Создание таблицы:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">CREATE TABLE</span> users (
+    id <span class="hljs-type">INTEGER</span> <span class="hljs-keyword">PRIMARY KEY</span> AUTOINCREMENT,
+    name TEXT <span class="hljs-keyword">NOT NULL</span>,
+    email TEXT <span class="hljs-keyword">UNIQUE</span>,
+    age <span class="hljs-type">INTEGER</span>,
+    created_at <span class="hljs-type">INTEGER</span> <span class="hljs-keyword">NOT NULL</span>
+);
+</code></pre></div>
+<p>Типы SQLite (динамическая типизация, но рекомендуется объявлять):</p>
+<ul class="study-list">
+<li><code>INTEGER</code> — целые числа;</li>
+<li><code>REAL</code> — числа с плавающей точкой;</li>
+<li><code>TEXT</code> — строки;</li>
+<li><code>BLOB</code> — бинарные данные;</li>
+<li><code>NULL</code> — отсутствие значения.</li>
+</ul>
+<p>Вставка строки:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">INSERT INTO</span> users (name, email, age, created_at)
+<span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;Анна&#x27;</span>, <span class="hljs-string">&#x27;anna@example.com&#x27;</span>, <span class="hljs-number">25</span>, <span class="hljs-number">1700000000</span>);
+</code></pre></div>
+<p>Каждая строка таблицы уникально идентифицируется первичным ключом.</p>
+<h3 id="pervichnyy-i-vneshniy-klyuch" class="study-subtitle">3.3. Первичный и внешний ключ</h3>
+<p>Первичный ключ (<code>PRIMARY KEY</code>) — столбец (или набор столбцов), уникально идентифицирующий строку. В Android чаще всего используют <code>INTEGER PRIMARY KEY AUTOINCREMENT</code>.</p>
+<p>Внешний ключ (<code>FOREIGN KEY</code>) — столбец, ссылающийся на первичный ключ другой таблицы. Он выражает связь «многие к одному».</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">CREATE TABLE</span> orders (
+    id <span class="hljs-type">INTEGER</span> <span class="hljs-keyword">PRIMARY KEY</span> AUTOINCREMENT,
+    user_id <span class="hljs-type">INTEGER</span> <span class="hljs-keyword">NOT NULL</span>,
+    total <span class="hljs-type">REAL</span> <span class="hljs-keyword">NOT NULL</span>,
+    status TEXT <span class="hljs-keyword">NOT NULL</span>,
+    <span class="hljs-keyword">FOREIGN KEY</span> (user_id) <span class="hljs-keyword">REFERENCES</span> users(id)
+        <span class="hljs-keyword">ON</span> <span class="hljs-keyword">DELETE</span> CASCADE
+);
+</code></pre></div>
+<p><code>ON DELETE CASCADE</code> означает: при удалении пользователя удалятся и его заказы. Другие варианты: <code>SET NULL</code>, <code>RESTRICT</code>, <code>NO ACTION</code>.</p>
+<p>Включение проверки внешних ключей в SQLite:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql">PRAGMA foreign_keys <span class="hljs-operator">=</span> <span class="hljs-keyword">ON</span>;
+</code></pre></div>
+<p>Без этой команды SQLite не проверяет внешние ключи по умолчанию — частая причина «тихих» ошибок целостности.</p>
+<h3 id="select-i-where" class="study-subtitle">3.4. SELECT и WHERE</h3>
+<p><code>SELECT</code> извлекает данные. <code>WHERE</code> фильтрует строки по условию.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-comment">-- Все пользователи</span>
+<span class="hljs-keyword">SELECT</span> id, name, email <span class="hljs-keyword">FROM</span> users;
+
+<span class="hljs-comment">-- С фильтром</span>
+<span class="hljs-keyword">SELECT</span> name, email <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> age <span class="hljs-operator">&gt;=</span> <span class="hljs-number">18</span>;
+
+<span class="hljs-comment">-- Несколько условий</span>
+<span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users
+<span class="hljs-keyword">WHERE</span> age <span class="hljs-keyword">BETWEEN</span> <span class="hljs-number">18</span> <span class="hljs-keyword">AND</span> <span class="hljs-number">30</span>
+  <span class="hljs-keyword">AND</span> email <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;%@example.com&#x27;</span>;
+
+<span class="hljs-comment">-- Поиск по шаблону</span>
+<span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> name <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;А%&#x27;</span>;
+
+<span class="hljs-comment">-- Проверка на NULL</span>
+<span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> email <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NULL</span>;
+</code></pre></div>
+<p>Операторы: <code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>BETWEEN</code>, <code>LIKE</code>, <code>IN</code>, <code>IS NULL</code>, <code>AND</code>, <code>OR</code>, <code>NOT</code>.</p>
+<p><code>SELECT DISTINCT</code> убирает дубликаты:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DISTINCT</span> status <span class="hljs-keyword">FROM</span> orders;
+</code></pre></div>
+<h3 id="insert-update-i-delete" class="study-subtitle">3.5. INSERT, UPDATE и DELETE</h3>
+<p><code>INSERT</code> добавляет строку:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">INSERT INTO</span> users (name, email, age, created_at)
+<span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;Иван&#x27;</span>, <span class="hljs-string">&#x27;ivan@example.com&#x27;</span>, <span class="hljs-number">30</span>, <span class="hljs-number">1700000001</span>);
+</code></pre></div>
+<p><code>INSERT OR REPLACE</code> (upsert) — вставить или заменить существующую строку по ключу:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">OR</span> REPLACE <span class="hljs-keyword">INTO</span> users (id, name, email, age, created_at)
+<span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>, <span class="hljs-string">&#x27;Иван Петров&#x27;</span>, <span class="hljs-string">&#x27;ivan@example.com&#x27;</span>, <span class="hljs-number">31</span>, <span class="hljs-number">1700000002</span>);
+</code></pre></div>
+<p><code>UPDATE</code> изменяет существующие строки:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">UPDATE</span> users
+<span class="hljs-keyword">SET</span> age <span class="hljs-operator">=</span> <span class="hljs-number">31</span>, email <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;ivan.petrov@example.com&#x27;</span>
+<span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
+</code></pre></div>
+<p>Без <code>WHERE</code> обновятся все строки — частая ошибка.</p>
+<p><code>DELETE</code> удаляет строки:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
+
+<span class="hljs-comment">-- Удалить всё (но таблица останется)</span>
+<span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> users;
+</code></pre></div>
+<h3 id="order-by-i-limit" class="study-subtitle">3.6. ORDER BY и LIMIT</h3>
+<p><code>ORDER BY</code> сортирует результат:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> name, age <span class="hljs-keyword">FROM</span> users
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> age <span class="hljs-keyword">DESC</span>, name <span class="hljs-keyword">ASC</span>;
+</code></pre></div>
+<p><code>LIMIT</code> ограничивает количество строк, <code>OFFSET</code> пропускает первые N:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-comment">-- Топ-10 самых молодых</span>
+<span class="hljs-keyword">SELECT</span> name, age <span class="hljs-keyword">FROM</span> users
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> age <span class="hljs-keyword">ASC</span>
+LIMIT <span class="hljs-number">10</span>;
+
+<span class="hljs-comment">-- Вторая страница по 10 записей</span>
+<span class="hljs-keyword">SELECT</span> name, age <span class="hljs-keyword">FROM</span> users
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> id <span class="hljs-keyword">ASC</span>
+LIMIT <span class="hljs-number">10</span> <span class="hljs-keyword">OFFSET</span> <span class="hljs-number">10</span>;
+</code></pre></div>
+<p>Комбинация <code>ORDER BY</code> + <code>LIMIT</code> — основа пагинации. В Android для больших списков используют Paging 3, который генерирует такие запросы автоматически.</p>
+<h3 id="join-naznachenie-i-bazovoe-primenenie" class="study-subtitle">3.7. JOIN (назначение и базовое применение)</h3>
+<p><code>JOIN</code> объединяет строки из нескольких таблиц по условию связи. Основные виды:</p>
+<ul class="study-list">
+<li><code>INNER JOIN</code> — только строки, для которых есть совпадение в обеих таблицах;</li>
+<li><code>LEFT JOIN</code> — все строки из левой таблицы плюс совпадения из правой (NULL, если нет);</li>
+<li><code>CROSS JOIN</code> — декартово произведение (редко нужен).</li>
+</ul>
+<p>Пример: получить заказы с именами пользователей:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> orders.id, users.name, orders.total, orders.status
+<span class="hljs-keyword">FROM</span> orders
+<span class="hljs-keyword">INNER</span> <span class="hljs-keyword">JOIN</span> users <span class="hljs-keyword">ON</span> orders.user_id <span class="hljs-operator">=</span> users.id
+<span class="hljs-keyword">WHERE</span> orders.status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;paid&#x27;</span>;
+</code></pre></div>
+<p><code>LEFT JOIN</code> полезен, когда нужно показать всех пользователей, даже без заказов:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> users.name, <span class="hljs-built_in">COUNT</span>(orders.id) <span class="hljs-keyword">AS</span> order_count
+<span class="hljs-keyword">FROM</span> users
+<span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">JOIN</span> orders <span class="hljs-keyword">ON</span> users.id <span class="hljs-operator">=</span> orders.user_id
+<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> users.id;
+</code></pre></div>
+<p>JOIN позволяет не дублировать данные и получать связанные сущности одним запросом.</p>
+<h3 id="transaktsii-naznachenie" class="study-subtitle">3.8. Транзакции (назначение)</h3>
+<p>Транзакция — группа SQL-операций, которая применяется атомарно: либо все изменения сохраняются, либо ни одно. Это защищает данные при ошибках и параллельном доступе.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">sql</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-sql"><span class="hljs-keyword">BEGIN</span> TRANSACTION;
+
+<span class="hljs-keyword">UPDATE</span> accounts <span class="hljs-keyword">SET</span> balance <span class="hljs-operator">=</span> balance <span class="hljs-operator">-</span> <span class="hljs-number">100</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
+<span class="hljs-keyword">UPDATE</span> accounts <span class="hljs-keyword">SET</span> balance <span class="hljs-operator">=</span> balance <span class="hljs-operator">+</span> <span class="hljs-number">100</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;
+
+<span class="hljs-keyword">COMMIT</span>;
+</code></pre></div>
+<p>Если между <code>BEGIN</code> и <code>COMMIT</code> произойдёт ошибка, вызывают <code>ROLLBACK</code> — все изменения отменяются.</p>
+<p>В Android транзакции используются в Room (аннотация <code>@Transaction</code>) и при прямой работе с <code>SQLiteDatabase</code>. Типичный сценарий: перенос средств между счетами, массовое обновление кэша, импорт данных.</p>
+<p>Свойства ACID:</p>
+<ul class="study-list">
+<li><strong>Atomicity</strong> — атомарность: всё или ничего;</li>
+<li><strong>Consistency</strong> — согласованность: данные остаются валидными;</li>
+<li><strong>Isolation</strong> — изоляция: параллельные транзакции не мешают друг другу;</li>
+<li><strong>Durability</strong> — долговечность: после COMMIT данные сохранены.</li>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> выполнять несколько связанных <code>INSERT</code>/<code>UPDATE</code> без транзакции. При сбое на середине данные окажутся в несогласованном состоянии.</p></div><h3 class="study-subtitle">Практика: SQLite и SQL</h3>
+<ol class="study-list">
+<li>Создайте таблицы <code>users</code> и <code>orders</code> с внешним ключом.</li>
+<li>Вставьте несколько пользователей и заказов.</li>
+<li>Напишите запрос: заказы со статусом <code>paid</code> с именем пользователя, отсортированные по сумме.</li>
+<li>Оберните перевод средств между двумя счетами в транзакцию.</li>
+<li>Проверьте, что внешние ключи включены (<code>PRAGMA foreign_keys</code>).</li>
+</ol>
+<h3 class="study-subtitle">Самопроверка: SQLite и SQL</h3>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю реляционную модель и связи между таблицами.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею создавать таблицы с первичным и внешним ключом.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Пишу SELECT с WHERE, ORDER BY, LIMIT.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю разницу между INSERT, UPDATE, DELETE.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю INNER JOIN и LEFT JOIN.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Объясняю назначение транзакций и ACID.</li>
+</ul></section><section id="room-basics" class="study-section" aria-labelledby="room-basics-title"><h2 id="room-basics-title" class="study-section-title">4. Room Basics</h2><p>Room — библиотека Jetpack, которая оборачивает SQLite и даёт типобезопасный доступ к базе данных из Kotlin. Она проверяет SQL-запросы на этапе компиляции, генерирует шаблонный код и интегрируется с корутинами и Flow. Room — стандартный способ работы с локальной базой данных в современных Android-приложениях.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">@Entity</p><p>класс, описывающий таблицу.</p></div><div class="study-card"><p class="study-card-title">@PrimaryKey</p><p>поле, уникально идентифицирующее строку.</p></div><div class="study-card"><p class="study-card-title">@Dao</p><p>интерфейс с методами доступа к данным.</p></div><div class="study-card"><p class="study-card-title">@Query</p><p>SQL-запрос, привязанный к методу.</p></div><div class="study-card"><p class="study-card-title">@Database</p><p>класс базы данных, объединяющий сущности и DAO.</p></div><div class="study-card"><p class="study-card-title">Flow / suspend</p><p>асинхронное получение данных.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> Room генерирует реализацию DAO на этапе компиляции. Вы пишете интерфейс и SQL, Room пишет остальное.</p></div><h3 id="entity" class="study-subtitle">4.1. @Entity</h3>
+<p><code>@Entity</code> помечает data class как таблицу базы данных. Каждое поле класса становится столбцом:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> androidx.room.Entity
+<span class="hljs-keyword">import</span> androidx.room.PrimaryKey
+
+<span class="hljs-meta">@Entity(tableName = <span class="hljs-string">&quot;users&quot;</span>)</span>
+<span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(
+    <span class="hljs-meta">@PrimaryKey</span> <span class="hljs-keyword">val</span> id: <span class="hljs-built_in">Long</span>,
+    <span class="hljs-keyword">val</span> name: String,
+    <span class="hljs-keyword">val</span> email: String,
+    <span class="hljs-keyword">val</span> age: <span class="hljs-built_in">Int</span>
+)
+</code></pre></div>
+<p>Если <code>tableName</code> не указан, используется имя класса. Поля могут иметь значения по умолчанию. Вложенные объекты требуют <code>@Embedded</code> или отдельной таблицы.</p>
+<p>Индексы и уникальность задаются через параметры <code>@Entity</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Entity(
+    tableName = <span class="hljs-string">&quot;users&quot;</span>,
+    indices = [Index(value = [<span class="hljs-string">&quot;email&quot;</span>], unique = true)]
+)</span>
+<span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(...)
+</code></pre></div>
+<h3 id="primarykey" class="study-subtitle">4.2. @PrimaryKey</h3>
+<p><code>@PrimaryKey</code> отмечает поле первичного ключа. Часто ключ генерируется автоматически:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Entity</span>
+<span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(
+    <span class="hljs-meta">@PrimaryKey(autoGenerate = true)</span> <span class="hljs-keyword">val</span> id: <span class="hljs-built_in">Long</span> = <span class="hljs-number">0</span>,
+    <span class="hljs-keyword">val</span> name: String
+)
+</code></pre></div>
+<p><code>autoGenerate = true</code> создаёт <code>INTEGER PRIMARY KEY AUTOINCREMENT</code> в SQLite. При вставке передавайте <code>id = 0</code> (или не передавайте, если значение по умолчанию), Room подставит сгенерированное значение.</p>
+<p>Составной ключ задаётся на уровне <code>@Entity</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Entity(primaryKeys = [<span class="hljs-string">&quot;userId&quot;</span>, <span class="hljs-string">&quot;courseId&quot;</span>])</span>
+<span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Enrollment</span>(
+    <span class="hljs-keyword">val</span> userId: <span class="hljs-built_in">Long</span>,
+    <span class="hljs-keyword">val</span> courseId: <span class="hljs-built_in">Long</span>,
+    <span class="hljs-keyword">val</span> enrolledAt: <span class="hljs-built_in">Long</span>
+)
+</code></pre></div>
+<h3 id="dao" class="study-subtitle">4.3. @Dao</h3>
+<p>DAO (Data Access Object) — интерфейс, описывающий операции с таблицей. Room генерирует реализацию на этапе компиляции:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> androidx.room.Dao
+
+<span class="hljs-meta">@Dao</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserDao</span> {
+    <span class="hljs-meta">@Query(<span class="hljs-string">&quot;SELECT * FROM users&quot;</span>)</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getAll</span><span class="hljs-params">()</span></span>: Flow&lt;List&lt;User&gt;&gt;
+
+    <span class="hljs-meta">@Query(<span class="hljs-string">&quot;SELECT * FROM users WHERE id = :id&quot;</span>)</span>
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getById</span><span class="hljs-params">(id: <span class="hljs-type">Long</span>)</span></span>: User?
+
+    <span class="hljs-meta">@Insert</span>
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">insert</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span>: <span class="hljs-built_in">Long</span>
+
+    <span class="hljs-meta">@Update</span>
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">update</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span>
+
+    <span class="hljs-meta">@Delete</span>
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">delete</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span>
+}
+</code></pre></div>
+<p>DAO может быть интерфейсом или абстрактным классом. Методы могут быть <code>suspend</code> (для разовых операций) или возвращать <code>Flow</code> (для реактивного наблюдения).</p>
+<h3 id="query" class="study-subtitle">4.4. @Query</h3>
+<p><code>@Query</code> привязывает SQL-запрос к методу. Room проверяет запрос на этапе компиляции: если таблица или столбец не существует, сборка упадёт.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Dao</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserDao</span> {
+    <span class="hljs-meta">@Query(<span class="hljs-string">&quot;SELECT * FROM users ORDER BY name ASC&quot;</span>)</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getAllSorted</span><span class="hljs-params">()</span></span>: Flow&lt;List&lt;User&gt;&gt;
+
+    <span class="hljs-meta">@Query(<span class="hljs-string">&quot;SELECT * FROM users WHERE age &gt;= :minAge&quot;</span>)</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUsersOlderThan</span><span class="hljs-params">(minAge: <span class="hljs-type">Int</span>)</span></span>: Flow&lt;List&lt;User&gt;&gt;
+
+    <span class="hljs-meta">@Query(<span class="hljs-string">&quot;SELECT COUNT(*) FROM users&quot;</span>)</span>
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">count</span><span class="hljs-params">()</span></span>: <span class="hljs-built_in">Int</span>
+
+    <span class="hljs-meta">@Query(<span class="hljs-string">&quot;DELETE FROM users WHERE age &lt; :minAge&quot;</span>)</span>
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">deleteYoungerThan</span><span class="hljs-params">(minAge: <span class="hljs-type">Int</span>)</span></span>: <span class="hljs-built_in">Int</span>
+}
+</code></pre></div>
+<p>Параметры метода подставляются в запрос через <code>:paramName</code>. Поддерживаются примитивы, списки (для <code>IN (:ids)</code>), и объекты с <code>@Embedded</code>.</p>
+<p>Возвращаемые типы: <code>List&lt;T&gt;</code>, <code>T?</code>, <code>Flow&lt;List&lt;T&gt;&gt;</code>, <code>Flow&lt;T?&gt;</code>, <code>LiveData</code>, <code>Cursor</code>, примитивы.</p>
+<h3 id="insert-update-i-delete-room" class="study-subtitle">4.5. @Insert, @Update и @Delete</h3>
+<p>Эти аннотации генерируют SQL автоматически — писать запрос не нужно.</p>
+<p><code>@Insert</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Insert</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">insert</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span>: <span class="hljs-built_in">Long</span> <span class="hljs-comment">// возвращает rowId</span>
+
+<span class="hljs-meta">@Insert</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">insertAll</span><span class="hljs-params">(users: <span class="hljs-type">List</span>&lt;<span class="hljs-type">User</span>&gt;)</span></span>: List&lt;<span class="hljs-built_in">Long</span>&gt;
+
+<span class="hljs-meta">@Insert(onConflict = OnConflictStrategy.REPLACE)</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">upsert</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span>
+</code></pre></div>
+<p>Стратегии конфликта: <code>ABORT</code> (по умолчанию, ошибка), <code>REPLACE</code> (заменить), <code>IGNORE</code> (пропустить), <code>ROLLBACK</code>.</p>
+<p><code>@Update</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Update</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">update</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span>: <span class="hljs-built_in">Int</span> <span class="hljs-comment">// количество изменённых строк</span>
+</code></pre></div>
+<p>Обновляет строку по первичному ключу. Если объект изменился частично, обновятся все поля.</p>
+<p><code>@Delete</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Delete</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">delete</span><span class="hljs-params">(user: <span class="hljs-type">User</span>)</span></span>: <span class="hljs-built_in">Int</span>
+</code></pre></div>
+<p>Удаляет строку по первичному ключу.</p>
+<h3 id="database" class="study-subtitle">4.6. @Database</h3>
+<p>Класс базы данных объединяет сущности и DAO. Он абстрактный и наследует <code>RoomDatabase</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> androidx.room.Database
+<span class="hljs-keyword">import</span> androidx.room.RoomDatabase
+
+<span class="hljs-meta">@Database(
+    entities = [User::class, Order::class],
+    version = 1,
+    exportSchema = true
+)</span>
+<span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AppDatabase</span> : <span class="hljs-type">RoomDatabase</span>() {
+    <span class="hljs-keyword">abstract</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">userDao</span><span class="hljs-params">()</span></span>: UserDao
+    <span class="hljs-keyword">abstract</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">orderDao</span><span class="hljs-params">()</span></span>: OrderDao
+}
+</code></pre></div>
+<p>Создание экземпляра (обычно через DI, один на приложение):</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> db = Room.databaseBuilder(
+    context.applicationContext,
+    AppDatabase::<span class="hljs-keyword">class</span>.java,
+    <span class="hljs-string">&quot;app.db&quot;</span>
+).build()
+</code></pre></div>
+<p><code>exportSchema = true</code> включает экспорт схемы в JSON — полезно для миграций и код-ревью, но файл реально пишется только при настроенном <code>room.schemaLocation</code> (или Room Gradle plugin); без этой настройки флаг ничего не сохраняет. Файлы схемы хранятся в <code>schemas/</code>.</p>
+<p>Базу данных создают один раз и переиспользуют. Не создавайте её в каждом Activity.</p>
+<h3 id="poluchenie-dannyh-cherez-suspend-i-flow-bazovoe-ponimanie" class="study-subtitle">4.7. Получение данных через suspend и Flow (базовое понимание)</h3>
+<p>Room поддерживает два стиля работы:</p>
+<ol class="study-list">
+<li>Разовые операции — <code>suspend</code>-функции. Вызываются из корутины, возвращают результат один раз:</li>
+</ol>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loadUser</span><span class="hljs-params">(id: <span class="hljs-type">Long</span>)</span></span>: User? = userDao.getById(id)
+</code></pre></div>
+<ol class="study-list">
+<li>Реактивное наблюдение — <code>Flow</code>. Room автоматически переэмитит данные при изменении таблицы:</li>
+</ol>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">observeUsers</span><span class="hljs-params">()</span></span>: Flow&lt;List&lt;User&gt;&gt; = userDao.getAll()
+
+<span class="hljs-comment">// В ViewModel</span>
+<span class="hljs-keyword">val</span> users: StateFlow&lt;List&lt;User&gt;&gt; = userDao.getAll()
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(<span class="hljs-number">5000</span>), emptyList())
+</code></pre></div>
+<p>Flow-запросы Room выполняются на фоновом потоке (I/O dispatcher) автоматически. <code>suspend</code>-запросы тоже не блокируют вызывающий поток, если вызваны из корутины.</p>
+<p>Выбор:</p>
+<ul class="study-list">
+<li>нужны актуальные данные в UI → <code>Flow</code>;</li>
+<li>разовое действие (вставка, удаление, проверка) → <code>suspend</code>.</li>
+</ul>
+<h3 id="versionirovanie-bazy-dannyh" class="study-subtitle">4.8. Версионирование базы данных</h3>
+<p>Поле <code>version</code> в <code>@Database</code> — номер версии схемы. При изменении структуры (добавление таблицы, столбца) увеличивайте версию:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Database(
+    entities = [User::class, Order::class, Tag::class],
+    version = 2
+)</span>
+<span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AppDatabase</span> : <span class="hljs-type">RoomDatabase</span>() { ... }
+</code></pre></div>
+<p>При увеличении версии Room ожидает миграцию. Без неё приложение упадёт с <code>IllegalStateException</code> при открытии базы (если не использовать <code>fallbackToDestructiveMigration</code>).</p>
+<p>Правила:</p>
+<ul class="study-list">
+<li>увеличивайте версию при любом изменении схемы;</li>
+<li>не меняйте версию «просто так»;</li>
+<li>храните историю миграций в коде;</li>
+<li>экспортируйте схемы (<code>exportSchema = true</code>) для сравнения.</li>
+</ul>
+<h3 id="naznachenie-migratsiy" class="study-subtitle">4.9. Назначение миграций</h3>
+<p>Миграция — код, который переводит базу данных с одной версии схемы на другую без потери данных пользователя. В Room миграция описывается как <code>Migration(startVersion, endVersion)</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> MIGRATION_1_2 = <span class="hljs-keyword">object</span> : Migration(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>) {
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">migrate</span><span class="hljs-params">(db: <span class="hljs-type">SupportSQLiteDatabase</span>)</span></span> {
+        db.execSQL(
+            <span class="hljs-string">&quot;ALTER TABLE users ADD COLUMN phone TEXT&quot;</span>
+        )
+    }
+}
+
+<span class="hljs-keyword">val</span> db = Room.databaseBuilder(context, AppDatabase::<span class="hljs-keyword">class</span>.java, <span class="hljs-string">&quot;app.db&quot;</span>)
+    .addMigrations(MIGRATION_1_2)
+    .build()
+</code></pre></div>
+<p>Если миграции нет и версия выросла, Room бросит исключение. Альтернатива — <code>fallbackToDestructiveMigration()</code>: база пересоздаётся с нуля, данные теряются. Допустимо для кэша, недопустимо для пользовательских данных.</p>
+<p>Сложные миграции (переименование таблицы, изменение типа столбца) требуют создания новой таблицы, копирования данных и удаления старой:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">migrate</span><span class="hljs-params">(db: <span class="hljs-type">SupportSQLiteDatabase</span>)</span></span> {
+    db.execSQL(<span class="hljs-string">&quot;CREATE TABLE users_new (...)&quot;</span>)
+    db.execSQL(<span class="hljs-string">&quot;INSERT INTO users_new (...) SELECT ... FROM users&quot;</span>)
+    db.execSQL(<span class="hljs-string">&quot;DROP TABLE users&quot;</span>)
+    db.execSQL(<span class="hljs-string">&quot;ALTER TABLE users_new RENAME TO users&quot;</span>)
+}
+</code></pre></div><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> использовать <code>fallbackToDestructiveMigration</code> в продакшене для базы с пользовательскими данными. Пользователь потеряет всё при обновлении приложения.</p></div><h3 class="study-subtitle">Практика: Room Basics</h3>
+<ol class="study-list">
+<li>Создайте <code>@Entity User</code> с автогенерируемым <code>id</code>.</li>
+<li>Опишите <code>UserDao</code> с методами: получить всех (Flow), найти по id (suspend), вставить, обновить, удалить.</li>
+<li>Создайте <code>AppDatabase</code> версии 1.</li>
+<li>Добавьте второй <code>@Entity Tag</code> и миграцию 1→2, добавляющую таблицу.</li>
+<li>Подключите базу через DI и прочитайте список пользователей в ViewModel как <code>StateFlow</code>.</li>
+</ol>
+<h3 class="study-subtitle">Самопроверка: Room Basics</h3>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю назначение <code>@Entity</code>, <code>@PrimaryKey</code>, <code>@Dao</code>, <code>@Query</code>, <code>@Database</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею описать CRUD-методы через аннотации.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю разницу между <code>suspend</code> и <code>Flow</code> в DAO.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, зачем нужна версия базы данных.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Могу написать простую миграцию через <code>Migration</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю последствия <code>fallbackToDestructiveMigration</code>.</li>
+</ul></section><section id="json-i-serialization" class="study-section" aria-labelledby="json-i-serialization-title"><h2 id="json-i-serialization-title" class="study-section-title">5. JSON и Serialization</h2><p>JSON (JavaScript Object Notation) — текстовый формат обмена данными, который стал де-факто стандартом для REST API. Он лёгкий, читается человеком и поддерживается всеми языками и платформами. В Android данные с сервера приходят именно в JSON, и задача приложения — превратить этот текст в Kotlin-объекты (десериализация) и, при отправке на сервер, собрать объекты обратно в текст (сериализация). Ошибки на этом этапе — одна из частых причин крашей в продакшене: опечатка в имени поля, несовпадение типов, внезапный null.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Формат</p><p>текст, набор пар «ключ-значение» и массивов; легко читать и отлаживать.</p></div><div class="study-card"><p class="study-card-title">Сериализация</p><p>превращение Kotlin-объекта в JSON-строку для отправки.</p></div><div class="study-card"><p class="study-card-title">Десериализация</p><p>разбор JSON-строки в Kotlin-объект.</p></div><div class="study-card"><p class="study-card-title">Gson</p><p>legacy-библиотека от Google, работает через рефлексию.</p></div><div class="study-card"><p class="study-card-title">Kotlinx Serialization</p><p>рекомендуемый вариант, кодогенерация, null-safety.</p></div><div class="study-card"><p class="study-card-title">Контракт</p><p>имена полей и типы должны совпадать с тем, что присылает сервер.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> JSON — это просто текст. Библиотека сериализации — мост между текстом и типобезопасными Kotlin-объектами. Выбирайте Kotlinx Serialization для новых проектов и оставляйте Gson только для поддержки legacy-кода.</p></div><h3 id="json-structure" class="study-subtitle">Структура JSON</h3>
+<p>JSON состоит из двух базовых конструкций: объекта (набор пар «ключ: значение» в фигурных скобках) и массива (упорядоченный список значений в квадратных скобках). Значением может быть строка, число, булево значение, null, объект или массив. Ключи всегда строки в двойных кавычках. Комментарии в JSON не поддерживаются — это частая ловушка при ручном редактировании конфигов.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">json</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">42</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Алексей&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;active&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;rating&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">4.5</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;tags&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;android&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;kotlin&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;profile&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;city&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Москва&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;age&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre></div>
+<p>Важные правила: запятые стоят между элементами, но не после последнего; строковые значения только в двойных кавычках (одинарные недопустимы); числа без кавычек. При парсинге любое нарушение синтаксиса приводит к ошибке — библиотека не «догадается», что вы имели в виду.</p>
+<h3 id="json-object-array" class="study-subtitle">JSON Object и JSON Array</h3>
+<p>JSON Object — неупорядоченная коллекция пар «ключ: значение», аналог Kotlin <code>Map&lt;String, Any?&gt;</code> или data class. JSON Array — упорядоченный список, аналог <code>List</code>. При десериализации объект маппится на класс с полями, массив — на <code>List&lt;T&gt;</code> или <code>Array&lt;T&gt;</code>.</p>
+<p>Различие важно для моделирования: один пользователь — объект, список пользователей — массив объектов. Если сервер возвращает объект там, где ожидался массив (или наоборот), парсер бросит исключение. Поэтому всегда сверяйтесь с реальным ответом сервера, а не с документацией, которая может устареть.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">text</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-text">// объект
+{ &quot;id&quot;: 1, &quot;title&quot;: &quot;Kotlin&quot; }
+
+// массив объектов
+[
+  { &quot;id&quot;: 1, &quot;title&quot;: &quot;Kotlin&quot; },
+  { &quot;id&quot;: 2, &quot;title&quot;: &quot;Android&quot; }
+]
+
+// массив примитивов
+[&quot;kotlin&quot;, &quot;java&quot;, &quot;xml&quot;]
+</code></pre></div>
+<p>Типичная ошибка — попытаться распарсить массив как один объект: <code>{&quot;error&quot;:&quot;not found&quot;}</code> вместо <code>[]</code>. Проверяйте, что именно возвращает эндпоинт, особенно для пустых результатов.</p>
+<h3 id="serialization-deserialization" class="study-subtitle">Сериализация и десериализация</h3>
+<p>Сериализация — преобразование Kotlin-объекта в строку JSON. Десериализация — обратный процесс: строка JSON → объект. Библиотека использует метаданные класса (поля, типы, аннотации) для сопоставления.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// десериализация</span>
+<span class="hljs-keyword">val</span> user: User = json.decodeFromString(jsonString)
+
+<span class="hljs-comment">// сериализация</span>
+<span class="hljs-keyword">val</span> text: String = json.encodeToString(user)
+</code></pre></div>
+<p>Важно разделять два потока: входящие данные (ответ сервера) десериализуются, исходящие (тело запроса) сериализуются. Ошибки часто возникают при смешении: например, поле, которое сервер возвращает, но не принимает при создании, попадает в запрос и вызывает 400. Модели для чтения и записи иногда разделяют (Request/Response DTO).</p>
+<h3 id="gson-basics" class="study-subtitle">Gson Basics</h3>
+<p>Gson — библиотека Google, долгое время стандарт для Android. Работает через рефлексию: читает поля класса во время выполнения, не требует кодогенерации. Подключается одной зависимостью, прост в использовании.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> gson = Gson()
+<span class="hljs-keyword">val</span> user = gson.fromJson(jsonString, User::<span class="hljs-keyword">class</span>.java)
+<span class="hljs-keyword">val</span> text = gson.toJson(user)
+</code></pre></div>
+<p>Плюсы Gson: минимум настройки, работает с любыми классами, включая без аннотаций. Минусы: рефлексия медленнее кодогенерации; хуже работает с Kotlin-null-safety (поля могут оказаться null без предупреждения компилятора); не поддерживает data class-конструкторы с значениями по умолчанию без дополнительных адаптеров; проблемы с ProGuard/R8 (нужны keep-правила). В новых проектах Gson считается legacy-вариантом.</p>
+<h3 id="kotlinx-serialization-basics" class="study-subtitle">Kotlinx Serialization Basics</h3>
+<p>Kotlinx Serialization — официальная библиотека JetBrains/Kotlin. Работает через кодогенерацию на этапе компиляции: компилятор генерирует сериализаторы для классов, помеченных <code>@Serializable</code>. Это быстрее рефлексии, типобезопасно и дружелюбно к R8.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Serializable</span>
+<span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(
+    <span class="hljs-keyword">val</span> id: <span class="hljs-built_in">Int</span>,
+    <span class="hljs-keyword">val</span> name: String
+)
+
+<span class="hljs-keyword">val</span> json = Json { ignoreUnknownKeys = <span class="hljs-literal">true</span> }
+<span class="hljs-keyword">val</span> user = json.decodeFromString&lt;User&gt;(jsonString)
+<span class="hljs-keyword">val</span> text = json.encodeToString(user)
+</code></pre></div>
+<p>Класс должен быть помечен <code>@Serializable</code>, иначе компилятор не сгенерирует сериализатор. Поддерживаются значения по умолчанию, sealed-классы, полиморфизм, кастомные сериализаторы. Для Android подключается плагин Kotlin Serialization в Gradle.</p>
+<h3 id="serialization-annotations" class="study-subtitle">Аннотации сериализации</h3>
+<p>Аннотации управляют тем, как поля маппятся между Kotlin и JSON. Основные:</p>
+<ul class="study-list">
+<li><code>@SerialName(&quot;user_name&quot;)</code> — задаёт имя поля в JSON, отличное от имени свойства Kotlin.</li>
+<li><code>@Serializable</code> — помечает класс как сериализуемый.</li>
+<li><code>@Transient</code> — поле не участвует в сериализации.</li>
+<li><code>@Optional</code> — experimental-аннотация; она не заменяет значение по умолчанию, поэтому отсутствующее необязательное поле объявляйте nullable и задавайте ему default.</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Serializable</span>
+<span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(
+    <span class="hljs-meta">@SerialName(<span class="hljs-string">&quot;user_id&quot;</span>)</span> <span class="hljs-keyword">val</span> id: <span class="hljs-built_in">Int</span>,
+    <span class="hljs-keyword">val</span> name: String,
+    <span class="hljs-keyword">val</span> email: String? = <span class="hljs-literal">null</span>,
+    <span class="hljs-meta">@Transient</span> <span class="hljs-keyword">val</span> cachedAt: <span class="hljs-built_in">Long</span> = <span class="hljs-number">0L</span>
+)
+</code></pre></div>
+<p>Имена полей на сервере часто в snake_case, а в Kotlin принято camelCase. <code>@SerialName</code> решает это без переименования свойств. Без него поле <code>userName</code> будет искать ключ <code>userName</code> в JSON и не найдёт <code>user_name</code>.</p>
+<h3 id="json-nullable-missing" class="study-subtitle">Nullable и отсутствующие поля</h3>
+<p>API часто возвращает не все поля или возвращает null. Модель должна это отражать: nullable-типы (<code>String?</code>) для полей, которые могут отсутствовать или быть null. Значения по умолчанию спасают от отсутствующих полей.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@Serializable</span>
+<span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Profile</span>(
+    <span class="hljs-keyword">val</span> id: <span class="hljs-built_in">Int</span>,
+    <span class="hljs-keyword">val</span> name: String,
+    <span class="hljs-keyword">val</span> avatarUrl: String? = <span class="hljs-literal">null</span>,
+    <span class="hljs-keyword">val</span> bio: String = <span class="hljs-string">&quot;&quot;</span>
+)
+</code></pre></div>
+<p>Различайте «поле отсутствует» и «поле равно null»: оба случая Kotlinx Serialization обрабатывает корректно, если тип nullable или есть default. Если поле non-null без default и его нет в JSON — будет ошибка парсинга. Не делайте все поля nullable «на всякий случай»: это убивает типобезопасность и переносит проверки в runtime.</p>
+<h3 id="json-parse-errors" class="study-subtitle">Обработка ошибок парсинга</h3>
+<p>Парсинг внешних данных всегда может завершиться ошибкой: неверный JSON, несовпадение типов, отсутствие обязательного поля. Оборачивайте парсинг в <code>try/catch</code> или <code>runCatching</code> и возвращайте понятный результат.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">parseUser</span><span class="hljs-params">(jsonString: <span class="hljs-type">String</span>)</span></span>: Result&lt;User&gt; = runCatching {
+    json.decodeFromString&lt;User&gt;(jsonString)
+}
+</code></pre></div>
+<p>Типичные ошибки: <code>SerializationException</code> (несовпадение структуры), <code>JsonDecodingException</code> (синтаксис JSON), <code>IllegalArgumentException</code> при null в non-null поле. Логируйте исходный текст при ошибке (без чувствительных данных) — это сильно упрощает отладку. Не глотайте исключения молча: как минимум покажите пользователю сообщение и отправьте отчёт в краш-репортинг.</p>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Чем объект отличается от массива в JSON?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Зачем нужен <code>@SerialName</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Как обработать отсутствующее поле?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Почему Kotlinx Serialization предпочтительнее Gson в новых проектах?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Как безопасно распарсить JSON и не упасть?</li>
+</ul></section><section id="http-i-rest" class="study-section" aria-labelledby="http-i-rest-title"><h2 id="http-i-rest-title" class="study-section-title">6. HTTP и REST Basics</h2><p>HTTP (HyperText Transfer Protocol) — протокол прикладного уровня для обмена данными между клиентом и сервером. REST (Representational State Transfer) — архитектурный стиль, использующий HTTP для работы с ресурсами. Понимание HTTP — фундамент сетевого слоя любого Android-приложения: без него невозможно правильно использовать Retrofit, OkHttp, диагностировать ошибки и общаться с бэкендом.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Клиент-сервер</p><p>клиент запрашивает, сервер отвечает.</p></div><div class="study-card"><p class="study-card-title">Запрос/ответ</p><p>структурированные сообщения со статусом и телом.</p></div><div class="study-card"><p class="study-card-title">Методы</p><p>GET, POST, PUT, PATCH, DELETE описывают действие.</p></div><div class="study-card"><p class="study-card-title">Статусы</p><p>2xx успех, 4xx ошибка клиента, 5xx ошибка сервера.</p></div><div class="study-card"><p class="study-card-title">REST</p><p>ресурсы, адресуемые URL, операции через HTTP-методы.</p></div><div class="study-card"><p class="study-card-title">HTTPS</p><p>HTTP поверх TLS, шифрование и проверка подлинности.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> HTTP — это просто текстовый диалог «запрос-ответ». REST накладывает на этот диалог правила: ресурсы имеют адреса (URL), а действия выражаются методами. Поняв этот диалог, вы понимаете любой API.</p></div><h3 id="client-server-model" class="study-subtitle">Клиент-серверная модель</h3>
+<p>В клиент-серверной модели есть две стороны: клиент (ваше Android-приложение) инициирует запрос, сервер его обрабатывает и возвращает ответ. Сервер не «знает» о клиенте между запросами — HTTP по своей природе stateless: каждый запрос независим. Состояние (сессия, токен) передаётся в каждом запросе, чаще всего в заголовках.</p>
+<p>Клиент может быть браузером, мобильным приложением, другим сервером. Сервер — любая программа, слушающая порт и отвечающая по протоколу. В Android клиентом выступает OkHttp/Retrofit, который открывает TCP-соединение, отправляет текст запроса и читает ответ.</p>
+<h3 id="http-request-response" class="study-subtitle">HTTP request и response</h3>
+<p>HTTP-сообщение состоит из стартовой строки, заголовков и тела. Запрос: метод + путь + версия протокола, затем заголовки, пустая строка, тело. Ответ: версия + статус-код + причина, заголовки, пустая строка, тело.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">text</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-text">GET /users/42 HTTP/1.1
+Host: api.example.com
+Accept: application/json
+Authorization: Bearer &lt;token&gt;
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 58
+
+{&quot;id&quot;:42,&quot;name&quot;:&quot;Алексей&quot;}
+</code></pre></div>
+<p>Заголовки и тело разделяются пустой строкой — это важно при ручном разборе. Тело может быть пустым (например, для GET или 204 No Content).</p>
+<h3 id="http-methods" class="study-subtitle">HTTP methods</h3>
+<p>Метод указывает, что клиент хочет сделать с ресурсом:</p>
+<ul class="study-list">
+<li><code>GET</code> — получить ресурс (без тела запроса).</li>
+<li><code>POST</code> — создать новый ресурс.</li>
+<li><code>PUT</code> — полностью заменить ресурс.</li>
+<li><code>PATCH</code> — частично обновить ресурс.</li>
+<li><code>DELETE</code> — удалить ресурс.</li>
+</ul>
+<p>Семантика методов важна: GET должен быть безопасным (не менять состояние) и идемпотентным; PUT и DELETE — идемпотентны. Неправильный выбор метода приводит к неожиданному поведению кэшей и прокси. На практике PUT и PATCH часто путают: PUT требует полное тело, PATCH — только изменяемые поля.</p>
+<h3 id="http-status-codes" class="study-subtitle">HTTP status codes</h3>
+<p>Статус-код — трёхзначное число в ответе, описывающее результат:</p>
+<ul class="study-list">
+<li><code>2xx</code> — успех: <code>200 OK</code>, <code>201 Created</code>, <code>204 No Content</code>.</li>
+<li><code>3xx</code> — перенаправление: <code>301</code>, <code>302</code>, <code>304 Not Modified</code>.</li>
+<li><code>4xx</code> — ошибка клиента: <code>400 Bad Request</code>, <code>401 Unauthorized</code>, <code>403 Forbidden</code>, <code>404 Not Found</code>, <code>422 Unprocessable Entity</code>, <code>429 Too Many Requests</code>.</li>
+<li><code>5xx</code> — ошибка сервера: <code>500 Internal Server Error</code>, <code>502 Bad Gateway</code>, <code>503 Service Unavailable</code>.</li>
+</ul>
+<p>Клиент должен реагировать по-разному: 401 — обновить токен/разлогинить, 404 — показать «не найдено», 5xx — предложить повторить. Не сводите все ошибки к «что-то пошло не так» — пользователь и отладка потеряют информацию.</p>
+<h3 id="url-path-query" class="study-subtitle">URL, path и query parameters</h3>
+<p>URL состоит из схемы, хоста, пути и query-строки: <code>https://api.example.com/users/42?include=profile&amp;lang=ru</code>. Path-параметры (<code>/users/42</code>) идентифицируют ресурс; query-параметры (<code>?include=profile</code>) уточняют запрос (фильтрация, сортировка, пагинация).</p>
+<p>Кодировать значения нужно через <code>URLEncoder</code> или доверять Retrofit/OkHttp, который кодирует автоматически. Ручная конкатенация строк с параметрами — источник багов с пробелами и спецсимволами.</p>
+<h3 id="http-headers" class="study-subtitle">HTTP headers</h3>
+<p>Заголовки — метаданные запроса/ответа. Ключевые для Android:</p>
+<ul class="study-list">
+<li><code>Content-Type</code> — формат тела (<code>application/json</code>).</li>
+<li><code>Accept</code> — желаемый формат ответа.</li>
+<li><code>Authorization</code> — токен (<code>Bearer &lt;token&gt;</code>).</li>
+<li><code>Cache-Control</code> — правила кэширования.</li>
+<li><code>User-Agent</code> — идентификация клиента.</li>
+</ul>
+<p>Заголовки регистронезависимы по спецификации, но принято писать в Camel-Case. В OkHttp заголовки добавляются через <code>addHeader</code>/<code>header</code>; Retrofit — через <code>@Header</code> или interceptor.</p>
+<h3 id="request-response-body" class="study-subtitle">Request body и response body</h3>
+<p>Тело запроса несёт данные для POST/PUT/PATCH: обычно JSON. Тело ответа — данные от сервера. Тип контента согласуется через <code>Content-Type</code>/<code>Accept</code>. Размер тела влияет на трафик и батарею — не передавайте лишние поля.</p>
+<p>Пустое тело (204 No Content) часто возвращается при DELETE. Парсер должен уметь обработать пустой ответ, иначе упадёт на пустой строке.</p>
+<h3 id="rest-api-resources" class="study-subtitle">REST API и ресурсы</h3>
+<p>REST строится вокруг ресурсов: <code>/users</code>, <code>/users/42</code>, <code>/users/42/orders</code>. URL идентифицирует ресурс, метод — действие. Ответы обычно JSON. Хороший API предсказуем: имена ресурсов во множественном числе, вложенность отражает связи.</p>
+<p>Stateless-подход: сервер не хранит состояние клиента между запросами; аутентификация через токен в каждом запросе. Это упрощает масштабирование и кэширование.</p>
+<h3 id="https" class="study-subtitle">HTTPS и отличие от HTTP</h3>
+<p>HTTPS — HTTP поверх TLS. TLS шифрует трафик и проверяет подлинность сервера через сертификаты. В Android по умолчанию разрешены только HTTPS-соединения (cleartext отключён с Android 9). HTTP без шифрования передаёт данные открыто — любой в сети может их прочитать.</p>
+<p>Для разработки иногда нужен HTTP (локальный сервер): разрешается через <code>network_security_config.xml</code> или <code>android:usesCleartextTraffic</code>. В продакшене — только HTTPS. Никогда не отключайте проверку сертификатов в продакшене (не используйте TrustAllCerts).</p>
+<p>Типичные ошибки HTTP-слоя: считать любой не-2xx ответ «сетевой ошибкой» и показывать «нет интернета»; не обрабатывать 401 (токен устарел) и 429 (лимит запросов); строить URL конкатенацией строк без кодирования; игнорировать <code>Content-Type</code> и парсить ответ как текст; включать cleartext в релизной сборке. Помните, что HTTP stateless: сервер не помнит предыдущие запросы, поэтому токен/сессия передаются каждый раз в заголовках. Соединения переиспользуются через keep-alive и HTTP/2, что экономит батарею и время — OkHttp делает это автоматически.</p>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Чем GET отличается от POST?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Что означает статус 401 и как на него реагировать?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Чем path-параметр отличается от query-параметра?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Зачем нужен HTTPS?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Какие заголовки важны для JSON API?</li>
+</ul></section><section id="retrofit-basics" class="study-section" aria-labelledby="retrofit-basics-title"><h2 id="retrofit-basics-title" class="study-section-title">7. Retrofit Basics</h2><p>Retrofit — типобезопасный HTTP-клиент для Android/JVM от Square. Вы описываете API как Kotlin-интерфейс с аннотациями, а Retrofit генерирует реализацию, выполняющую запросы через OkHttp. Вместе с Kotlinx Serialization и корутинами это стандартный стек сетевого слоя современного Android-приложения.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">Интерфейс</p><p>вы описываете методы и аннотации, Retrofit делает реализацию.</p></div><div class="study-card"><p class="study-card-title">Аннотации</p><p>@GET, @POST, @Path, @Query, @Body описывают запрос.</p></div><div class="study-card"><p class="study-card-title">suspend</p><p>запросы как корутины, без коллбэков.</p></div><div class="study-card"><p class="study-card-title">Converter</p><p>превращает JSON в Kotlin-объекты.</p></div><div class="study-card"><p class="study-card-title">OkHttpClient</p><p>транспорт, таймауты, логирование, интерсепторы.</p></div><div class="study-card"><p class="study-card-title">Response</p><p>обёртка с кодом, заголовками и телом.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> Retrofit не выполняет сетевые запросы сам — он строит запрос и делегирует OkHttp. Ваша задача — описать контракт API интерфейсом и правильно обработать результат.</p></div><h3 id="retrofit-builder" class="study-subtitle">Retrofit builder</h3>
+<p>Retrofit создаётся через builder: указываете базовый URL и converter factory. Базовый URL должен заканчиваться на <code>/</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> retrofit = Retrofit.Builder()
+    .baseUrl(<span class="hljs-string">&quot;https://api.example.com/&quot;</span>)
+    .addConverterFactory(Json.asConverterFactory(<span class="hljs-string">&quot;application/json&quot;</span>.toMediaType()))
+    .client(okHttpClient)
+    .build()
+</code></pre></div>
+<p><code>baseUrl</code> — корень всех эндпоинтов. Если эндпоинт начинается с <code>/</code>, он заменяет путь базового URL; если без <code>/</code> — дописывается. Это частый источник багов: <code>baseUrl(&quot;https://api.example.com/v1&quot;)</code> без завершающего слэша Retrofit не примет — он бросит <code>IllegalArgumentException</code>, поэтому корректно писать <code>https://api.example.com/v1/</code>.</p>
+<h3 id="retrofit-api-interface" class="study-subtitle">Создание API interface</h3>
+<p>API описывается интерфейсом. Каждый метод — один эндпоинт. Retrofit генерирует реализацию через динамический прокси.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserApi</span> {
+    <span class="hljs-meta">@GET(<span class="hljs-string">&quot;users/{id}&quot;</span>)</span>
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUser</span><span class="hljs-params">(<span class="hljs-meta">@Path(<span class="hljs-string">&quot;id&quot;</span>)</span> id: <span class="hljs-type">Int</span>)</span></span>: User
+
+    <span class="hljs-meta">@GET(<span class="hljs-string">&quot;users&quot;</span>)</span>
+    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUsers</span><span class="hljs-params">(<span class="hljs-meta">@Query(<span class="hljs-string">&quot;page&quot;</span>)</span> page: <span class="hljs-type">Int</span>)</span></span>: List&lt;User&gt;
+}
+</code></pre></div>
+<p>Интерфейс получают через <code>retrofit.create(UserApi::class.java)</code>. Не создавайте реализацию руками. Держите интерфейсы узкими: один интерфейс — одна группа эндпоинтов (Users, Orders). Это упрощает тестирование и мокирование.</p>
+<h3 id="retrofit-get-post" class="study-subtitle">@GET и @POST</h3>
+<p><code>@GET</code> и <code>@POST</code> задают HTTP-метод и относительный путь. Есть также <code>@PUT</code>, <code>@PATCH</code>, <code>@DELETE</code>, <code>@HEAD</code>, <code>@OPTIONS</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@GET(<span class="hljs-string">&quot;users&quot;</span>)</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUsers</span><span class="hljs-params">()</span></span>: List&lt;User&gt;
+
+<span class="hljs-meta">@POST(<span class="hljs-string">&quot;users&quot;</span>)</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">createUser</span><span class="hljs-params">(<span class="hljs-meta">@Body</span> user: <span class="hljs-type">CreateUserRequest</span>)</span></span>: User
+</code></pre></div>
+<p>Путь может содержать параметры в фигурных скобках (<code>{id}</code>), которые заполняются через <code>@Path</code>. Относительный путь не должен начинаться со слэша, иначе базовый URL будет проигнорирован.</p>
+<h3 id="retrofit-path-query" class="study-subtitle">@Path и @Query</h3>
+<p><code>@Path</code> подставляет значение в путь URL. <code>@Query</code> добавляет query-параметр. Несколько <code>@Query</code> объединяются в query-строку.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@GET(<span class="hljs-string">&quot;users/{id}/orders&quot;</span>)</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getOrders</span><span class="hljs-params">(
+    <span class="hljs-meta">@Path(<span class="hljs-string">&quot;id&quot;</span>)</span> userId: <span class="hljs-type">Int</span>,
+    <span class="hljs-meta">@Query(<span class="hljs-string">&quot;status&quot;</span>)</span> status: <span class="hljs-type">String</span>?,
+    <span class="hljs-meta">@Query(<span class="hljs-string">&quot;page&quot;</span>)</span> page: <span class="hljs-type">Int</span> = <span class="hljs-number">1</span>
+)</span></span>: List&lt;Order&gt;
+</code></pre></div>
+<p>Nullable-параметр с null не добавляется в URL. Значения по умолчанию позволяют не передавать параметр. Для списков используйте <code>@QueryMap</code> или повторяющиеся <code>@Query</code>.</p>
+<h3 id="retrofit-body" class="study-subtitle">@Body</h3>
+<p><code>@Body</code> помечает параметр, который сериализуется в тело запроса. Обычно это DTO. Тип контента определяется converter&#x27;ом (по умолчанию JSON).</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@POST(<span class="hljs-string">&quot;users&quot;</span>)</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">createUser</span><span class="hljs-params">(<span class="hljs-meta">@Body</span> request: <span class="hljs-type">CreateUserRequest</span>)</span></span>: User
+</code></pre></div>
+<p>Тело может быть только одно. Для multipart/form-data используют <code>@Multipart</code> и <code>@Part</code>. Не передавайте доменные модели напрямую — используйте Request DTO, чтобы не отправить лишние поля.</p>
+<h3 id="retrofit-suspend" class="study-subtitle">Вызовы через suspend-функции</h3>
+<p>Retrofit поддерживает <code>suspend</code>-функции: запрос выполняется в корутине, результат возвращается напрямую. Это самый современный и удобный способ.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@GET(<span class="hljs-string">&quot;users/{id}&quot;</span>)</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUser</span><span class="hljs-params">(<span class="hljs-meta">@Path(<span class="hljs-string">&quot;id&quot;</span>)</span> id: <span class="hljs-type">Int</span>)</span></span>: User
+</code></pre></div>
+<p>Вызов: <code>val user = api.getUser(42)</code> внутри корутины. При ошибке HTTP Retrofit бросает <code>HttpException</code>. При сетевой ошибке — <code>IOException</code>. Оборачивайте в try/catch или используйте <code>Response&lt;T&gt;</code>.</p>
+<h3 id="retrofit-call-response" class="study-subtitle">Call и Response (назначение)</h3>
+<p><code>Call&lt;T&gt;</code> — обёртка асинхронного запроса в старом API (до корутин): <code>call.enqueue(callback)</code> или <code>call.execute()</code>. В современном коде с suspend-функциями не нужен, но встречается в legacy и в некоторых библиотеках.</p>
+<p><code>Response&lt;T&gt;</code> — обёртка результата с кодом, заголовками и телом. Возвращает и успех, и ошибку без исключений.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-meta">@GET(<span class="hljs-string">&quot;users/{id}&quot;</span>)</span>
+<span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getUser</span><span class="hljs-params">(<span class="hljs-meta">@Path(<span class="hljs-string">&quot;id&quot;</span>)</span> id: <span class="hljs-type">Int</span>)</span></span>: Response&lt;User&gt;
+</code></pre></div>
+<p>Используйте <code>Response&lt;T&gt;</code>, когда нужно прочитать статус-код или заголовки ответа, а не только тело. Иначе проще возвращать сам объект.</p>
+<h3 id="retrofit-success-error" class="study-subtitle">Обработка успешного и неуспешного HTTP-ответа</h3>
+<p>Успешный ответ (2xx) десериализуется в объект. Неуспешный (4xx/5xx) бросает <code>HttpException</code> при возврате объекта, либо доступен через <code>Response.errorBody()</code> при возврате <code>Response&lt;T&gt;</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">val</span> user = api.getUser(<span class="hljs-number">42</span>)
+} <span class="hljs-keyword">catch</span> (e: HttpException) {
+    <span class="hljs-keyword">val</span> errorBody = e.response()?.errorBody()?.string()
+    <span class="hljs-comment">// обработка по коду e.code()</span>
+} <span class="hljs-keyword">catch</span> (e: IOException) {
+    <span class="hljs-comment">// нет сети / таймаут</span>
+}
+</code></pre></div>
+<p>Разделяйте сетевые ошибки (IOException) и HTTP-ошибки (HttpException). Показывайте пользователю понятное сообщение: «Нет соединения» vs «Пользователь не найден». Не выводите сырой errorBody пользователю — он может содержать внутренности сервера.</p>
+<h3 id="retrofit-converter" class="study-subtitle">Подключение JSON Converter</h3>
+<p>Converter преобразует тело запроса/ответа между Kotlin-объектами и байтами. Для Kotlinx Serialization используют <code>kotlinx-serialization-converter</code> или <code>Json.asConverterFactory</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> contentType = <span class="hljs-string">&quot;application/json&quot;</span>.toMediaType()
+<span class="hljs-keyword">val</span> retrofit = Retrofit.Builder()
+    .baseUrl(BASE_URL)
+    .addConverterFactory(Json.asConverterFactory(contentType))
+    .build()
+</code></pre></div>
+<p>Без converter&#x27;а Retrofit вернёт <code>ResponseBody</code>/<code>RequestBody</code> — вам придётся парсить вручную. Подключайте ровно один converter для JSON. Несколько converter&#x27;ов пробуются по порядку — это может скрыть ошибки.</p>
+<h3 id="retrofit-okhttp" class="study-subtitle">OkHttpClient и базовая настройка клиента</h3>
+<p>OkHttpClient — транспортный слой Retrofit. Настраивается отдельно и передаётся в builder. Здесь задаются таймауты, интерсепторы, кэш.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> client = OkHttpClient.Builder()
+    .connectTimeout(<span class="hljs-number">15</span>, TimeUnit.SECONDS)
+    .readTimeout(<span class="hljs-number">20</span>, TimeUnit.SECONDS)
+    .addInterceptor(loggingInterceptor)
+    .build()
+
+<span class="hljs-keyword">val</span> retrofit = Retrofit.Builder()
+    .baseUrl(BASE_URL)
+    .client(client)
+    .addConverterFactory(...)
+    .build()
+</code></pre></div>
+<p>Создавайте один OkHttpClient на приложение (singleton) — он управляет пулом соединений. Несколько клиентов = несколько пулов = лишняя память и соединения.</p>
+<h3 id="retrofit-logging" class="study-subtitle">HttpLoggingInterceptor для отладки запросов</h3>
+<p><code>HttpLoggingInterceptor</code> (из OkHttp) логирует запросы и ответы в Logcat. Незаменим при отладке API.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> logging = HttpLoggingInterceptor().apply {
+    level = HttpLoggingInterceptor.Level.BODY
+}
+
+<span class="hljs-keyword">val</span> client = OkHttpClient.Builder()
+    .addInterceptor(logging)
+    .build()
+</code></pre></div>
+<p>Уровни: <code>NONE</code>, <code>BASIC</code> (метод+URL+код), <code>HEADERS</code>, <code>BODY</code> (всё включая тело). В продакшене ставьте <code>NONE</code> или убирайте interceptor — логирование тел запросов с токенами в релизе — утечка данных. Включайте только в debug-сборках через <code>BuildConfig.DEBUG</code>.</p>
+<h3 id="retrofit-timeouts" class="study-subtitle">Таймауты подключения и чтения</h3>
+<p>Таймауты защищают от зависания при плохой сети:</p>
+<ul class="study-list">
+<li><code>connectTimeout</code> — время на установление соединения.</li>
+<li><code>readTimeout</code> — время ожидания данных после соединения.</li>
+<li><code>writeTimeout</code> — время отправки тела запроса.</li>
+</ul>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">OkHttpClient.Builder()
+    .connectTimeout(<span class="hljs-number">10</span>, TimeUnit.SECONDS)
+    .readTimeout(<span class="hljs-number">30</span>, TimeUnit.SECONDS)
+    .writeTimeout(<span class="hljs-number">30</span>, TimeUnit.SECONDS)
+</code></pre></div>
+<p>Значения по умолчанию (10 секунд) часто слишком малы для медленных сетей или больших файлов. Подбирайте под сценарий: для загрузки списка — 15–30 секунд, для скачивания файла — дольше или используйте отдельный клиент. При срабатывании таймаута бросается <code>SocketTimeoutException</code> (подкласс IOException).</p>
+<p>Типичные ошибки Retrofit: baseUrl без завершающего <code>/</code>, из-за чего Retrofit бросает <code>IllegalArgumentException</code>; эндпоинт с ведущим <code>/</code>, из-за чего baseUrl игнорируется; возврат non-null объекта при ответе 204 (пустое тело) — краш парсера; смешение <code>Call</code> и suspend в одном интерфейсе без нужды; создание нового Retrofit/OkHttpClient на каждый запрос (утечка пулов соединений); логирование BODY в релизе (утечка токенов); отсутствие обработки <code>IOException</code> отдельно от <code>HttpException</code>. Держите интерфейсы узкими, один клиент на приложение, и всегда оборачивайте сетевой вызов в try/catch с раздельной обработкой сетевых и HTTP-ошибок. Тестируйте API-слой с помощью MockWebServer, подменяя ответы и проверяя, что маппинг и обработка кодов работают корректно.</p>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Как задать базовый URL и почему он должен оканчиваться на <code>/</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Чем <code>@Path</code> отличается от <code>@Query</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Как обработать 4xx/5xx при использовании suspend-функции?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Зачем нужен HttpLoggingInterceptor и почему его отключают в релизе?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Какие таймауты настраивают в OkHttpClient?</li>
+</ul></section><section id="dto-i-data-mapping" class="study-section" aria-labelledby="dto-i-data-mapping-title"><h2 id="dto-i-data-mapping-title" class="study-section-title">8. DTO и Data Mapping</h2><p>DTO (Data Transfer Object) — объект, представляющий данные в том виде, в котором они передаются по сети. Разделение сетевых моделей (DTO) и моделей приложения (Domain) — ключевой принцип чистой архитектуры. API меняется, поля добавляются и удаляются; если UI зависит напрямую от сетевой модели, любое изменение бэкенда ломает интерфейс. DTO изолирует эту нестабильность.</p><div class="study-cards"><div class="study-card"><p class="study-card-title">DTO</p><p>модель, повторяющая структуру ответа сервера.</p></div><div class="study-card"><p class="study-card-title">Domain</p><p>модель, удобная для UI и бизнес-логики.</p></div><div class="study-card"><p class="study-card-title">Маппинг</p><p>преобразование DTO → Domain и обратно.</p></div><div class="study-card"><p class="study-card-title">Extension-функции</p><p>удобный способ описать преобразование.</p></div><div class="study-card"><p class="study-card-title">Nullable</p><p>API часто возвращает неполные данные; модель должна это учитывать.</p></div><div class="study-card"><p class="study-card-title">Изоляция</p><p>UI зависит от Domain, а не от формы ответа сервера.</p></div></div><div class="study-note"><p><strong>Ключевая идея:</strong> DTO — это «язык сервера», Domain — «язык приложения». Маппинг между ними — граница, которая позволяет менять API и UI независимо.</p></div><h3 id="dto-purpose" class="study-subtitle">Назначение DTO</h3>
+<p>DTO существует для транспорта данных: он повторяет форму JSON-ответа, включая имена полей (через <code>@SerialName</code>) и типы. DTO не содержит бизнес-логики, вычисляемых свойств или методов, специфичных для UI. Его задача — точно описать, что присылает сервер, и не более того.</p>
+<p>Использование DTO даёт: стабильный контракт с бэкендом, возможность версионировать модели, место для обработки особенностей API (nullable, алиасы полей). Без DTO сетевая модель «протекает» в UI и бизнес-логику.</p>
+<h3 id="dto-network-vs-domain" class="study-subtitle">Сетевые модели и Domain-модели</h3>
+<p>Сетевая модель (DTO) повторяет ответ сервера: поля могут быть nullable, имена в snake_case, есть технические поля (<code>created_at</code>, <code>etag</code>). Domain-модель описывает сущность предметной области: non-null где возможно, удобные типы (например, <code>LocalDate</code> вместо строки), без технических деталей.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// DTO — зеркало ответа сервера</span>
+<span class="hljs-meta">@Serializable</span>
+<span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserDto</span>(
+    <span class="hljs-meta">@SerialName(<span class="hljs-string">&quot;user_id&quot;</span>)</span> <span class="hljs-keyword">val</span> userId: <span class="hljs-built_in">Int</span>,
+    <span class="hljs-meta">@SerialName(<span class="hljs-string">&quot;full_name&quot;</span>)</span> <span class="hljs-keyword">val</span> fullName: String?,
+    <span class="hljs-meta">@SerialName(<span class="hljs-string">&quot;created_at&quot;</span>)</span> <span class="hljs-keyword">val</span> createdAt: String
+)
+
+<span class="hljs-comment">// Domain — модель приложения</span>
+<span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(
+    <span class="hljs-keyword">val</span> id: <span class="hljs-built_in">Int</span>,
+    <span class="hljs-keyword">val</span> name: String,
+    <span class="hljs-keyword">val</span> createdAt: Instant
+)
+</code></pre></div>
+<p>Разница в том, что DTO зависит от формы API, а Domain — от потребностей приложения. Один Domain-объект может собираться из нескольких DTO; один DTO может маппиться в разные Domain-модели для разных экранов.</p>
+<h3 id="dto-to-domain" class="study-subtitle">Преобразование DTO в Domain</h3>
+<p>Маппинг — это функция, которая принимает DTO и возвращает Domain. Она должна обрабатывать null, значения по умолчанию, преобразование типов (строка даты → <code>Instant</code>).</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> UserDto.<span class="hljs-title">toDomain</span><span class="hljs-params">()</span></span>: User = User(
+    id = userId,
+    name = fullName ?: <span class="hljs-string">&quot;Без имени&quot;</span>,
+    createdAt = Instant.parse(createdAt)
+)
+</code></pre></div>
+<p><code>Instant</code> из <code>java.time</code> доступен на API 26+; на более старых версиях Android нужен core library desugaring.</p>
+<p>Маппинг вызывается в репозитории: сетевой слой возвращает DTO, репозиторий — Domain. UI и ViewModel работают только с Domain. Это позволяет менять API (новое поле, переименование) без изменения UI — достаточно обновить DTO и маппинг.</p>
+<h3 id="dto-mapping-extensions" class="study-subtitle">Extension-функции для маппинга</h3>
+<p>Extension-функции — удобный и читаемый способ описать маппинг. Они живут рядом с моделями или в отдельном файле <code>*Mapper.kt</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> UserDto.<span class="hljs-title">toDomain</span><span class="hljs-params">()</span></span>: User = ...
+<span class="hljs-function"><span class="hljs-keyword">fun</span> List<span class="hljs-type">&lt;UserDto&gt;</span>.<span class="hljs-title">toDomain</span><span class="hljs-params">()</span></span>: List&lt;User&gt; = map { it.toDomain() }
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> User.<span class="hljs-title">toDto</span><span class="hljs-params">()</span></span>: UserDto = ...
+</code></pre></div>
+<p>Расширения на коллекции (<code>List&lt;UserDto&gt;.toDomain()</code>) избавляют от повторяющегося <code>map</code>. Держите маппинг в одном месте, не размазывайте по ViewModel. Тестируйте маппинг отдельно — это чистые функции без зависимостей.</p>
+<h3 id="dto-nullable" class="study-subtitle">Обработка nullable-полей API</h3>
+<p>API часто возвращает null или опускает поля. В DTO это отражается nullable-типами. При маппинге решайте, какое значение использовать по умолчанию и нужно ли вообще показывать сущность без обязательных данных.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> UserDto.<span class="hljs-title">toDomainOrNull</span><span class="hljs-params">()</span></span>: User? {
+    <span class="hljs-keyword">val</span> name = fullName ?: <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>
+    <span class="hljs-keyword">return</span> User(id = userId, name = name, createdAt = Instant.parse(createdAt))
+}
+</code></pre></div>
+<p>Не все nullable-поля должны стать non-null в Domain: если поле опционально по смыслу (аватар, описание), оставьте его nullable и обработайте в UI (placeholder). Если поле критично и без него сущность бессмысленна — фильтруйте такие элементы при маппинге списка.</p>
+<h3 id="dto-missing-extra" class="study-subtitle">Отсутствующие и дополнительные поля ответа</h3>
+<p>Отсутствующее обязательное поле → ошибка парсинга (если тип non-null без default). Отсутствующее опциональное поле → default или null. Дополнительные поля (которых нет в DTO) игнорируются при <code>ignoreUnknownKeys = true</code> — иначе парсер упадёт.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> json = Json { ignoreUnknownKeys = <span class="hljs-literal">true</span> }
+</code></pre></div>
+<p><code>ignoreUnknownKeys = true</code> — почти всегда нужен в продакшене: бэкенд добавляет поля, и приложение не должно падать. Но не игнорируйте неизвестные поля молча в критичных местах — логируйте их, чтобы заметить изменения API. Отсутствие обязательного поля — повод вернуть ошибку и показать «данные устарели».</p>
+<h3 id="dto-not-in-ui" class="study-subtitle">Почему не следует напрямую использовать DTO в UI</h3>
+<p>Если UI зависит от DTO, то любое изменение API (переименование поля, новый обязательный параметр, смена типа) ломает экраны и бизнес-логику. DTO также тащит в UI технические детали (snake_case, null-поля, серверные идентификаторы), что усложняет код и тестирование.</p>
+<p>Domain-модель стабильна: она описывает то, что нужно приложению, а не то, что присылает сервер. Маппинг — единственное место, где нужно реагировать на изменения API. Это снижает стоимость изменений и упрощает тестирование: ViewModel тестируется с чистыми Domain-объектами без JSON.</p>
+<p>Типичные ошибки маппинга: использовать DTO напрямую в UI «чтобы сэкономить время» — потом любое изменение API ломает экраны; делать все поля nullable «на всякий случай» и терять типобезопасность; игнорировать неизвестные поля без логирования и не замечать изменений контракта; маппить дату-строку в <code>Long</code> без валидации и падать на неожиданном формате; забывать про default-значения для опциональных полей. Держите маппинг в одном файле рядом с моделями, покрывайте его unit-тестами на реальных ответах сервера (включая edge-кейсы: null, отсутствующие поля, лишние поля). При изменении API обновляйте только DTO и маппер — UI и бизнес-логика остаются нетронутыми.</p>
+<p><strong>Самопроверка:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Чем DTO отличается от Domain-модели?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Где должен происходить маппинг DTO → Domain?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Как обработать nullable-поле при маппинге?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Зачем нужен <code>ignoreUnknownKeys = true</code>?</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Почему UI не должен знать про DTO?</li>
+</ul></section><section id="itogovaya-samoproverka" class="study-section" aria-labelledby="itogovaya-samoproverka-title"><h2 id="itogovaya-samoproverka-title" class="study-section-title">Итоговая самопроверка категории</h2><ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею парсить JSON через Kotlinx Serialization и обрабатывать ошибки.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю структуру HTTP-запроса и ответа, методы и статус-коды.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею описать API через Retrofit-интерфейс и настроить OkHttpClient.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Настраиваю HttpLoggingInterceptor и таймауты, отключаю логирование в релизе.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Разделяю DTO и Domain-модели, пишу маппинг через extension-функции.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Обрабатываю nullable и отсутствующие поля API без крашей.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю разницу Gson (legacy) и Kotlinx Serialization (рекомендуемый).</li>
+</ul></section><section id="istochniki-i-dokumentaciya" class="study-section" aria-labelledby="istochniki-i-dokumentaciya-title"><h2 id="istochniki-i-dokumentaciya-title" class="study-section-title">Источники и документация</h2><h3 class="study-subtitle">Официальная документация</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://kotlinlang.org/docs/serialization.html" target="_blank" rel="noopener noreferrer">Kotlin Serialization</a></li>
+<li><a class="study-pill" href="https://github.com/Kotlin/kotlinx.serialization" target="_blank" rel="noopener noreferrer">Kotlinx Serialization GitHub</a></li>
+<li><a class="study-pill" href="https://square.github.io/retrofit/" target="_blank" rel="noopener noreferrer">Retrofit</a></li>
+<li><a class="study-pill" href="https://square.github.io/okhttp/" target="_blank" rel="noopener noreferrer">OkHttp</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/articles/security-config" target="_blank" rel="noopener noreferrer">Android — Network security config</a></li>
+<li><a class="study-pill" href="https://developer.android.com/training/data-storage" target="_blank" rel="noopener noreferrer">Android — Data and file storage overview</a></li>
+<li><a class="study-pill" href="https://developer.mozilla.org/en-US/docs/Web/HTTP" target="_blank" rel="noopener noreferrer">MDN — HTTP</a></li>
+</ul>
+<h3 class="study-subtitle">Статьи</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://github.com/google/gson/blob/master/UserGuide.md" target="_blank" rel="noopener noreferrer">Gson User Guide</a></li>
+<li><a class="study-pill" href="https://square.github.io/retrofit/#converters" target="_blank" rel="noopener noreferrer">Retrofit — converter factories</a></li>
+<li><a class="study-pill" href="https://square.github.io/okhttp/interceptors/" target="_blank" rel="noopener noreferrer">OkHttp — Interceptors</a></li>
+<li><a class="study-pill" href="https://developer.android.com/privacy-and-security/security-best-practices" target="_blank" rel="noopener noreferrer">Android Developers — Security best practices</a></li>
+</ul></section><footer class="study-footer">Учебный конспект для уровня Junior. Примеры ориентированы на Kotlin.</footer></div></div>

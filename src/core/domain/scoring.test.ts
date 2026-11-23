@@ -59,21 +59,25 @@ describe("calcSkillScore", () => {
     }
   });
 
-  it("даёт лёгкой теме меньше XP чем такой же по сложности теме старшего уровня", () => {
-    const juniorEasy = skills.find((s) => s.difficulty === "easy" && s.categoryId.startsWith("junior"))!;
-    const middleEasy = skills.find((s) => s.difficulty === "easy" && s.categoryId.startsWith("middle"))!;
+  it("даёт теме Junior меньше XP чем такой же по сложности теме Middle", () => {
+    const juniorMedium = skills.find(
+      (s) => s.difficulty === "medium" && s.categoryId.startsWith("junior"),
+    )!;
+    const middleMedium = skills.find(
+      (s) => s.difficulty === "medium" && s.categoryId.startsWith("middle"),
+    )!;
 
-    expect(calcSkillScore(middleEasy.id, allSubtopicsChecked(middleEasy.id))).toBeGreaterThan(
-      calcSkillScore(juniorEasy.id, allSubtopicsChecked(juniorEasy.id)),
+    expect(calcSkillScore(middleMedium.id, allSubtopicsChecked(middleMedium.id))).toBeGreaterThan(
+      calcSkillScore(juniorMedium.id, allSubtopicsChecked(juniorMedium.id)),
     );
   });
 
-  it("даёт тяжёлой теме больше XP чем лёгкой того же уровня", () => {
+  it("даёт более сложной теме больше XP чем простой того же уровня", () => {
     const hard = skills.find((s) => s.difficulty === "hard" && s.categoryId.startsWith("middle"))!;
-    const easy = skills.find((s) => s.difficulty === "easy" && s.categoryId.startsWith("middle"))!;
+    const medium = skills.find((s) => s.difficulty === "medium" && s.categoryId.startsWith("middle"))!;
 
     expect(calcSkillScore(hard.id, allSubtopicsChecked(hard.id))).toBeGreaterThan(
-      calcSkillScore(easy.id, allSubtopicsChecked(easy.id)),
+      calcSkillScore(medium.id, allSubtopicsChecked(medium.id)),
     );
   });
 });

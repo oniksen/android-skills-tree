@@ -1,0 +1,590 @@
+<div class="study-layout"><nav class="study-toc" aria-label="Содержание материала"><div class="study-toc-rail"><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#git">1. Git</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#git-init-i-clone">1.1. git init и clone</a></li><li><a class="study-toc-link" href="#git-status-i-diff">1.2. git status и diff</a></li><li><a class="study-toc-link" href="#git-add-i-commit">1.3. git add и commit</a></li><li><a class="study-toc-link" href="#git-push-i-pull">1.4. git push и pull</a></li><li><a class="study-toc-link" href="#git-fetch">1.5. git fetch</a></li><li><a class="study-toc-link" href="#branch-i-switch">1.6. branch и switch</a></li><li><a class="study-toc-link" href="#merge">1.7. merge</a></li><li><a class="study-toc-link" href="#razreshenie-merge-conflicts">1.8. Разрешение merge conflicts</a></li><li><a class="study-toc-link" href="#gitignore">1.9. .gitignore</a></li><li><a class="study-toc-link" href="#pull-request-i-code-review">1.10. Pull Request и Code Review</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#logcat-i-debugging">2. Logcat и Debugging</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#urovni-logirovaniya">2.1. Уровни логирования</a></li><li><a class="study-toc-link" href="#log-d-i-w-e">2.2. Log.d, Log.i, Log.w и Log.e</a></li><li><a class="study-toc-link" href="#timber">2.3. Timber для удобного и безопасного логирования</a></li><li><a class="study-toc-link" href="#filtraciya-logcat">2.4. Фильтрация Logcat</a></li><li><a class="study-toc-link" href="#stack-trace">2.5. Stack Trace</a></li><li><a class="study-toc-link" href="#breakpoints">2.6. Breakpoints</a></li><li><a class="study-toc-link" href="#step-into-over-out">2.7. Step Into, Step Over и Step Out</a></li><li><a class="study-toc-link" href="#watches-i-evaluate">2.8. Watches и Evaluate Expression</a></li><li><a class="study-toc-link" href="#poisk-prichiny-isklyucheniya">2.9. Поиск причины исключения</a></li><li><a class="study-toc-link" href="#app-inspection-i-network-inspector">2.10. App Inspection и Network Inspector</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#build-variants-i-apk-aab">3. Build Variants и APK/AAB</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#build-types-debug-i-release">3.1. Build Types (debug и release)</a></li><li><a class="study-toc-link" href="#product-flavors">3.2. Product Flavors</a></li><li><a class="study-toc-link" href="#build-variants">3.3. Build Variants</a></li><li><a class="study-toc-link" href="#signing-configs">3.4. Signing Configs</a></li><li><a class="study-toc-link" href="#buildconfig">3.5. BuildConfig</a></li><li><a class="study-toc-link" href="#naznachenie-apk">3.6. Назначение APK</a></li><li><a class="study-toc-link" href="#naznachenie-aab">3.7. Назначение Android App Bundle (AAB)</a></li><li><a class="study-toc-link" href="#r8-i-proguard">3.8. R8 и ProGuard (назначение)</a></li><li><a class="study-toc-link" href="#testirovanie-sborok">Тестирование сборок</a></li><li><a class="study-toc-link" href="#strategiya-sborok">Как выбрать стратегию сборок</a></li><li><a class="study-toc-link" href="#oshibki-build-variants">Типичные ошибки и рекомендации</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#adb-basics">4. ADB Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#naznachenie-adb">4.1. Назначение ADB</a></li><li><a class="study-toc-link" href="#adb-devices">4.2. adb devices</a></li><li><a class="study-toc-link" href="#adb-install-i-uninstall">4.3. adb install и adb uninstall</a></li><li><a class="study-toc-link" href="#adb-shell">4.4. adb shell</a></li><li><a class="study-toc-link" href="#adb-logcat">4.5. adb logcat</a></li><li><a class="study-toc-link" href="#perezapusk-i-upravlenie">4.6. Перезапуск и управление устройством</a></li><li><a class="study-toc-link" href="#ustanovka-apk-cherez-adb">4.7. Установка APK через ADB</a></li><li><a class="study-toc-link" href="#diagnostika-podklyucheniya">4.8. Базовая диагностика подключения устройства</a></li><li><a class="study-toc-link" href="#fayly-adb">Передача файлов и работа с хранилищем</a></li><li><a class="study-toc-link" href="#wireless-adb">Беспроводная отладка</a></li><li><a class="study-toc-link" href="#bezopasnost-adb">Безопасность и надёжность при работе с ADB</a></li><li><a class="study-toc-link" href="#scenarii-adb">Практические сценарии использования ADB</a></li><li><a class="study-toc-link" href="#oshibki-adb">Типичные ошибки и рекомендации</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#dependencies-i-version-catalogs">5. Dependencies и Version Catalogs</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#podklyuchenie-bibliotek">5.1. Подключение Android-библиотек</a></li><li><a class="study-toc-link" href="#poisk-v-maven">5.2. Поиск библиотек в Maven Central и Google Maven</a></li><li><a class="study-toc-link" href="#version-catalogs">5.3. Version Catalogs</a></li><li><a class="study-toc-link" href="#libs-versions-toml">5.4. libs.versions.toml</a></li><li><a class="study-toc-link" href="#pryamye-i-tranzitivnye">5.5. Прямые и транзитивные зависимости</a></li><li><a class="study-toc-link" href="#obnovlenie-versiy">5.6. Обновление версий библиотек</a></li><li><a class="study-toc-link" href="#diagnostika-konfliktov">5.7. Базовая диагностика конфликтов зависимостей</a></li><li><a class="study-toc-link" href="#android-lint-ktlint-detekt">5.8. Назначение Android Lint, Ktlint и Detekt</a></li><li><a class="study-toc-link" href="#bezopasnost-dependencies">Безопасность зависимостей</a></li><li><a class="study-toc-link" href="#praktika-dependencies">Практика обновления и поддержки зависимостей</a></li><li><a class="study-toc-link" href="#oshibki-dependencies">Типичные ошибки и рекомендации</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></div><details class="study-toc-compact"><summary class="study-toc-summary">Содержание</summary><ol class="study-toc-list"><li class="study-toc-group"><a class="study-toc-link" href="#git">1. Git</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#git-init-i-clone">1.1. git init и clone</a></li><li><a class="study-toc-link" href="#git-status-i-diff">1.2. git status и diff</a></li><li><a class="study-toc-link" href="#git-add-i-commit">1.3. git add и commit</a></li><li><a class="study-toc-link" href="#git-push-i-pull">1.4. git push и pull</a></li><li><a class="study-toc-link" href="#git-fetch">1.5. git fetch</a></li><li><a class="study-toc-link" href="#branch-i-switch">1.6. branch и switch</a></li><li><a class="study-toc-link" href="#merge">1.7. merge</a></li><li><a class="study-toc-link" href="#razreshenie-merge-conflicts">1.8. Разрешение merge conflicts</a></li><li><a class="study-toc-link" href="#gitignore">1.9. .gitignore</a></li><li><a class="study-toc-link" href="#pull-request-i-code-review">1.10. Pull Request и Code Review</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#logcat-i-debugging">2. Logcat и Debugging</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#urovni-logirovaniya">2.1. Уровни логирования</a></li><li><a class="study-toc-link" href="#log-d-i-w-e">2.2. Log.d, Log.i, Log.w и Log.e</a></li><li><a class="study-toc-link" href="#timber">2.3. Timber для удобного и безопасного логирования</a></li><li><a class="study-toc-link" href="#filtraciya-logcat">2.4. Фильтрация Logcat</a></li><li><a class="study-toc-link" href="#stack-trace">2.5. Stack Trace</a></li><li><a class="study-toc-link" href="#breakpoints">2.6. Breakpoints</a></li><li><a class="study-toc-link" href="#step-into-over-out">2.7. Step Into, Step Over и Step Out</a></li><li><a class="study-toc-link" href="#watches-i-evaluate">2.8. Watches и Evaluate Expression</a></li><li><a class="study-toc-link" href="#poisk-prichiny-isklyucheniya">2.9. Поиск причины исключения</a></li><li><a class="study-toc-link" href="#app-inspection-i-network-inspector">2.10. App Inspection и Network Inspector</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#build-variants-i-apk-aab">3. Build Variants и APK/AAB</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#build-types-debug-i-release">3.1. Build Types (debug и release)</a></li><li><a class="study-toc-link" href="#product-flavors">3.2. Product Flavors</a></li><li><a class="study-toc-link" href="#build-variants">3.3. Build Variants</a></li><li><a class="study-toc-link" href="#signing-configs">3.4. Signing Configs</a></li><li><a class="study-toc-link" href="#buildconfig">3.5. BuildConfig</a></li><li><a class="study-toc-link" href="#naznachenie-apk">3.6. Назначение APK</a></li><li><a class="study-toc-link" href="#naznachenie-aab">3.7. Назначение Android App Bundle (AAB)</a></li><li><a class="study-toc-link" href="#r8-i-proguard">3.8. R8 и ProGuard (назначение)</a></li><li><a class="study-toc-link" href="#testirovanie-sborok">Тестирование сборок</a></li><li><a class="study-toc-link" href="#strategiya-sborok">Как выбрать стратегию сборок</a></li><li><a class="study-toc-link" href="#oshibki-build-variants">Типичные ошибки и рекомендации</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#adb-basics">4. ADB Basics</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#naznachenie-adb">4.1. Назначение ADB</a></li><li><a class="study-toc-link" href="#adb-devices">4.2. adb devices</a></li><li><a class="study-toc-link" href="#adb-install-i-uninstall">4.3. adb install и adb uninstall</a></li><li><a class="study-toc-link" href="#adb-shell">4.4. adb shell</a></li><li><a class="study-toc-link" href="#adb-logcat">4.5. adb logcat</a></li><li><a class="study-toc-link" href="#perezapusk-i-upravlenie">4.6. Перезапуск и управление устройством</a></li><li><a class="study-toc-link" href="#ustanovka-apk-cherez-adb">4.7. Установка APK через ADB</a></li><li><a class="study-toc-link" href="#diagnostika-podklyucheniya">4.8. Базовая диагностика подключения устройства</a></li><li><a class="study-toc-link" href="#fayly-adb">Передача файлов и работа с хранилищем</a></li><li><a class="study-toc-link" href="#wireless-adb">Беспроводная отладка</a></li><li><a class="study-toc-link" href="#bezopasnost-adb">Безопасность и надёжность при работе с ADB</a></li><li><a class="study-toc-link" href="#scenarii-adb">Практические сценарии использования ADB</a></li><li><a class="study-toc-link" href="#oshibki-adb">Типичные ошибки и рекомендации</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#dependencies-i-version-catalogs">5. Dependencies и Version Catalogs</a><ul class="study-toc-list"><li><a class="study-toc-link" href="#podklyuchenie-bibliotek">5.1. Подключение Android-библиотек</a></li><li><a class="study-toc-link" href="#poisk-v-maven">5.2. Поиск библиотек в Maven Central и Google Maven</a></li><li><a class="study-toc-link" href="#version-catalogs">5.3. Version Catalogs</a></li><li><a class="study-toc-link" href="#libs-versions-toml">5.4. libs.versions.toml</a></li><li><a class="study-toc-link" href="#pryamye-i-tranzitivnye">5.5. Прямые и транзитивные зависимости</a></li><li><a class="study-toc-link" href="#obnovlenie-versiy">5.6. Обновление версий библиотек</a></li><li><a class="study-toc-link" href="#diagnostika-konfliktov">5.7. Базовая диагностика конфликтов зависимостей</a></li><li><a class="study-toc-link" href="#android-lint-ktlint-detekt">5.8. Назначение Android Lint, Ktlint и Detekt</a></li><li><a class="study-toc-link" href="#bezopasnost-dependencies">Безопасность зависимостей</a></li><li><a class="study-toc-link" href="#praktika-dependencies">Практика обновления и поддержки зависимостей</a></li><li><a class="study-toc-link" href="#oshibki-dependencies">Типичные ошибки и рекомендации</a></li></ul></li><li class="study-toc-group"><a class="study-toc-link" href="#itogovaya-samoproverka">Итоговая самопроверка категории</a></li><li class="study-toc-group"><a class="study-toc-link" href="#istochniki-i-dokumentaciya">Источники и документация</a></li></ol></details></nav><div class="study-content"><header class="study-hero"><p class="study-eyebrow">Инструменты · Junior</p><h1 class="study-title">Инструменты Android-разработчика</h1><p class="study-lead">Рабочий минимум инструментов: Git, отладка, сборки, ADB и управление зависимостями.</p></header><section id="git" class="study-section" aria-labelledby="git-title"><h2 id="git-title" class="study-section-title">1. Git</h2><p>Git — распределённая система контроля версий. Она хранит историю изменений кода, позволяет работать в ветках, откатывать ошибки и синхронизироваться с удалённым репозиторием. Для Android-разработчика Git — основной инструмент: проекты в Android Studio создаются с инициализированным репозиторием, а код отправляется на GitHub/GitLab через Pull Request.</p><div class="study-note"><p><strong>Ключевая идея:</strong> коммиты должны быть небольшими и осмысленными, а сообщения — описывать, что изменилось и зачем. Это упрощает поиск ошибок и ревью.</p></div><h3 id="git-init-i-clone" class="study-subtitle">1.1. git init и clone</h3>
+<p><code>git init</code> создаёт новый репозиторий в текущей папке: появляется скрытая директория <code>.git</code>, в которой хранится вся история и конфигурация. Обычно используется при старте нового проекта, если репозиторий ещё не создан.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git init
+</code></pre></div>
+<p><code>git clone</code> копирует существующий удалённый репозиторий на локальный компьютер вместе с историей и всеми ветками.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git <span class="hljs-built_in">clone</span> https://github.com/user/project.git
+<span class="hljs-built_in">cd</span> project
+</code></pre></div>
+<p>После <code>clone</code> локальная ветка <code>main</code> (или <code>master</code>) уже привязана к удалённой, поэтому <code>push</code> и <code>pull</code> работают без дополнительной настройки.</p>
+<p>Типичная ошибка: клонировать репозиторий в папку, которая уже содержит файлы, и получить конфликт. Лучше клонировать в пустую директорию.</p>
+<h3 id="git-status-i-diff" class="study-subtitle">1.2. git status и diff</h3>
+<p><code>git status</code> показывает, какие файлы изменены, какие добавлены в индекс (staging) и какие не отслеживаются. Это первая команда, которую стоит вызывать перед любыми действиями.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git status
+</code></pre></div>
+<p><code>git diff</code> показывает конкретные изменения в файлах, ещё не добавленных в индекс.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git diff
+git diff --staged
+</code></pre></div>
+<p>Первый вариант сравнивает рабочую директорию с индексом, второй — индекс с последним коммитом. Это позволяет проверить, что именно попадёт в коммит.</p>
+<p>Типичная ошибка: коммитить без просмотра <code>diff</code> и случайно включить отладочные <code>println</code> или локальные конфиги.</p>
+<h3 id="git-add-i-commit" class="study-subtitle">1.3. git add и commit</h3>
+<p><code>git add</code> помещает изменения в индекс (staging area) — подготовленный набор изменений для следующего коммита.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git add MainActivity.kt
+git add .
+</code></pre></div>
+<p><code>git commit</code> создаёт новый коммит из содержимого индекса с сообщением.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git commit -m <span class="hljs-string">&quot;feat: добавить экран входа&quot;</span>
+</code></pre></div>
+<p>Хорошая практика — коммитить логически связанные изменения отдельно: один коммит — одна задача. Это упрощает <code>git revert</code> и <code>git bisect</code>.</p>
+<p>Самопроверка: после <code>git commit</code> вызовите <code>git status</code> — рабочая директория должна быть чистой (или содержать только неотслеживаемые файлы).</p>
+<h3 id="git-push-i-pull" class="study-subtitle">1.4. git push и pull</h3>
+<p><code>git push</code> отправляет локальные коммиты в удалённый репозиторий.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git push origin main
+</code></pre></div>
+<p><code>git pull</code> получает изменения из удалённого репозитория и сразу пытается слить их с текущей веткой.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git pull origin main
+</code></pre></div>
+<p><code>pull</code> эквивалентен <code>fetch</code> + <code>merge</code>. Если в локальной и удалённой ветках есть расходящиеся изменения, Git попытается выполнить merge; при конфликте попросит разрешить его вручную.</p>
+<p>Типичная ошибка: делать <code>push --force</code> в общую ветку (<code>main</code>) — это перезаписывает историю и ломает работу других разработчиков. <code>--force</code> допустим только в личных feature-ветках.</p>
+<h3 id="git-fetch" class="study-subtitle">1.5. git fetch</h3>
+<p><code>git fetch</code> загружает изменения из удалённого репозитория, но не меняет рабочую директорию и текущую ветку. Это безопасный способ посмотреть, что изменилось у коллег.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git fetch origin
+git <span class="hljs-built_in">log</span> --oneline origin/main
+</code></pre></div>
+<p>После <code>fetch</code> можно сравнить локальную ветку с удалённой и решить, нужно ли делать <code>merge</code> или <code>rebase</code>. Использование <code>fetch</code> перед <code>pull</code> помогает избежать неожиданных конфликтов.</p>
+<h3 id="branch-i-switch" class="study-subtitle">1.6. branch и switch</h3>
+<p>Ветка (branch) — отдельная линия разработки. <code>git branch</code> создаёт или показывает ветки.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git branch
+git branch feature/login
+</code></pre></div>
+<p><code>git switch</code> переключается между ветками (современная замена <code>git checkout</code> для веток).</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git switch feature/login
+git switch -c feature/signup
+</code></pre></div>
+<p>Флаг <code>-c</code> создаёт ветку и сразу переключается на неё. Правило именования: <code>feature/...</code>, <code>fix/...</code>, <code>chore/...</code>. Работа в отдельной ветке защищает <code>main</code> от незавершённого кода.</p>
+<p>Типичная ошибка: коммитить напрямую в <code>main</code> в командном проекте. Всегда создавайте feature-ветку.</p>
+<h3 id="merge" class="study-subtitle">1.7. merge</h3>
+<p><code>git merge</code> объединяет изменения из одной ветки в текущую.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git switch main
+git merge feature/login
+</code></pre></div>
+<p>Если изменения не пересекаются, Git выполнит fast-forward merge (линейная история). Если в обеих ветках есть новые коммиты, создастся merge-коммит с двумя родителями.</p>
+<p>Для Android-проектов часто используют <code>--no-ff</code>, чтобы сохранить историю feature-ветки:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git merge --no-ff feature/login
+</code></pre></div>
+<h3 id="razreshenie-merge-conflicts" class="study-subtitle">1.8. Разрешение merge conflicts</h3>
+<p>Конфликт возникает, когда Git не может автоматически объединить изменения в одних и тех же строках. Файл помечается как конфликтующий, а внутри появляются маркеры:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">text</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-text">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+val timeout = 30
+=======
+val timeout = 60
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/network
+</code></pre></div>
+<p>Разрешение конфликта: выбрать нужный вариант (или объединить), удалить маркеры, добавить файл в индекс и завершить merge.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">git add NetworkConfig.kt
+git commit
+</code></pre></div>
+<p>В Android Studio конфликты удобно разрешать через встроенный инструмент (Merge Conflicts). Типичная ошибка: оставить маркеры <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> в коде — проект перестанет компилироваться.</p>
+<h3 id="gitignore" class="study-subtitle">1.9. .gitignore</h3>
+<p>Файл <code>.gitignore</code> перечисляет пути и шаблоны файлов, которые Git должен игнорировать: локальные конфиги, сборочные артефакты, секреты.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">text</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-text">*.iml
+.gradle/
+local.properties
+build/
+.idea/
+</code></pre></div>
+<p>Для Android-проектов стандартный <code>.gitignore</code> создаётся автоматически при создании проекта в Android Studio. Важно: если файл уже попал в репозиторий, добавление в <code>.gitignore</code> не удалит его — нужно выполнить <code>git rm --cached</code>.</p>
+<h3 id="pull-request-i-code-review" class="study-subtitle">1.10. Pull Request и Code Review</h3>
+<p>Pull Request (PR) — запрос на слияние feature-ветки в основную ветку через веб-интерфейс GitHub/GitLab. Перед созданием PR проверяют, что ветка актуальна с <code>main</code>, тесты проходят, а код отформатирован.</p>
+<p>Базовый процесс:</p>
+<ol class="study-list">
+<li>Запушить feature-ветку.</li>
+<li>Создать PR с описанием изменений.</li>
+<li>Дождаться ревью коллег.</li>
+<li>Внести правки, если нужно.</li>
+<li>Слить PR после одобрения.</li>
+</ol>
+<p>Code Review — проверка кода коллегами: корректность, читаемость, соответствие архитектуре, отсутствие секретов. Для Junior-разработчика ревью — главный способ учиться стандартам проекта.</p><div class="study-note"><p><strong>Ключевая идея:</strong> PR должен быть небольшим (до ~300 строк изменений). Большие PR сложно ревьюить, и в них чаще пропускают ошибки.</p></div><p><strong>Самопроверка раздела Git:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею создать репозиторий и клонировать существующий.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Проверяю изменения через <code>git status</code> и <code>git diff</code> перед коммитом.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Работаю в отдельных feature-ветках.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, как разрешить merge-конфликт.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю назначение <code>.gitignore</code> и PR.</li>
+</ul></section><section id="logcat-i-debugging" class="study-section" aria-labelledby="logcat-i-debugging-title"><h2 id="logcat-i-debugging-title" class="study-section-title">2. Logcat и Debugging</h2><p>Logcat — окно Android Studio, в котором отображаются системные и прикладные логи. Debugging — пошаговое выполнение кода с остановками на breakpoints. Вместе эти инструменты позволяют находить причину крашей и логических ошибок.</p><div class="study-note"><p><strong>Ключевая идея:</strong> логи помогают понять, что произошло, а отладчик — почему. Используйте логи для наблюдения за потоком, отладчик — для исследования состояния в конкретный момент.</p></div><h3 id="urovni-logirovaniya" class="study-subtitle">2.1. Уровни логирования</h3>
+<p>Android использует пять основных уровней логов (плюс <code>ASSERT</code>/<code>Log.wtf</code>), от самого подробного к самому критичному:</p>
+<ul class="study-list">
+<li><code>VERBOSE</code> — детальная трассировка, обычно отключена в проде.</li>
+<li><code>DEBUG</code> — отладочная информация для разработчика.</li>
+<li><code>INFO</code> — важные события жизненного цикла.</li>
+<li><code>WARN</code> — потенциальные проблемы.</li>
+<li><code>ERROR</code> — ошибки и исключения.</li>
+</ul>
+<p>Выбор уровня влияет на читаемость логов: в продакшен-сборках оставляют <code>WARN</code>/<code>ERROR</code>, чтобы не засорять вывод и не раскрывать внутренности.</p>
+<h3 id="log-d-i-w-e" class="study-subtitle">2.2. Log.d, Log.i, Log.w и Log.e</h3>
+<p>Класс <code>android.util.Log</code> предоставляет статические методы для каждого уровня.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">import</span> android.util.Log
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">UserRepository</span> {
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loadUser</span><span class="hljs-params">(id: <span class="hljs-type">String</span>)</span></span> {
+        Log.d(<span class="hljs-string">&quot;UserRepo&quot;</span>, <span class="hljs-string">&quot;Загрузка пользователя id=<span class="hljs-variable">$id</span>&quot;</span>)
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-comment">// ...</span>
+            Log.i(<span class="hljs-string">&quot;UserRepo&quot;</span>, <span class="hljs-string">&quot;Пользователь загружен&quot;</span>)
+        } <span class="hljs-keyword">catch</span> (e: Exception) {
+            Log.e(<span class="hljs-string">&quot;UserRepo&quot;</span>, <span class="hljs-string">&quot;Ошибка загрузки&quot;</span>, e)
+        }
+    }
+}
+</code></pre></div>
+<p>Третий аргумент <code>Log.e</code> — объект <code>Throwable</code>, который добавляет стек вызовов. Тег (первый аргумент) обычно совпадает с именем класса, чтобы удобно фильтровать.</p>
+<p>Типичная ошибка: логировать чувствительные данные (токены, пароли) — это угроза безопасности.</p>
+<h3 id="timber" class="study-subtitle">2.3. Timber для удобного и безопасного логирования</h3>
+<p>Timber — библиотека, оборачивающая <code>Log</code> и автоматически подставляющая тег (имя класса) и контролирующую вывод в зависимости от сборки.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-comment">// build.gradle.kts</span>
+implementation(<span class="hljs-string">&quot;com.jakewharton.timber:timber:5.0.1&quot;</span>)
+</code></pre></div>
+<p>Инициализация в <code>Application</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyApp</span> : <span class="hljs-type">Application</span>() {
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCreate</span><span class="hljs-params">()</span></span> {
+        <span class="hljs-keyword">super</span>.onCreate()
+        <span class="hljs-keyword">if</span> (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+    }
+}
+</code></pre></div>
+<p>Использование:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">Timber.d(<span class="hljs-string">&quot;Загрузка пользователя id=%s&quot;</span>, id)
+Timber.e(exception, <span class="hljs-string">&quot;Ошибка сети&quot;</span>)
+</code></pre></div>
+<p>В release-сборке, если не посадить <code>DebugTree</code>, логи не выводятся — это защищает от утечки информации.</p>
+<h3 id="filtraciya-logcat" class="study-subtitle">2.4. Фильтрация Logcat</h3>
+<p>В окне Logcat доступны фильтры по уровню, тегу, имени пакета и регулярному выражению. Полезные приёмы:</p>
+<ul class="study-list">
+<li>Фильтр по пакету приложения: <code>package:com.example.app</code>.</li>
+<li>Фильтр по тегу: <code>tag:UserRepo</code>.</li>
+<li>Исключение шумных логов: <code>-tag:System.out</code>.</li>
+<li>Сохранение фильтра как пресета для повторного использования.</li>
+</ul>
+<p>Фильтрация экономит время: без неё Logcat забит системными сообщениями. В Android Studio 2023+ доступен улучшенный Logcat с поиском и подсветкой.</p>
+<h3 id="stack-trace" class="study-subtitle">2.5. Stack Trace</h3>
+<p>Stack trace — стек вызовов, который печатается при исключении. Он показывает цепочку методов от точки возникновения ошибки до точки входа.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">text</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-text">java.lang.NullPointerException: ...
+    at com.example.app.UserRepository.loadUser(UserRepository.kt:12)
+    at com.example.app.UserViewModel.load(UserViewModel.kt:25)
+    at com.example.app.MainActivity.onCreate(MainActivity.kt:18)
+</code></pre></div>
+<p>Читать stack trace нужно сверху вниз: первая строка с именем вашего пакета указывает место ошибки. Строки с <code>android.*</code> и <code>kotlin.*</code> — системный код, обычно пропускаются.</p>
+<h3 id="breakpoints" class="study-subtitle">2.6. Breakpoints</h3>
+<p>Breakpoint — точка остановки выполнения программы. Устанавливается кликом по левой границе редактора рядом с номером строки. При достижении breakpoint приложение приостанавливается, и можно исследовать состояние.</p>
+<p>Типы breakpoints:</p>
+<ul class="study-list">
+<li>Line breakpoint — остановка на строке.</li>
+<li>Method breakpoint — вход/выход из метода (медленнее).</li>
+<li>Field watchpoint — изменение поля.</li>
+<li>Exception breakpoint — остановка при выбросе исключения (очень полезно для <code>NullPointerException</code>).</li>
+</ul>
+<p>Exception breakpoint настраивается через <code>View Breakpoints</code> и позволяет остановиться в момент выброса исключения, даже если оно перехватывается.</p>
+<h3 id="step-into-over-out" class="study-subtitle">2.7. Step Into, Step Over и Step Out</h3>
+<p>После остановки на breakpoint доступны команды навигации:</p>
+<ul class="study-list">
+<li><code>Step Over (F8)</code> — выполнить текущую строку и перейти к следующей в том же методе.</li>
+<li><code>Step Into (F7)</code> — зайти внутрь вызываемого метода.</li>
+<li><code>Step Out (Shift+F8)</code> — выйти из текущего метода в вызывающий.</li>
+<li><code>Resume (F9)</code> — продолжить выполнение до следующего breakpoint.</li>
+</ul>
+<p>Используйте <code>Step Over</code> для перехода по строкам, <code>Step Into</code> — когда нужно исследовать внутренности вызова. <code>Force Step Into</code> позволяет зайти в стандартные библиотеки.</p>
+<h3 id="watches-i-evaluate" class="study-subtitle">2.8. Watches и Evaluate Expression</h3>
+<p>Watches — панель, в которой можно добавить выражения для постоянного наблюдения: <code>user.name</code>, <code>list.size</code>, <code>count &gt; 0</code>. Значения обновляются при каждой остановке.</p>
+<p><code>Evaluate Expression (Alt+F8)</code> позволяет выполнить произвольный код в контексте текущей точки остановки:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin">repository.cache.size()
+user?.profile?.email
+</code></pre></div>
+<p>Это удобно для проверки гипотез без перекомпиляции. Важно: выражения не должны иметь побочных эффектов (изменять состояние), иначе отладка исказит поведение.</p>
+<h3 id="poisk-prichiny-isklyucheniya" class="study-subtitle">2.9. Поиск причины исключения</h3>
+<p>Алгоритм диагностики краша:</p>
+<ol class="study-list">
+<li>Найти stack trace в Logcat (фильтр по <code>ERROR</code>).</li>
+<li>Определить первую строку с вашим пакетом — это место ошибки.</li>
+<li>Поставить breakpoint на эту строку и воспроизвести сценарий.</li>
+<li>Проверить значения переменных через Watches/Evaluate.</li>
+<li>Проверить входные данные: null, пустые коллекции, неверный индекс.</li>
+</ol>
+<p>Частые причины: <code>NullPointerException</code> (обращение к null), <code>IndexOutOfBoundsException</code> (выход за границы списка), <code>ClassCastException</code> (неверное приведение типа), <code>NetworkOnMainThreadException</code> (сеть в главном потоке).</p>
+<h3 id="app-inspection-i-network-inspector" class="study-subtitle">2.10. App Inspection и Network Inspector</h3>
+<p>App Inspection — набор инструментов Android Studio для инспекции состояния приложения во время выполнения:</p>
+<ul class="study-list">
+<li><strong>Database Inspector</strong> — просмотр таблиц Room/SQLite, выполнение SQL-запросов.</li>
+<li><strong>Network Inspector</strong> — перехват HTTP-запросов и ответов (Retrofit/OkHttp) с заголовками и телом.</li>
+<li><strong>Background Task Inspector</strong> — WorkManager задачи.</li>
+</ul>
+<p>Network Inspector особенно полезен при отладке API: видно URL, метод, заголовки, код ответа, тело запроса и ответа, время. Не требует сторонних прокси вроде Charles.</p><div class="study-note study-note--warn"><p>Network Inspector работает с OkHttp (и Retrofit на его основе) и HttpsURLConnection. Если используется другой клиент, запросы не будут перехвачены.</p></div><p><strong>Самопроверка раздела Logcat и Debugging:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею читать Logcat и фильтровать по тегу/пакету.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Подключаю Timber и понимаю разницу debug/release.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею читать stack trace и находить первую строку своего кода.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Ставлю breakpoints и использую Step Over/Into/Out.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Использую App Inspection и Network Inspector для диагностики.</li>
+</ul></section><section id="build-variants-i-apk-aab" class="study-section" aria-labelledby="build-variants-i-apk-aab-title"><h2 id="build-variants-i-apk-aab-title" class="study-section-title">3. Build Variants и APK/AAB</h2><p>Build variants — механизм Gradle/AGP для создания разных версий одного приложения (debug/release, free/paid) из одного кода. APK и AAB — форматы артефактов для установки и публикации.</p><div class="study-note"><p><strong>Ключевая идея:</strong> Build Types определяют, как собирается код (оптимизация, отладка), а Product Flavors — для кого он собирается (бесплатная/платная версия, dev/prod окружение).</p></div><h3 id="build-types-debug-i-release" class="study-subtitle">3.1. Build Types (debug и release)</h3>
+<p>Build Type — набор настроек сборки. По умолчанию AGP создаёт <code>debug</code> и <code>release</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">android {
+    buildTypes {
+        debug {
+            applicationIdSuffix = <span class="hljs-string">&quot;.debug&quot;</span>
+            isDebuggable = <span class="hljs-literal">true</span>
+        }
+        release {
+            isMinifyEnabled = <span class="hljs-literal">true</span>
+            proguardFiles(
+                getDefaultProguardFile(<span class="hljs-string">&quot;proguard-android-optimize.txt&quot;</span>),
+                <span class="hljs-string">&quot;proguard-rules.pro&quot;</span>
+            )
+        }
+    }
+}
+</code></pre></div>
+<p><code>debug</code>-сборка не оптимизирована, содержит отладочные символы и устанавливается с суффиксом <code>.debug</code>, чтобы не конфликтовать с release. <code>release</code> минифицируется и подписывается release-ключом.</p>
+<h3 id="product-flavors" class="study-subtitle">3.2. Product Flavors</h3>
+<p>Product Flavor — вариант продукта с собственными настройками: <code>applicationId</code>, ресурсы, константы.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">android {
+    flavorDimensions += <span class="hljs-string">&quot;environment&quot;</span>
+    productFlavors {
+        create(<span class="hljs-string">&quot;dev&quot;</span>) {
+            dimension = <span class="hljs-string">&quot;environment&quot;</span>
+            applicationIdSuffix = <span class="hljs-string">&quot;.dev&quot;</span>
+            buildConfigField(<span class="hljs-string">&quot;String&quot;</span>, <span class="hljs-string">&quot;API_URL&quot;</span>, <span class="hljs-string">&quot;\&quot;https://dev.api.example.com\&quot;&quot;</span>)
+        }
+        create(<span class="hljs-string">&quot;prod&quot;</span>) {
+            dimension = <span class="hljs-string">&quot;environment&quot;</span>
+            buildConfigField(<span class="hljs-string">&quot;String&quot;</span>, <span class="hljs-string">&quot;API_URL&quot;</span>, <span class="hljs-string">&quot;\&quot;https://api.example.com\&quot;&quot;</span>)
+        }
+    }
+}
+</code></pre></div>
+<p>Flavors полезны для разных окружений (dev/stage/prod) или тарифов (free/premium). Каждый flavor может иметь собственную папку ресурсов <code>src/dev/</code>.</p>
+<h3 id="build-variants" class="study-subtitle">3.3. Build Variants</h3>
+<p>Build Variant — комбинация Build Type и Product Flavor: <code>devDebug</code>, <code>devRelease</code>, <code>prodDebug</code>, <code>prodRelease</code>. Android Studio показывает их в панели Build Variants.</p>
+<p>Количество вариантов = число build types × число flavors. Варианты позволяют тестировать release-логику на dev-окружении и собирать prod-release для публикации.</p>
+<p>Типичная ошибка: создавать слишком много flavors, что усложняет матрицу сборок и тестирование.</p>
+<h3 id="signing-configs" class="study-subtitle">3.4. Signing Configs</h3>
+<p>Signing Config — конфигурация подписи APK/AAB. Debug-сборка подписывается автоматически debug-ключом. Release должна быть подписана release-ключом, хранящимся в безопасном месте.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">android {
+    signingConfigs {
+        create(<span class="hljs-string">&quot;release&quot;</span>) {
+            storeFile = file(<span class="hljs-string">&quot;release.keystore&quot;</span>)
+            storePassword = System.getenv(<span class="hljs-string">&quot;STORE_PASSWORD&quot;</span>)
+            keyAlias = <span class="hljs-string">&quot;release&quot;</span>
+            keyPassword = System.getenv(<span class="hljs-string">&quot;KEY_PASSWORD&quot;</span>)
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName(<span class="hljs-string">&quot;release&quot;</span>)
+        }
+    }
+}
+</code></pre></div>
+<p>Пароли не хранят в коде — используют переменные окружения или Gradle properties. Потеря release-ключа делает невозможным обновление приложения в Google Play.</p>
+<h3 id="buildconfig" class="study-subtitle">3.5. BuildConfig</h3>
+<p>BuildConfig — автогенерируемый класс с константами сборки: <code>DEBUG</code>, <code>APPLICATION_ID</code>, <code>BUILD_TYPE</code>, <code>FLAVOR</code>, а также пользовательские поля через <code>buildConfigField</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">if</span> (BuildConfig.DEBUG) {
+    Timber.plant(Timber.DebugTree())
+}
+
+<span class="hljs-keyword">val</span> apiUrl = BuildConfig.API_URL
+</code></pre></div>
+<p>В AGP 8.0+ BuildConfig по умолчанию отключён; его включают флагом:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">android {
+    buildFeatures {
+        buildConfig = <span class="hljs-literal">true</span>
+    }
+}
+</code></pre></div>
+<h3 id="naznachenie-apk" class="study-subtitle">3.6. Назначение APK</h3>
+<p>APK (Android Package) — установочный файл приложения. Содержит код, ресурсы, манифест и сертификат. Используется для прямой установки на устройство и тестирования.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">./gradlew assembleRelease
+</code></pre></div>
+<p>Артефакт появляется в <code>app/build/outputs/apk/release/</code>. APK универсален, но содержит код для всех архитектур (arm64, x86), из-за чего размер больше.</p>
+<h3 id="naznachenie-aab" class="study-subtitle">3.7. Назначение Android App Bundle (AAB)</h3>
+<p>AAB — формат публикации в Google Play. Play Store генерирует из него оптимизированные APK под конкретное устройство (только нужная архитектура, плотность экрана, язык), что уменьшает размер загрузки.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">./gradlew bundleRelease
+</code></pre></div>
+<p>Артефакт: <code>app/build/outputs/bundle/release/app-release.aab</code>. С 2021 года AAB обязателен для новых приложений в Google Play. Локально AAB не устанавливается напрямую — нужен <code>bundletool</code>.</p>
+<h3 id="r8-i-proguard" class="study-subtitle">3.8. R8 и ProGuard (назначение)</h3>
+<p>R8 — инструмент сжатия, обфускации и оптимизации кода, встроенный в AGP. ProGuard — его предшественник, файлы правил совместимы.</p>
+<p>Назначение:</p>
+<ul class="study-list">
+<li>Удаление неиспользуемого кода (tree-shaking).</li>
+<li>Обфускация имён классов/методов (защита от реверс-инжиниринга).</li>
+<li>Оптимизация байт-кода.</li>
+</ul>
+<p>Правила хранятся в <code>proguard-rules.pro</code>. Для библиотек, использующих рефлексию (Retrofit, Room, Gson), нужны <code>keep</code>-правила, иначе R8 удалит нужный код и приложение упадёт в release.</p><div class="study-note study-note--warn"><p>Всегда тестируйте release-сборку на реальном устройстве: ошибки ProGuard/R8 проявляются только после минификации.</p></div><h3 id="testirovanie-sborok" class="study-subtitle">Тестирование сборок</h3>
+<p>Каждый build variant должен проходить тесты. В Gradle можно запускать тесты для конкретного варианта: <code>./gradlew testDevDebugUnitTest</code>. Инструментальные тесты запускаются на эмуляторе: <code>./gradlew connectedDevDebugAndroidTest</code>.</p>
+<p>Различия между вариантами (разные URL, флаги) нужно покрывать тестами, иначе ошибка в конфигурации проявится только в продакшене. Полезно иметь smoke-тест, проверяющий, что <code>BuildConfig.API_URL</code> указывает на ожидаемый хост.</p>
+<p>Перед релизом обязательно собирают release-вариант и прогоняют основные сценарии на реальном устройстве, потому что минификация и оптимизация могут изменить поведение.</p>
+<h3 id="strategiya-sborok" class="study-subtitle">Как выбрать стратегию сборок</h3>
+<p>На старте проекта достаточно двух build types (<code>debug</code> и <code>release</code>) без flavors. Flavors добавляют, когда появляются реальные различия: отдельный backend для разработки, платная версия, white-label. Каждый новый flavor удваивает матрицу сборок и требует тестирования, поэтому добавлять их нужно осознанно.</p>
+<p>Важно разделять конфигурацию окружения (URL, ключи аналитики) и конфигурацию продукта (бренд, иконка). Для окружения часто достаточно <code>buildConfigField</code> в build type, а flavors оставляют для действительно разных продуктов.</p>
+<p>Release-сборку нужно собирать и устанавливать на устройство регулярно, а не только перед публикацией. Это позволяет рано обнаружить проблемы с ProGuard, подписью и ресурсами. В CI настраивают отдельный job для <code>assembleRelease</code> и <code>bundleRelease</code>.</p>
+<h3 id="oshibki-build-variants" class="study-subtitle">Типичные ошибки и рекомендации</h3>
+<ul class="study-list">
+<li>Смешивать окружения в одном flavor: использовать продакшен-URL в dev-сборке. Всегда проверяйте <code>BuildConfig.API_URL</code> перед релизом.</li>
+<li>Хранить пароли keystore в <code>build.gradle.kts</code>. Используйте переменные окружения или <code>local.properties</code>, добавленный в <code>.gitignore</code>.</li>
+<li>Включать <code>isMinifyEnabled = true</code> без тестирования release. R8 может удалить классы, используемые через рефлексию.</li>
+<li>Забывать про <code>applicationIdSuffix</code> для debug, из-за чего debug и release не устанавливаются параллельно.</li>
+<li>Публиковать APK вместо AAB в Google Play — с 2021 года новые приложения принимаются только в формате AAB.</li>
+<li>Не делать <code>clean</code> перед release-сборкой: старые артефакты могут попасть в релиз.</li>
+</ul>
+<p><strong>Самопроверка раздела Build Variants:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Отличаю Build Type от Product Flavor.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, как формируется Build Variant.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею настраивать Signing Config через переменные окружения.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю разницу APK и AAB и команды сборки.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю назначение R8/ProGuard и необходимость тестирования release.</li>
+</ul></section><section id="adb-basics" class="study-section" aria-labelledby="adb-basics-title"><h2 id="adb-basics-title" class="study-section-title">4. ADB Basics</h2><p>ADB (Android Debug Bridge) — клиент-серверный инструмент для взаимодействия с Android-устройством или эмулятором: установка приложений, просмотр логов, выполнение команд, передача файлов. Состоит из клиента (команда <code>adb</code>), сервера (демон) и adbd на устройстве.</p><div class="study-note"><p><strong>Ключевая идея:</strong> ADB работает через USB или Wi-Fi и требует включённой «Отладки по USB» на устройстве. Это базовый инструмент диагностики вне Android Studio.</p></div><h3 id="naznachenie-adb" class="study-subtitle">4.1. Назначение ADB</h3>
+<p>ADB позволяет:</p>
+<ul class="study-list">
+<li>Устанавливать/удалять APK.</li>
+<li>Просматривать логи (<code>adb logcat</code>).</li>
+<li>Выполнять shell-команды на устройстве.</li>
+<li>Передавать файлы (<code>push</code>/<code>pull</code>).</li>
+<li>Перезагружать устройство, управлять пакетами.</li>
+</ul>
+<p>Используется в скриптах CI, при тестировании на физических устройствах и при отладке без IDE.</p>
+<h3 id="adb-devices" class="study-subtitle">4.2. adb devices</h3>
+<p>Показывает список подключённых устройств и эмуляторов.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">adb devices
+</code></pre></div>
+<p>Вывод:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">text</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-text">List of devices attached
+emulator-5554   device
+R58M...         device
+</code></pre></div>
+<p>Статусы: <code>device</code> (готово), <code>offline</code> (потеряно соединение), <code>unauthorized</code> (не подтверждена отладка на устройстве). Если устройство не появляется — проверить кабель, драйверы, разрешение на устройстве.</p>
+<h3 id="adb-install-i-uninstall" class="study-subtitle">4.3. adb install и adb uninstall</h3>
+<p>Установка APK на устройство:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">adb install app-release.apk
+adb install -r app-release.apk
+</code></pre></div>
+<p>Флаг <code>-r</code> переустанавливает, сохраняя данные. Удаление пакета:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">adb uninstall com.example.app
+</code></pre></div>
+<p>Для нескольких устройств указывают серийный номер:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">adb -s emulator-5554 install app.apk
+</code></pre></div>
+<h3 id="adb-shell" class="study-subtitle">4.4. adb shell</h3>
+<p>Открывает интерактивную оболочку на устройстве или выполняет одну команду.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">adb shell
+adb shell <span class="hljs-built_in">ls</span> /data/data/com.example.app
+adb shell pm list packages | grep example
+</code></pre></div>
+<p>На нерутованном устройстве <code>adb shell ls /data/data/com.example.app</code> вернёт <code>Permission denied</code>: каталог данных приложения недоступен shell-пользователю. Для debug-сборки доступ даёт <code>run-as</code>: <code>adb shell run-as com.example.app ls</code>.</p>
+<p>Полезные команды внутри shell:</p>
+<ul class="study-list">
+<li><code>pm</code> — управление пакетами (установка/удаление/очистка данных).</li>
+<li><code>am</code> — запуск Activity/Service (<code>am start -n com.example.app/.MainActivity</code>).</li>
+<li><code>dumpsys</code> — состояние системных сервисов.</li>
+<li><code>settings</code> — изменение системных настроек.</li>
+</ul>
+<h3 id="adb-logcat" class="study-subtitle">4.5. adb logcat</h3>
+<p>Выводит логи устройства в терминал. Можно фильтровать по тегу и уровню.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">adb logcat
+adb logcat -s MyApp:D
+adb logcat *:E
+adb logcat -c
+</code></pre></div>
+<p><code>-c</code> очищает буфер логов. Удобно использовать при воспроизведении бага: очистить, выполнить сценарий, посмотреть вывод.</p>
+<h3 id="perezapusk-i-upravlenie" class="study-subtitle">4.6. Перезапуск и управление устройством</h3>
+<p>ADB умеет управлять состоянием устройства:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">adb reboot
+adb reboot recovery
+adb shell input keyevent 26
+adb shell svc wifi <span class="hljs-built_in">disable</span>
+</code></pre></div>
+<p>Первая команда перезагружает устройство, вторая — в recovery. <code>input keyevent</code> эмулирует нажатия (26 — кнопка питания). Полезно для автоматизации тестов и диагностики.</p>
+<h3 id="ustanovka-apk-cherez-adb" class="study-subtitle">4.7. Установка APK через ADB</h3>
+<p>Типичный сценарий CI/ручного тестирования:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">./gradlew assembleDebug
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb shell am start -n com.example.app/.MainActivity
+</code></pre></div>
+<p>Если установка падает с <code>INSTALL_FAILED_UPDATE_INCOMPATIBLE</code>, значит APK подписан другим ключом — нужно удалить старую версию: <code>adb uninstall com.example.app</code>.</p>
+<h3 id="diagnostika-podklyucheniya" class="study-subtitle">4.8. Базовая диагностика подключения устройства</h3>
+<p>Если устройство не определяется:</p>
+<ol class="study-list">
+<li>Проверить, включена ли «Отладка по USB» и «Установка через USB».</li>
+<li>Проверить кабель и порт (некоторые кабели только для зарядки).</li>
+<li>Перезапустить ADB-сервер: <code>adb kill-server &amp;&amp; adb start-server</code>.</li>
+<li>На Windows — установить драйверы производителя (OEM USB drivers).</li>
+<li>Проверить, не занято ли устройство другим процессом (например, Android Studio).</li>
+</ol>
+<p>Для беспроводной отладки (Android 11+): <code>adb pair ip:port</code> затем <code>adb connect ip:port</code>.</p>
+<h3 id="fayly-adb" class="study-subtitle">Передача файлов и работа с хранилищем</h3>
+<p>ADB позволяет передавать файлы между компьютером и устройством:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">adb push local.txt /sdcard/local.txt
+adb pull /sdcard/screenshot.png ./screenshot.png
+</code></pre></div>
+<p>Это удобно для загрузки тестовых данных, баз данных, медиафайлов. При работе с защищёнными директориями (например, <code>/data/data/...</code>) нужны права root, которые на обычных устройствах недоступны. В таком случае используют <code>run-as</code> для debug-сборок:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">adb shell run-as com.example.app <span class="hljs-built_in">cat</span> databases/app.db &gt; app.db
+</code></pre></div>
+<h3 id="wireless-adb" class="study-subtitle">Беспроводная отладка</h3>
+<p>Начиная с Android 11, ADB поддерживает беспроводное подключение без кабеля. Процесс:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">adb pair 192.168.1.10:37000
+adb connect 192.168.1.10:41000
+</code></pre></div>
+<p>Код сопряжения отображается на устройстве. Беспроводная отладка удобна для тестирования на реальных устройствах, когда USB-порт занят или недоступен, но требует нахождения в одной Wi-Fi-сети.</p>
+<h3 id="bezopasnost-adb" class="study-subtitle">Безопасность и надёжность при работе с ADB</h3>
+<p>ADB открывает мощный доступ к устройству, поэтому его нельзя оставлять включённым на production-устройствах и в публичных сетях. После отладки отключайте «Отладку по USB» или используйте беспроводную отладку только в доверенной сети.</p>
+<p>При работе с несколькими устройствами полезно задавать переменную окружения <code>ANDROID_SERIAL</code>, чтобы не указывать <code>-s</code> в каждой команде. В CI-скриптах всегда явно указывайте серийный номер, чтобы избежать выполнения команд не на том устройстве.</p>
+<p>ADB также позволяет очищать данные приложения (<code>adb shell pm clear com.example.app</code>) — это удобно при тестировании первого запуска и onboarding-сценариев без переустановки APK.</p>
+<h3 id="scenarii-adb" class="study-subtitle">Практические сценарии использования ADB</h3>
+<p>ADB незаменим при работе с несколькими устройствами и при автоматизации. Например, можно написать скрипт, который собирает debug-APK, устанавливает его на все подключённые устройства и запускает главное Activity. Это удобно перед ручным тестированием.</p>
+<p>При отладке сетевых проблем ADB позволяет пробросить порты: <code>adb reverse tcp:8080 tcp:8080</code> делает локальный сервер на компьютере доступным приложению на устройстве по <code>localhost</code>. Обратная операция <code>adb forward</code> пробрасывает порт устройства на компьютер.</p>
+<p>Для снятия скриншотов и записи экрана используют <code>adb exec-out screencap -p &gt; screen.png</code> и <code>adb shell screenrecord /sdcard/demo.mp4</code>. Это полезно для баг-репортов и документации.</p>
+<h3 id="oshibki-adb" class="study-subtitle">Типичные ошибки и рекомендации</h3>
+<ul class="study-list">
+<li>Забывать про флаг <code>-s</code> при нескольких подключённых устройствах — команда выполнится на первом в списке.</li>
+<li>Использовать кабель только для зарядки, из-за которого устройство не определяется.</li>
+<li>Не подтверждать диалог отладки на устройстве — статус останется <code>unauthorized</code>.</li>
+<li>Путать пакетное имя с именем APK-файла при <code>adb uninstall</code>.</li>
+<li>Запускать <code>adb logcat</code> без очистки буфера и тонуть в старых логах.</li>
+<li>Забывать, что <code>adb shell</code> выполняется от имени shell-пользователя, а не root — часть файлов недоступна.</li>
+</ul>
+<p><strong>Самопроверка раздела ADB:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею проверить список устройств и их статусы.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Устанавливаю и удаляю APK через ADB.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Использую <code>adb shell</code> и базовые команды <code>pm</code>/<code>am</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Читаю логи через <code>adb logcat</code> с фильтрами.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Диагностирую проблемы подключения.</li>
+</ul></section><section id="dependencies-i-version-catalogs" class="study-section" aria-labelledby="dependencies-i-version-catalogs-title"><h2 id="dependencies-i-version-catalogs-title" class="study-section-title">5. Dependencies и Version Catalogs</h2><p>Управление зависимостями — подключение библиотек, разрешение версий, диагностика конфликтов. Version Catalogs (стабильны с Gradle 7.4, в 7.0 — экспериментально) централизуют версии в <code>libs.versions.toml</code>. Android Lint, Ktlint и Detekt — инструменты статического анализа.</p><div class="study-note"><p><strong>Ключевая идея:</strong> храните версии в одном месте (Version Catalog) и регулярно обновляйте зависимости. Статический анализ запускайте в CI, чтобы ловить проблемы до ревью.</p></div><h3 id="podklyuchenie-bibliotek" class="study-subtitle">5.1. Подключение Android-библиотек</h3>
+<p>Зависимости объявляются в <code>build.gradle.kts</code> модуля в блоке <code>dependencies</code>.</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">dependencies {
+    implementation(<span class="hljs-string">&quot;androidx.core:core-ktx:1.13.1&quot;</span>)
+    implementation(<span class="hljs-string">&quot;androidx.appcompat:appcompat:1.7.0&quot;</span>)
+    implementation(<span class="hljs-string">&quot;com.google.android.material:material:1.12.0&quot;</span>)
+}
+</code></pre></div>
+<p>Конфигурации:</p>
+<ul class="study-list">
+<li><code>implementation</code> — зависимость доступна только внутри модуля: её и её транзитивные зависимости видно в runtime-сборке, но не в compile-classpath потребителя; наружу виден только <code>api</code>.</li>
+<li><code>api</code> — зависимость доступна потребителям модуля (для library-модулей).</li>
+<li><code>compileOnly</code> — только для компиляции (например, аннотации).</li>
+<li><code>runtimeOnly</code> — только во время выполнения.</li>
+<li><code>testImplementation</code> / <code>androidTestImplementation</code> — для тестов.</li>
+</ul>
+<h3 id="poisk-v-maven" class="study-subtitle">5.2. Поиск библиотек в Maven Central и Google Maven</h3>
+<p>Библиотеки публикуются в репозиториях: Google Maven (<code>maven.google.com</code>) — AndroidX, AGP, Firebase; Maven Central (<code>search.maven.org</code>) — большинство open-source. В <code>settings.gradle.kts</code> объявляются репозитории:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+</code></pre></div>
+<p>Поиск версий: официальный сайт библиотеки, Maven Central search, AndroidX release notes. Избегайте непроверенных репозиториев — риск безопасности.</p>
+<h3 id="version-catalogs" class="study-subtitle">5.3. Version Catalogs</h3>
+<p>Version Catalog — централизованный каталог зависимостей в <code>gradle/libs.versions.toml</code>. Позволяет переиспользовать версии между модулями и обновлять их в одном месте.</p>
+<p>Включение (AGP/Gradle): каталог подхватывается автоматически, если файл существует в <code>gradle/</code>. В <code>build.gradle.kts</code>:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.material)
+}
+</code></pre></div>
+<h3 id="libs-versions-toml" class="study-subtitle">5.4. libs.versions.toml</h3>
+<p>Структура файла:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">text</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-text">[versions]
+agp = &quot;8.5.0&quot;
+kotlin = &quot;2.0.0&quot;
+coreKtx = &quot;1.13.1&quot;
+material = &quot;1.12.0&quot;
+
+[libraries]
+androidx-core-ktx = { group = &quot;androidx.core&quot;, name = &quot;core-ktx&quot;, version.ref = &quot;coreKtx&quot; }
+material = { group = &quot;com.google.android.material&quot;, name = &quot;material&quot;, version.ref = &quot;material&quot; }
+
+[plugins]
+android-application = { id = &quot;com.android.application&quot;, version.ref = &quot;agp&quot; }
+kotlin-android = { id = &quot;org.jetbrains.kotlin.android&quot;, version.ref = &quot;kotlin&quot; }
+</code></pre></div>
+<p>Ссылки из Gradle: <code>libs.androidx.core.ktx</code>, <code>libs.material</code>, <code>libs.plugins.android.application</code>. Томл-имена с дефисами превращаются в вложенные свойства.</p>
+<h3 id="pryamye-i-tranzitivnye" class="study-subtitle">5.5. Прямые и транзитивные зависимости</h3>
+<p>Прямая зависимость — та, что вы подключили явно. Транзитивная — подтягивается автоматически зависимостями ваших зависимостей. Например, <code>retrofit</code> тянет <code>okhttp</code> и <code>okio</code>.</p>
+<p>Проблемы возникают при конфликте версий: если две библиотеки требуют разные версии одной транзитивной зависимости. Gradle по умолчанию выбирает новейшую (version conflict resolution), но это может сломать совместимость.</p>
+<h3 id="obnovlenie-versiy" class="study-subtitle">5.6. Обновление версий библиотек</h3>
+<p>Регулярное обновление снижает уязвимости и баги. Инструменты:</p>
+<ul class="study-list">
+<li>Android Studio: <code>Project Structure</code> → <code>Suggestions</code> показывает доступные обновления.</li>
+<li>Gradle Versions Plugin: <code>./gradlew dependencyUpdates</code>.</li>
+<li>Dependabot/Renovate в GitHub для автоматических PR.</li>
+</ul>
+<p>Обновляйте по одной библиотеке, запуская тесты после каждой. Мажорные версии могут содержать breaking changes — читайте release notes.</p>
+<h3 id="diagnostika-konfliktov" class="study-subtitle">5.7. Базовая диагностика конфликтов зависимостей</h3>
+<p>Команды для анализа:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">bash</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-bash">./gradlew app:dependencies --configuration releaseRuntimeClasspath
+./gradlew app:dependencyInsight --dependency okhttp
+</code></pre></div>
+<p>Первая выводит дерево зависимостей, вторая — почему выбрана конкретная версия и кто её запросил. При <code>Duplicate class</code> ошибках исключайте транзитивную зависимость:</p>
+<div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">gradle</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-gradle">implementation(<span class="hljs-string">&quot;some:lib:1.0&quot;</span>) {
+    exclude(group = <span class="hljs-string">&quot;com.example&quot;</span>, module = <span class="hljs-string">&quot;conflicting&quot;</span>)
+}
+</code></pre></div>
+<p>Также полезно включить <code>failOnVersionConflict()</code> в строгих проектах.</p>
+<h3 id="android-lint-ktlint-detekt" class="study-subtitle">5.8. Назначение Android Lint, Ktlint и Detekt</h3>
+<ul class="study-list">
+<li>
+<p><strong>Android Lint</strong> — статический анализатор Android-проектов (встроен в AGP). Проверяет корректность XML-разметки, использования API, доступность, производительность, безопасность. Запуск: <code>./gradlew lint</code>.</p>
+</li>
+<li>
+<p><strong>Ktlint</strong> — линтер и форматтер Kotlin-кода по официальному стилю. Проверяет отступы, импорты, длину строк, именование. Запуск: <code>./gradlew ktlintCheck</code>, автофикс: <code>./gradlew ktlintFormat</code>.</p>
+</li>
+<li>
+<p><strong>Detekt</strong> — статический анализатор Kotlin с настраиваемыми правилами: сложность, размер функций, code smells, потенциальные баги. Конфигурация в <code>detekt.yml</code>. Запуск: <code>./gradlew detekt</code>.</p>
+</li>
+</ul>
+<p>Все три запускаются в CI и могут блокировать merge при ошибках. Lint проверяет Android-специфику, Ktlint — стиль, Detekt — качество архитектуры.</p>
+<h3 id="bezopasnost-dependencies" class="study-subtitle">Безопасность зависимостей</h3>
+<p>Подключение библиотеки — это доверие чужому коду. Перед добавлением новой зависимости проверьте: активность проекта, количество звёзд/форков, дату последнего релиза, наличие известных уязвимостей (GitHub Security Advisories, Snyk).</p>
+<p>Избегайте библиотек с транзитивными зависимостями, которые дублируют уже подключённые (например, несколько версий Kotlin stdlib). Это раздувает APK и может привести к конфликтам.</p>
+<p>В корпоративных проектах часто используют внутренний Maven-репозиторий (Nexus/Artifactory) с проверенными артефактами. Это защищает от supply-chain атак и обеспечивает воспроизводимость сборок.</p>
+<h3 id="praktika-dependencies" class="study-subtitle">Практика обновления и поддержки зависимостей</h3>
+<p>В реальном проекте зависимости обновляются по расписанию, а не спонтанно. Разумная практика — раз в спринт запускать <code>dependencyUpdates</code>, просматривать changelog и обновлять patch/minor версии. Мажорные обновления планируют отдельно, потому что они часто требуют изменения кода.</p>
+<p>Для каждой библиотеки полезно фиксировать причину подключения в комментарии или в <code>libs.versions.toml</code> (через комментарий). Это помогает через полгода понять, нужна ли ещё эта зависимость.</p>
+<p>При удалении библиотеки обязательно проверяйте, не осталось ли её классов в коде и не используется ли она транзитивно другими модулями. Команда <code>./gradlew app:dependencies</code> помогает убедиться, что зависимость действительно исчезла из графа.</p>
+<h3 id="oshibki-dependencies" class="study-subtitle">Типичные ошибки и рекомендации</h3>
+<ul class="study-list">
+<li>Использовать <code>api</code> вместо <code>implementation</code> без необходимости — это увеличивает время компиляции зависимых модулей.</li>
+<li>Дублировать версии в нескольких модулях вместо Version Catalog — обновление превращается в кошмар.</li>
+<li>Игнорировать предупреждения о конфликтах версий — приложение может упасть в рантайме.</li>
+<li>Подключать библиотеки из непроверенных репозиториев.</li>
+<li>Отключать Lint/Ktlint/Detekt локально, чтобы «быстрее собрать» — проблемы всплывут в CI или у коллег.</li>
+<li>Не проверять release-сборку после обновления зависимостей.</li>
+</ul>
+<p><strong>Самопроверка раздела Dependencies:</strong></p>
+<ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Подключаю библиотеки через <code>implementation</code>/<code>api</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Использую Version Catalog и <code>libs.versions.toml</code>.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю разницу прямых и транзитивных зависимостей.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею анализировать дерево зависимостей и конфликты.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Знаю назначение Android Lint, Ktlint и Detekt.</li>
+</ul></section><section id="itogovaya-samoproverka" class="study-section" aria-labelledby="itogovaya-samoproverka-title"><h2 id="itogovaya-samoproverka-title" class="study-section-title">Итоговая самопроверка категории</h2><ul class="study-checklist">
+<li class="study-check-item"><input type="checkbox" disabled=""/> Умею работать с Git: ветки, коммиты, push/pull, разрешение конфликтов.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Читаю Logcat и использую отладчик (breakpoints, step, watches).</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю build variants, подписи, APK и AAB.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Использую ADB для установки приложений и диагностики.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Управляю зависимостями через Version Catalog.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Запускаю Android Lint, Ktlint и Detekt.</li>
+<li class="study-check-item"><input type="checkbox" disabled=""/> Публикую изменения через Pull Request с code review.</li>
+</ul></section><section id="istochniki-i-dokumentaciya" class="study-section" aria-labelledby="istochniki-i-dokumentaciya-title"><h2 id="istochniki-i-dokumentaciya-title" class="study-section-title">Источники и документация</h2><h3 class="study-subtitle">Официальная документация</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://git-scm.com/doc" target="_blank" rel="noopener noreferrer">Git — документация</a></li>
+<li><a class="study-pill" href="https://developer.android.com/studio/debug" target="_blank" rel="noopener noreferrer">Android Studio — отладка</a></li>
+<li><a class="study-pill" href="https://developer.android.com/studio/debug/logcat" target="_blank" rel="noopener noreferrer">Logcat</a></li>
+<li><a class="study-pill" href="https://developer.android.com/build/build-variants" target="_blank" rel="noopener noreferrer">Build variants</a></li>
+<li><a class="study-pill" href="https://developer.android.com/guide/app-bundle" target="_blank" rel="noopener noreferrer">App bundles</a></li>
+<li><a class="study-pill" href="https://developer.android.com/studio/command-line/adb" target="_blank" rel="noopener noreferrer">ADB</a></li>
+<li><a class="study-pill" href="https://developer.android.com/build/dependencies" target="_blank" rel="noopener noreferrer">Dependencies and version catalogs</a></li>
+<li><a class="study-pill" href="https://developer.android.com/studio/write/lint" target="_blank" rel="noopener noreferrer">Lint</a></li>
+<li><a class="study-pill" href="https://github.com/detekt/detekt" target="_blank" rel="noopener noreferrer">Detekt</a></li>
+<li><a class="study-pill" href="https://ktlint.github.io/" target="_blank" rel="noopener noreferrer">Ktlint</a></li>
+</ul>
+<h3 class="study-subtitle">Статьи</h3>
+<ul class="study-pills">
+<li><a class="study-pill" href="https://developer.android.com/build/shrink-code" target="_blank" rel="noopener noreferrer">ProGuard/R8</a></li>
+<li><a class="study-pill" href="https://developer.android.com/studio/publish/app-signing" target="_blank" rel="noopener noreferrer">Signing your app</a></li>
+<li><a class="study-pill" href="https://github.com/JakeWharton/timber" target="_blank" rel="noopener noreferrer">Timber</a></li>
+<li><a class="study-pill" href="https://developer.android.com/studio/debug/network-profiler" target="_blank" rel="noopener noreferrer">Network Inspector</a></li>
+</ul></section><footer class="study-footer">Учебный конспект для уровня Junior. Примеры ориентированы на Kotlin.</footer></div></div>
