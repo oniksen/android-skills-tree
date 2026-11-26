@@ -75,9 +75,9 @@ describe("награда за навык", () => {
 });
 
 describe("экономика кристаллов", () => {
-  it("всего начисляется 1873 кристалла за полное прохождение", () => {
+  it("всего начисляется 1893 кристалла за полное прохождение", () => {
     const total = skills.reduce((sum, s) => sum + getCrystalRewardForSkill(s.id), 0);
-    expect(total).toBe(1873);
+    expect(total).toBe(1893);
   });
 
   it("сумма по уровням сходится с общим итогом", () => {
@@ -89,10 +89,10 @@ describe("экономика кристаллов", () => {
     expect(perLevel).toBe(total);
   });
 
-  it("за уровень начисляется 225 / 443 / 368 / 837 кристаллов", () => {
+  it("за уровень начисляется 225 / 453 / 378 / 837 кристаллов", () => {
     expect(totalRewardForLevel("junior")).toBe(225);
-    expect(totalRewardForLevel("middle")).toBe(443);
-    expect(totalRewardForLevel("strong-middle")).toBe(368);
+    expect(totalRewardForLevel("middle")).toBe(453);
+    expect(totalRewardForLevel("strong-middle")).toBe(378);
     expect(totalRewardForLevel("senior")).toBe(837);
   });
 
@@ -110,9 +110,9 @@ describe("экономика кристаллов", () => {
     expect(bestReward).toBeLessThan(freeze.price);
   });
 
-  it("на полное прохождение хватает примерно на 93 заморозки", () => {
+  it("на полное прохождение хватает примерно на 94 заморозки", () => {
     const total = skills.reduce((sum, s) => sum + getCrystalRewardForSkill(s.id), 0);
     const price = getShopItem(STREAK_FREEZE_ITEM_ID)!.price;
-    expect(Math.floor(total / price)).toBe(93);
+    expect(Math.floor(total / price)).toBe(94);
   });
 });
