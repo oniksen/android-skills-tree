@@ -2,6 +2,7 @@ import { juniorQuizQuestions } from "./junior";
 import { middleQuizQuestions } from "./middle";
 import { strongMiddleQuizQuestions } from "./strong-middle";
 import { seniorQuizQuestions } from "./senior";
+import { studyInterviewQuizQuestions } from "./from-study";
 
 import type { QuizQuestion, QuizGrade } from "./types";
 
@@ -12,6 +13,7 @@ export const allQuizQuestions: QuizQuestion[] = [
   ...middleQuizQuestions,
   ...strongMiddleQuizQuestions,
   ...seniorQuizQuestions,
+  ...studyInterviewQuizQuestions,
 ];
 
 export const quizQuestionsBySkill: Record<string, QuizQuestion[]> = allQuizQuestions.reduce(

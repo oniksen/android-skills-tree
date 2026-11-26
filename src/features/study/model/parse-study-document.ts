@@ -7,6 +7,8 @@
  * every text block is handed to react-markdown untouched.
  */
 
+import { getStudyInterviewTopics } from "@/data/study-interview-questions";
+
 export interface StudyDocumentMeta {
   title: string;
   level: string;
@@ -49,6 +51,7 @@ export interface StudyDocument {
 
 export interface ParseStudyDocumentOptions {
   grade?: string;
+  materialId?: string;
 }
 
 const HEADING = /^(#{1,6})\s+(.+?)\s*$/;
@@ -478,7 +481,39 @@ export function parseStudyDocument(
     };
   });
 
-  return { meta, sections: buildSections(lines, ranges) };
+  const document: StudyDocument = {
+    meta,
+    sections: buildSections(lines, ranges),
+  };
+  attachStudyInterviewQuestions(document, options);
+  return document;
+}
+
+function attachStudyInterviewQuestions(
+  document: StudyDocument,
+  options: ParseStudyDocumentOptions,
+): void {
+  if (!options?.materialId) return;
+  const topics = getStudyInterviewTopics(options.materialId);
+  if (!topics.length) return;
+  const qaSections = document.sections.filter((section) =>
+    section.blocks.some(
+      (block) =>
+        block.type === "markdown" &&
+        /Вопросы на собеседовании/i.test(block.content),
+    ),
+  );
+  qaSections.forEach((section, index) => {
+    const topic = topics[index];
+    if (!topic) return;
+    section.blocks.push({
+      type: "qa",
+      items: topic.questions.map((item) => ({
+        question: item.question,
+        answer: item.answer,
+      })),
+    });
+  });
 }
 
 export function studyEyebrow(meta: StudyDocumentMeta): string {

@@ -4,7 +4,7 @@ export default function LevelGate({ isUnlocked, isCompleted, levelName }: {
   if (isUnlocked && !isCompleted) return null;
 
   return (
-    <div className="term-panel rounded-lg p-8 text-center animate-fade-up">
+    <div className="term-panel rounded-lg p-8 text-center animate-fade-in">
       {!isUnlocked && !isCompleted ? (
         <>
           <div className="mb-3 font-mono text-sm font-semibold text-amber-600">[ LOCKED ]</div>

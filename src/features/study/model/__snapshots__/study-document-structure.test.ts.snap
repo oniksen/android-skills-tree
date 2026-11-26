@@ -558,7 +558,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "1. Синтаксис Kotlin",
@@ -568,7 +567,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "2. Null Safety",
@@ -578,7 +576,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "3. Data Class",
@@ -588,7 +585,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "4. Properties и Accessors",
@@ -598,7 +594,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "5. Object и Companion Object",
@@ -608,7 +603,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "6. Extension Functions",
@@ -618,7 +612,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "7. Lambda",
@@ -628,7 +621,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "8. Higher Order Functions",
@@ -638,7 +630,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "9. Scope Functions",
@@ -648,7 +639,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "10. Enum",
@@ -658,7 +648,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "11. Sealed Class и Sealed Interface",
@@ -668,7 +657,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "12. Packages и Visibility Modifiers",
@@ -678,7 +666,6 @@ exports[`kotlin-basics: структура документа стабильна
       "blocks": [
         "markdown",
         "qa",
-        "markdown",
       ],
       "sources": false,
       "title": "13. Generics Basics",

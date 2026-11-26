@@ -16,13 +16,15 @@ const CONTENT = blockClass("content");
 export default function StudyMarkdownRenderer({
   content,
   grade,
+  materialId,
 }: {
   content: string;
   grade?: string;
+  materialId?: string;
 }) {
   const studyDocument = useMemo(
-    () => parseStudyDocument(content, { grade }),
-    [content, grade],
+    () => parseStudyDocument(content, { grade, materialId }),
+    [content, grade, materialId],
   );
 
   if (!studyDocument) {

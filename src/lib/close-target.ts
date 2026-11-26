@@ -7,6 +7,8 @@ const CATEGORY_PAGE = /^\/tree\/([^/]+)\/category\/([^/]+)$/;
 const CATEGORY_STUDY = /^\/tree\/([^/]+)\/category\/([^/]+)\/study$/;
 const SKILL_STUDY = /^\/tree\/([^/]+)\/skill\/([^/]+)\/study$/;
 
+const QUIZ = /^\/quiz$/;
+
 /**
  * Routes that show the app-level close control. The button lives in the app
  * header, to the right of the panel with the streak and crystals.
@@ -16,6 +18,10 @@ const SKILL_STUDY = /^\/tree\/([^/]+)\/skill\/([^/]+)\/study$/;
  */
 export function closeTargetFor(pathname: string): CloseTarget | null {
   const path = (pathname || "/").split("?")[0].replace(/\/+$/, "") || "/";
+
+  if (QUIZ.test(path)) {
+    return { href: "/tree/junior", label: "Назад к дереву" };
+  }
 
   const category = CATEGORY_PAGE.exec(path);
   if (category) {
