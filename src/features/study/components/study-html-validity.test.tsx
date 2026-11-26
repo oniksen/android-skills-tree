@@ -92,6 +92,10 @@ describe("HTML учебных материалов", () => {
       "study-cards",
       "study-card",
       "study-card-title",
+      "study-qa",
+      "study-qa-item",
+      "study-qa-question",
+      "study-qa-answer",
       "study-note",
       "study-note--warn",
       "study-checklist",
@@ -117,11 +121,19 @@ describe("HTML учебных материалов", () => {
   it("фикстур не содержит raw markdown-маркеров", () => {
     const html = renderFixture();
 
-    for (const marker of [":::cards", ":::", "[!NOTE]", "[!TIP]", "[!IMPORTANT]", "[!WARNING]", "[!CAUTION]", "undefined", "NaN"]) {
+    for (const marker of [":::cards", ":::qa", ":::", "[!NOTE]", "[!TIP]", "[!IMPORTANT]", "[!WARNING]", "[!CAUTION]", "undefined", "NaN"]) {
       expect(html, marker).not.toContain(marker);
     }
 
     expect(placeholderLeaks(html)).toEqual([]);
+  });
+
+  it("показывает вопросы свёрнутыми", () => {
+    const html = renderFixture();
+
+    expect(html).toContain('<details class="study-qa-item">');
+    expect(html).toContain('<summary class="study-qa-question">');
+    expect(html).not.toContain("<details open");
   });
 
   it("подписывает навигацию, таблицы, рисунки и кнопку копирования", () => {
@@ -153,7 +165,7 @@ describe("HTML учебных материалов", () => {
       expect(hasExactClass(html, "study-hero")).toBe(true);
       expect(hasExactClass(html, "study-section")).toBe(true);
       expect(hasExactClass(html, "study-title")).toBe(true);
-      for (const marker of [":::cards", ":::", "[!NOTE]", "[!TIP]", "[!IMPORTANT]", "[!WARNING]", "[!CAUTION]"]) {
+      for (const marker of [":::cards", ":::qa", ":::", "[!NOTE]", "[!TIP]", "[!IMPORTANT]", "[!WARNING]", "[!CAUTION]"]) {
         expect(html, marker).not.toContain(marker);
       }
       // `undefined`/`NaN` may be real prose here; only rendered values count.

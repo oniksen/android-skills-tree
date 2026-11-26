@@ -1,16 +1,15 @@
 interface QuizSessionPanelProps {
   grade: string;
   topic: string;
-  skillName: string;
   used: number;
   limit: number;
+  gradeTotal?: number;
   score?: number;
   reason?: string;
   rubric: string;
   savedLast4?: string;
   canAskNew: boolean;
   onNew: () => void;
-  onExit: () => void;
 }
 
 function scoreClass(score: number | undefined): string {
@@ -23,23 +22,22 @@ function scoreClass(score: number | undefined): string {
 export default function QuizSessionPanel({
   grade,
   topic,
-  skillName,
   used,
   limit,
+  gradeTotal,
   score,
   reason,
   rubric,
   savedLast4,
   canAskNew,
   onNew,
-  onExit,
 }: QuizSessionPanelProps) {
   const percent = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
 
   return (
     <aside
       aria-label="Сессия"
-      className="card-surface flex h-full w-full flex-col overflow-y-auto rounded-lg p-4 font-mono text-sm"
+      className="card-surface flex h-full min-h-0 w-full flex-col overflow-y-auto rounded-lg p-4 font-mono text-sm"
     >
       <div className="flex items-baseline justify-between gap-2">
         <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -53,9 +51,6 @@ export default function QuizSessionPanel({
       <div className="mt-4">
         <p className="text-[10px] uppercase tracking-wide text-slate-600">Тема</p>
         <p className="mt-1 break-words text-slate-200">{topic}</p>
-        {skillName && (
-          <p className="mt-1 break-words text-xs text-slate-500">{skillName}</p>
-        )}
       </div>
 
       <div className="mt-4">
@@ -71,6 +66,10 @@ export default function QuizSessionPanel({
             style={{ width: `${percent}%` }}
           />
         </div>
+      </div>
+
+      <div className="mt-2 text-xs text-slate-500">
+        Всего по грейду: {gradeTotal ?? 0}
       </div>
 
       <div className="mt-4 border-t border-white/[0.06] pt-3">
@@ -89,7 +88,7 @@ export default function QuizSessionPanel({
         <summary className="cursor-pointer text-xs text-slate-400">
           Что оценивается
         </summary>
-        <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed text-slate-500">
+        <p className="mt-2 max-h-40 overflow-y-auto whitespace-pre-wrap text-xs leading-relaxed text-slate-500">
           {rubric}
         </p>
       </details>
@@ -106,13 +105,6 @@ export default function QuizSessionPanel({
           className="min-h-[32px] cursor-pointer rounded-md border border-white/[0.08] px-2.5 py-1.5 text-blue-600 transition-colors hover:border-blue-500/40 hover:text-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
           [new]
-        </button>
-        <button
-          type="button"
-          onClick={onExit}
-          className="min-h-[32px] cursor-pointer rounded-md border border-white/[0.08] px-2.5 py-1.5 text-slate-400 transition-colors hover:border-white/20 hover:text-slate-200"
-        >
-          [exit]
         </button>
       </div>
     </aside>

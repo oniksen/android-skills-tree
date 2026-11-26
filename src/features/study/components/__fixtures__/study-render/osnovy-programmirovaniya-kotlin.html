@@ -438,7 +438,7 @@ println(report.content)
 <li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, что такое область видимости переменной.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Могу отличить <code>const val</code> от обычного <code>val</code>.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю, как Kotlin работает с <code>null</code>.</li>
-</ul><div class="study-note"><p><strong>Запомнить:</strong> выбирайте <code>val</code> по умолчанию, давайте понятные имена и указывайте тип явно в публичном API.</p></div></section><section id="tipy-dannyh" class="study-section" aria-labelledby="tipy-dannyh-title"><h2 id="tipy-dannyh-title" class="study-section-title">2. Типы данных</h2><p>Тип данных определяет, какие значения может хранить переменная и какие операции можно над ними выполнять.</p>
+</ul><div class="study-note"><p><strong>Запомнить:</strong> выбирайте <code>val</code> по умолчанию, давайте понятные имена и указывайте тип явно в публичном API.</p></div><h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="tipy-dannyh" class="study-section" aria-labelledby="tipy-dannyh-title"><h2 id="tipy-dannyh-title" class="study-section-title">2. Типы данных</h2><p>Тип данных определяет, какие значения может хранить переменная и какие операции можно над ними выполнять.</p>
 <p>Kotlin — статически типизированный язык. Это означает, что типы переменных и выражений проверяются компилятором.</p>
 <p>Например, нельзя без преобразования присвоить строку переменной типа <code>Int</code>.</p><div class="study-note"><p><strong>Ключевая идея:</strong> тип — это контракт значения. Компилятор проверяет его до запуска программы и помогает избежать ошибок.</p></div><div class="study-code-wrap"><div class="study-code-bar"><span class="study-code-lang">kotlin</span><button type="button" class="study-copy" aria-label="Копировать код" title="Копировать"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-3.5 w-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><pre class="study-code"><code class="hljs language-kotlin"><span class="hljs-keyword">val</span> age: <span class="hljs-built_in">Int</span> = <span class="hljs-number">25</span>
 
@@ -880,7 +880,7 @@ println(value.equals(<span class="hljs-string">&quot;Kotlin&quot;</span>))
 <li><strong>Логическое значение</strong> — <code>Boolean</code></li>
 <li><strong>Массив</strong> — <code>Array&lt;T&gt;</code> или <code>IntArray</code></li>
 <li><strong>Отсутствие значения</strong> — <code>Unit</code></li>
-</ul><div class="study-note"><p><strong>Запомнить:</strong> не используйте <code>Float</code> без причины, не забывайте про переполнение целых чисел и предпочитайте <code>toIntOrNull()</code> при работе с внешним вводом.</p></div></section><section id="uslovnye-konstruktsii" class="study-section" aria-labelledby="uslovnye-konstruktsii-title"><h2 id="uslovnye-konstruktsii-title" class="study-section-title">3. Условные конструкции</h2><p>Условные конструкции позволяют программе выбирать разные действия в зависимости от текущих данных.</p>
+</ul><div class="study-note"><p><strong>Запомнить:</strong> не используйте <code>Float</code> без причины, не забывайте про переполнение целых чисел и предпочитайте <code>toIntOrNull()</code> при работе с внешним вводом.</p></div><h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="uslovnye-konstruktsii" class="study-section" aria-labelledby="uslovnye-konstruktsii-title"><h2 id="uslovnye-konstruktsii-title" class="study-section-title">3. Условные конструкции</h2><p>Условные конструкции позволяют программе выбирать разные действия в зависимости от текущих данных.</p>
 <p>Например, приложение может:</p>
 <ul class="study-list">
 <li>разрешить авторизацию, если пароль корректен;</li>
@@ -1235,7 +1235,7 @@ println(counter) <span class="hljs-comment">// 0</span>
 <li><strong>Логическое И</strong> — <code>&amp;&amp;</code></li>
 <li><strong>Логическое ИЛИ</strong> — <code>\|\|</code></li>
 <li><strong>Отрицание</strong> — <code>!</code></li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> использовать слишком длинные условия в <code>if</code>. Если условие не помещается в одну строку, вынесите его в функцию с понятным именем.</p></div></section><section id="tsikly" class="study-section" aria-labelledby="tsikly-title"><h2 id="tsikly-title" class="study-section-title">4. Циклы</h2><p>Циклы позволяют многократно выполнять один и тот же блок кода.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> использовать слишком длинные условия в <code>if</code>. Если условие не помещается в одну строку, вынесите его в функцию с понятным именем.</p></div><h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="tsikly" class="study-section" aria-labelledby="tsikly-title"><h2 id="tsikly-title" class="study-section-title">4. Циклы</h2><p>Циклы позволяют многократно выполнять один и тот же блок кода.</p>
 <p>Они применяются, когда необходимо:</p>
 <ul class="study-list">
 <li>обработать все элементы коллекции;</li>
@@ -1620,7 +1620,7 @@ println(numbers) <span class="hljs-comment">// [1, 3, 5]</span>
 <li><strong>Цикл минимум один раз</strong> — <code>do { ... } while (cond)</code></li>
 <li><strong>Выход из цикла</strong> — <code>break</code></li>
 <li><strong>Пропуск итерации</strong> — <code>continue</code></li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> изменять коллекцию во время её перебора. Если нужно удалить элементы, сначала соберите их, а затем измените коллекцию отдельно.</p></div></section><section id="funktsii" class="study-section" aria-labelledby="funktsii-title"><h2 id="funktsii-title" class="study-section-title">5. Функции</h2><p>Функция — именованный блок кода, который выполняет определённую задачу.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> изменять коллекцию во время её перебора. Если нужно удалить элементы, сначала соберите их, а затем измените коллекцию отдельно.</p></div><h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="funktsii" class="study-section" aria-labelledby="funktsii-title"><h2 id="funktsii-title" class="study-section-title">5. Функции</h2><p>Функция — именованный блок кода, который выполняет определённую задачу.</p>
 <p>Функции позволяют разделять большую программу на небольшие логические части, повторно использовать код и уменьшать дублирование.</p>
 <p>Например, вместо того чтобы каждый раз самостоятельно вычислять итоговую цену заказа, можно вынести расчёт в отдельную функцию.</p><div class="study-note"><p><strong>Ключевая идея:</strong> хорошая функция делает одно понятное действие, имеет осмысленное имя и явный результат.</p></div><h3 id="obyavlenie-i-vyzov-funktsiy" class="study-subtitle">5.1. Объявление и вызов функций</h3>
 <p>Для объявления функции используется ключевое слово <code>fun</code>.</p>
@@ -1966,7 +1966,7 @@ printNumbers(*values.toTypedArray())
 <li><strong>Именованный аргумент</strong> — <code>f(y = 10)</code></li>
 <li><strong>Произвольное количество аргументов</strong> — <code>fun f(vararg items: String)</code></li>
 <li><strong>Передача массива</strong> — <code>f(*array)</code></li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> делать функцию слишком длинной. Если функция не помещается на один экран, разбейте её на несколько функций с понятными именами.</p></div></section><section id="oop-osnovy" class="study-section" aria-labelledby="oop-osnovy-title"><h2 id="oop-osnovy-title" class="study-section-title">6. ООП: основы</h2><p>Объектно-ориентированное программирование (ООП) — подход к разработке, в котором программа строится из объектов, объединяющих данные и поведение.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> делать функцию слишком длинной. Если функция не помещается на один экран, разбейте её на несколько функций с понятными именами.</p></div><h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="oop-osnovy" class="study-section" aria-labelledby="oop-osnovy-title"><h2 id="oop-osnovy-title" class="study-section-title">6. ООП: основы</h2><p>Объектно-ориентированное программирование (ООП) — подход к разработке, в котором программа строится из объектов, объединяющих данные и поведение.</p>
 <p>Вместо того чтобы хранить все данные отдельно и выполнять над ними произвольные операции, можно создать сущности, которые отвечают за собственное состояние и связанные с ним действия.</p>
 <p>Например, в приложении для обучения могут существовать:</p>
 <ul class="study-list">
@@ -2598,7 +2598,7 @@ cashService.checkout(<span class="hljs-number">200.0</span>)
 <li><strong>Композиция</strong> — «имеет»</li>
 <li><strong>Интерфейс</strong> — Контракт поведения</li>
 <li><strong>Инкапсуляция</strong> — Скрытие внутреннего состояния</li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> использовать наследование там, где достаточно композиции. Наследование делает классы жёстко связанными и усложняет изменения.</p></div></section><section id="kollektsii" class="study-section" aria-labelledby="kollektsii-title"><h2 id="kollektsii-title" class="study-section-title">7. Коллекции</h2><p>Коллекции — структуры данных, которые позволяют хранить и обрабатывать группы элементов.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> использовать наследование там, где достаточно композиции. Наследование делает классы жёстко связанными и усложняет изменения.</p></div><h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="kollektsii" class="study-section" aria-labelledby="kollektsii-title"><h2 id="kollektsii-title" class="study-section-title">7. Коллекции</h2><p>Коллекции — структуры данных, которые позволяют хранить и обрабатывать группы элементов.</p>
 <p>В реальных приложениях почти всегда приходится работать с наборами данных:</p>
 <ul class="study-list">
 <li>списком пользователей;</li>
@@ -3071,7 +3071,8 @@ users.remove(<span class="hljs-number">2</span>)
 <li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю разницу между <code>find</code>, <code>first</code> и <code>firstOrNull</code>.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Умею использовать <code>any</code> и <code>all</code>.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Могу выбрать коллекцию под конкретную задачу.</li>
-</ul></section><section id="obrabotka-oshibok" class="study-section" aria-labelledby="obrabotka-oshibok-title"><h2 id="obrabotka-oshibok-title" class="study-section-title">8. Обработка ошибок</h2><p>Во время выполнения программы могут возникать ситуации, когда операция не может быть выполнена корректно.</p>
+</ul>
+<h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="obrabotka-oshibok" class="study-section" aria-labelledby="obrabotka-oshibok-title"><h2 id="obrabotka-oshibok-title" class="study-section-title">8. Обработка ошибок</h2><p>Во время выполнения программы могут возникать ситуации, когда операция не может быть выполнена корректно.</p>
 <p>Например:</p>
 <ul class="study-list">
 <li>пользователь ввёл неправильные данные;</li>
@@ -3602,7 +3603,7 @@ println(message)
 <li><strong>Значение по умолчанию</strong> — <code>value ?: default</code></li>
 <li><strong>Безопасное преобразование</strong> — <code>text.toIntOrNull()</code></li>
 <li><strong>Результат операции</strong> — <code>Result&lt;T&gt;</code></li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> перехватывать <code>Throwable</code> или <code>Exception</code> слишком рано. Перехватывайте только те ошибки, которые действительно можете обработать.</p></div></section><section id="osnovy-algoritmov" class="study-section" aria-labelledby="osnovy-algoritmov-title"><h2 id="osnovy-algoritmov-title" class="study-section-title">9. Основы алгоритмов</h2><p>Алгоритм — последовательность действий, которая приводит к решению определённой задачи.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> перехватывать <code>Throwable</code> или <code>Exception</code> слишком рано. Перехватывайте только те ошибки, которые действительно можете обработать.</p></div><h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="osnovy-algoritmov" class="study-section" aria-labelledby="osnovy-algoritmov-title"><h2 id="osnovy-algoritmov-title" class="study-section-title">9. Основы алгоритмов</h2><p>Алгоритм — последовательность действий, которая приводит к решению определённой задачи.</p>
 <p>В программировании алгоритмы используются постоянно:</p>
 <ul class="study-list">
 <li>поиск пользователя;</li>
@@ -4143,7 +4144,7 @@ println(numbers) <span class="hljs-comment">// [1, 2, 3, 5, 8]</span>
 <li><strong>Линейный поиск</strong> — Проверка каждого элемента по очереди</li>
 <li><strong>Сортировка</strong> — Упорядочивание элементов</li>
 <li><strong>Базовые операции</strong> — <code>filter</code>, <code>map</code>, <code>find</code>, <code>any</code>, <code>all</code></li>
-</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> оптимизировать код до того, как измерили реальную проблему. Сначала сделайте решение понятным, затем улучшайте узкие места.</p></div></section><section id="itogovaya-samoproverka-kategorii" class="study-section" aria-labelledby="itogovaya-samoproverka-kategorii-title"><h2 id="itogovaya-samoproverka-kategorii-title" class="study-section-title">Итоговая самопроверка категории</h2><p>После изучения всех девяти тем Junior-разработчик должен уметь самостоятельно написать небольшую программу, которая получает данные, обрабатывает их, принимает решения, использует функции и классы, хранит информацию в коллекциях и корректно обрабатывает ошибки.</p>
+</ul><div class="study-note study-note--warn"><p><strong>Частая ошибка:</strong> оптимизировать код до того, как измерили реальную проблему. Сначала сделайте решение понятным, затем улучшайте узкие места.</p></div><h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="itogovaya-samoproverka-kategorii" class="study-section" aria-labelledby="itogovaya-samoproverka-kategorii-title"><h2 id="itogovaya-samoproverka-kategorii-title" class="study-section-title">Итоговая самопроверка категории</h2><p>После изучения всех девяти тем Junior-разработчик должен уметь самостоятельно написать небольшую программу, которая получает данные, обрабатывает их, принимает решения, использует функции и классы, хранит информацию в коллекциях и корректно обрабатывает ошибки.</p>
 <h3 class="study-subtitle">Общие знания</h3>
 <ul class="study-checklist">
 <li class="study-check-item"><input type="checkbox" disabled=""/> Умею объявлять переменные и константы.</li>

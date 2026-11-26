@@ -7,4 +7,6 @@ export interface QuizQuestion {
   topic: string;
   question: string;
   rubric: string;
+  priority?: number;
+  source?: "manual" | "study";
 }

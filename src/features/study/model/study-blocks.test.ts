@@ -85,6 +85,7 @@ describe("реестр блоков учебных материалов", () => 
   it("возвращает класс по виду блока", () => {
     expect(blockClass("note")).toBe("study-note");
     expect(blockClass("cards")).toBe("study-cards");
+    expect(blockClass("qaItem")).toBe("study-qa-item");
     expect(blockClass("table")).toBe("study-table");
   });
 

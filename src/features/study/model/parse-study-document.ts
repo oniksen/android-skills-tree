@@ -7,6 +7,8 @@
  * every text block is handed to react-markdown untouched.
  */
 
+import { getStudyInterviewTopics } from "@/data/study-interview-questions";
+
 export interface StudyDocumentMeta {
   title: string;
   level: string;
@@ -21,12 +23,18 @@ export interface StudyCardItem {
   content: string;
 }
 
+export interface StudyQaItem {
+  question: string;
+  answer: string;
+}
+
 export type StudyNoteVariant = "note" | "warn";
 
 export type StudySectionBlock =
   | { type: "markdown"; content: string }
   | { type: "cards"; items: StudyCardItem[] }
-  | { type: "note"; variant: StudyNoteVariant; content: string };
+  | { type: "note"; variant: StudyNoteVariant; content: string }
+  | { type: "qa"; items: StudyQaItem[] };
 
 export interface StudySection {
   id: string;
@@ -43,13 +51,16 @@ export interface StudyDocument {
 
 export interface ParseStudyDocumentOptions {
   grade?: string;
+  materialId?: string;
 }
 
 const HEADING = /^(#{1,6})\s+(.+?)\s*$/;
 const META_LINE = /^\*\*([^*:]{1,40}):\*\*\s*(.*?)\s*$/;
 const FENCE = /^\s*(`{3,}|~{3,})/;
 const CARDS_OPEN = /^:::cards\s*$/;
+const QA_OPEN = /^:::qa\s*$/;
 const CARDS_CLOSE = /^:::\s*$/;
+const QA_ITEM = /^\*\*(.+?)\*\*\s*(?:[—–:-]\s*)?(.*)$/;
 const NOTE_MARKER = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/i;
 const CONTENTS_TITLE = /^(содержание|оглавление|contents)$/i;
 const SOURCES_TITLE = /источник/i;
@@ -202,6 +213,40 @@ function parseCardItems(lines: string[]): StudyCardItem[] {
   return items.filter((item) => item.title || item.content);
 }
 
+/**
+ * Parses one `:::qa` directive: `- **Question?** — answer` per line.
+ *
+ * An item without a bold question or without an answer is dropped, so a bare
+ * question never reaches the page as an empty collapsible block. Continuation
+ * lines are joined into the answer, like card bodies.
+ */
+function parseQaItems(lines: string[]): StudyQaItem[] {
+  const items: StudyQaItem[] = [];
+  let current: StudyQaItem | null = null;
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) continue;
+
+    if (line.startsWith("- ")) {
+      if (current) items.push(current);
+      const body = line.slice(2).trim();
+      const match = body.match(QA_ITEM);
+      current = match
+        ? { question: match[1].trim(), answer: match[2].trim() }
+        : { question: "", answer: body };
+      continue;
+    }
+
+    if (current) {
+      current.answer = `${current.answer} ${line}`.trim();
+    }
+  }
+
+  if (current) items.push(current);
+  return items.filter((item) => item.question && item.answer);
+}
+
 function parseNote(lines: string[]): StudySectionBlock {
   let variant: StudyNoteVariant = "note";
   let body = lines;
@@ -276,7 +321,7 @@ function findDirectiveEnd(lines: string[], from: number): number {
 
 /**
  * Splits a section body into typed blocks. Everything that is not a
- * `:::cards` directive or a blockquote stays raw Markdown.
+ * `:::cards` / `:::qa` directive or a blockquote stays raw Markdown.
  */
 export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
   const lines = normalizeDocumentMarkdown(markdown).split("\n");
@@ -298,6 +343,23 @@ export function parseStudySectionBody(markdown: string): StudySectionBlock[] {
     if (marker) {
       fence = toggleFence(fence, marker);
       buffer.push(line);
+      index += 1;
+      continue;
+    }
+
+    if (!fence && QA_OPEN.test(line)) {
+      const end = findDirectiveEnd(lines, index + 1);
+      if (end !== -1) {
+        flushMarkdown();
+        blocks.push({
+          type: "qa",
+          items: parseQaItems(lines.slice(index + 1, end)),
+        });
+        index = end + 1;
+        continue;
+      }
+
+      // Unclosed directive: drop the opener, keep the body as ordinary Markdown.
       index += 1;
       continue;
     }
@@ -419,7 +481,39 @@ export function parseStudyDocument(
     };
   });
 
-  return { meta, sections: buildSections(lines, ranges) };
+  const document: StudyDocument = {
+    meta,
+    sections: buildSections(lines, ranges),
+  };
+  attachStudyInterviewQuestions(document, options);
+  return document;
+}
+
+function attachStudyInterviewQuestions(
+  document: StudyDocument,
+  options: ParseStudyDocumentOptions,
+): void {
+  if (!options?.materialId) return;
+  const topics = getStudyInterviewTopics(options.materialId);
+  if (!topics.length) return;
+  const qaSections = document.sections.filter((section) =>
+    section.blocks.some(
+      (block) =>
+        block.type === "markdown" &&
+        /Вопросы на собеседовании/i.test(block.content),
+    ),
+  );
+  qaSections.forEach((section, index) => {
+    const topic = topics[index];
+    if (!topic) return;
+    section.blocks.push({
+      type: "qa",
+      items: topic.questions.map((item) => ({
+        question: item.question,
+        answer: item.answer,
+      })),
+    });
+  });
 }
 
 export function studyEyebrow(meta: StudyDocumentMeta): string {

@@ -184,7 +184,8 @@
 <li class="study-check-item"><input type="checkbox" disabled=""/> Понимаю структуру AAA и применяю её.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Умею тестировать suspend-функции через <code>runTest</code>.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Могу написать тест для ViewModel с фейковым репозиторием.</li>
-</ul></section><section id="espresso-basics" class="study-section" aria-labelledby="espresso-basics-title"><h2 id="espresso-basics-title" class="study-section-title">2. Espresso Basics</h2><p>Espresso — фреймворк для UI-тестирования Android-приложений, работающих на классических View (XML-разметка, Fragment, Activity). Он синхронизируется с главным потоком UI и автоматически ждёт завершения операций, что делает тесты стабильнее ручных кликов.</p>
+</ul>
+<h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="espresso-basics" class="study-section" aria-labelledby="espresso-basics-title"><h2 id="espresso-basics-title" class="study-section-title">2. Espresso Basics</h2><p>Espresso — фреймворк для UI-тестирования Android-приложений, работающих на классических View (XML-разметка, Fragment, Activity). Он синхронизируется с главным потоком UI и автоматически ждёт завершения операций, что делает тесты стабильнее ручных кликов.</p>
 <p>Важно: на современных проектах, использующих Jetpack Compose, Espresso применяют только к legacy-экранам на View. Для Compose-экранов используют Compose UI Test (<code>compose-ui-test</code>), где взаимодействие строится вокруг семантического дерева, а не View-иерархии. Espresso не видит Compose-компоненты, поэтому попытка применить его к Compose-экрану приведёт к падению теста с ошибкой «view not found». Если проект смешанный (View + Compose), Espresso покрывает старые экраны, а Compose Test — новые.</p>
 <h3 id="naznachenie-espresso" class="study-subtitle">2.1. Назначение Espresso</h3>
 <p>Espresso нужен, чтобы автоматически проверять, что экран отображает нужные элементы, реагирует на действия пользователя и переходит между состояниями. Тест запускается на эмуляторе или реальном устройстве и выполняет реальные жесты.</p>
@@ -318,7 +319,8 @@ androidTestImplementation(<span class="hljs-string">&quot;androidx.test.espresso
 <li class="study-check-item"><input type="checkbox" disabled=""/> Могу выполнить действие и проверку результата.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, зачем нужны Idling Resources.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Могу настроить и запустить инструментальный тест.</li>
-</ul></section><section id="test-doubles-i-mockk" class="study-section" aria-labelledby="test-doubles-i-mockk-title"><h2 id="test-doubles-i-mockk-title" class="study-section-title">3. Test Doubles и MockK Basics</h2><p>Тестируемый класс часто зависит от других компонентов: репозитория, API, базы данных, SharedPreferences. Чтобы проверить логику изолированно, зависимости подменяют тестовыми дублёрами (test doubles). Это позволяет контролировать входы и выходы зависимостей и не тащить в тест тяжёлую инфраструктуру.</p>
+</ul>
+<h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="test-doubles-i-mockk" class="study-section" aria-labelledby="test-doubles-i-mockk-title"><h2 id="test-doubles-i-mockk-title" class="study-section-title">3. Test Doubles и MockK Basics</h2><p>Тестируемый класс часто зависит от других компонентов: репозитория, API, базы данных, SharedPreferences. Чтобы проверить логику изолированно, зависимости подменяют тестовыми дублёрами (test doubles). Это позволяет контролировать входы и выходы зависимостей и не тащить в тест тяжёлую инфраструктуру.</p>
 <h3 id="naznachenie-test-doubles" class="study-subtitle">3.1. Назначение Test Doubles</h3>
 <p>Test double — объект, который подменяет реальную зависимость в тесте. Цели: изоляция (тест не зависит от сети/БД), скорость (нет реальных вызовов), детерминированность (контролируемый результат), возможность проверить взаимодействие (был ли вызван метод и с какими аргументами).</p>
 <p>Без дублёров unit-тест превращается в интеграционный: он будет падать из-за сети, требовать эмулятор и выполняться секунды. Дублёры возвращают логику в центр внимания.</p>
@@ -473,7 +475,8 @@ testImplementation(<span class="hljs-string">&quot;org.jetbrains.kotlinx:kotlinx
 <li class="study-check-item"><input type="checkbox" disabled=""/> Умею проверить вызов через <code>verify</code>.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Знаю, когда выбрать Fake, а когда Mock.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Могу захватить аргумент через <code>slot</code> и проверить его поля.</li>
-</ul></section><section id="itogovaya-samoproverka" class="study-section" aria-labelledby="itogovaya-samoproverka-title"><h2 id="itogovaya-samoproverka-title" class="study-section-title">Итоговая самопроверка категории</h2><ul class="study-checklist">
+</ul>
+<h3 class="study-subtitle">Вопросы на собеседовании</h3></section><section id="itogovaya-samoproverka" class="study-section" aria-labelledby="itogovaya-samoproverka-title"><h2 id="itogovaya-samoproverka-title" class="study-section-title">Итоговая самопроверка категории</h2><ul class="study-checklist">
 <li class="study-check-item"><input type="checkbox" disabled=""/> Умею писать unit-тесты на JUnit с assertions и AAA-структурой.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Могу тестировать suspend-функции через <code>runTest</code>.</li>
 <li class="study-check-item"><input type="checkbox" disabled=""/> Умею писать тесты для ViewModel с тестовыми дублёрами.</li>

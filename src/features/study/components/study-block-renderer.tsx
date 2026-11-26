@@ -5,6 +5,7 @@ import type { StudySectionBlock } from "../model/parse-study-document";
 import StudyCards from "./StudyCards";
 import StudyNote from "./StudyNote";
 import StudyProse from "./StudyProse";
+import StudyQa from "./StudyQa";
 
 type BlockOf<Kind extends StudySectionBlock["type"]> = Extract<
   StudySectionBlock,
@@ -36,6 +37,9 @@ export const STUDY_BLOCK_RENDERERS = {
   ),
   note: ({ block }: StudyBlockRenderProps<"note">) => (
     <StudyNote content={block.content} variant={block.variant} />
+  ),
+  qa: ({ block }: StudyBlockRenderProps<"qa">) => (
+    <StudyQa items={block.items} />
   ),
 } satisfies {
   [Kind in StudySectionBlock["type"]]: ComponentType<

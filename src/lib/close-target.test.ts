@@ -40,7 +40,6 @@ describe("closeTargetFor", () => {
       "/dashboard",
       "/tree/junior",
       "/tree/junior/skill/junior-kotlin-sintaks",
-      "/quiz",
     ]) {
       expect(closeTargetFor(path), path).toBeNull();
     }

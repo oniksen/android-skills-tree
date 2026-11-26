@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gradeAnswer } from "@/features/quiz/actions/grade-answer";
+import { interviewTurn } from "@/features/quiz/actions/interview-turn";
 import { allQuizQuestions, getGradeLevelOrder } from "@/data/quiz-questions";
-import { getSkillById } from "@/data";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { levels } from "@/data/levels";
 import { useUserSettings } from "@/hooks/useUserSettings";
@@ -18,6 +17,7 @@ type ChatMessage = {
   role: "system" | "user" | "assistant";
   text: string;
   grade?: string;
+  priority?: number;
   score?: number;
   reason?: string;
 };
@@ -42,16 +42,34 @@ export default function QuizConsole() {
 
   const userLevelOrder =
     levels.find((l) => l.id === (progress?.currentLevelId ?? "junior"))?.levelOrder ?? 1;
+  const hasCompletedSubtopicForSkill = (skillId: string) => {
+    const assessment = assessmentMap[skillId];
+    return Boolean(assessment?.subtopics && Object.values(assessment.subtopics).some(Boolean));
+  };
+
   const allowedQuestions = allQuizQuestions.filter(
-    (q) => getGradeLevelOrder(q.grade) <= userLevelOrder,
+    (q) =>
+      getGradeLevelOrder(q.grade) <= userLevelOrder &&
+      hasCompletedSubtopicForSkill(q.skillId),
   );
   const questionPool = allowedQuestions.length > 0 ? allowedQuestions : allQuizQuestions;
 
+  function pickWeightedQuestion(pool: typeof allQuizQuestions) {
+    const weights = pool.map((q) => Math.max(1, 6 - (q.priority ?? 3)));
+    const total = weights.reduce((a, b) => a + b, 0);
+    let r = Math.random() * total;
+    for (let i = 0; i < pool.length; i++) {
+      r -= weights[i];
+      if (r <= 0) return pool[i];
+    }
+    return pool[pool.length - 1];
+  }
+
   const [question, setQuestion] = useState(
-    () => questionPool[Math.floor(Math.random() * questionPool.length)],
+    () => pickWeightedQuestion(questionPool),
   );
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
-    { id: 1, role: "system", text: question.question, grade: question.grade },
+    { id: 1, role: "system", text: question.question, grade: question.grade, priority: question.priority },
   ]);
   const [input, setInput] = useState("");
   const [apiKey, setApiKey] = useState("");
@@ -88,14 +106,18 @@ export default function QuizConsole() {
   async function handleSend() {
     if (status !== "idle" || !input.trim() || limitReached) return;
     const userText = input.trim();
+    const history = messages
+      .filter((m) => m.role === "user" || m.role === "assistant")
+      .map((m) => ({ role: m.role as "user" | "assistant", text: m.text }));
     setMessages((prev) => [...prev, { id: Date.now(), role: "user", text: userText }]);
     setInput("");
     setStatus("sending");
     setError(null);
     try {
-      const r = await gradeAnswer({
+      const r = await interviewTurn({
         question: question.question,
         rubric: question.rubric,
+        history,
         answer: userText,
         apiKey: savedKey || apiKey || undefined,
       });
@@ -104,9 +126,9 @@ export default function QuizConsole() {
         {
           id: Date.now() + 1,
           role: "assistant",
-          text: `score: ${r.percentile}%`,
-          score: r.percentile,
-          reason: r.reason || "ок",
+          text: r.reply,
+          score: r.score,
+          reason: r.score !== undefined ? `score: ${r.score}%` : undefined,
         },
       ]);
       setStatus("done");
@@ -119,10 +141,9 @@ export default function QuizConsole() {
   }
 
   function handleNewQuestion() {
-    const next =
-      questionPool[Math.floor(Math.random() * questionPool.length)];
+    const next = pickWeightedQuestion(questionPool);
     setQuestion(next);
-    setMessages([{ id: Date.now(), role: "system", text: next.question, grade: next.grade }]);
+    setMessages([{ id: Date.now(), role: "system", text: next.question, grade: next.grade, priority: next.priority }]);
     setInput("");
     setStatus("idle");
     setError(null);
@@ -140,22 +161,20 @@ export default function QuizConsole() {
   const lastAssistant = [...messages]
     .reverse()
     .find((message) => message.role === "assistant");
-  const skillName = getSkillById(question.skillId)?.name ?? "";
 
   const sessionPanel = (
     <QuizSessionPanel
       grade={question.grade}
       topic={question.topic}
-      skillName={skillName}
       used={used}
       limit={limit}
+      gradeTotal={allQuizQuestions.filter((q) => q.grade === question.grade).length}
       score={lastAssistant?.score}
       reason={lastAssistant?.reason}
       rubric={question.rubric}
       savedLast4={savedLast4}
       canAskNew={status === "done" && !limitReached}
       onNew={handleNewQuestion}
-      onExit={() => router.push("/tree/junior")}
     />
   );
 
@@ -201,6 +220,9 @@ export default function QuizConsole() {
           <span className="rounded border border-blue-500/40 bg-blue-500/10 px-1.5 py-0.5 text-blue-600">
             {question.grade}
           </span>
+          <span className="rounded border border-amber-500/40 bg-amber-500/10 px-1.5 py-0.5 text-amber-600">
+            приоритет {question.priority ?? 3}
+          </span>
           <span className="min-w-0 flex-1 truncate text-slate-400">
             {question.topic}
           </span>
@@ -221,6 +243,11 @@ export default function QuizConsole() {
                   {m.grade && (
                     <span className="mr-2 inline-block align-middle rounded border border-blue-500/40 bg-blue-500/10 px-1.5 py-0.5 font-mono text-xs text-blue-600">
                       {m.grade}
+                    </span>
+                  )}
+                  {m.priority !== undefined && (
+                    <span className="mr-2 inline-block align-middle rounded border border-amber-500/40 bg-amber-500/10 px-1.5 py-0.5 font-mono text-xs text-amber-600">
+                      приоритет {m.priority}
                     </span>
                   )}
                   <span className="text-slate-300">{m.text}</span>
@@ -245,7 +272,7 @@ export default function QuizConsole() {
           {error && <div className="text-xs text-red-400">! {error}</div>}
         </div>
 
-        <div className="mx-4 mb-[max(env(safe-area-inset-bottom),0.75rem)] mt-3 rounded-lg border border-slate-700/70 bg-slate-900/40 p-3 xl:mb-3">
+        <div className="mx-4 mb-[max(env(safe-area-inset-bottom),0.75rem)] mt-3 rounded-lg border border-slate-700/70 bg-slate-900/40 p-3 xl:mb-0">
           {savedKey ? (
             <div className="mb-2 text-xs text-slate-500">key: ...{savedLast4}</div>
           ) : (

@@ -18,17 +18,17 @@ const levelColors: Record<string, { text: string; shadow: string; border: string
   middle: {
     text: "text-blue-400",
     shadow: "shadow-[0_0_18px_rgba(59,130,246,0.35)]",
-    border: "border-blue-400/40",
+    border: "border-blue-500/40",
   },
   "strong-middle": {
     text: "text-purple-400",
     shadow: "shadow-[0_0_18px_rgba(139,92,246,0.35)]",
-    border: "border-purple-400/40",
+    border: "border-purple-500/40",
   },
   senior: {
     text: "text-amber-400",
     shadow: "shadow-[0_0_18px_rgba(245,158,11,0.35)]",
-    border: "border-amber-400/40",
+    border: "border-amber-500/40",
   },
 };
 
@@ -37,7 +37,7 @@ export default function LevelTabs({ levels }: { levels: Level[] }) {
   const currentSlug = (params?.slug as string) || levels[0]?.slug;
 
   return (
-    <div className="flex gap-2 flex-nowrap overflow-x-auto nav-md:flex-wrap nav-md:overflow-x-visible">
+    <div className="flex gap-2 flex-nowrap overflow-x-auto nav-md:flex-wrap nav-md:overflow-x-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-2 min-h-[2.75rem] items-center">
       {[...levels]
         .sort((a, b) => a.levelOrder - b.levelOrder)
         .map((level) => {
@@ -55,7 +55,7 @@ export default function LevelTabs({ levels }: { levels: Level[] }) {
                 <motion.span
                   layoutId="level-tab"
                   className={`absolute inset-0 rounded-md border ${color.border} bg-slate-900`}
-                  transition={{ type: "spring", stiffness: 520, damping: 40 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   initial={false}
                 />
               )}

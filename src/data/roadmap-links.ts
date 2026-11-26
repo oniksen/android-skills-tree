@@ -50,8 +50,11 @@ export const ROADMAP_LINKS: RoadmapLink[] = [
   { from: "middle-networking-retrofit", to: "middle-networking-graphql", kind: "recommends" },
   { from: "middle-tools-kts", to: "middle-tools-lint", kind: "recommends" },
   { from: "middle-tools-crashlytics", to: "middle-tools-google-play-services", kind: "recommends" },
+  { from: "middle-kotlin-collections", to: "middle-kotlin-java-interop", kind: "recommends" },
+  { from: "middle-kotlin-java-interop", to: "middle-legacy-android-code", kind: "recommends" },
   // Strong Middle
   { from: "strong-arch-multi", to: "strong-arch-convention-plugins", kind: "requires" },
+  { from: "strong-arch-multi", to: "strong-arch-java-migration", kind: "recommends" },
   // Senior
   { from: "senior-platform-art", to: "senior-platform-ai", kind: "recommends" },
 ];

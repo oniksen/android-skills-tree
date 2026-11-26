@@ -166,6 +166,9 @@ setFragmentResultListener("request_key") { _, bundle ->
 - [ ] Почему нельзя передавать аргументы через конструктор Fragment?
 - [ ] Когда использовать `commit()` и когда `commitNow()`?
 
+### Вопросы на собеседовании
+
+
 ## 2. Navigation Component {#navigation-component}
 
 Navigation Component — библиотека Jetpack для навигации между экранами (destinations) по декларативному графу. Она заменяет ручное управление FragmentTransaction и back stack, давая единый способ навигации, передачи аргументов, deep links и интеграции с Bottom Navigation. Компонент состоит из трёх частей: Navigation Graph (XML), NavHost (контейнер) и NavController (движок навигации).
@@ -340,6 +343,9 @@ NavigationUI.setupWithNavController(bottomNav, navController)
 - [ ] Как Safe Args предотвращает ошибки?
 - [ ] Чем `navigateUp()` отличается от `popBackStack()`?
 
+### Вопросы на собеседовании
+
+
 ## 3. Service {#service}
 
 Service — компонент приложения для выполнения операций без пользовательского интерфейса: воспроизведение музыки, синхронизация данных, отслеживание местоположения, загрузка файлов. Service работает в главном потоке процесса (если не создать отдельный поток), поэтому тяжёлую работу нужно выносить в корутины или фоновые потоки. Service не создаёт окна и не взаимодействует с пользователем напрямую — для этого нужен Foreground Service с уведомлением.
@@ -495,6 +501,9 @@ WorkManager — рекомендованный API для отложенной �
 - [ ] Какие типы Foreground Service есть в Android 14+?
 - [ ] Когда выбрать WorkManager вместо Service?
 
+### Вопросы на собеседовании
+
+
 ## 4. BroadcastReceiver {#broadcastreceiver}
 
 BroadcastReceiver — компонент для приёма широковещательных сообщений (broadcasts) от системы или других приложений. Используется для реакции на системные события: загрузка завершена, изменение сети, низкий заряд батареи, подключение наушников. BroadcastReceiver не имеет UI и живёт только на время обработки сообщения.
@@ -626,6 +635,9 @@ override fun onReceive(context: Context, intent: Intent) {
 - [ ] Что изменилось с implicit broadcasts в Android 8.0?
 - [ ] Зачем указывать exported?
 
+### Вопросы на собеседовании
+
+
 ## 5. ContentProvider Basics {#contentprovider-basics}
 
 ContentProvider — компонент для предоставления доступа к структурированным данным приложения другим приложениям или внутри своего. Это абстракция над хранилищем (БД, файлы) с единым интерфейсом через URI. Системные провайдеры (контакты, медиа, календарь) доступны через ContentResolver без написания собственного провайдера. В современных приложениях собственные ContentProvider создаются редко; чаще используют Room и делятся данными через FileProvider или Photo Picker.
@@ -743,6 +755,9 @@ Photo Picker не требует `READ_EXTERNAL_STORAGE`/`READ_MEDIA_*`, что 
 - [ ] Зачем нужен Photo Picker?
 - [ ] Какие разрешения на медиа нужны на Android 13+?
 - [ ] Почему exported-провайдер опасен?
+
+### Вопросы на собеседовании
+
 
 ## Итоговая самопроверка категории {#itogovaya-samoproverka}
 
