@@ -14,7 +14,6 @@ const props = {
   savedLast4: "ab12",
   canAskNew: true,
   onNew: () => {},
-  onExit: () => {},
 };
 
 describe("QuizSessionPanel", () => {
@@ -26,7 +25,6 @@ describe("QuizSessionPanel", () => {
     expect(html).toContain("3/5");
     expect(html).toContain("72");
     expect(html).toContain("[new]");
-    expect(html).toContain("[exit]");
     expect(html).toContain("Что оценивается");
   });
 

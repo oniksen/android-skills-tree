@@ -23,6 +23,7 @@ for (const material of Object.values(STUDY_MATERIALS)) {
   it(`${material.id}: структура документа стабильна`, () => {
     const document = parseStudyDocument(material.content, {
       grade: material.grade,
+      materialId: material.id,
     });
     expect(document).not.toBeNull();
     expect(structure(document!)).toMatchSnapshot();

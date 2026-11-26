@@ -168,15 +168,6 @@ setFragmentResultListener("request_key") { _, bundle ->
 
 ### Вопросы на собеседовании
 
-:::qa
-- **Чем `viewLifecycleOwner` отличается от жизненного цикла самого Fragment?** — `viewLifecycleOwner` живёт только пока есть View — от `onCreateView` до `onDestroyView`, а Fragment может оставаться в back stack и после этого. Наблюдателей LiveData и корутины для UI привязывают к `viewLifecycleOwner`, иначе они продолжат работать с уничтоженной View и вызовут утечку или крах.
-- **Почему binding надо обнулять в `onDestroyView()`?** — View в `onDestroyView` уничтожается, а сам Fragment ещё жив, поэтому оставленная ссылка на binding удерживает мёртвую View и ведёт к утечке памяти. После `_binding = null` обращение к `binding` даст `NullPointerException`, что вовремя покажет ошибку.
-- **Чем `Fragment Result API` лучше прямых ссылок между Fragment'ами?** — `setFragmentResult()` и `setFragmentResultListener()` связывают отправителя и получателя через ключ вместо прямых ссылок друг на друга и на Activity. Это снижает связность и риск утечек, а результат доставляется через общий `FragmentManager`, даже если экраны не знают о существовании друг друга.
-- **В чём разница между `childFragmentManager` и `parentFragmentManager`?** — `childFragmentManager` управляет вложенными Fragment'ами внутри текущего, а `parentFragmentManager` — менеджером родителя (или Activity для корневого Fragment). Неверный выбор приведёт к транзакции в чужом контейнере и неправильному back stack.
-- **Почему нельзя передавать данные через конструктор Fragment?** — При восстановлении система создаёт Fragment через рефлексию пустым конструктором, поэтому конструктор с параметрами упадёт после поворота экрана или смерти процесса. Данные кладут в `arguments` (`Bundle`), обычно через фабричный метод `newInstance()`.
-- **Чем `commit()` отличается от `commitNow()`?** — `commit()` ставит `FragmentTransaction` в очередь и выполняет её асинхронно на главном потоке, поддерживая `addToBackStack()`. `commitNow()` выполняется синхронно, но не позволяет добавить транзакцию в back stack.
-- **Что происходит со View Fragment при `replace()` и помещении в back stack?** — `replace()` удаляет предыдущий Fragment из контейнера и вызывает у него `onDestroyView()`, но не `onDestroy` — сам Fragment остаётся в back stack. Поэтому состояние, переживающее возврат, хранят в ViewModel или `arguments`, а не в полях View.
-:::
 
 ## 2. Navigation Component {#navigation-component}
 
@@ -354,15 +345,6 @@ NavigationUI.setupWithNavController(bottomNav, navController)
 
 ### Вопросы на собеседовании
 
-:::qa
-- **Зачем нужен граф навигации вместо ручных `FragmentTransaction`?** — Граф в `res/navigation/` декларативно описывает экраны и переходы, а `NavController` берёт на себя back stack. Это убирает дублирование транзакций в коде и делает навигацию предсказуемой.
-- **Что дают type-safe маршруты и Safe Args?** — Плагин Safe Args генерирует классы `*Args` и `*Directions`, заменяя ручные ключи `Bundle`, поэтому опечатки и неверные типы ловятся на этапе компиляции. В Compose ту же роль играют сериализуемые объекты маршрутов вместо строковых путей.
-- **Как передать аргументы между экранами?** — Аргументы объявляются в графе тегом `<argument>` с типом, а значение передаётся через сгенерированный `*Directions`-класс или `Bundle`. Получатель читает их через `DetailsFragmentArgs.fromBundle(requireArguments())`.
-- **Чем `popUpTo` отличается от `navigate()`?** — `navigate()` добавляет destination в back stack, а `app:popUpTo` с `popUpToInclusive` на action, наоборот, выталкивает экраны из стека перед переходом. Так предотвращают накопление дубликатов, например возвращаясь к корневому экрану.
-- **Как работает deep link?** — В графе объявляется `<deepLink app:uri="...">`, а в манифесте Activity — `<intent-filter>` с действием `VIEW` и категорией `BROWSABLE`. `NavController` сам разбирает URI и открывает нужный destination с аргументами; явный deep link может прийти из `PendingIntent` уведомления.
-- **Чем `navigateUp()` отличается от `popBackStack()`?** — `navigateUp()` учитывает иерархию графа и работает как «Up», а `popBackStack()` просто снимает верхний destination как кнопка «Назад». На стартовом destination «Назад» завершает Activity.
-- **Зачем у `NavHostFragment` указывать `app:defaultNavHost="true"`?** — Флаг делает NavHost обработчиком системной кнопки «Назад», чтобы она управляла back stack графа. Без него навигация не перехватывает «Назад» и её придётся обрабатывать вручную.
-:::
 
 ## 3. Service {#service}
 
@@ -521,15 +503,6 @@ WorkManager — рекомендованный API для отложенной �
 
 ### Вопросы на собеседовании
 
-:::qa
-- **Чем started Service отличается от bound?** — Started Service запускается через `startService()` и живёт до `stopSelf()`/`stopService()`, даже если клиентов нет. Bound привязывается через `bindService()` и работает, пока есть хотя бы один клиент с `IBinder`; если Service и started, и bound, он уничтожается только после остановки и отключения всех клиентов.
-- **Почему с Android 8.0 запрещено запускать обычный Service в фоне?** — Background execution limits не дают фоновому приложению вызвать `startService()`: система бросит `IllegalStateException`. Это сделано ради экономии батареи, поэтому для заметной пользователю работы нужен Foreground Service, а для отложенной — WorkManager или JobScheduler.
-- **Когда выбрать WorkManager вместо Service?** — WorkManager подходит для отложенной гарантированной работы: она переживает перезагрузку и учитывает ограничения вроде сети и зарядки. Для длительной работы в реальном времени с индикацией (музыка, навигация) нужен Foreground Service, а для мгновенной короткой задачи — корутина в ViewModel.
-- **Зачем Foreground Service показывает уведомление?** — Уведомление делает длительную работу видимой пользователю и даёт ему возможность остановить её, такой Service система не убивает при нехватке памяти. Канал уведомлений обязателен с Android 8.0.
-- **Что нужно сделать после `startForegroundService()`?** — Примерно в течение 5 секунд нужно вызвать `startForeground()` с уведомлением, иначе система остановит приложение. На Android 14+ (API 34) дополнительно обязательны `android:foregroundServiceType` в манифесте и соответствующее разрешение.
-- **Как возвращаемое значение `onStartCommand()` влияет на перезапуск Service?** — `START_STICKY` перезапускает Service с null intent, `START_NOT_STICKY` не перезапускает, а `START_REDELIVER_INTENT` возвращает тот же intent. Выбор зависит от того, можно ли потерять команду при убийстве процесса.
-- **Выполняется ли код Service в фоновом потоке?** — Нет: по умолчанию колбэки Service идут в главном потоке процесса, поэтому тяжёлую работу выносят в корутины или отдельные потоки. Иначе главный поток блокируется и возникает ANR.
-:::
 
 ## 4. BroadcastReceiver {#broadcastreceiver}
 
@@ -664,15 +637,6 @@ override fun onReceive(context: Context, intent: Intent) {
 
 ### Вопросы на собеседовании
 
-:::qa
-- **Чем регистрация в манифесте отличается от динамической?** — Manifest-registered receiver может получить broadcast даже когда приложение не запущено, но с Android 8.0 большинство implicit broadcasts ему не доставляется. Динамическая регистрация через `registerReceiver()` работает только пока жив компонент и удобна для событий, актуальных во время работы приложения; её нужно снимать через `unregisterReceiver()`.
-- **Почему с Android 8.0 ограничены implicit broadcasts?** — Для экономии батареи система не доставляет фоновым приложениям большинство неявных broadcasts через манифест; исключения вроде `BOOT_COMPLETED` и `ACTION_LOCALE_CHANGED` перечислены в документации. Вместо них используют явные broadcasts, WorkManager, JobScheduler или foreground Service.
-- **Зачем при динамической регистрации указывать `RECEIVER_EXPORTED` или `RECEIVER_NOT_EXPORTED`?** — Начиная с Android 14 (targetSdk 34) флаг экспорта обязателен и явно определяет, может ли receiver получать сообщения от других приложений. Для внутренних событий используют `RECEIVER_NOT_EXPORTED`, чтобы не открывать receiver внешним приложениям.
-- **Что делает `goAsync()` и зачем вызывать `finish()`?** — `goAsync()` позволяет продолжить обработку broadcast в фоновом потоке после возврата из `onReceive()`, не блокируя главный. Работа должна закончиться вызовом `pendingResult.finish()`, иначе результат останется незавершённым и возможна утечка.
-- **Почему `onReceive()` должен быть быстрым?** — `onReceive()` вызывается в главном потоке, и система ожидает быстрого возврата: ориентир миллисекунды, жёсткий предел около 10 секунд. Сетевые запросы и тяжёлые вычисления прямо в нём грозят ANR, поэтому работу передают в WorkManager, Service или `goAsync()`.
-- **Чем `android:exported` отличается от флагов динамической регистрации?** — `android:exported` в манифесте определяет, может ли другое приложение отправить broadcast статическому receiver, и с Android 12 (API 31) атрибут обязателен при наличии `intent-filter`. Для динамических receiver ту же роль играют `RECEIVER_EXPORTED` и `RECEIVER_NOT_EXPORTED`.
-- **Почему для событий внутри приложения лучше `SharedFlow`/`StateFlow`, а не broadcasts?** — Они типобезопасны, быстрее и не зависят от ограничений ОС на broadcasts. `LocalBroadcastManager` устарел, а системные broadcasts для внутренних событий избыточны.
-:::
 
 ## 5. ContentProvider Basics {#contentprovider-basics}
 
@@ -794,15 +758,6 @@ Photo Picker не требует `READ_EXTERNAL_STORAGE`/`READ_MEDIA_*`, что 
 
 ### Вопросы на собеседовании
 
-:::qa
-- **Зачем нужен ContentProvider?** — Он даёт единый контракт доступа к структурированным данным и позволяет безопасно делиться ими между приложениями, скрывая хранилище вроде БД или файлов. Системные провайдеры контактов, медиа и календаря доступны через `ContentResolver` без написания своего провайдера.
-- **Из чего состоит `content://` URI и что такое authority?** — URI вида `content://authority/path/id` включает схему `content://`, authority — имя провайдера из `android:authorities`, путь и при необходимости id. `ContentResolver` находит провайдера по authority, а `ContentUris.withAppendedId()` добавляет id записи.
-- **Что возвращает `ContentResolver.query()`?** — `Cursor` со строками результата или `null`, если запрос не удался, и его обязательно закрывают через `use` или `close()`. Данные читают после `moveToNext()`, а проекцию, `selection` с `selectionArgs` и сортировку задают аргументами запроса.
-- **Зачем нужны URI permissions и `grantUriPermissions`?** — Они дают другому приложению временный доступ к конкретному URI без постоянного разрешения: FileProvider с `android:grantUriPermissions="true"` раздаёт файлы через `content://` вместо запрещённых с Android 7.0 `file://`. Право передаётся флагом `FLAG_GRANT_READ_URI_PERMISSION` в Intent.
-- **Почему опасно объявлять провайдер `exported="true"`?** — Другие приложения смогут читать и менять данные, а непроверенный `selection` откроет путь к SQL-инъекции. Для внутренних провайдеров ставят `exported="false"`, доступ ограничивают `android:readPermission` и `android:writePermission`, а входящие URI валидируют.
-- **Что даёт Photo Picker и почему он предпочтительнее прямого доступа к медиа?** — Photo Picker, доступный с Android 13+, а на 11+ через Google Play Services, показывает системный UI выбора, а приложение получает URI с временным доступом. Он не требует `READ_MEDIA_*` или `READ_EXTERNAL_STORAGE`, поэтому проще по разрешениям и приватнее.
-- **Что означают типы `vnd.android.cursor.item/` и `vnd.android.cursor.dir/`?** — Провайдер возвращает их из `getType(uri)`: первый означает одиночную запись, второй — набор записей. Клиент по MIME-типу понимает, как отображать результат.
-:::
 
 ## Итоговая самопроверка категории {#itogovaya-samoproverka}
 

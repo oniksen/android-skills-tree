@@ -134,6 +134,17 @@ Never edit the generated file by hand.
 4. If it changes the emitted markup, add it to the fixture in `study-html-validity.test.tsx`;
    that test validates every material with `html-validate:recommended`.
 
+### Interview questions (Q&A)
+
+- Questions and answers for interview prep are stored separately in `src/data/study-interview-questions/<grade>.ts`
+  as `StudyInterviewTopic[]`: `{ grade, materialId, skillId, topic, questions: { question, answer }[] }`.
+- In Markdown keep only the `### Вопросы на собеседовании` heading; the `:::qa` block is removed.
+- `parseStudyDocument` calls `attachStudyInterviewQuestions(document, { grade, materialId })` to
+  inject the `qa` block back into the matching section, so the study page renders unchanged.
+- Quiz uses only `question` from these files; answers stay for the study page.
+- Hover counter in `QuizInfoIcon` depends on `allQuizQuestions`, which includes `studyInterviewQuizQuestions`.
+- After changing Q&A data, regenerate golden fixtures: `npm run study:golden`.
+
 ### Binding and routes
 
 - Category: `studyMaterial: "<id>"` in `src/data/categories.ts`.

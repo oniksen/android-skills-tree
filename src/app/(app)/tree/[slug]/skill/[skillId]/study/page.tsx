@@ -29,7 +29,7 @@ export default async function StudyMaterialRoute({
 
   return (
     <StudyMaterialPage>
-      <StudyMaterialContent content={material.content} grade={material.grade} />
+      <StudyMaterialContent content={material.content} grade={material.grade} materialId={material.id} />
     </StudyMaterialPage>
   );
 }

@@ -30,7 +30,9 @@ describe("quiz questions", () => {
   it("has non-empty required fields", () => {
     for (const q of allQuizQuestions) {
       expect(q.question.trim().length).toBeGreaterThan(0);
-      expect(q.rubric.trim().length).toBeGreaterThan(0);
+      if (q.source !== "study") {
+        expect(q.rubric.trim().length).toBeGreaterThan(0);
+      }
       expect(q.topic.trim().length).toBeGreaterThan(0);
     }
   });

@@ -1,10 +1,9 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useState } from "react";
 import type { Level } from "@/data/levels";
 import GradeXpBar from "@/features/tree/components/GradeXpBar";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 interface LevelHeroProps {
   level: Level;
@@ -31,18 +30,36 @@ export default function LevelHero({
   categoriesTotal,
   subtopicPercent,
 }: LevelHeroProps) {
+  const [expanded, setExpanded] = useState(false);
+  const isLong = level.description.length > 120;
+
   return (
     <motion.section
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: EASE }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
       className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,380px)] xl:items-start"
     >
       <div className="min-w-0">
         <h1 className={`text-2xl font-bold tracking-tight mb-1 ${accent}`}>
           <span className="text-slate-600">##</span> {level.name}
         </h1>
-        <p className="text-sm text-slate-400">{level.description}</p>
+        <p
+          className={`text-sm text-slate-400 min-h-[2.5rem] ${
+            expanded ? "" : "line-clamp-2 nav-md:line-clamp-none"
+          }`}
+        >
+          {level.description}
+        </p>
+        {isLong && (
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            className="mt-1 text-xs text-blue-600 hover:text-blue-500 nav-md:hidden"
+          >
+            {expanded ? "Свернуть" : "Показать полностью"}
+          </button>
+        )}
       </div>
 
       <div className="card-surface relative overflow-hidden rounded-lg p-5">
