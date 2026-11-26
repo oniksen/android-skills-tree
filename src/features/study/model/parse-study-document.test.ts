@@ -457,6 +457,105 @@ describe("parseStudySectionBody", () => {
       items: [{ title: "А", content: "x" }],
     });
   });
+
+  it("разбирает директиву :::qa с вопросами и ответами", () => {
+    const blocks = parseStudySectionBody(`До.
+
+:::qa
+- **Чем \`val\` отличается от \`var\`?** — \`val\` нельзя переприсвоить.
+- **Что делает \`?:\`?** — возвращает значение слева, если оно не null.
+:::
+
+После.`);
+
+    expect(blocks.map((block) => block.type)).toEqual([
+      "markdown",
+      "qa",
+      "markdown",
+    ]);
+    expect(blocks[1]).toMatchObject({
+      type: "qa",
+      items: [
+        {
+          question: "Чем `val` отличается от `var`?",
+          answer: "`val` нельзя переприсвоить.",
+        },
+        {
+          question: "Что делает `?:`?",
+          answer: "возвращает значение слева, если оно не null.",
+        },
+      ],
+    });
+  });
+
+  it("отбрасывает пункт :::qa без ответа", () => {
+    const blocks = parseStudySectionBody(
+      ":::qa\n- **Вопрос без ответа?**\n- **С ответом.** — Ответ.\n:::",
+    );
+
+    expect(blocks).toEqual([
+      {
+        type: "qa",
+        items: [{ question: "С ответом.", answer: "Ответ." }],
+      },
+    ]);
+  });
+
+  it("склеивает перенесённый ответ :::qa", () => {
+    const blocks = parseStudySectionBody(
+      ":::qa\n- **Вопрос?** — первая часть\n  вторая часть.\n:::",
+    );
+
+    expect(blocks[0]).toMatchObject({
+      items: [{ question: "Вопрос?", answer: "первая часть вторая часть." }],
+    });
+  });
+
+  it("не оставляет raw :::qa, если директива не закрыта", () => {
+    const blocks = parseStudySectionBody(
+      "До.\n\n:::qa\n- **Вопрос?** — ответ.\n\nПосле.",
+    );
+
+    const markdown = blocks
+      .filter((block) => block.type === "markdown")
+      .map((block) => block.content)
+      .join("\n");
+
+    expect(blocks.map((block) => block.type)).toEqual(["markdown"]);
+    expect(markdown).not.toContain(":::qa");
+    expect(markdown).toContain("- **Вопрос?** — ответ.");
+    expect(markdown).toContain("После.");
+  });
+
+  it("не закрывает :::qa по ::: внутри блока кода", () => {
+    const blocks = parseStudySectionBody(`:::qa
+- **Вопрос?** — пример:
+\`\`\`text
+:::
+\`\`\`
+- **Второй?** — ответ.
+:::`);
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: "qa" });
+    if (blocks[0].type === "qa") {
+      expect(blocks[0].items).toHaveLength(2);
+    }
+  });
+
+  it("оставляет пустую директиву :::qa пустой", () => {
+    expect(parseStudySectionBody(":::qa\n:::")).toEqual([
+      { type: "qa", items: [] },
+    ]);
+  });
+
+  it("не открывает :::qa строкой с лишним текстом", () => {
+    expect(
+      parseStudySectionBody(":::qa лишнее\n- **А** — текст.").map(
+        (block) => block.type,
+      ),
+    ).toEqual(["markdown"]);
+  });
 });
 
 describe("вспомогательные функции", () => {
