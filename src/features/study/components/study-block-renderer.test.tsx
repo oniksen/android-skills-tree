@@ -6,7 +6,12 @@ import {
   StudyBlockRenderer,
 } from "./study-block-renderer";
 
-const BLOCK_TYPES: StudySectionBlock["type"][] = ["markdown", "cards", "note"];
+const BLOCK_TYPES: StudySectionBlock["type"][] = [
+  "markdown",
+  "cards",
+  "note",
+  "qa",
+];
 
 function render(block: StudySectionBlock, sources = false): string {
   return renderToStaticMarkup(
@@ -65,5 +70,31 @@ describe("StudyBlockRenderer", () => {
     const html = render({ type: "note", variant: "warn", content: "Текст." });
 
     expect(html).toContain("study-note study-note--warn");
+  });
+
+  it("рендерит вопросы как скрытые details с ответами", () => {
+    const html = render({
+      type: "qa",
+      items: [
+        {
+          question: "Чем `val` отличается от `var`?",
+          answer: "`val` нельзя переприсвоить.",
+        },
+      ],
+    });
+
+    expect(html).toContain('class="study-qa"');
+    expect(html).toContain('class="study-qa-item"');
+    expect(html).toContain('class="study-qa-question"');
+    expect(html).toContain('class="study-qa-answer"');
+    expect(html).toContain("<details");
+    expect(html).not.toContain("<details open");
+    expect(html).toContain("<summary");
+    expect(html).toContain("<code>val</code>");
+    expect(html).toContain("нельзя переприсвоить");
+  });
+
+  it("ничего не рендерит для пустого :::qa", () => {
+    expect(render({ type: "qa", items: [] })).toBe("");
   });
 });

@@ -30,6 +30,13 @@ const CARDS_EXAMPLE = [
   ":::",
 ].join("\n");
 
+const QA_EXAMPLE = [
+  ":::qa",
+  "- **Чем `val` отличается от `var`?** — `val` нельзя переприсвоить после объявления.",
+  "- **Зачем нужен `?:`?** — чтобы задать значение по умолчанию для `null`.",
+  ":::",
+].join("\n");
+
 const NOTE_EXAMPLE = "> **Запомнить:** выбирайте `val` по умолчанию.";
 
 const WARNING_EXAMPLE = [
@@ -59,6 +66,7 @@ const EXAMPLES = {
   code: CODE_EXAMPLE,
   table: TABLE_EXAMPLE,
   cards: CARDS_EXAMPLE,
+  qa: QA_EXAMPLE,
   note: NOTE_EXAMPLE,
   warning: WARNING_EXAMPLE,
   alerts: ALERTS_EXAMPLE,
@@ -87,7 +95,11 @@ const MATERIAL = [
   "",
   CARDS_EXAMPLE,
   "",
-  "## 4. Заметки",
+  "## 4. Вопросы и ответы",
+  "",
+  QA_EXAMPLE,
+  "",
+  "## 5. Заметки",
   "",
   NOTE_EXAMPLE,
   "",
@@ -95,11 +107,11 @@ const MATERIAL = [
   "",
   ALERTS_EXAMPLE,
   "",
-  "## 5. Самопроверка",
+  "## 6. Самопроверка",
   "",
   CHECKLIST_EXAMPLE,
   "",
-  "## 6. Рисунок",
+  "## 7. Рисунок",
   "",
   IMAGE_EXAMPLE,
   "",
@@ -143,6 +155,10 @@ describe("примеры из гайда", () => {
       "study-cards",
       "study-card",
       "study-card-title",
+      "study-qa",
+      "study-qa-item",
+      "study-qa-question",
+      "study-qa-answer",
       "study-note",
       "study-note--warn",
       "study-checklist",
@@ -160,6 +176,7 @@ describe("примеры из гайда", () => {
   it("не оставляют на странице сырых маркеров", () => {
     for (const marker of [
       ":::cards",
+      ":::qa",
       ":::",
       "[!NOTE]",
       "[!TIP]",
